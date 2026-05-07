@@ -27,17 +27,12 @@
  * Base URL van de WordPress REST API.
  * In productie: `https://materialdistrict.com/wp-json`
  *
- * In .env.local moet WP_API_URL ZONDER trailing slash staan.
+ * In `.env.local` moet `WP_API_URL` zonder trailing slash staan.
+ * Als de env-var ontbreekt, vallen we terug op de publieke productie-API.
  */
 export const WP_API_URL = (() => {
   const url = process.env.WP_API_URL
-  if (!url) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('Missing required env var: WP_API_URL')
-    }
-    // Dev fallback — voorkomt crash tijdens lokaal opstarten zonder env
-    return 'https://materialdistrict.com/wp-json'
-  }
+  if (!url) return 'https://materialdistrict.com/wp-json'
   return url.replace(/\/$/, '')
 })()
 

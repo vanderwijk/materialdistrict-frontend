@@ -35,9 +35,6 @@ export const WC_API_URL = (() => {
   const wp = process.env.WP_API_URL
   if (wp) return `${wp.replace(/\/$/, '')}/wc/v3`
 
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('Missing required env var: WC_API_URL or WP_API_URL')
-  }
   return 'https://materialdistrict.com/wp-json/wc/v3'
 })()
 
