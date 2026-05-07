@@ -15,6 +15,7 @@ import {
   type FilterSelection,
 } from '@/components/ui'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { useAuth } from '@/components/providers/AuthContext'
 
 /**
  * Smoke-test pagina — `/mock`
@@ -33,6 +34,7 @@ export default function MockPage() {
 
   return (
     <>
+      <DevAuthPanel />
       <ChannelBar
         activeChannel={channel}
         onChannelChange={setChannel}
@@ -200,5 +202,144 @@ export default function MockPage() {
           </div>
         </div>
     </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// DEV-ONLY: tijdelijk auth-panel
+//
+// Klein form om `useAuth().signIn(email, password)` te triggeren plus
+// uitlog-knop en een dump van de huidige user-state. Verwijderen zodra de
+// echte `/login`-pagina bestaat (sessie 11).
+// ─────────────────────────────────────────────────────────────────────
+function DevAuthPanel() {
+  const { user, isLoggedIn, isMember, signIn, signOut, refresh } = useAuth()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setError(null)
+    setPending(true)
+    const result = await signIn(email, password)
+    setPending(false)
+    if (!result.ok) {
+      setError(result.error ?? 'Login failed')
+    } else {
+      setPassword('')
+    }
+  }
+
+  return (
+    <div
+      style={{
+        maxWidth: 1280,
+        margin: '0 auto',
+        padding: '16px 32px 0',
+      }}
+    >
+      <div
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 12,
+          padding: 16,
+          display: 'flex',
+          gap: 16,
+          alignItems: 'flex-start',
+          flexWrap: 'wrap',
+          fontSize: 14,
+        }}
+      >
+        <div style={{ minWidth: 180 }}>
+          <strong style={{ display: 'block', marginBottom: 4 }}>
+            Dev auth panel
+          </strong>
+          <span style={{ opacity: 0.6, fontSize: 12 }}>
+            Tijdelijk — vervangen door /login
+          </span>
+        </div>
+
+        {isLoggedIn ? (
+          <>
+            <div style={{ flex: '1 1 240px' }}>
+              <div>
+                <strong>{user?.name}</strong>{' '}
+                <span style={{ opacity: 0.7 }}>· {user?.email}</span>
+              </div>
+              <div style={{ fontSize: 12, opacity: 0.7, marginTop: 2 }}>
+                Membership: {user?.membership.tier}
+                {isMember && ' (Insider)'}
+                {' · '}roles: {user?.roles.join(', ') || '—'}
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Button variant="outline" size="sm" onClick={() => void refresh()}>
+                Refresh
+              </Button>
+              <Button variant="danger" size="sm" onClick={() => void signOut()}>
+                Sign out
+              </Button>
+            </div>
+          </>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: 'flex',
+              gap: 8,
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              flex: '1 1 auto',
+            }}
+          >
+            <input
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                padding: '6px 10px',
+                border: '1px solid var(--border)',
+                borderRadius: 6,
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                fontSize: 14,
+                minWidth: 200,
+              }}
+            />
+            <input
+              type="password"
+              required
+              autoComplete="current-password"
+              placeholder="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{
+                padding: '6px 10px',
+                border: '1px solid var(--border)',
+                borderRadius: 6,
+                background: 'var(--bg)',
+                color: 'var(--text)',
+                fontSize: 14,
+                minWidth: 160,
+              }}
+            />
+            <Button type="submit" size="sm" disabled={pending}>
+              {pending ? 'Signing in…' : 'Sign in'}
+            </Button>
+            {error && (
+              <span style={{ color: 'var(--ct-red, #c0392b)', fontSize: 12 }}>
+                {error}
+              </span>
+            )}
+          </form>
+        )}
+      </div>
+    </div>
   )
 }

@@ -7,7 +7,7 @@
 
 ## Laatste update
 Datum: 07-05-2026
-Sessie: 3 — Gedeelde componenten ✅
+Sessie: 4 — Materials (in uitvoering, AuthProvider-deel klaar)
 
 ---
 
@@ -18,7 +18,7 @@ Sessie: 3 — Gedeelde componenten ✅
 | 1. Projectfundament | ✅ Klaar | Next.js 16 + React 19, build groen, types groen |
 | 2. API & datamodel | ✅ Klaar | Live data werkt, smoke test groen, types schoon |
 | 3. Gedeelde componenten | ✅ Klaar | 14 componenten, smoke test groen, types schoon |
-| 4. Materials | ⬜ Niet gestart | Volgende sessie. Bouwt op sessie 3 (FilterSidebar wrappen met FacetWP, Materials overzicht + detail) |
+| 4. Materials | 🔄 In uitvoering | AuthProvider afgerond (zie sessie 4 — deel 1). Volgende deel: Materials overzicht + detail, FacetWP-wrapper |
 | 5. Brands | ⬜ Niet gestart | Klaar voor bouw, mits brand-gallery via attachments werkt |
 | 6. Articles | ⬜ Niet gestart | Insider-only-meta moet nog ontsloten — sessie 6-blocker |
 | 7. Talks | ⬜ Niet gestart | Talk-meta in handover ontbreekt — sessie 7-blocker |
@@ -280,6 +280,55 @@ Volledige projectstructuur, Next.js 16 + React 19, `globals.css`, alle TS-types,
 ### Sessie 2 — API & datamodel (07-05-2026) ✅
 WP REST API verkenning, pauze tot developer-commit, daarna drielaagse architectuur, 8 nieuwe TS-bestanden, FacetWP-client, smoke test op `/`. TypeScript schoon. Membership-uitleg ontvangen.
 
+### Sessie 4 — Materials, deel 1: AuthProvider (07-05-2026) ✅
+
+**Aanpak:** Eerst auth fundamenteel oplossen vóórdat de Materials-pagina's worden gebouwd. Eigen JWT-implementatie aan WP-kant (geen third-party plugin) — gebruiker had het patroon al klaar uit een eerder Wildspotters-project. Frontend werkt met httpOnly session-cookie op het Next.js-domein; de browser krijgt het token nooit te zien.
+
+**Aangemaakte WP-bestanden (`materialdistrict-plugin/`):**
+- `includes/JWT.php` — namespaced `MaterialDistrict\API\JWT`. HS256, secret uit `MD_JWT_SECRET` (defineren in `wp-config.php`), audience `md-web` (zodat dezelfde class straks ook iOS/andere clients kan bedienen), 7-daagse lifetime. `issue_token()`, `decode()`, `validate()` (incl. `iss`/`aud`/`exp`/`sub`-checks).
+- `rest-auth.php` — drie endpoints + één filter:
+  - `POST /md/v2/auth/login` — `{ email, password }` → `{ token, expires_at, user }`. `wp_authenticate_username_password` na lookup via email.
+  - `GET /md/v2/auth/me` — returnt `{ user }` op basis van Bearer-token.
+  - `POST /md/v2/auth/refresh` — issued nieuwe JWT voor de huidige user.
+  - `determine_current_user`-filter (priority 9): leest Bearer-header, valideert JWT, zet `current_user`. Daarmee werken óók standaard WP-routes (`/wp/v2/users/me`, etc.) met dezelfde JWT.
+  - `md_auth_user_payload(WP_User)`-helper produceert de stabiele user-shape, met `membership: { tier, valid_until, cancel_at_period_end }` als stub (`'free'`) tot Stripe-sync er is.
+- `materialdistrict.php` — één regel toegevoegd: `require 'rest-auth.php';`.
+
+**Aangemaakte/gewijzigde Next.js-bestanden:**
+- `src/types/shared.ts` — `User` herschreven naar de WP-payload-shape: `email`, `name`, `displayName?`, `firstName?`, `lastName?`, `avatarUrl?`, `roles[]`, `profession?`, `company?`, `membership: { tier, validUntil?, cancelAtPeriodEnd }`. Manufacturer/brand-velden blijven optioneel.
+- `src/lib/auth/cookie.ts` — `SESSION_COOKIE = 'md_session'`, `getSessionCookieOptions()` met httpOnly + Secure-in-prod + SameSite=Lax.
+- `src/lib/auth/types.ts` — raw WP-shapes (`WPAuthUserPayload`, `WPAuthLoginResponse`, `WPAuthMeResponse`, `WPRestError`).
+- `src/lib/auth/mappers.ts` — `mapWPUser()` als enige plek waar snake_case → camelCase gebeurt.
+- `src/lib/auth/server.ts` — `'server-only'`. `getSessionToken()` + `getCurrentUser()` (cache: no-store).
+- `src/lib/auth/index.ts` — barrel met alleen non-server-only exports.
+- `src/app/api/auth/login/route.ts` — proxy naar WP, zet cookie met maxAge afgestemd op `expires_at`.
+- `src/app/api/auth/logout/route.ts` — wist cookie, returnt 204.
+- `src/app/api/auth/me/route.ts` — proxyt via `getCurrentUser()`, altijd 200 met `{ user: User | null }`.
+- `src/app/api/auth/refresh/route.ts` — vraagt nieuwe JWT bij WP, ververst cookie. Wordt nog niet automatisch aangeroepen.
+- `src/components/providers/AuthContext.tsx` — herschreven. Accepteert `initialUser`, biedt `signIn(email, password)` / `signOut()` / `refresh()`. `useAuth()`-API blijft compatible (`isLoggedIn`, `isMember`, `user`).
+- `src/app/layout.tsx` — async, hydrateert `AuthProvider` met `await getCurrentUser()`.
+- `src/app/mock/page.tsx` — tijdelijke `DevAuthPanel` (login-form + uitlog + user-dump). Verwijderen zodra `/login` bestaat.
+- `.env.local.example` — uitleg over `MD_JWT_SECRET` (woont in `wp-config.php`, niet in deze env).
+
+**Beslissingen sessie 4 — deel 1:**
+
+35. **Eigen JWT-class i.p.v. third-party plugin** — gebruiker heeft het Wildspotters-patroon al en wil geen extra dependency. Gunstig voor controle over claims, lifetime en uitbreidbaarheid (audience `md-web` laat ruimte voor toekomstige iOS-app).
+36. **httpOnly cookie op Next.js-domein** — browser krijgt JWT nooit te zien; alle WP-calls gaan server-side via Route Handlers. Geen CORS-issues, geen XSS-risico op het token.
+37. **`determine_current_user`-filter (priority 9, alleen Bearer)** — laat Application Password en cookie-auth ongemoeid; alleen wanneer de header letterlijk `Bearer …` is wordt JWT-validatie geprobeerd. Bij faal: stille fallback, andere auth-mechanismen krijgen kans.
+38. **Membership als stub in WP-payload** — `tier: 'free'` voor iedereen tot de Stripe-sync bestaat. Frontend-code gebruikt `user.membership.tier === 'insider'` (niet meer `readerTier`); zodra WP echte waarden geeft is geen frontend-aanpassing nodig.
+39. **Login alleen via e-mail** — gebruiker is decisive. WP zoekt user op via `get_user_by('email', …)` en geeft `user_login` door aan `wp_authenticate_username_password`.
+40. **Cookie maxAge afgestemd op `expires_at`** — cookie en JWT vervallen samen. `Math.max(60, exp - now)` als ondergrens om edge-cases te voorkomen.
+41. **Geen automatische refresh** — `/api/auth/refresh` ligt klaar maar wordt nog niet automatisch aangeroepen. 7 dagen JWT-lifetime, daarna re-login. Auto-refresh later toe te voegen via client-side scheduler.
+42. **Geen JWT-blacklist** — uitgegeven token blijft technisch geldig tot `exp`. Acceptabel voor lezerssite; voor Fase-2 dashboard kunnen we revocation-store overwegen.
+43. **`server-only` op `lib/auth/server.ts`** — voorkomt per ongeluk importeren in client components.
+
+**Wat de gebruiker zelf moet doen vóór testen:**
+1. `define( 'MD_JWT_SECRET', '<lange string>' );` in `wp-config.php` op LocalWP en (later) productie. Genereren via `openssl rand -base64 64`.
+2. Plugin laten herladen.
+3. Smoke test van WP-endpoints met curl, daarna `/mock` openen, login via DevAuthPanel.
+
+---
+
 ### Sessie 3 — Gedeelde componenten (07-05-2026) ✅
 
 **Aanpak:** Batch-gewijze opbouw met preview + review per batch. Mockup als visuele referentie, `globals.css` uit sessie 1 als CSS-fundament.
@@ -316,21 +365,16 @@ Materials overzichtspagina + detailpagina, FacetWP-koppeling activeren.
 - Geen technische blockers — alle bouwstenen klaar
 - Bij voorkeur: developer-bevestiging op `wp-rest-api-followup.md`
 
-### Eerste taken in sessie 4
-0. **Open punten uit sessie 3 afhandelen** — gebruiker heeft een lijst kleine visuele/UX-aanpassingen die niet in sessie 3 zijn afgewerkt vanwege tijdsdruk. Deze worden als eerste gedaan voordat het werk aan Materials begint.
-1. **`MaterialFilterSidebar.tsx`** (of vergelijkbare wrapper) — verbindt de pure `FilterSidebar` UI-component met FacetWP-state. Beheert URL-syncing (filters in querystring), debounced fetches via `fetchMaterials`, count-updates per facet
-2. **Materials overzichtspagina** — `/materials/[[...slug]]` met integratie van `ChannelBar` (met `MATERIAL_CHANNELS`), de gewrapte FilterSidebar, en een `OverviewGrid` van Cards
-3. **Materials detailpagina** — `/materials/[slug]` met gallery, properties (uit `class_list`-parser), brand-link, sample-request-knop
-4. **`AuthProvider` upgraden** — vervang mock door echte WP-integratie (cookie reading, `/api/me`-fetch, SSR-veilige hydratie)
-5. **Newsletter form** — vervang `/api/newsletter` placeholder door Server Action
+### Voortgang sessie 4
+- ✅ AuthProvider — eigen JWT-implementatie WP-kant + Next.js Route Handlers + SSR-hydratie. DevAuthPanel op `/mock` voor handmatige test.
+- ⬜ Open punten uit sessie 3 afhandelen — gebruiker heeft nog een lijstje kleine visuele/UX-aanpassingen die niet in sessie 3 zijn afgewerkt; nog niet aangeleverd.
+- ⬜ `MaterialFilterSidebar.tsx` — wrapper rond `FilterSidebar` die FacetWP-state beheert (URL-syncing, debounced fetches, count-updates).
+- ⬜ Materials overzichtspagina `/materials/[[...slug]]` — `ChannelBar` (met `MATERIAL_CHANNELS`), gewrapte FilterSidebar, OverviewGrid van Cards.
+- ⬜ Materials detailpagina `/materials/[slug]` — gallery, properties (uit `class_list`-parser), brand-link, sample-request-knop met `InsiderGate`.
+- ⬜ Newsletter form — vervang `/api/newsletter` placeholder door Server Action.
+- ⬜ DevAuthPanel + `/mock` opruimen zodra echte `/login` en Materials-pages er zijn.
 
-### Aanbevolen aanpak
-- Open een nieuwe Claude-sessie met dit log + `architecture-rules.md` + `MaterialDistrict_MockUp_DEF.html` + `globals.css` (uit codebase) + sessie-3 componenten (uit codebase)
-- Begin met FacetWP-wrapper om FilterSidebar
-- Daarna overzichtspagina, dan detailpagina
-- Insider-gating op sample-request via bestaande `InsiderGate`-component
-
-### Verwijderen of vervangen in sessie 4
-- `/mock` page (sessie-3 smoke-test) — verwijderen zodra echte pages er zijn
-- `AuthContext.tsx` mock — vervangen door echte provider
-- Newsletter form `action="/api/newsletter"` — vervangen door Server Action
+### Vereisten vóór hervatten
+- **`MD_JWT_SECRET` zetten** in `wp-config.php` (LocalWP + productie). Zonder dit gooien de `/md/v2/auth/*`-endpoints 500 op de eerste login-poging.
+- DevAuthPanel handmatig testen op `/mock` met een echte WP-account.
+- Bij voorkeur: developer-bevestiging op `wp-rest-api-followup.md`.
