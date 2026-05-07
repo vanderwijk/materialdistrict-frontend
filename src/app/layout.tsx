@@ -4,6 +4,7 @@ import { HeaderShell } from '@/components/layout/HeaderShell'
 import { Footer } from '@/components/layout/Footer'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { AuthProvider } from '@/components/providers/AuthContext'
+import { getCurrentUser } from '@/lib/auth/server'
 import '@/styles/globals.css'
 
 /**
@@ -66,11 +67,16 @@ const themeInitScript = `
 })();
 `
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // Server-side auth-hydratie: we vragen de huidige user op aan de hand van de
+  // httpOnly session-cookie. Bij geen cookie of een verlopen JWT komt hier
+  // null terug — geen exception, geen flicker.
+  const initialUser = await getCurrentUser()
+
   return (
     <html
       lang="en"
@@ -82,7 +88,7 @@ export default function RootLayout({
       </head>
       <body className="app-shell">
         <ThemeProvider>
-          <AuthProvider>
+          <AuthProvider initialUser={initialUser}>
             <HeaderShell />
             <main id="main">{children}</main>
             <Footer />

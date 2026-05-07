@@ -65,15 +65,43 @@ export interface WPPostBase {
 // User & membership
 // ============================================================
 
+/**
+ * Membership-status van een reader-account.
+ *
+ * Wordt geleverd door `/md/v2/auth/me` (en `/auth/login`/`/auth/refresh`).
+ * Het Insider/Stripe-systeem bestaat nog niet in WP — vandaar dat alle
+ * accounts voorlopig `tier: 'free'` terugkrijgen. Zodra de Stripe-sync
+ * is gebouwd vult WP `validUntil` en `cancelAtPeriodEnd` automatisch.
+ */
+export interface UserMembership {
+  tier: ReaderTier
+  /** ISO-datum van het einde van de huidige factureringsperiode. */
+  validUntil?: string
+  cancelAtPeriodEnd: boolean
+}
+
+/**
+ * De geauthenticeerde gebruiker zoals de frontend hem kent.
+ *
+ * Mapping van WP `/md/v2/auth/me`-payload naar dit shape gebeurt in
+ * `src/lib/auth/mappers.ts`. Houd snake_case strict aan WP-kant en
+ * camelCase aan deze kant.
+ */
 export interface User {
   id: number
-  name: string
   email: string
+  name: string
+  displayName?: string
+  firstName?: string
+  lastName?: string
   avatarUrl?: string
-  readerTier: ReaderTier
-  /** Aanwezig als de gebruiker tegelijk een brand-account heeft. */
+  roles: string[]
+  profession?: string
+  company?: string
+  membership: UserMembership
+  /** Aanwezig als de gebruiker tegelijk een brand-account heeft. (Toekomst.) */
   manufacturerTier?: ManufacturerTier
-  /** Brand-id wanneer dit account aan een merk is gekoppeld. */
+  /** Brand-id wanneer dit account aan een merk is gekoppeld. (Toekomst.) */
   brandId?: number
 }
 
