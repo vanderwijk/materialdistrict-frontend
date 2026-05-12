@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import {
   Button,
   Badge,
@@ -16,6 +16,220 @@ import {
 } from '@/components/ui'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { useAuth } from '@/components/providers/AuthContext'
+import styles from './page.module.css'
+
+type FacetWpMaterialsFacetName =
+  | 'search_materials'
+  | 'order'
+  | 'material_category'
+  | 'glossiness'
+  | 'translucence'
+  | 'structure'
+  | 'texture'
+  | 'hardness'
+  | 'temperature'
+  | 'acoustics'
+  | 'odeur'
+  | 'fire_resistance'
+  | 'uv_resistance'
+  | 'weather_resistance'
+  | 'scratch_resistance'
+  | 'weight'
+  | 'chemical_resistance'
+  | 'renewable'
+
+type FacetWpMaterialsRequest = {
+  data: {
+    facets: Record<FacetWpMaterialsFacetName, string[]>
+    query_args: {
+      post_type: 'material'
+      posts_per_page: number
+      paged: number
+    }
+  }
+}
+
+type FacetWpFacetChoice = {
+  value: string
+  label: string
+  depth: number
+  count: number
+}
+
+type FacetWpFacetResult = {
+  name: string
+  label: string
+  type: string
+  selected: string[]
+  choices: FacetWpFacetChoice[]
+}
+
+type FacetWpMaterialsResponse = {
+  results: number[]
+  facets: Partial<Record<FacetWpMaterialsFacetName, FacetWpFacetResult>>
+  pager: {
+    page: number
+    per_page: number
+    total_rows: number
+    total_pages: number
+  }
+}
+
+const facetWpFetchEndpoint = 'https://materialdistrict.com/wp-json/facetwp/v1/fetch'
+
+const facetWpMaterialsRequestExample: FacetWpMaterialsRequest = {
+  data: {
+    facets: {
+      search_materials: ['hemp'],
+      order: ['newest'],
+      material_category: ['biobased'],
+      glossiness: [],
+      translucence: [],
+      structure: ['fibrous'],
+      texture: [],
+      hardness: [],
+      temperature: [],
+      acoustics: [],
+      odeur: [],
+      fire_resistance: [],
+      uv_resistance: [],
+      weather_resistance: [],
+      scratch_resistance: [],
+      weight: ['lightweight'],
+      chemical_resistance: [],
+      renewable: ['yes'],
+    },
+    query_args: {
+      post_type: 'material',
+      posts_per_page: 12,
+      paged: 1,
+    },
+  },
+}
+
+const facetWpMaterialsResponseExample: FacetWpMaterialsResponse = {
+  results: [124, 398, 771],
+  facets: {
+    material_category: {
+      name: 'material_category',
+      label: 'Material Category',
+      type: 'checkboxes',
+      selected: ['biobased'],
+      choices: [
+        { value: 'biobased', label: 'Bio-based', depth: 0, count: 89 },
+        { value: 'recycled', label: 'Recycled', depth: 0, count: 167 },
+      ],
+    },
+    structure: {
+      name: 'structure',
+      label: 'Structure',
+      type: 'checkboxes',
+      selected: ['fibrous'],
+      choices: [
+        { value: 'fibrous', label: 'Fibrous', depth: 0, count: 24 },
+        { value: 'granular', label: 'Granular', depth: 0, count: 11 },
+      ],
+    },
+    weight: {
+      name: 'weight',
+      label: 'Weight',
+      type: 'checkboxes',
+      selected: ['lightweight'],
+      choices: [
+        { value: 'lightweight', label: 'Lightweight', depth: 0, count: 17 },
+        { value: 'heavy', label: 'Heavy', depth: 0, count: 8 },
+      ],
+    },
+    renewable: {
+      name: 'renewable',
+      label: 'Renewable',
+      type: 'checkboxes',
+      selected: ['yes'],
+      choices: [
+        { value: 'yes', label: 'Yes', depth: 0, count: 34 },
+        { value: 'no', label: 'No', depth: 0, count: 12 },
+      ],
+    },
+  },
+  pager: {
+    page: 1,
+    per_page: 12,
+    total_rows: 34,
+    total_pages: 3,
+  },
+}
+
+const facetWpMaterialsTypesSnippet = `type FacetWpMaterialsFacetName =
+  | 'search_materials'
+  | 'order'
+  | 'material_category'
+  | 'glossiness'
+  | 'translucence'
+  | 'structure'
+  | 'texture'
+  | 'hardness'
+  | 'temperature'
+  | 'acoustics'
+  | 'odeur'
+  | 'fire_resistance'
+  | 'uv_resistance'
+  | 'weather_resistance'
+  | 'scratch_resistance'
+  | 'weight'
+  | 'chemical_resistance'
+  | 'renewable'
+
+type FacetWpMaterialsRequest = {
+  data: {
+    facets: Record<FacetWpMaterialsFacetName, string[]>
+    query_args: {
+      post_type: 'material'
+      posts_per_page: number
+      paged: number
+    }
+  }
+}
+
+type FacetWpFacetChoice = {
+  value: string
+  label: string
+  depth: number
+  count: number
+}
+
+type FacetWpFacetResult = {
+  name: string
+  label: string
+  type: string
+  selected: string[]
+  choices: FacetWpFacetChoice[]
+}
+
+type FacetWpMaterialsResponse = {
+  results: number[]
+  facets: Partial<Record<FacetWpMaterialsFacetName, FacetWpFacetResult>>
+  pager: {
+    page: number
+    per_page: number
+    total_rows: number
+    total_pages: number
+  }
+}`
+
+const facetWpMaterialsPayloadSnippet = JSON.stringify(facetWpMaterialsRequestExample, null, 2)
+const facetWpMaterialsResponseSnippet = JSON.stringify(facetWpMaterialsResponseExample, null, 2)
+
+const facetWpMaterialsFetchSnippet = `const payload: FacetWpMaterialsRequest = ${facetWpMaterialsPayloadSnippet}
+
+const response = await fetch('${facetWpFetchEndpoint}', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(payload),
+})
+
+const result: FacetWpMaterialsResponse = await response.json()`
 
 /**
  * Smoke-test pagina — `/mock`
@@ -199,9 +413,60 @@ export default function MockPage() {
                 feature="compare"
               />
             </section>
+
+            <section className={styles.contractSection}>
+              <h2 className={styles.contractTitle}>
+                FacetWP materials contract
+              </h2>
+              <div className={styles.contractCard}>
+                <div className={styles.contractEndpointRow}>
+                  <Badge variant="blue">POST</Badge>
+                  <code className={styles.contractEndpoint}>{facetWpFetchEndpoint}</code>
+                </div>
+
+                <p className={styles.contractIntro}>
+                  Deze mock laat precies zien hoe de frontend de Materials FacetWP endpoint kan aanroepen.
+                  De request body moet altijd een top-level <code>data</code> object bevatten.
+                </p>
+
+                <div>
+                  <h3 className={styles.contractHeading}>TypeScript types</h3>
+                  <CodeBlock code={facetWpMaterialsTypesSnippet} />
+                </div>
+
+                <div>
+                  <h3 className={styles.contractHeading}>Request payload</h3>
+                  <CodeBlock code={facetWpMaterialsPayloadSnippet} />
+                </div>
+
+                <div>
+                  <h3 className={styles.contractHeading}>Fetch example</h3>
+                  <CodeBlock code={facetWpMaterialsFetchSnippet} />
+                </div>
+
+                <div>
+                  <h3 className={styles.contractHeading}>Response example</h3>
+                  <CodeBlock code={facetWpMaterialsResponseSnippet} />
+                </div>
+
+                <ul className={styles.contractList}>
+                  <li>Facetnamen zijn gebaseerd op de bestaande materials archive in WordPress.</li>
+                  <li>De value strings zoals <code>biobased</code> en <code>newest</code> moeten exact matchen met de FacetWP configuratie.</li>
+                  <li>De response geeft zowel de gevonden result IDs als vernieuwde facet choices en pager info terug.</li>
+                </ul>
+              </div>
+            </section>
           </div>
         </div>
     </>
+  )
+}
+
+function CodeBlock({ code }: { code: string }) {
+  return (
+    <pre className={styles.codeBlock}>
+      <code>{code}</code>
+    </pre>
   )
 }
 
@@ -219,7 +484,7 @@ function DevAuthPanel() {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError(null)
     setPending(true)
