@@ -26,6 +26,7 @@ import { Button, EmptyState } from '@/components/ui'
 import { listMaterialsWithFacets } from '@/lib/api'
 import { parseFacetSelectionFromSearchParams } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { MaterialsContextWriter } from '@/lib/hooks/useMaterialsContext'
 import { MaterialsFilterSidebar } from './_components/MaterialsFilterSidebar'
 import { MaterialsGrid } from './_components/MaterialsGrid'
 import { MaterialsPagination } from './_components/MaterialsPagination'
@@ -86,8 +87,15 @@ export default async function MaterialsPage({
     Object.keys(filterSelection).length > 0 || Boolean(search)
   const totalRows = result.pager.totalRows
 
+  // Reconstrueer de raw search-params string voor de filter-context.
+  // Deze string is wat we naar sessionStorage schrijven en die op de
+  // detail-page weer gebruiken voor back-link + prev/next.
+  const queryString = buildQueryString(params)
+
   return (
     <>
+      <MaterialsContextWriter queryString={queryString} />
+
       <header className="ov-page-header">
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Materials' }]} />
@@ -158,4 +166,26 @@ export default async function MaterialsPage({
       />
     </>
   )
+}
+
+/**
+ * Bouw een raw query-string uit de Next.js `searchParams`-object. Multi-
+ * value keys (array) worden samengevoegd met `,` — dezelfde conventie
+ * als `parseFacetSelectionFromSearchParams`. Lege waarden worden
+ * weggelaten zodat we geen "?foo=&bar=" rommel produceren.
+ *
+ * Output (zonder leading `?`):
+ *   "material_category=wood,biobased&q=acoustic&sort=newest&page=3"
+ */
+function buildQueryString(
+  searchParams: Record<string, string | string[] | undefined>,
+): string {
+  const params = new URLSearchParams()
+  for (const [key, rawValue] of Object.entries(searchParams)) {
+    if (rawValue === undefined) continue
+    const value = Array.isArray(rawValue) ? rawValue.join(',') : rawValue
+    if (value.trim().length === 0) continue
+    params.set(key, value)
+  }
+  return params.toString()
 }

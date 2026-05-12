@@ -45,6 +45,13 @@ interface DetailHeaderProps {
     label: string
     href: string
   }
+  /**
+   * Drop-in alternatief voor `back` als je een eigen back-knop wilt
+   * leveren (bv. een client-component die filter-context uit
+   * sessionStorage leest om back-URL dynamisch te bepalen). Heeft
+   * voorrang op `back` als beide gegeven zijn.
+   */
+  backNode?: ReactNode
   /** Content-type tags / insider-badges boven de titel. */
   tags?: DetailHeaderTag[]
   /** Page title (h1). */
@@ -77,6 +84,7 @@ interface DetailHeaderProps {
  */
 export function DetailHeader({
   back,
+  backNode,
   tags,
   title,
   meta,
@@ -88,16 +96,18 @@ export function DetailHeader({
   return (
     <div className={cn('detail-header', className)}>
       <div className="detail-header-inner">
-        {back && (
-          <button
-            type="button"
-            className="detail-header-back"
-            onClick={() => router.push(back.href)}
-          >
-            <IconChevronLeft size={14} strokeWidth={2.5} />
-            Back to {back.label}
-          </button>
-        )}
+        {backNode
+          ? backNode
+          : back && (
+              <button
+                type="button"
+                className="detail-header-back"
+                onClick={() => router.push(back.href)}
+              >
+                <IconChevronLeft size={14} strokeWidth={2.5} />
+                Back to {back.label}
+              </button>
+            )}
 
         <div className="detail-header-row">
           <div className="detail-header-main">

@@ -159,3 +159,98 @@ export function toMaterialTags(
 
   return tags
 }
+
+// --------------------------------------------------------------------
+// Property groups (sessie 4 — detail page rebuild)
+// --------------------------------------------------------------------
+
+/**
+ * Vier semantische groepen waarin we de eigenschappen weergeven op de
+ * detail-page (afgesproken indeling met Jeroen, sessie 4 part 2):
+ *
+ *  - sensorial:       zintuiglijke waarnemingen (glansgraad, structuur,
+ *                     hardheid, temperatuur, geur, gewicht)
+ *  - technical:       prestatiegerichte eigenschappen (brand-/UV-/weer-/
+ *                     krasbestendigheid, chemische bestendigheid)
+ *  - environmental:   hernieuwbaarheid en circulariteit
+ *  - content:         materiaal-samenstelling (biobased%, recycled%,
+ *                     upcycled% — komt nog niet uit Johan's WP)
+ *
+ * `content` blijft voorlopig leeg — komt zodra de data-laag het levert.
+ */
+export type MaterialPropertyGroupKey =
+  | 'sensorial'
+  | 'technical'
+  | 'environmental'
+  | 'content'
+
+const PROPERTY_GROUPS: Record<
+  MaterialPropertyGroupKey,
+  readonly MaterialPropertyKey[]
+> = {
+  sensorial: [
+    'glossiness',
+    'translucence',
+    'structure',
+    'texture',
+    'hardness',
+    'temperature',
+    'acoustics',
+    'odeur',
+    'weight',
+  ],
+  technical: [
+    'fire_resistance',
+    'uv_resistance',
+    'weather_resistance',
+    'scratch_resistance',
+    'chemical_resistance',
+  ],
+  environmental: ['renewable'],
+  content: [], // tot Johan biobased_content / recycled_content / upcycled_content levert
+}
+
+/** Display-labels voor de groep-kopjes. */
+export const PROPERTY_GROUP_LABELS: Record<MaterialPropertyGroupKey, string> = {
+  sensorial: 'Sensorial properties',
+  technical: 'Technical properties',
+  environmental: 'Environmental',
+  content: 'Content composition',
+}
+
+/**
+ * Convert MaterialProperties naar een gegroepeerde lijst van tags, klaar
+ * voor render. Lege groepen worden weggelaten zodat de UI niet "lege
+ * kopjes" rendert.
+ *
+ * Returnt een array van groepen in vaste volgorde
+ * (sensorial → technical → environmental → content) — ook al is dat
+ * lexicaal onhandig, het volgt de mockup-volgorde en geeft consistente
+ * page-structuur.
+ */
+export function groupTagsByCategory(
+  properties: MaterialProperties,
+): Array<{
+  group: MaterialPropertyGroupKey
+  label: string
+  tags: MaterialTag[]
+}> {
+  const order: MaterialPropertyGroupKey[] = [
+    'sensorial',
+    'technical',
+    'environmental',
+    'content',
+  ]
+
+  return order
+    .map((group) => {
+      const tags: MaterialTag[] = []
+      for (const facet of PROPERTY_GROUPS[group]) {
+        const value = properties[facet]
+        if (!value) continue
+        tags.push({ facet, value, label: humanizeValue(value) })
+      }
+      return { group, label: PROPERTY_GROUP_LABELS[group], tags }
+    })
+    .filter((g) => g.tags.length > 0)
+}

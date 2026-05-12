@@ -33,6 +33,7 @@
  */
 
 import { useMemo, useState } from 'react'
+import { ImageLightbox } from '@/components/ui/ImageLightbox'
 import type { Gallery, MediaImage } from '@/types/media'
 
 // --------------------------------------------------------------------
@@ -99,6 +100,17 @@ export function MaterialGallery({
     activeImage.sizes?.medium_large?.url ??
     activeImage.sourceUrl
   const heroAlt = altFor(activeImage, title)
+  // Voor de lightbox grijpen we de grootste beschikbare variant. `full` is
+  // de oorspronkelijke upload — desktop-scherm-vullend zonder pixelatie.
+  // Fallback-keten naar progressief kleinere maten zodat ook materials
+  // zonder full-size opgeslagen een redelijke vergroting krijgen.
+  const lightboxSrc =
+    activeImage.sizes?.full?.url ??
+    activeImage.sizes?.['1536x1536']?.url ??
+    activeImage.sizes?.large?.url ??
+    activeImage.sourceUrl
+
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   // Filmstrip — toon eerste N thumbs; "+N"-overlay op laatste positie
   // wanneer er meer zijn. We laten de actieve hero zelf NIET in de
@@ -118,12 +130,18 @@ export function MaterialGallery({
   }, [allImages, maxThumbsVisible])
 
   return (
-    <div className={['mat-gallery', className].filter(Boolean).join(' ')}>
-      {/* Hero */}
-      <div className="mat-gallery-hero">
+    <>
+      <div className={['mat-gallery', className].filter(Boolean).join(' ')}>
+      {/* Hero — klikbaar → opent lightbox met vol-formaat variant. */}
+      <button
+        type="button"
+        className="mat-gallery-hero"
+        onClick={() => setLightboxOpen(true)}
+        aria-label={`Open ${heroAlt} in fullscreen viewer`}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={heroSrc} alt={heroAlt} />
-      </div>
+      </button>
 
       {/* Filmstrip — alleen als er meer dan één afbeelding is */}
       {allImages.length > 1 && (
@@ -167,6 +185,14 @@ export function MaterialGallery({
         </div>
       )}
     </div>
+
+    <ImageLightbox
+      open={lightboxOpen}
+      onClose={() => setLightboxOpen(false)}
+      src={lightboxSrc}
+      alt={heroAlt}
+    />
+  </>
   )
 }
 

@@ -6139,3 +6139,510 @@ a:focus-visible {
     display: block;
   }
 }
+
+/* ============================================================ */
+/* SESSIE 4 PART 2 — Detail-page rebuild                        */
+/* ============================================================ */
+/* Stylesheet-additions voor de nieuwe componenten op de        */
+/* /materials/[slug]-page:                                      */
+/*  - Gallery hero als <button> (reset default button-styling)  */
+/*  - Lightbox overlay                                          */
+/*  - GetInTouchCard (donkere CTA-card sidebar)                 */
+/*  - DownloadsCard (sidebar download-blok)                     */
+/*  - VideosSection + KeywordsSection + PrevNext (main column)  */
+/*  - Property-groep-kopjes binnen .mat-properties              */
+/*  - .mat-main wrapper voor 2-koloms detail-grid               */
+/*  - Section-headings: mat-section-title, mat-section-eyebrow  */
+/* ============================================================ */
+
+/* ------------------------------------------------------------
+   Gallery hero is nu een <button> — strip default browser-styling
+   ------------------------------------------------------------ */
+
+button.mat-gallery-hero {
+  /* Reset alle button-defaults zodat de hero-image vol-bleed blijft. */
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: var(--surface2);
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  cursor: zoom-in;
+  width: 100%;
+  display: block;
+}
+
+button.mat-gallery-hero:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   ImageLightbox — full-screen overlay viewer
+   ------------------------------------------------------------ */
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(13, 31, 45, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  animation: lightbox-fade-in 120ms ease-out;
+}
+
+@keyframes lightbox-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.lightbox-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.lightbox-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: min(1600px, 95vw);
+  max-height: 90vh;
+}
+
+@media (max-width: 720px) {
+  .lightbox-backdrop {
+    padding: var(--space-4);
+  }
+}
+
+/* ------------------------------------------------------------
+   Section headings binnen de main column
+   ------------------------------------------------------------ */
+
+.mat-section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  color: var(--navy);
+  line-height: 1.2;
+  margin: 0 0 var(--space-4) 0;
+}
+
+.mat-section-eyebrow {
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  margin: 0 0 var(--space-3) 0;
+}
+
+/* ------------------------------------------------------------
+   Main column wrapper + sample anchor section
+   ------------------------------------------------------------ */
+
+.mat-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0; /* voorkomt overflow in grid */
+}
+
+.mat-sample-section {
+  /* Anchor-target voor #sample-request scrolls vanuit de CTA. */
+  scroll-margin-top: 80px;
+}
+
+/* ------------------------------------------------------------
+   Properties — groep-kopjes binnen .mat-properties
+   ------------------------------------------------------------
+   De bestaande .mat-property-group / .mat-property-group-label
+   / .mat-property-group-tags / .mat-property-tag stijlen blijven
+   intact. We voegen alleen het gedrag toe dat meerdere groepen
+   onder elkaar netjes spacen.
+   ------------------------------------------------------------ */
+
+.mat-properties .mat-property-group + .mat-property-group {
+  margin-top: var(--space-6);
+}
+
+/* ------------------------------------------------------------
+   GetInTouchCard — donkere CTA-card in de sidebar
+   ------------------------------------------------------------ */
+
+.mat-getintouch {
+  background: var(--navy);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  box-shadow: var(--shadow-lg);
+}
+
+.mat-getintouch-eyebrow {
+  font-size: 0.625rem; /* 10px — kleiner dan reguliere eyebrow */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.mat-getintouch-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 var(--space-2) 0;
+  color: #ffffff;
+}
+
+.mat-getintouch-body {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.mat-getintouch-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  background: var(--green);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: var(--text-base);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background 120ms ease;
+}
+
+.mat-getintouch-primary:hover {
+  background: var(--green-mid);
+}
+
+.mat-getintouch-primary:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.mat-getintouch-secondary {
+  display: block;
+  text-align: center;
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: var(--space-2);
+  text-decoration: none;
+}
+
+.mat-getintouch-secondary:hover {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------
+   DownloadsCard — sidebar-blok met downloadbare resources
+   ------------------------------------------------------------ */
+
+.mat-downloads-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.mat-downloads-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.mat-downloads-card-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mat-downloads-card-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+
+.mat-downloads-card-row:last-child {
+  border-bottom: none;
+}
+
+.mat-downloads-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mat-downloads-card-label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-downloads-card-meta {
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+}
+
+.mat-downloads-card-cta {
+  flex-shrink: 0;
+  min-width: 78px;
+  text-align: center;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--navy);
+  background: var(--surface);
+  text-decoration: none;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.mat-downloads-card-cta:hover {
+  background: var(--surface2);
+  border-color: var(--navy-light);
+}
+
+.mat-downloads-card-cta:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   VideosSection
+   ------------------------------------------------------------ */
+
+.mat-videos {
+  /* margin via .mat-main gap */
+}
+
+.mat-video-tile {
+  display: block;
+  background: var(--navy);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  text-decoration: none;
+  color: #ffffff;
+  position: relative;
+  aspect-ratio: 16 / 9;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.mat-video-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.mat-video-tile--single {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mat-video-tile-play {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.mat-video-tile-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.mat-video-tile-title {
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: #ffffff;
+}
+
+.mat-video-tile-hint {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.mat-video-tile:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   KeywordsSection — clickable tag-pills onder de body
+   ------------------------------------------------------------ */
+
+.mat-keywords-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.mat-keywords-pill {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  background: var(--surface);
+  text-decoration: none;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.mat-keywords-pill:hover {
+  border-color: var(--navy-light);
+  color: var(--navy-light);
+}
+
+.mat-keywords-pill:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   PrevNextNavigation — vorige/volgende material
+   ------------------------------------------------------------ */
+
+.mat-prevnext {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.mat-prevnext-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1 1 0;
+  max-width: 45%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.mat-prevnext-link:hover {
+  border-color: var(--navy-light);
+  background: var(--surface2);
+}
+
+.mat-prevnext-link--right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.mat-prevnext-link:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+.mat-prevnext-arrow {
+  font-size: var(--text-xl);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.mat-prevnext-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mat-prevnext-eyebrow {
+  font-size: var(--text-eyebrow);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+}
+
+.mat-prevnext-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  /* Beperk lange titels tot 2 regels met ellipsis. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mat-prevnext-spacer {
+  flex: 1 1 0;
+  max-width: 45%;
+}
+
+@media (max-width: 720px) {
+  .mat-prevnext-link {
+    max-width: none;
+  }
+  .mat-prevnext-spacer {
+    display: none;
+  }
+}
