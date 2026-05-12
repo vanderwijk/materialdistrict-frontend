@@ -12,3 +12,8 @@ export { Logo } from './Logo'
 
 export { Footer } from './Footer'
 export { ClientNewsletterForm } from './ClientNewsletterForm'
+
+// Navigation primitives — sessie 3A batch 4
+export { HeaderNavItem } from './HeaderNavItem'
+export { MobileNavItem } from './MobileNavItem'
+export { FooterLink } from './FooterLink'

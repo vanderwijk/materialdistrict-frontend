@@ -19,7 +19,7 @@
 import type { Article, ArticleListItem } from '@/types/article'
 import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event, EventListItem } from '@/types/event'
-import type { Material, MaterialListItem } from '@/types/material'
+import type { Material, MaterialListItem, MaterialPublication } from '@/types/material'
 import type { Gallery, ImageSizeKey, MediaImage, MediaSize } from '@/types/media'
 import type { Talk, TalkListItem } from '@/types/talk'
 import type {
@@ -133,6 +133,37 @@ export function splitGallery(
 // --------------------------------------------------------------------
 
 /**
+ * Bouwt een publication-placeholder voor wanneer Johan's WP-meta nog
+ * geen `publication`-object levert. Zolang dat niet live is, behandelen
+ * we elk material als zichtbaar (`isOnline: true`) zodat overzichts-
+ * filtering geen materials onbedoeld verbergt — `isPlaceholder: true`
+ * markeert dat dit geen echte WP-data is.
+ *
+ * Zie `datacontract-proposal.md` §3 voor het uiteindelijke contract.
+ */
+function publicationFromMeta(
+  meta: WPMaterialRawResponse['meta'] | undefined,
+): MaterialPublication {
+  // `meta.publication` is `unknown` (catch-all index-signature). Runtime-check
+  // de shape voor we hem doorgeven; anders fallback op de placeholder.
+  const pub = meta?.publication
+  if (
+    pub &&
+    typeof pub === 'object' &&
+    'isOnline' in pub &&
+    typeof (pub as { isOnline: unknown }).isOnline === 'boolean'
+  ) {
+    return pub as MaterialPublication
+  }
+  return {
+    isOnline: true,
+    source: null,
+    validUntil: null,
+    isPlaceholder: true,
+  }
+}
+
+/**
  * Mapper voor lijst-pagina's. Geen brand-resolve, alleen featured image.
  *
  * @param raw - WP REST material response
@@ -157,6 +188,7 @@ export function mapMaterialListItem(
     featured: Boolean(raw.meta?.featured),
     date: raw.date,
     modified: raw.modified,
+    publication: publicationFromMeta(raw.meta),
   }
 }
 
@@ -210,6 +242,7 @@ export function mapMaterial(
 
     date: raw.date,
     modified: raw.modified,
+    publication: publicationFromMeta(raw.meta),
   }
 }
 

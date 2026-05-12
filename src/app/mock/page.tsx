@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Button,
   Badge,
@@ -407,7 +408,7 @@ export default function MockPage() {
                 Open Insider modal
               </Button>
               <InsiderGate
-                mode="modal"
+                variant="modal"
                 open={gateOpen}
                 onClose={() => setGateOpen(false)}
                 feature="compare"
@@ -473,12 +474,17 @@ function CodeBlock({ code }: { code: string }) {
 // ─────────────────────────────────────────────────────────────────────
 // DEV-ONLY: tijdelijk auth-panel
 //
-// Klein form om `useAuth().signIn(email, password)` te triggeren plus
-// uitlog-knop en een dump van de huidige user-state. Verwijderen zodra de
-// echte `/login`-pagina bestaat (sessie 11).
+// Klein form om login/refresh/logout direct via `/api/auth/*` te
+// triggeren, plus een dump van de huidige user-state. Verwijderen
+// zodra de echte `/login`-pagina bestaat (sessie 11).
+//
+// Login en refresh gaan NIET via AuthContext (die kent alleen
+// `signOut`). De server-side hydratie in `app/layout.tsx` haalt de
+// nieuwe user op zodra we `router.refresh()` aanroepen.
 // ─────────────────────────────────────────────────────────────────────
 function DevAuthPanel() {
-  const { user, isLoggedIn, isMember, signIn, signOut, refresh } = useAuth()
+  const { user, isLoggedIn, isMember, signOut } = useAuth()
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -488,13 +494,30 @@ function DevAuthPanel() {
     e.preventDefault()
     setError(null)
     setPending(true)
-    const result = await signIn(email, password)
-    setPending(false)
-    if (!result.ok) {
-      setError(result.error ?? 'Login failed')
-    } else {
-      setPassword('')
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as
+          | { message?: string }
+          | null
+        setError(body?.message ?? `Login failed (${res.status})`)
+      } else {
+        setPassword('')
+        router.refresh()
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Network error')
+    } finally {
+      setPending(false)
     }
+  }
+
+  function handleRefresh() {
+    router.refresh()
   }
 
   return (
@@ -541,7 +564,7 @@ function DevAuthPanel() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <Button variant="outline" size="sm" onClick={() => void refresh()}>
+              <Button variant="outline" size="sm" onClick={handleRefresh}>
                 Refresh
               </Button>
               <Button variant="danger" size="sm" onClick={() => void signOut()}>

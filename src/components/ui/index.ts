@@ -1,6 +1,30 @@
+/**
+ * UI components barrel
+ * ----------------------------------------------------------------------
+ * Centrale re-export voor alle UI-componenten:
+ *
+ *   import { Button, ContentCard, MaterialCard } from '@/components/ui'
+ *
+ * Volgorde aangehouden: layout-primitives, content, action, indicators,
+ * gates, dev-utility, form. De vroegere `FieldGroupProps`/`FieldRenderProps`
+ * type-exports zijn weggehaald omdat ze nergens werden geconsumed en in
+ * het onderliggende module nooit als public type bestonden.
+ */
+
+// --- Buttons & links ---
 export { Button } from './Button'
 export type { ButtonVariant, ButtonSize, ButtonProps } from './Button'
 
+export { ActionButton } from './ActionButton'
+export type { ActionButtonSize } from './ActionButton'
+
+export { IconButton } from './IconButton'
+export { TextLink } from './TextLink'
+
+// --- Tabs ---
+export { Tabs, TabItem } from './Tabs'
+
+// --- Indicators ---
 export { Badge } from './Badge'
 export type { BadgeVariant } from './Badge'
 
@@ -8,43 +32,48 @@ export { Tag } from './Tag'
 export type { ContentType } from './Tag'
 
 export { InsiderBadge } from './InsiderBadge'
+export { InsiderMark } from './InsiderMark'
 
 export { Skeleton } from './Skeleton'
 export type { SkeletonVariant } from './Skeleton'
 
 export { EmptyState } from './EmptyState'
 
+// --- Cards & content ---
 export { Card } from './Card'
 export type { CardProps } from './Card'
 
 export { ContentCard } from './ContentCard'
 export type { ContentCardThumbRatio } from './ContentCard'
 
-export { ActionButton } from './ActionButton'
-export type { ActionButtonSize } from './ActionButton'
-
+// --- Gates & preview ---
 export { InsiderGate } from './InsiderGate'
 export type { InsiderFeature } from './InsiderGate'
 
+export { BrandTierGate } from './BrandTierGate'
+
+export { PreviewModeIndicator } from './PreviewModeIndicator'
+
+// --- Filtering & nav ---
 export { ChannelBar, DEFAULT_CHANNELS, ALL_CHANNELS } from './ChannelBar'
 
 export { FilterSidebar } from './FilterSidebar'
 export type { FilterOption, FilterSection, FilterSelection } from './FilterSidebar'
 
 export { DetailActions } from './DetailActions'
-
 export { Pagination } from './Pagination'
 
+// --- Icons (re-export voor gemak) ---
 export { InsiderIcon } from './icons/InsiderIcon'
 
-// Sessie 4 — Materials components
+// --- Sessie 4 — Materials components ---
 export { MaterialCard } from './MaterialCard'
 export type { MaterialCardProps } from './MaterialCard'
 
 export { CompareBar } from './CompareBar'
 export type { CompareBarProps } from './CompareBar'
 
-// Form components
+// --- Form components ---
 export {
   FieldGroup,
   Input,
@@ -53,5 +82,9 @@ export {
   Checkbox,
   Radio,
   RadioGroup,
+  SubmitButton,
+  FormStateProvider,
+  useFormState,
+  useFieldValidation,
 } from './form'
-export type { FieldGroupProps, FieldRenderProps, SelectOption } from './form'
+export type { SelectOption } from './form'

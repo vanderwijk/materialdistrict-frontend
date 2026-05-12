@@ -149,10 +149,12 @@ export default async function MaterialsPage({
       </div>
 
       <JsonLd
-        data={buildBreadcrumbList([
-          { label: 'Home', url: '/' },
-          { label: 'Materials' },
-        ])}
+        data={[
+          buildBreadcrumbList([
+            { label: 'Home', url: '/' },
+            { label: 'Materials' },
+          ]),
+        ]}
       />
     </>
   )
