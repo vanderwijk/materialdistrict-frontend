@@ -1,8 +1,22 @@
 /**
- * Gedeelde basistypes
+ * Shared base types
  *
- * Voorlopige interfaces gebaseerd op project-brief en mockup.
- * Worden bijgewerkt in sessie 2 op basis van werkelijke API-response.
+ * Contains WordPress-core types (post, media, term) and the domain types for
+ * User & Membership. The membership shape follows the definitive datacontract
+ * confirmed during the Johan call of 12-05-2026 — see `datacontract-proposal.md`
+ * v0.2 and `vragen-johan.md` for the underlying decisions.
+ *
+ * API → frontend mapping:
+ *  - The WordPress API delivers snake_case (see datacontract); the frontend
+ *    uses camelCase. The mapper layer (`src/lib/api/mappers.ts`) handles the
+ *    translation so that domain types stay clean and don't double as an
+ *    API mirror.
+ *  - Fields like `is_placeholder` stay explicitly present — `true` while the
+ *    Stripe sync hasn't been completed across all brands; the UI may react
+ *    visually to this (dev banner) but production logic does not change.
+ *
+ * Status: contract definitive (Johan-call 12-05-2026). Future changes flow
+ * through this file and the mapper, not scattered across components.
  */
 
 import type { ReaderTier, ManufacturerTier } from '@/lib/config/membership'
@@ -40,7 +54,7 @@ export interface WPTerm {
   count?: number
 }
 
-/** Generiek WP post-shape — concrete types extenden dit. */
+/** Generic WP post shape — concrete types extend this. */
 export interface WPPostBase {
   id: number
   date: string
@@ -52,7 +66,7 @@ export interface WPPostBase {
   excerpt: WPRendered
   content: WPRendered
   featured_media: number
-  /** ACF velden komen via het `acf` veld in de REST response. */
+  /** ACF fields come through the `acf` property in the REST response. */
   acf?: Record<string, unknown>
   /** Embedded resources (media, terms) via `?_embed`. */
   _embedded?: {
@@ -62,47 +76,290 @@ export interface WPPostBase {
 }
 
 // ============================================================
-// User & membership
+// Membership — shared primitives
 // ============================================================
 
 /**
- * Membership-status van een reader-account.
+ * Stripe / WP subscription status — six values, one-to-one with Stripe.
  *
- * Wordt geleverd door `/md/v2/auth/me` (en `/auth/login`/`/auth/refresh`).
- * Het Insider/Stripe-systeem bestaat nog niet in WP — vandaar dat alle
- * accounts voorlopig `tier: 'free'` terugkrijgen. Zodra de Stripe-sync
- * is gebouwd vult WP `validUntil` en `cancelAtPeriodEnd` automatisch.
+ * Confirmed by Johan on 12-05-2026: WordPress passes the Stripe status
+ * through unchanged. The frontend does NOT compute whether a status maps
+ * to "is a member" — see the `is_member` field, which is calculated by
+ * WordPress (rule: "WordPress computes, frontend reads").
+ *
+ *  - `inactive`  — no active subscription (free users, never subscribed)
+ *  - `trialing`  — in a trial period; treated as member by WordPress
+ *  - `active`    — paying member, everything works
+ *  - `past_due`  — Stripe payment failed; subscription still considered
+ *                   active by WordPress (member access kept) while Stripe
+ *                   retries. UI may show a warning banner.
+ *  - `canceled`  — cancellation processed; access ended
+ *  - `unpaid`    — Stripe gave up retrying; access ended
+ *
+ * Note: the `legacy` value (for grandfathered free brands without a Stripe
+ * link) lives ONLY on brand-level membership, never on user-level. See the
+ * brand status enum in `vragen-johan.md` (legacy-conversion vragen 10-13)
+ * for that separate field.
  */
-export interface UserMembership {
-  tier: ReaderTier
-  /** ISO-datum van het einde van de huidige factureringsperiode. */
-  validUntil?: string
-  cancelAtPeriodEnd: boolean
-}
+export type MembershipStatus =
+  | 'inactive'
+  | 'trialing'
+  | 'active'
+  | 'past_due'
+  | 'canceled'
+  | 'unpaid'
+
+/** Billing interval for Insider (free has `null`). */
+export type BillingInterval = 'monthly' | 'annual'
+
+// ============================================================
+// Reader Insider Membership (per user)
+// ============================================================
 
 /**
- * De geauthenticeerde gebruiker zoals de frontend hem kent.
+ * Reader membership as delivered by `/auth/me` → `user.membership`.
  *
- * Mapping van WP `/md/v2/auth/me`-payload naar dit shape gebeurt in
- * `src/lib/auth/mappers.ts`. Houd snake_case strict aan WP-kant en
- * camelCase aan deze kant.
+ * The UI almost always only uses `isInsider`. The other fields are for
+ * account pages (session 11) and dashboard (Phase 2) — billing status,
+ * cancellation notice, payment-issue warning.
+ *
+ * Derived fields (notably `isInsider`) are computed by WordPress and read
+ * by the frontend, never recomputed here. This matches the architecture
+ * rule "Derived fields — source of truth" (see `architecture-rules.md`).
+ */
+export interface Membership {
+  /** Reader tier. */
+  tier: ReaderTier
+  /**
+   * Convenience field, computed by WordPress.
+   * `true` when the user has Insider access right now, including during
+   * `trialing` and `past_due`. Frontend uses this directly for gating
+   * decisions and never recomputes from `status`.
+   */
+  isInsider: boolean
+  /** Subscription status (one of six Stripe values). */
+  status: MembershipStatus
+  /** `null` for free users. */
+  billingInterval: BillingInterval | null
+  /** ISO string. When Insider access expires. `null` for free users. */
+  validUntil: string | null
+  /** Canceled, runs until `validUntil`. */
+  cancelAtPeriodEnd: boolean
+  /** `true` while the Stripe link isn't live — UI may show a placeholder banner. */
+  isPlaceholder: boolean
+}
+
+// ============================================================
+// Brand Membership (per brand, per user)
+// ============================================================
+
+/**
+ * Quota sentinel for unlimited publications (Partner tier).
+ * The datacontract uses `-1`; this constant exists for readability in code.
+ */
+export const UNLIMITED_PUBLICATIONS = -1
+
+/**
+ * Brand membership as delivered by `/auth/me` → `user.brands[]`.
+ *
+ * A user can manage multiple brands (think: agency with several manufacturer
+ * accounts). Each element in the array is one brand with its own tier and
+ * status.
+ *
+ * Field values:
+ *  - `tier`              — `'free' | 'basis' | 'plus' | 'partner'`
+ *  - `publicationQuota`  — included slots: 0 (free), 5 (basis),
+ *                          15 (plus), `UNLIMITED_PUBLICATIONS` (-1) for partner
+ *  - `publicationsUsed`  — number of online materials using a tier slot
+ *                          (excludes standalone €250-per-year publications)
+ *
+ * Both `publicationQuota` and `publicationsUsed` are computed by WordPress
+ * and delivered ready-to-use. The frontend does not recompute tier rules.
+ */
+export interface BrandMembership {
+  /** WP post ID of the brand. */
+  id: number
+  /** URL slug for routing. */
+  slug: string
+  /** Display name. */
+  name: string
+  /** Brand tier. */
+  tier: ManufacturerTier
+  /** Subscription status (one of six Stripe values). */
+  status: MembershipStatus
+  /** ISO string. When the brand subscription expires. `null` for free. */
+  validUntil: string | null
+  /** Canceled, runs until `validUntil`. */
+  cancelAtPeriodEnd: boolean
+  /** Included publication slots. `UNLIMITED_PUBLICATIONS` (-1) for partner. */
+  publicationQuota: number
+  /** Number of online materials using a tier slot (excl. standalone). */
+  publicationsUsed: number
+  /** `true` while the Stripe link isn't live. */
+  isPlaceholder: boolean
+}
+
+// ============================================================
+// User
+// ============================================================
+
+/**
+ * The logged-in user as delivered by `/auth/me` and `/auth/login`.
+ *
+ * `membership` is always present (default: free / inactive).
+ * `brands` is an array — empty if the user manages no brand.
+ *
+ * Identity fields (`profession`, `company`) are optional: WordPress has
+ * them in user meta, but not every user has filled them in.
  */
 export interface User {
   id: number
   email: string
   name: string
-  displayName?: string
-  firstName?: string
-  lastName?: string
-  avatarUrl?: string
+  displayName: string
+  firstName: string | null
+  lastName: string | null
+  /** WP roles — most users have `['subscriber']`. */
   roles: string[]
-  profession?: string
-  company?: string
-  membership: UserMembership
-  /** Aanwezig als de gebruiker tegelijk een brand-account heeft. (Toekomst.) */
-  manufacturerTier?: ManufacturerTier
-  /** Brand-id wanneer dit account aan een merk is gekoppeld. (Toekomst.) */
-  brandId?: number
+  /** Gravatar or custom upload URL. */
+  avatarUrl: string | null
+  /** Profile field — not always filled. */
+  profession: string | null
+  /** Profile field — not always filled. */
+  company: string | null
+
+  /** Reader membership (always present, default free/inactive). */
+  membership: Membership
+
+  /** Brand memberships — empty array if the user manages no brand. */
+  brands: BrandMembership[]
+}
+
+// ============================================================
+// Auth response wrapper
+// ============================================================
+
+/**
+ * Full shape of `POST /wp-json/md/v2/auth/login` AND `GET /wp-json/md/v2/auth/me`.
+ *
+ * Both endpoints return the same shape: token + expiry + full user object.
+ * The login endpoint includes them after a successful credential check;
+ * the `/auth/me` endpoint includes a refreshed token+expiry whenever it is
+ * called with a still-valid token (so the Next.js server route can quietly
+ * extend the cookie on activity if it wants to).
+ *
+ * Token + expiry sit on the response so the Next.js server route knows
+ * exactly when the cookie should expire. The cookie itself stores only
+ * the token; these fields are for diagnostics and optional refresh logic.
+ */
+export interface AuthMeResponse {
+  /** JWT token. */
+  token: string
+  /** Unix timestamp (seconds) when the token expires. */
+  expiresAt: number
+  user: User
+}
+
+/**
+ * Alias for the same shape returned by `/auth/login`.
+ *
+ * Reads more naturally in code that explicitly deals with the login flow.
+ * Single source of truth for the user shape — extending one extends both.
+ */
+export type AuthLoginResponse = AuthMeResponse
+
+/**
+ * Stable error codes emitted by `/wp-json/md/v2/auth/*` endpoints.
+ *
+ * The first three are confirmed by Johan for the login flow (see
+ * `vragen-johan.md` answer 6 and `wordpress-instructions-auth.md`).
+ *
+ * The last two are RESERVED for the password-reset flow and will be
+ * confirmed by Johan when implementing `forgot-password` / `reset-password`
+ * per `wordpress-instructions-auth.md`. They are listed here now so the
+ * frontend can branch on them in advance and the type doesn't need to
+ * change when Johan implements those endpoints.
+ *
+ *  - `md_auth_invalid_request`  — required field missing (e.g. no email)
+ *  - `md_auth_invalid_email`    — email format invalid
+ *  - `md_auth_failed`           — email/password combo wrong
+ *  - `md_auth_invalid_token`    — reset token unknown, expired, or already used
+ *  - `md_auth_weak_password`    — new password fails server-side strength check
+ */
+export type AuthErrorCode =
+  | 'md_auth_invalid_request'
+  | 'md_auth_invalid_email'
+  | 'md_auth_failed'
+  | 'md_auth_invalid_token'
+  | 'md_auth_weak_password'
+
+/**
+ * Error response shape from `/wp-json/md/v2/auth/*` endpoints.
+ *
+ * Matches the standard WordPress error envelope. The frontend renders
+ * `message` directly to the user (English copy lives in WordPress) and
+ * uses `code` for UI branching (e.g. focus the relevant input).
+ */
+export interface AuthErrorResponse {
+  code: AuthErrorCode
+  message: string
+  data: {
+    /** HTTP status code, mirrored in `data` per WP convention. */
+    status: number
+  }
+}
+
+// ============================================================
+// WordPress raw response shapes (snake_case)
+// ============================================================
+
+/**
+ * Raw response from `POST /wp-json/md/v2/auth/login` and
+ * `GET /wp-json/md/v2/auth/me`.
+ *
+ * Snake_case, exactly as WordPress emits it. The mapper layer
+ * (`src/lib/api/mappers.ts` → `mapAuthMeResponse`) converts this into
+ * the camelCase `AuthMeResponse` domain type.
+ *
+ * Keeping the raw shape colocated with the domain type so the contract
+ * between WordPress and the mapper is visible in one place.
+ */
+export interface WPAuthMeRawResponse {
+  token: string
+  expires_at: number
+  user: {
+    id: number
+    email: string
+    name: string
+    display_name: string
+    first_name: string | null
+    last_name: string | null
+    roles: string[]
+    avatar_url: string | null
+    profession: string | null
+    company: string | null
+    membership: {
+      tier: ReaderTier
+      is_insider: boolean
+      status: MembershipStatus
+      billing_interval: BillingInterval | null
+      valid_until: string | null
+      cancel_at_period_end: boolean
+      is_placeholder: boolean
+    }
+    connected_brands: Array<{
+      id: number
+      slug: string
+      name: string
+      tier: ManufacturerTier
+      status: MembershipStatus
+      valid_until: string | null
+      cancel_at_period_end: boolean
+      publication_quota: number
+      publications_used: number
+      is_placeholder: boolean
+    }>
+  }
 }
 
 // ============================================================

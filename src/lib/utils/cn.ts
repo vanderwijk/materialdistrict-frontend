@@ -1,11 +1,13 @@
 /**
- * Combineer class names. Falsy waarden (undefined, false, null, '') worden weggefilterd.
- * Lichtgewicht alternatief voor `clsx` — geen extra dependency nodig.
+ * cn — class-name combiner. Filtert falsy waarden en joint met spatie.
  *
- * @example
- *   cn('btn', 'btn-primary', isActive && 'is-active')
- *   // => "btn btn-primary is-active"
+ * Accepteert alles. Wat een string is wordt gebruikt; al het andere
+ * (false, null, undefined, 0, ReactNode, etc.) wordt gefilterd. Dit maakt
+ * patterns als `cn('btn', isActive && 'is-active')` of
+ * `cn('field', icon && 'has-icon')` veilig, ongeacht het type van `icon`.
  */
-export function cn(...classes: Array<string | false | null | undefined>): string {
-  return classes.filter(Boolean).join(' ')
+export function cn(...args: unknown[]): string {
+  return args
+    .filter((x): x is string => typeof x === 'string' && x.length > 0)
+    .join(' ')
 }

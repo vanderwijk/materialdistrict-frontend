@@ -1,88 +1,76 @@
-import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { WP_API_URL } from '@/lib/api/wordpress'
-import {
-  SESSION_COOKIE,
-  getSessionCookieOptions,
-  mapWPUser,
-  type WPAuthLoginResponse,
-  type WPRestError,
-} from '@/lib/auth'
-
 /**
  * POST /api/auth/login
  *
  * Body: { email: string, password: string }
  *
- * Proxyt naar WP `/md/v2/auth/login`. Bij success:
- *   - JWT als httpOnly cookie op het Next.js-domein
- *   - response body bevat alleen de mapped User (nooit de JWT)
+ * On success:
+ *   - sets the HttpOnly auth cookie
+ *   - returns 200 with `{ user }` so the client can hydrate the UI
+ *     without an extra round trip to /api/auth/me
+ *
+ * Error responses use the shape `{ code, message }`:
+ *   - 400 md_invalid_request  — body shape is wrong (no WP call made)
+ *   - WP md_auth_* errors are forwarded verbatim with the original status
+ *   - 500 md_internal_error   — unexpected backend failure
+ *
+ * The cookie is the single source of truth for token expiry; we do not
+ * echo `expiresAt` back to the client.
  */
-export async function POST(request: Request) {
-  let body: { email?: unknown; password?: unknown }
+
+import { NextResponse, type NextRequest } from 'next/server'
+import { loginUser, WordPressAuthError } from '@/lib/api/wordpress'
+import { setAuthCookie } from '@/lib/auth/cookies'
+
+interface LoginBody {
+  email: string
+  password: string
+}
+
+function parseLoginBody(raw: unknown): LoginBody | null {
+  if (!raw || typeof raw !== 'object') return null
+  const b = raw as Record<string, unknown>
+  if (typeof b.email !== 'string' || typeof b.password !== 'string') return null
+  if (b.email.length === 0 || b.password.length === 0) return null
+  return { email: b.email, password: b.password }
+}
+
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  let raw: unknown
   try {
-    body = await request.json()
+    raw = await request.json()
   } catch {
-    return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 })
-  }
-
-  const email = typeof body.email === 'string' ? body.email.trim() : ''
-  const password = typeof body.password === 'string' ? body.password : ''
-
-  if (!email || !password) {
     return NextResponse.json(
-      { error: 'Email and password are required.' },
+      { code: 'md_invalid_request', message: 'Email and password are required.' },
       { status: 400 },
     )
   }
 
-  let wpRes: Response
+  const body = parseLoginBody(raw)
+  if (!body) {
+    return NextResponse.json(
+      { code: 'md_invalid_request', message: 'Email and password are required.' },
+      { status: 400 },
+    )
+  }
+
   try {
-    wpRes = await fetch(`${WP_API_URL}/md/v2/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-      cache: 'no-store',
-    })
-  } catch {
-    return NextResponse.json(
-      { error: 'Could not reach the authentication service.' },
-      { status: 502 },
-    )
-  }
-
-  if (!wpRes.ok) {
-    let payload: WPRestError = {}
-    try {
-      payload = (await wpRes.json()) as WPRestError
-    } catch {
-      // ignore — we vallen terug op een generieke melding
+    const auth = await loginUser(body.email, body.password)
+    await setAuthCookie(auth.token, auth.expiresAt)
+    return NextResponse.json({ user: auth.user }, { status: 200 })
+  } catch (err) {
+    if (err instanceof WordPressAuthError) {
+      return NextResponse.json(
+        { code: err.code, message: err.message },
+        { status: err.status },
+      )
     }
-    const message =
-      payload.message ||
-      (wpRes.status === 401 ? 'Invalid credentials.' : 'Login failed.')
-    return NextResponse.json({ error: message }, { status: wpRes.status })
-  }
-
-  const data = (await wpRes.json()) as WPAuthLoginResponse
-  if (!data?.token || !data?.user) {
+    console.error('[api/auth/login]', err)
     return NextResponse.json(
-      { error: 'Unexpected response from authentication service.' },
-      { status: 502 },
+      {
+        code: 'md_internal_error',
+        message: 'Something went wrong. Please try again.',
+      },
+      { status: 500 },
     )
   }
-
-  const user = mapWPUser(data.user)
-
-  // Cookie maxAge afstemmen op de echte JWT-expiry (in seconden)
-  const nowSec = Math.floor(Date.now() / 1000)
-  const lifetime = Math.max(60, data.expires_at - nowSec)
-
-  const store = await cookies()
-  store.set(SESSION_COOKIE, data.token, getSessionCookieOptions(lifetime))
-
-  return NextResponse.json({ user })
 }

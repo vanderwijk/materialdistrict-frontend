@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Search } from 'lucide-react'
+import { IconSearch } from './icons'
 import { cn } from '@/lib/utils/cn'
 
 interface EmptyStateProps {
@@ -38,7 +38,7 @@ export function EmptyState({
   return (
     <div className={cn('empty-state', className)}>
       <div className="empty-state-icon" aria-hidden="true">
-        {icon ?? <Search size={22} strokeWidth={2} />}
+        {icon ?? <IconSearch size={22} strokeWidth={2} />}
       </div>
       <div className="empty-state-title">{title}</div>
       {description && <div className="empty-state-desc">{description}</div>}

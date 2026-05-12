@@ -27,12 +27,17 @@
  * Base URL van de WordPress REST API.
  * In productie: `https://materialdistrict.com/wp-json`
  *
- * In `.env.local` moet `WP_API_URL` zonder trailing slash staan.
- * Als de env-var ontbreekt, vallen we terug op de publieke productie-API.
+ * In .env.local moet WP_API_URL ZONDER trailing slash staan.
  */
 export const WP_API_URL = (() => {
   const url = process.env.WP_API_URL
-  if (!url) return 'https://materialdistrict.com/wp-json'
+  if (!url) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Missing required env var: WP_API_URL')
+    }
+    // Dev fallback — voorkomt crash tijdens lokaal opstarten zonder env
+    return 'https://materialdistrict.com/wp-json'
+  }
   return url.replace(/\/$/, '')
 })()
 
@@ -511,11 +516,14 @@ export async function getMaterialBySlug(
 // --------------------------------------------------------------------
 
 /**
- * Haal alle attachments van een post op, gesorteerd op upload-volgorde.
+ * Haal alle attachments van een post op in chronologische upload-volgorde.
  *
- * De huidige WP REST-configuratie accepteert geen `orderby=menu_order` op
- * `/wp/v2/media`; die request faalt met 400. Daarom gebruiken we `date asc`,
- * wat overeenkomt met de gewenste fallback-volgorde voor bestaande galleries.
+ * De publieke WP REST API op materialdistrict.com accepteert GEEN
+ * `orderby=menu_order` op `/wp/v2/media` (400 `rest_invalid_param`).
+ * Daarom gebruiken we de dichtstbijzijnde stabiele fallback: `date asc`
+ * (oudste upload eerst). Als een WP-omgeving later alsnog `menu_order`
+ * exposeert in het response-payload, sorteren we daar client-side nog
+ * defensief op vóór de datum.
  *
  * Default `per_page=100` — galleries worden zelden groter; pagination
  * voor attachments is overkill.
@@ -524,13 +532,30 @@ export async function getAttachmentsForPost(
   postId: number,
   params?: { perPage?: number },
 ): Promise<WPMediaResponse[]> {
-  return wpFetch<WPMediaResponse[]>('/wp/v2/media', {
+  const items = await wpFetch<WPMediaResponse[]>('/wp/v2/media', {
     params: {
       parent: postId,
       per_page: params?.perPage ?? 100,
       orderby: 'date',
       order: 'asc',
     },
+  })
+
+  return items.sort((left, right) => {
+    const leftMenuOrder = left.menu_order ?? 0
+    const rightMenuOrder = right.menu_order ?? 0
+
+    if (leftMenuOrder !== rightMenuOrder) {
+      return leftMenuOrder - rightMenuOrder
+    }
+
+    const leftDate = Date.parse(left.date)
+    const rightDate = Date.parse(right.date)
+    if (leftDate !== rightDate) {
+      return leftDate - rightDate
+    }
+
+    return left.id - right.id
   })
 }
 
@@ -831,12 +856,223 @@ export async function getTalkBySlug(
 }
 
 // --------------------------------------------------------------------
-// User / authenticatie — wacht op custom membership-uitleg
+// User / authentication
 // --------------------------------------------------------------------
-// BLOCKER (sessie 2): we wachten op de uitleg van het custom membership-
-// systeem voordat we /wp/v2/users/me of een eventueel custom endpoint
-// aanroepen. De `User`-interface in `src/types/shared.ts` blijft
-// onaangepast tot die info binnen is.
+//
+// Custom auth endpoints under `/wp-json/md/v2/auth/*`, confirmed during
+// the Johan call of 12-05-2026. No third-party JWT plugin — WordPress
+// implements its own endpoints, consistent with the rest of the MD API.
+//
+// Endpoints covered here:
+//   POST /wp-json/md/v2/auth/login            → loginUser
+//   GET  /wp-json/md/v2/auth/me               → getCurrentUser
+//   POST /wp-json/md/v2/auth/forgot-password  → forgotPassword
+//   POST /wp-json/md/v2/auth/reset-password   → resetPassword
+//
+// All four endpoints use a stable error envelope `{ code, message, data:
+// { status } }` with `md_auth_*` codes — see `AuthErrorCode` in
+// `@/types/shared` and the contract in `wordpress-instructions-auth.md`.
+//
+// These functions never touch the cookie. The Next.js route handlers
+// in `src/app/api/auth/*` call these functions and then call the cookie
+// helpers in `src/lib/auth/cookies.ts`. Strict separation: this file
+// is the WordPress client, route handlers orchestrate.
 
-// TODO sessie 2-vervolg: getCurrentUser() implementeren tegen het
-// juiste endpoint met de juiste tier-uitlees-logica.
+import type {
+  AuthErrorCode,
+  AuthErrorResponse,
+  AuthMeResponse,
+  WPAuthMeRawResponse,
+} from '@/types/shared'
+import { mapAuthMeResponse } from './mappers'
+
+/**
+ * Error thrown when WordPress returns an `md_auth_*` error envelope.
+ *
+ * Separate from the generic `WordPressError` so route handlers can branch:
+ *   - `WordPressAuthError` → forward `code` + `message` to the client with
+ *     the original HTTP status. These are expected, user-facing errors.
+ *   - `WordPressError` (other) → log + return a generic 500 to the client.
+ *     These indicate a backend problem, not a user mistake.
+ */
+export class WordPressAuthError extends WordPressError {
+  constructor(
+    public readonly code: AuthErrorCode,
+    message: string,
+    status: number,
+    endpoint: string,
+    body?: unknown,
+  ) {
+    super(message, status, endpoint, body)
+    this.name = 'WordPressAuthError'
+  }
+}
+
+/**
+ * Type guard: does an unknown payload look like the standard auth-error
+ * envelope `{ code: md_auth_*, message, data: { status } }`?
+ */
+function isAuthErrorResponse(payload: unknown): payload is AuthErrorResponse {
+  if (!payload || typeof payload !== 'object') return false
+  const p = payload as Record<string, unknown>
+  if (typeof p.code !== 'string' || !p.code.startsWith('md_auth_')) return false
+  if (typeof p.message !== 'string') return false
+  const data = p.data as Record<string, unknown> | undefined
+  if (!data || typeof data.status !== 'number') return false
+  return true
+}
+
+/**
+ * Internal fetch wrapper for `/wp-json/md/v2/auth/*` endpoints.
+ *
+ * Differs from `wpFetch` in three ways:
+ *  1. Never sends the WP application-password Basic-Auth header — auth
+ *     endpoints either use no auth (login, forgot, reset) or a Bearer
+ *     token (me). Application passwords have no role here.
+ *  2. Always uses `cache: 'no-store'` — user-specific data.
+ *  3. Parses `md_auth_*`-shaped error bodies into `WordPressAuthError`
+ *     so route handlers can forward `code` + `message` cleanly.
+ *
+ * Returns the parsed JSON body on success, throws `WordPressAuthError`
+ * (for `md_auth_*` responses) or `WordPressError` (for everything else)
+ * on failure.
+ */
+async function wpAuthFetch<T>(
+  path: string,
+  init: {
+    method: 'GET' | 'POST'
+    bearer?: string
+    body?: unknown
+  },
+): Promise<T> {
+  const url = `${WP_API_URL}${path.startsWith('/') ? path : `/${path}`}`
+
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+  }
+  if (init.body !== undefined) {
+    headers['Content-Type'] = 'application/json'
+  }
+  if (init.bearer) {
+    headers.Authorization = `Bearer ${init.bearer}`
+  }
+
+  const res = await fetch(url, {
+    method: init.method,
+    headers,
+    body: init.body !== undefined ? JSON.stringify(init.body) : undefined,
+    cache: 'no-store',
+  })
+
+  if (!res.ok) {
+    let payload: unknown
+    try {
+      payload = await res.json()
+    } catch {
+      // body not JSON — fall through to generic error
+    }
+    if (isAuthErrorResponse(payload)) {
+      throw new WordPressAuthError(
+        payload.code,
+        payload.message,
+        res.status,
+        url,
+        payload,
+      )
+    }
+    throw new WordPressError(
+      `WordPress auth fetch failed (${res.status} ${res.statusText})`,
+      res.status,
+      url,
+      payload,
+    )
+  }
+
+  return (await res.json()) as T
+}
+
+/**
+ * Log in with email + password.
+ *
+ * On success WordPress returns the JWT plus the full user object in one
+ * response, so no follow-up call to `/auth/me` is needed.
+ *
+ * @throws WordPressAuthError for `md_auth_invalid_request`,
+ *         `md_auth_invalid_email`, `md_auth_failed`.
+ * @throws WordPressError for unexpected backend failures.
+ */
+export async function loginUser(
+  email: string,
+  password: string,
+): Promise<AuthMeResponse> {
+  const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/login', {
+    method: 'POST',
+    body: { email, password },
+  })
+  return mapAuthMeResponse(raw)
+}
+
+/**
+ * Fetch the current user using the JWT from the auth cookie.
+ *
+ * Called server-side during layout render to hydrate the AuthContext.
+ * Also called by `/api/auth/me` route handler for client-driven refreshes.
+ *
+ * @param token JWT from the HttpOnly cookie
+ * @throws WordPressAuthError when the token is rejected (the caller
+ *         should clear the cookie in that case).
+ * @throws WordPressError for unexpected backend failures.
+ */
+export async function getCurrentUser(token: string): Promise<AuthMeResponse> {
+  const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/me', {
+    method: 'GET',
+    bearer: token,
+  })
+  return mapAuthMeResponse(raw)
+}
+
+/**
+ * Request a password-reset email.
+ *
+ * WordPress always returns a neutral 200 response regardless of whether
+ * the email exists in the database — this prevents user enumeration.
+ * Rate limiting (3 requests per email per hour) is enforced by WordPress.
+ *
+ * We return `void`: the only thing the caller cares about is "did the
+ * request go through without a server error". The user-facing message
+ * is the same in every case.
+ *
+ * @throws WordPressError for unexpected backend failures (5xx). These
+ *         should not be exposed to the user verbatim; the route handler
+ *         shows a generic error message instead.
+ */
+export async function forgotPassword(email: string): Promise<void> {
+  await wpAuthFetch<{ message: string }>('/md/v2/auth/forgot-password', {
+    method: 'POST',
+    body: { email },
+  })
+}
+
+/**
+ * Complete a password reset using the one-time token from the reset
+ * email link.
+ *
+ * WordPress validates the token (must exist, must not be expired, must
+ * not have been used) and checks the new password against the
+ * server-side strength rules before updating the user.
+ *
+ * @throws WordPressAuthError with code `md_auth_invalid_token` when the
+ *         token is unknown, expired, or already used.
+ * @throws WordPressAuthError with code `md_auth_weak_password` when the
+ *         new password fails the server-side strength check.
+ * @throws WordPressError for unexpected backend failures.
+ */
+export async function resetPassword(
+  token: string,
+  newPassword: string,
+): Promise<void> {
+  await wpAuthFetch<{ message: string }>('/md/v2/auth/reset-password', {
+    method: 'POST',
+    body: { token, new_password: newPassword },
+  })
+}

@@ -1,27 +1,31 @@
 /**
  * FacetWP types
  * ----------------------------------------------------------------------
- * Gemodelleerd op de werkelijke FacetWP-config-export uit
- * `facetwp.json` (sessie 2 verkenning, 07-05-2026).
+ * Gemodelleerd op het door Johan opgeleverde contract `FacetWP materials
+ * contract` (sessie 4, 12-05-2026) — inclusief live-verifieerde request-
+ * en response-shapes.
  *
- * Alle filterende facets zijn op `material` van toepassing en zijn
- * van het type `checkboxes` met source `tax/<naam>`.
+ * Belangrijke verschillen t.o.v. de sessie-2-modellering (gerectificeerd):
+ *  - Body wordt INGEPAKT in een top-level `data`-object
+ *  - Response top-level is `results: number[]` (post-IDs), niet `template`
+ *  - Response `facets` is een object met getypte facet-results, niet HTML
+ *  - Sort-waarden zijn `newest` / `oldest` / `az` / `za` (geen `_first`)
+ *  - Request stuurt ALTIJD alle 18 facet-keys (lege arrays voor ongeselecteerd)
+ *
+ * Alle filterende facets zijn op `material` van toepassing.
  *
  * Brand/article/talk/event/book hebben (nog) geen FacetWP-config.
  */
 
 // --------------------------------------------------------------------
-// Facet-namen (literal union — exacte slugs uit facetwp.json)
+// Facet-namen (literal union — exacte slugs uit Johan's contract)
 // --------------------------------------------------------------------
 
 /**
  * Filterende facets — material taxonomieën die de gebruiker kan aan/uit zetten.
- * Allemaal `checkboxes`, allemaal `operator: "and"`.
- * De 16 eigenschap-facets staan op `ghosts: yes` (toon ook lege opties).
  */
 export type MaterialFacetName =
   // Categorisering
-  | 'categories'
   | 'material_category'
   // Visueel
   | 'glossiness'
@@ -49,141 +53,28 @@ export type MaterialSearchFacetName = 'search_materials'
 /** Sortering. */
 export type MaterialSortFacetName = 'order'
 
-/** Sort-opties zoals geconfigureerd in FacetWP. */
-export type MaterialSortValue =
-  | 'newest_first'
-  | 'oldest_first'
-  | 'a_z'
-  | 'z_a'
+/**
+ * Sort-opties — exact zoals door FacetWP geretourneerd in
+ * `facets.order.choices[].value` (Johan's voorbeeld-response).
+ */
+export type MaterialSortValue = 'newest' | 'oldest' | 'az' | 'za'
 
-/** Pagers. */
-export type MaterialPagerFacetName = 'results' | 'pagination'
-
-/** Alle bekende facet-namen (filter + zoek + sort + pagers). */
+/** Alle bekende facet-namen — bruikbaar als union voor record-keys. */
 export type AnyMaterialFacetName =
   | MaterialFacetName
   | MaterialSearchFacetName
   | MaterialSortFacetName
-  | MaterialPagerFacetName
-
-// --------------------------------------------------------------------
-// Selectie (wat de UI naar de API stuurt)
-// --------------------------------------------------------------------
 
 /**
- * Door de gebruiker geselecteerde facet-waarden.
- * Voor checkboxes: array van term-slugs (bv. `["plastics", "naturals"]`).
- * Voor search: één string in een array (FacetWP-conventie).
- * Voor sort: één van de `MaterialSortValue` waarden in een array.
+ * Volledige lijst van alle facet-keys die ALTIJD in de request worden
+ * meegestuurd. Volgorde komt overeen met Johan's voorbeeld-payload.
  *
- * Lege arrays (geen selectie) horen niet in de payload — laat ze weg.
+ * Conventie uit het contract: lege arrays voor facets zonder selectie,
+ * niet weglaten.
  */
-export type FacetSelection = {
-  [K in MaterialFacetName]?: string[]
-} & {
-  [K in MaterialSearchFacetName]?: [string]
-} & {
-  [K in MaterialSortFacetName]?: [MaterialSortValue]
-}
-
-// --------------------------------------------------------------------
-// FacetWP API request/response shape
-// --------------------------------------------------------------------
-
-/**
- * Body voor POST /facetwp/v1/fetch
- *
- * `facets` — geselecteerde waarden per facet
- * `query_args` — optioneel; FacetWP staat hier WP_Query-args toe
- * `paged` — paginanummer (1-indexed)
- * `extras` — selecteer welke extras meegeven worden (counts etc.)
- */
-export interface FacetWPFetchRequest {
-  facets: FacetSelection
-  query_args?: {
-    post_type?: string
-    posts_per_page?: number
-    paged?: number
-    s?: string
-  }
-  paged?: number
-  extras?: {
-    sort?: string
-    pager?: boolean
-    counts?: boolean
-  }
-}
-
-/**
- * FacetWP-response.
- *
- * `template` — gerenderd HTML van het FacetWP-template (gebruiken we niet;
- * wij renderen zelf in Next). Maar het veld is altijd aanwezig.
- *
- * `facets` — voor elke facet: het bijgewerkte HTML van de checkbox-lijst
- * MET counts per term, plus de ruwe term-data.
- *
- * `settings` — per facet de actuele opties (post-filter), bruikbaar om
- * de FilterSidebar te updaten.
- *
- * `pager` — pagination state.
- *
- * Belangrijk: deze interface is een conservatieve modellering.
- * FacetWP retourneert meer velden (sort_html, extras, etc.) — voeg
- * pas toe wanneer de UI ze gebruikt.
- */
-export interface FacetWPFetchResponse {
-  template: string
-  settings: {
-    [facetName: string]: FacetWPFacetSettings
-  }
-  facets?: {
-    [facetName: string]: string // gerenderd HTML
-  }
-  pager?: FacetWPPager
-  // FacetWP retourneert ook query_args, sql, etc. — niet getypt tot we ze gebruiken
-}
-
-/** Per-facet instelling/state na fetch. */
-export interface FacetWPFacetSettings {
-  facet: {
-    name: string
-    label: string
-    type: string
-    [k: string]: unknown
-  }
-  selected_values?: string[]
-  /** Beschikbare opties met huidige counts. */
-  choices?: FacetWPChoice[]
-}
-
-export interface FacetWPChoice {
-  value: string // term-slug
-  label: string // weergavenaam
-  count: number
-  /** Wanneer 0 én ghosts=yes: tonen als uitgegrijsd. */
-  is_ghost?: boolean
-  depth?: number
-  parent_id?: number
-}
-
-export interface FacetWPPager {
-  page: number
-  per_page: number
-  total_rows: number
-  total_pages: number
-}
-
-// --------------------------------------------------------------------
-// Helpers
-// --------------------------------------------------------------------
-
-/**
- * Lijst van alle filterende facet-namen — bruikbaar voor de FilterSidebar
- * om dynamisch alle filters te renderen.
- */
-export const MATERIAL_FILTER_FACETS: readonly MaterialFacetName[] = [
-  'categories',
+export const ALL_MATERIAL_FACET_KEYS: readonly AnyMaterialFacetName[] = [
+  'search_materials',
+  'order',
   'material_category',
   'glossiness',
   'translucence',
@@ -193,20 +84,21 @@ export const MATERIAL_FILTER_FACETS: readonly MaterialFacetName[] = [
   'temperature',
   'acoustics',
   'odeur',
-  'weight',
   'fire_resistance',
   'uv_resistance',
   'weather_resistance',
   'scratch_resistance',
+  'weight',
   'chemical_resistance',
   'renewable',
 ] as const
 
 /**
- * Facets die op `ghosts: yes` staan — opties met 0 resultaten worden
- * tóch getoond (uitgegrijsd) i.p.v. weggelaten.
+ * Sub-set: alleen de filter-facets die in de FilterSidebar verschijnen
+ * (zonder `search_materials` en `order` — die hebben aparte UI).
  */
-export const GHOST_ENABLED_FACETS: readonly MaterialFacetName[] = [
+export const MATERIAL_FILTER_FACETS: readonly MaterialFacetName[] = [
+  'material_category',
   'glossiness',
   'translucence',
   'structure',
@@ -224,6 +116,145 @@ export const GHOST_ENABLED_FACETS: readonly MaterialFacetName[] = [
   'renewable',
 ] as const
 
-export function isGhostEnabled(facet: MaterialFacetName): boolean {
-  return (GHOST_ENABLED_FACETS as readonly string[]).includes(facet)
+// --------------------------------------------------------------------
+// Selectie (wat de UI naar de API stuurt)
+// --------------------------------------------------------------------
+
+/**
+ * Door de gebruiker geselecteerde facet-waarden, gegroepeerd per facet.
+ *
+ * Conventie:
+ *  - Filter-facets: array van term-slugs (bv. `["biobased", "recycled"]`)
+ *  - `search_materials`: één string in een array (FacetWP-conventie)
+ *  - `order`: één van de `MaterialSortValue`-waarden in een array
+ *
+ * Anders dan de oorspronkelijke modellering: in de UI mogen lege selecties
+ * voorkomen — die worden tijdens het serialiseren naar lege arrays gemapt
+ * voor alle 18 facet-keys (conform Johan's contract).
+ */
+export type FacetSelection = {
+  [K in MaterialFacetName]?: string[]
+} & {
+  search_materials?: string[]
+  order?: MaterialSortValue[]
+}
+
+// --------------------------------------------------------------------
+// Request shape — `POST /wp-json/facetwp/v1/fetch`
+// --------------------------------------------------------------------
+
+/**
+ * Inner body — wat onder de top-level `data`-key zit.
+ *
+ * Bevestigd door Johan's contract dat ALLE 18 facet-keys verplicht
+ * aanwezig zijn (lege arrays voor ongeselecteerd).
+ */
+export interface FacetWPFetchRequestData {
+  facets: {
+    [K in AnyMaterialFacetName]: string[]
+  }
+  query_args: {
+    post_type: 'material'
+    posts_per_page: number
+    paged: number
+  }
+}
+
+/**
+ * Volledige body — ingepakt in `{ data: ... }`.
+ *
+ * BELANGRIJK: zonder de `data`-wrapper accepteert FacetWP het verzoek
+ * niet. Dit is anders dan wat de oorspronkelijke sessie-2-modellering
+ * suggereerde — vandaar de rectificatie.
+ */
+export interface FacetWPFetchRequest {
+  data: FacetWPFetchRequestData
+}
+
+// --------------------------------------------------------------------
+// Response shape — exact uit Johan's contract
+// --------------------------------------------------------------------
+
+/**
+ * Eén choice (term) binnen een facet — uit `facets.<name>.choices[]`.
+ */
+export interface FacetWPFacetChoice {
+  /** Term-slug; wat als selectie wordt teruggestuurd. */
+  value: string
+  /** Weergavenaam voor de UI. */
+  label: string
+  /** Hiërarchie-diepte (0 = top-level). */
+  depth: number
+  /** Aantal matchende resultaten voor de huidige query. */
+  count: number
+}
+
+/**
+ * Eén facet binnen de response — uit `facets.<name>`.
+ *
+ * `type` is altijd `"checkboxes"`, `"search"`, of `"sort"` — afhankelijk
+ * van de facet-configuratie aan WP-zijde. De frontend houdt het als string
+ * om robuust te blijven bij toekomstige uitbreidingen.
+ */
+export interface FacetWPFacetResult {
+  /** Naam van de facet (matcht een key uit `facets`). */
+  name: string
+  /** Weergavenaam voor de sectie-header. */
+  label: string
+  /** Facet-type: `"checkboxes"`, `"search"`, `"sort"`, etc. */
+  type: string
+  /** Op dit moment geselecteerde waarden. */
+  selected: string[]
+  /** Beschikbare opties met live counts. */
+  choices: FacetWPFacetChoice[]
+}
+
+/**
+ * Pager-state. `total_rows` is het totaal aantal matchende materials,
+ * niet het aantal in de huidige pagina.
+ */
+export interface FacetWPPager {
+  page: number
+  per_page: number
+  total_rows: number
+  total_pages: number
+}
+
+/**
+ * Volledige response van `POST /wp-json/facetwp/v1/fetch`.
+ *
+ * - `results`: post-IDs van de matchende materials, in sort-volgorde
+ * - `facets`: per facet de huidige state — `Partial` omdat een facet
+ *   alleen verschijnt als hij relevant is voor de huidige query
+ * - `pager`: pagination-state
+ *
+ * NB: dit verschilt van de sessie-2-modellering (die `template`/`settings`
+ * verwachtte) — gerectificeerd op basis van het Johan-contract.
+ */
+export interface FacetWPFetchResponse {
+  results: number[]
+  facets: Partial<Record<AnyMaterialFacetName, FacetWPFacetResult>>
+  pager: FacetWPPager
+}
+
+// --------------------------------------------------------------------
+// FilterSidebar-koppeling — pre-merged shape voor de UI
+// --------------------------------------------------------------------
+
+/**
+ * Wat de FilterSidebar uiteindelijk binnenkrijgt: alle filter-facets
+ * (geen search/sort) met label + opties + counts. Komt uit de mapper-
+ * laag (`mapFacetWPToFilterSections` in `mappers.ts`).
+ *
+ * De `FilterSection`-shape uit `@/components/ui/FilterSidebar` is hier
+ * leidend; deze interface is een lokale facet-aware variant zodat we de
+ * mapper-laag niet via een component-type hoeven te route-en.
+ */
+export interface FacetWPFilterSection {
+  key: MaterialFacetName
+  title: string
+  options: Array<{ value: string; label: string; count?: number }>
+  selectMode?: 'multi' | 'single'
+  defaultOpen?: boolean
+  searchable?: boolean
 }

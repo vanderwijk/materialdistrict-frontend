@@ -3,12 +3,12 @@
  * ----------------------------------------------------------------------
  * Pages en components importeren bij voorkeur uit `@/lib/api`:
  *
- *   import { getMaterial, listMaterials, fetchMaterials } from '@/lib/api'
+ *   import { getMaterial, listMaterialsWithFacets } from '@/lib/api'
  *
  * Lagen:
  *  - `content.ts`  — high-level domain (Material, Brand, ...) — meestal gebruik je deze
  *  - `wordpress.ts` — raw fetcher + raw response types — alleen als je low-level toegang nodig hebt
- *  - `facetwp.ts`  — FacetWP-client — voor de overzichtspagina /material met filtering
+ *  - `facetwp.ts`  — FacetWP-client — voor de overzichtspagina /materials met filtering
  *  - `woocommerce.ts` — WC-client — voor books (Fase 1) + orders (Fase 2)
  *  - `mappers.ts`  — pure raw→domain mappers — meestal indirect via content.ts
  */
@@ -24,11 +24,29 @@ export {
   listBrands,
   listEvents,
   listMaterials,
+  listMaterialsWithFacets,
   listTalks,
 } from './content'
+export type {
+  ListMaterialsResult,
+  ListMaterialsWithFacetsParams,
+  ListMaterialsWithFacetsResult,
+} from './content'
 
-// FacetWP — voor het hoofdoverzicht /material met filtering
-export { fetchMaterials, facetwpFetch, FacetWPError } from './facetwp'
+// FacetWP — voor het hoofdoverzicht /materials met filtering
+export {
+  facetwpFetch,
+  FacetWPError,
+  fetchMaterials,
+  fetchMaterialsFiltered,
+  fetchMaterialFacetsBaseline,
+  parseFacetSelectionFromSearchParams,
+  facetSelectionToSearchParams,
+} from './facetwp'
+export type {
+  FetchMaterialsFilteredParams,
+  ParsedSearchParams,
+} from './facetwp'
 
 // WordPress raw — als je iets specifieks nodig hebt dat niet in content.ts staat
 export {
@@ -49,10 +67,13 @@ export {
 export {
   mapArticle,
   mapArticleListItem,
+  mapAuthMeResponse,
   mapBrand,
   mapBrandListItem,
+  mapBrandMembership,
   mapEvent,
   mapEventListItem,
+  mapFacetWPToFilterSections,
   mapMaterial,
   mapMaterialListItem,
   mapMedia,
@@ -60,6 +81,7 @@ export {
   mapTalkListItem,
   splitGallery,
 } from './mappers'
+export type { MaterialFilterSection } from './mappers'
 
 // WooCommerce — voor books
 export {

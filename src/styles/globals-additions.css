@@ -1,0 +1,755 @@
+/* ============================================================
+   MATERIALS — Detailpagina (sessie 4)
+   ============================================================
+   Klassen-prefix: .mat-* (uniek; conflicteert niet met bestaande
+   .card-*, .ov-*, of overzichts-classes).
+
+   Layout: 2-koloms desktop (gallery 60% / info 40%), gestapeld op
+   tablet/mobile. Onder de hoofdblok komt eerst de excerpt/body, dan
+   properties, dan downloads/CTA's, dan related materials.
+   ------------------------------------------------------------ */
+
+.mat-detail-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-10);
+  margin-bottom: var(--space-12);
+}
+
+@media (max-width: 1024px) {
+  .mat-detail-wrap {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/* ------------------------------------------------------------
+   Gallery
+   ------------------------------------------------------------ */
+
+.mat-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0; /* voorkomt grid-overflow bij brede afbeeldingen */
+}
+
+.mat-gallery-hero {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--surface2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.mat-gallery-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mat-gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-2);
+}
+
+@media (max-width: 480px) {
+  .mat-gallery-thumbs {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.mat-gallery-thumb {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--surface2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.mat-gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mat-gallery-thumb:hover {
+  transform: translateY(-1px);
+}
+
+.mat-gallery-thumb.active {
+  border-color: var(--ct-material);
+}
+
+.mat-gallery-thumb:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+/* "More" overlay op laatste thumb wanneer er meer afbeeldingen zijn */
+.mat-gallery-thumb-more {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 47, 78, 0.65);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-md);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ------------------------------------------------------------
+   Info-kolom
+   ------------------------------------------------------------ */
+
+.mat-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.mat-info-brand {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mat-info-brand:hover {
+  color: var(--ct-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mat-info-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .mat-info-title {
+    font-size: 1.5rem; /* 24px */
+  }
+}
+
+.mat-info-excerpt {
+  font-size: var(--text-md);
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.mat-info-excerpt p {
+  margin: 0 0 var(--space-3) 0;
+}
+
+.mat-info-excerpt p:last-child {
+  margin-bottom: 0;
+}
+
+.mat-info-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+}
+
+.mat-info-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mat-info-meta-item strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------
+   Sample-CTA — drie states (anonymous / member / insider)
+   ------------------------------------------------------------ */
+
+.mat-sample-cta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.mat-sample-cta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.mat-sample-cta-button {
+  /* Hergebruik .btn voor de basis; deze klasse alleen voor uitlijning */
+  flex: 1 1 auto;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.mat-sample-cta-note {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.mat-sample-cta-note a {
+  color: var(--navy);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Disabled-staat (anoniem) — knop blijft visueel zichtbaar maar niet clickable */
+.mat-sample-cta-button[aria-disabled="true"],
+.mat-sample-cta-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: auto; /* zodat tooltip/aria-label nog werkt */
+}
+
+/* "Niet beschikbaar" door brand uitgeschakeld */
+.mat-sample-cta.is-disabled {
+  background: var(--surface2);
+  opacity: 0.85;
+}
+
+.mat-sample-cta.is-disabled .mat-sample-cta-button {
+  display: none;
+}
+
+/* ------------------------------------------------------------
+   Properties — gegroepeerde tag-grid
+   ------------------------------------------------------------ */
+
+.mat-properties {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.mat-property-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mat-property-group-label {
+  font-size: var(--text-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  font-weight: 600;
+  margin: 0;
+}
+
+.mat-property-group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Property-tag — variant van .ct-tag, niet-klikbaar, kleurloos */
+.mat-property-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 10px;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  background: var(--surface2);
+  color: var(--text);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.mat-property-tag-key {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* ------------------------------------------------------------
+   Body content (prose) — material long-description
+   ------------------------------------------------------------ */
+
+.mat-body {
+  max-width: 70ch;
+  font-size: var(--text-md);
+  line-height: 1.65;
+  color: var(--text);
+  margin-bottom: var(--space-12);
+}
+
+.mat-body p {
+  margin: 0 0 var(--space-4) 0;
+}
+
+.mat-body p:last-child {
+  margin-bottom: 0;
+}
+
+.mat-body h2,
+.mat-body h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: var(--space-8) 0 var(--space-3) 0;
+  line-height: 1.2;
+}
+
+.mat-body h2 {
+  font-size: var(--text-2xl);
+}
+
+.mat-body h3 {
+  font-size: var(--text-xl);
+}
+
+.mat-body a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mat-body ul,
+.mat-body ol {
+  margin: 0 0 var(--space-4) 0;
+  padding-left: var(--space-6);
+}
+
+.mat-body li {
+  margin-bottom: var(--space-2);
+}
+
+/* ------------------------------------------------------------
+   Downloads-blok (datasheet / EPD / product-link)
+   ------------------------------------------------------------ */
+
+.mat-downloads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.mat-downloads-title {
+  font-size: var(--text-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  font-weight: 600;
+  margin: 0 0 var(--space-2) 0;
+}
+
+.mat-download-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+  background: var(--surface2);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: background 0.15s ease;
+}
+
+.mat-download-link:hover {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: calc(var(--space-3) - 1px) calc(var(--space-3) - 1px);
+}
+
+.mat-download-link-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.mat-download-link-meta {
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+  font-weight: 400;
+}
+
+/* Insider-gated download — gestyleerd alsof het kan, maar opent gate */
+.mat-download-link.is-gated {
+  position: relative;
+}
+
+.mat-download-link.is-gated .mat-download-link-meta {
+  color: var(--ct-member-dark);
+}
+
+/* ------------------------------------------------------------
+   Related materials — sectiekop
+   ------------------------------------------------------------ */
+
+.mat-related {
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--border);
+}
+
+.mat-related-title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-6) 0;
+}
+
+/* ============================================================
+   COMPARE BAR — sticky bottom (sessie 4 batch 2)
+   ============================================================
+   Wordt zichtbaar zodra er ≥ 1 material in de compare-list staat.
+   Drie slots horizontaal naast elkaar; mobile-compact-pill onder 768px.
+
+   Klassen-prefix: .compare-bar-*
+   ------------------------------------------------------------ */
+
+.compare-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90; /* boven content, onder modals (1000) */
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 20px rgba(13, 47, 78, 0.08);
+  animation: compare-bar-slide-up 200ms ease-out;
+}
+
+@keyframes compare-bar-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compare-bar {
+    animation: none;
+  }
+}
+
+.compare-bar-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+@media (max-width: 1024px) {
+  .compare-bar-inner {
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* ------------------------------------------------------------
+   Slots — desktop weergave (≥ 768px)
+   ------------------------------------------------------------ */
+
+.compare-bar-slots {
+  display: flex;
+  flex: 1 1 auto;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.compare-bar-slot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 0;
+  min-width: 0;
+  padding: var(--space-2);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  max-width: 280px;
+}
+
+.compare-bar-slot.is-empty {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--border);
+  justify-content: center;
+}
+
+.compare-bar-slot-thumb {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.compare-bar-slot-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.compare-bar-slot-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compare-bar-slot-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compare-bar-slot-brand {
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compare-bar-slot-placeholder {
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+  font-weight: 500;
+}
+
+.compare-bar-slot-remove {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.compare-bar-slot-remove:hover {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.compare-bar-slot-remove:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   Mobile pill — verberg op desktop, toon onder 768px
+   ------------------------------------------------------------ */
+
+.compare-bar-pill {
+  display: none; /* hidden on desktop */
+  flex: 1 1 auto;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.compare-bar-pill-count {
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------
+   Actions
+   ------------------------------------------------------------ */
+
+.compare-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.compare-bar-clear {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.compare-bar-clear:hover {
+  color: var(--text);
+}
+
+.compare-bar-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.compare-bar-cta-label {
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------
+   Responsive — verberg slots, toon pill onder 768px
+   ------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  .compare-bar-slots {
+    display: none;
+  }
+  .compare-bar-pill {
+    display: flex;
+  }
+}
+
+/* Onder 360px: nóg compacter — verberg "Clear" tekst-knop, alleen × en CTA */
+@media (max-width: 360px) {
+  .compare-bar-inner {
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-2);
+  }
+  .compare-bar-clear {
+    padding: var(--space-2);
+  }
+  .compare-bar-cta-label {
+    font-size: var(--text-xs);
+  }
+}
+
+/* ============================================================
+   SAMPLE-REQUEST FORM — uitgebreid (sessie 4 batch 2)
+   ============================================================
+   Aanvullingen op de bestaande .mat-sample-cta klassen (variant 1-4).
+   Voor de open-staat van het formulier met velden.
+   ------------------------------------------------------------ */
+
+.mat-sample-cta-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.mat-sample-cta-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin: 0;
+}
+
+.mat-sample-cta-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.sample-request-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.sample-request-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   FORM BANNER — inline status (sessie 4 batch 2)
+   ============================================================
+   Conform W3 (architecture-rules.md): geen toasts voor form-status.
+   Drie variants: success / error / info. Sluit aan op de
+   gekleurde Badge-tokens uit globals.css.
+   ------------------------------------------------------------ */
+
+.form-banner {
+  display: block;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin-bottom: var(--space-3);
+}
+
+.form-banner.is-success {
+  background: var(--green-pale);
+  color: #1a5a1d; /* darker green for AA-contrast on green-pale */
+  border: 1px solid var(--green-light);
+}
+
+.form-banner.is-error {
+  background: #fde8e8;
+  color: #8a1c1c;
+  border: 1px solid #f4c2c2;
+}
+
+.form-banner.is-info {
+  background: var(--ct-article-pale);
+  color: var(--ct-article-dark);
+  border: 1px solid #c8d8f0;
+}
+
+.form-banner strong {
+  font-weight: 700;
+}

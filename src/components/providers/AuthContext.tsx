@@ -4,114 +4,97 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react'
-import type { User } from '@/types'
+import { useRouter } from 'next/navigation'
+import type { User } from '@/types/shared'
+import { isInsider as userIsInsider } from '@/lib/auth/user-helpers'
 
 /**
- * AuthProvider — echte WP-integratie via de Next.js auth-routes.
+ * AuthContext — auth state for the Next.js client.
  *
- * Architectuur:
- *  - Server-side fetcht `layout.tsx` de huidige user via `getCurrentUser()`
- *    en geeft die mee als `initialUser`. Geen FOUC, geen flicker.
- *  - Mutaties (signIn, signOut, refresh) gaan via `/api/auth/*`. De JWT zit
- *    in een httpOnly cookie op het Next.js-domein; de browser ziet 'm nooit.
- *  - Membership wordt afgeleid van `user.membership.tier === 'insider'`.
- *    Tot de Stripe-sync er is, geeft WP altijd `tier: 'free'`.
+ * Hydration flow (server-driven):
+ *
+ *   1. `app/layout.tsx` is a Server Component. On every page render it
+ *      reads the auth cookie, calls `getCurrentUser(token)`, and passes
+ *      the resulting User (or `null`) into <AuthProvider initialUser>.
+ *   2. The provider seeds its state with `initialUser`. There is no
+ *      client-side fetch on first render — the user shape is already
+ *      present in the initial HTML, so components like Header render
+ *      correctly without a flash of logged-out state.
+ *   3. Login is NOT performed through this context. The /login page
+ *      (built in session 11) POSTs to /api/auth/login directly, then
+ *      redirects. The server-side hydration on the next render picks
+ *      up the fresh cookie automatically.
+ *   4. Logout IS performed through this context. `signOut()` clears the
+ *      cookie via /api/auth/logout, then drops local state and calls
+ *      `router.refresh()` so RSCs re-render with the empty auth state.
+ *
+ * Backward-compat:
+ *  - The convenience flags `isLoggedIn` and `isMember` remain available.
+ *    Existing consumers (Header, HeaderShell, FilterSidebar,
+ *    DetailActions, InsiderGate) keep working unchanged.
+ *  - `isMember` is an alias for "is Insider" — calculated by WordPress
+ *    and read off the user object, never recomputed here (see
+ *    architecture-rules.md "Derived fields — source of truth").
  */
 
-export interface SignInResult {
-  ok: boolean
-  error?: string
-}
-
-export interface AuthContextValue {
-  user: User | null
+interface AuthContextValue {
+  /** Convenience: is there a logged-in user? */
   isLoggedIn: boolean
+  /** Convenience: is the current user an Insider? */
   isMember: boolean
+  /** Full user object, or `null` when logged out. */
+  user: User | null
   /**
-   * Logt in via `/api/auth/login`. Returnt `{ ok: true }` of
-   * `{ ok: false, error }`. Gooit niet — UI kan veilig op `result.error`
-   * acteren.
+   * Log the user out: clears the cookie server-side, drops local state,
+   * and refreshes RSCs. Safe to call when already logged out — the
+   * /api/auth/logout endpoint is idempotent.
    */
-  signIn: (email: string, password: string) => Promise<SignInResult>
-  /** Wist de cookie via `/api/auth/logout` en zet user op null. */
   signOut: () => Promise<void>
-  /**
-   * Re-fetch van `/api/auth/me`. Aanroepen na profile-updates of na
-   * tabwissel als je achterdocht hebt over staleness.
-   */
-  refresh: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({
   children,
-  initialUser = null,
+  initialUser,
 }: {
   children: React.ReactNode
-  initialUser?: User | null
+  /**
+   * Server-hydrated user. Set by `app/layout.tsx` after reading the
+   * auth cookie. `null` means "logged out" (no cookie, or cookie was
+   * rejected and cleared during the server render).
+   */
+  initialUser: User | null
 }) {
+  const router = useRouter()
   const [user, setUser] = useState<User | null>(initialUser)
-
-  const signIn = useCallback(
-    async (email: string, password: string): Promise<SignInResult> => {
-      try {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        })
-        if (!res.ok) {
-          let message = 'Login failed.'
-          try {
-            const data = (await res.json()) as { error?: string }
-            if (data?.error) message = data.error
-          } catch {
-            // ignore — generieke message blijft
-          }
-          return { ok: false, error: message }
-        }
-        const data = (await res.json()) as { user: User }
-        setUser(data.user)
-        return { ok: true }
-      } catch {
-        return { ok: false, error: 'Network error.' }
-      }
-    },
-    [],
-  )
 
   const signOut = useCallback(async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' })
-    } catch {
-      // ignore — cookie wordt ook server-side weggetrokken; client-state altijd resetten
-    } finally {
-      setUser(null)
+    } catch (err) {
+      // Network failure on logout is a strange state — the cookie may or
+      // may not be cleared. We drop local state anyway so the UI matches
+      // a logged-out view, and let the next request reconcile via the
+      // server-side hydration.
+      console.error('[auth] logout request failed', err)
     }
-  }, [])
+    setUser(null)
+    router.refresh()
+  }, [router])
 
-  const refresh = useCallback(async () => {
-    try {
-      const res = await fetch('/api/auth/me', { cache: 'no-store' })
-      if (!res.ok) return
-      const data = (await res.json()) as { user: User | null }
-      setUser(data.user)
-    } catch {
-      // ignore — laat de huidige user staan, gebruiker krijgt 'm bij volgende navigatie
-    }
-  }, [])
-
-  const value: AuthContextValue = {
-    user,
-    isLoggedIn: user !== null,
-    isMember: user?.membership.tier === 'insider',
-    signIn,
-    signOut,
-    refresh,
-  }
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      isLoggedIn: user !== null,
+      isMember: userIsInsider(user),
+      user,
+      signOut,
+    }),
+    [user, signOut],
+  )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

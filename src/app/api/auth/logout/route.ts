@@ -1,18 +1,16 @@
-import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import { SESSION_COOKIE, getSessionCookieOptions } from '@/lib/auth'
-
 /**
  * POST /api/auth/logout
  *
- * Wist de session-cookie op het Next.js-domein. Geeft 204.
+ * Clears the auth cookie. Always succeeds — even if there was no cookie
+ * to begin with, the response is the same. Idempotent.
  *
- * Note: WP heeft geen blacklist — een uitgegeven JWT blijft technisch geldig
- * tot zijn `exp`. Voor een lezerssite is dat acceptabel; bij gevoeliger
- * acties kunnen we later een token-revocation-store overwegen.
+ * Returns 204 No Content on success.
  */
-export async function POST() {
-  const store = await cookies()
-  store.set(SESSION_COOKIE, '', { ...getSessionCookieOptions(0), maxAge: 0 })
+
+import { NextResponse } from 'next/server'
+import { clearAuthCookie } from '@/lib/auth/cookies'
+
+export async function POST(): Promise<NextResponse> {
+  await clearAuthCookie()
   return new NextResponse(null, { status: 204 })
 }

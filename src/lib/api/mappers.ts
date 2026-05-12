@@ -10,6 +10,10 @@
  * Resolutie van relations (gallery via attachments-fetch, brand via
  * brand-fetch) gebeurt in de bovenliggende `getMaterial()` /
  * `getBrand()` functies — die orchestreren mapper + resolver.
+ *
+ * Sessie 4 (12-05-2026): `mapFacetWPToFilterSections` toegevoegd —
+ * merget baseline (volledige facet-set) met filtered (counts + selected)
+ * tot een UI-klare `MaterialFilterSection[]` voor de FilterSidebar.
  */
 
 import type { Article, ArticleListItem } from '@/types/article'
@@ -18,6 +22,18 @@ import type { Event, EventListItem } from '@/types/event'
 import type { Material, MaterialListItem } from '@/types/material'
 import type { Gallery, ImageSizeKey, MediaImage, MediaSize } from '@/types/media'
 import type { Talk, TalkListItem } from '@/types/talk'
+import type {
+  AuthMeResponse,
+  BrandMembership,
+  Membership,
+  User,
+  WPAuthMeRawResponse,
+} from '@/types/shared'
+import {
+  MATERIAL_FILTER_FACETS,
+  type FacetWPFetchResponse,
+  type MaterialFacetName,
+} from '@/types/facetwp'
 
 import { parseMaterialProperties } from '@/lib/utils/material-properties'
 
@@ -386,6 +402,230 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     date: raw.date,
     modified: raw.modified,
   }
+}
+
+// --------------------------------------------------------------------
+// Auth
+// --------------------------------------------------------------------
+//
+// Map the raw snake_case response from `/wp-json/md/v2/auth/login` and
+// `/wp-json/md/v2/auth/me` into the camelCase `AuthMeResponse` domain type.
+//
+// Derived fields like `is_insider`, `publication_quota` and
+// `publications_used` are passed through unchanged — WordPress computes
+// them, the frontend reads them off (see architecture-rules.md
+// "Derived fields — source of truth").
+
+function mapMembership(raw: WPAuthMeRawResponse['user']['membership']): Membership {
+  return {
+    tier: raw.tier,
+    isInsider: raw.is_insider,
+    status: raw.status,
+    billingInterval: raw.billing_interval,
+    validUntil: raw.valid_until,
+    cancelAtPeriodEnd: raw.cancel_at_period_end,
+    isPlaceholder: raw.is_placeholder,
+  }
+}
+
+/**
+ * Map one raw brand-membership entry to the camelCase domain type.
+ *
+ * Exported because a future dedicated brand-membership endpoint (e.g.
+ * the brand dashboard) may want to reuse this without going through the
+ * full `/auth/me` response.
+ */
+export function mapBrandMembership(
+  raw: WPAuthMeRawResponse['user']['connected_brands'][number],
+): BrandMembership {
+  return {
+    id: raw.id,
+    slug: raw.slug,
+    name: raw.name,
+    tier: raw.tier,
+    status: raw.status,
+    validUntil: raw.valid_until,
+    cancelAtPeriodEnd: raw.cancel_at_period_end,
+    publicationQuota: raw.publication_quota,
+    publicationsUsed: raw.publications_used,
+    isPlaceholder: raw.is_placeholder,
+  }
+}
+
+function mapUser(raw: WPAuthMeRawResponse['user']): User {
+  return {
+    id: raw.id,
+    email: raw.email,
+    name: raw.name,
+    displayName: raw.display_name,
+    firstName: raw.first_name,
+    lastName: raw.last_name,
+    roles: raw.roles,
+    avatarUrl: raw.avatar_url,
+    profession: raw.profession,
+    company: raw.company,
+    membership: mapMembership(raw.membership),
+    brands: raw.connected_brands.map(mapBrandMembership),
+  }
+}
+
+/**
+ * Map the full `/auth/login` or `/auth/me` response.
+ *
+ * Pure function — no side effects, no fetches. The caller is responsible
+ * for storing `token` + `expiresAt` in the auth cookie.
+ */
+export function mapAuthMeResponse(raw: WPAuthMeRawResponse): AuthMeResponse {
+  return {
+    token: raw.token,
+    expiresAt: raw.expires_at,
+    user: mapUser(raw.user),
+  }
+}
+
+// --------------------------------------------------------------------
+// FacetWP → FilterSidebar
+// --------------------------------------------------------------------
+
+/**
+ * UI-klare facet-sectie voor de FilterSidebar.
+ *
+ * Komt uit `mapFacetWPToFilterSections` — een merge van de baseline-
+ * call (volledige set facets + alle choices) met de filtered-call
+ * (huidige counts + selected).
+ *
+ * De `key` matcht een `MaterialFacetName` zodat we de selectie 1-op-1
+ * terug kunnen mappen naar de FacetWP-request.
+ */
+export interface MaterialFilterSection {
+  /** Facet-naam (matcht een `MaterialFacetName`). */
+  key: MaterialFacetName
+  /** Sectie-header, uit de baseline-response. */
+  title: string
+  /** Beschikbare opties met live counts. */
+  options: Array<{
+    value: string
+    label: string
+    count: number
+    /** True wanneer huidige filter resulteert in 0 matches voor deze optie. */
+    isGhost: boolean
+  }>
+  /** Op dit moment geselecteerde waarden. */
+  selected: string[]
+  /** Multi-select (checkboxes) of single-select (radio). */
+  selectMode: 'multi' | 'single'
+  /** Of de sectie standaard open is bij eerste render. */
+  defaultOpen: boolean
+  /** Of er een zoekveld binnen de sectie staat (lange opties-lijst). */
+  searchable: boolean
+}
+
+/**
+ * UI-conventies per facet — leidend voor hoe de FilterSidebar de sectie
+ * rendert. Niet uit de FacetWP-response af te leiden; statisch gebonden
+ * aan ons mockup-ontwerp.
+ *
+ * - `material_category` is single-select (één hoofdcategorie tegelijk)
+ *   en standaard open
+ * - alle eigenschap-facets zijn multi-select en standaard dicht
+ * - facets met >8 opties krijgen een `searchable`-veld binnen de sectie
+ */
+const FACET_UI_HINTS: Record<
+  MaterialFacetName,
+  {
+    selectMode: 'multi' | 'single'
+    defaultOpen: boolean
+    searchable: boolean
+  }
+> = {
+  material_category: { selectMode: 'single', defaultOpen: true, searchable: false },
+  glossiness: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  translucence: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  structure: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  texture: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  hardness: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  temperature: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  acoustics: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  odeur: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  weight: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  fire_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  uv_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  weather_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  scratch_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  chemical_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  renewable: { selectMode: 'multi', defaultOpen: false, searchable: false },
+}
+
+/**
+ * Merget de baseline-response (volledige facet-set) met de filtered-
+ * response (counts + selected) tot een lijst `MaterialFilterSection`
+ * voor de FilterSidebar.
+ *
+ * Bron-van-waarheid:
+ *  - `baseline.facets.<name>.choices` → de volledige opties-lijst en de
+ *    initiële labels. Deze lijst bevat ook waarden die in de huidige
+ *    filter 0 hits hebben.
+ *  - `filtered.facets.<name>.choices[].count` → de actuele counts. Een
+ *    waarde uit baseline die niet in filtered voorkomt krijgt `count: 0`
+ *    en `isGhost: true`.
+ *  - `filtered.facets.<name>.selected` → wat de gebruiker geselecteerd
+ *    heeft. Valt terug op een lege array als de facet niet in `filtered`
+ *    voorkomt (treedt op wanneer de filter geen invloed had op deze
+ *    facet).
+ *
+ * Pure function — geen side effects.
+ *
+ * @param baseline - response van `fetchMaterialFacetsBaseline()`
+ * @param filtered - response van `fetchMaterialsFiltered(...)`
+ */
+export function mapFacetWPToFilterSections(
+  baseline: FacetWPFetchResponse,
+  filtered: FacetWPFetchResponse,
+): MaterialFilterSection[] {
+  const sections: MaterialFilterSection[] = []
+
+  for (const key of MATERIAL_FILTER_FACETS) {
+    const baselineFacet = baseline.facets[key]
+    if (!baselineFacet) {
+      // Facet niet in baseline-response — overslaan (mag niet voorkomen
+      // bij goed geconfigureerde FacetWP, maar defensief).
+      continue
+    }
+
+    const filteredFacet = filtered.facets[key]
+    const filteredCounts = new Map<string, number>()
+    if (filteredFacet) {
+      for (const choice of filteredFacet.choices) {
+        filteredCounts.set(choice.value, choice.count)
+      }
+    }
+
+    const options = baselineFacet.choices.map((choice) => {
+      const liveCount = filteredCounts.has(choice.value)
+        ? (filteredCounts.get(choice.value) as number)
+        : 0
+      return {
+        value: choice.value,
+        label: choice.label,
+        count: liveCount,
+        isGhost: liveCount === 0,
+      }
+    })
+
+    const ui = FACET_UI_HINTS[key]
+
+    sections.push({
+      key,
+      title: baselineFacet.label,
+      options,
+      selected: filteredFacet?.selected ?? [],
+      selectMode: ui.selectMode,
+      defaultOpen: ui.defaultOpen,
+      searchable: ui.searchable,
+    })
+  }
+
+  return sections
 }
 
 // --------------------------------------------------------------------

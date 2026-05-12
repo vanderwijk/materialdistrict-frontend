@@ -121,6 +121,60 @@ export interface MaterialMeta {
   datasheet_url?: string
   epd_url?: string
   product_url?: string
+  /**
+   * Publication-status — uitbreiding op `meta` per
+   * `datacontract-proposal.md` sectie 3. Optioneel zolang Johan's
+   * implementatie nog niet live is; mapper geeft een placeholder als
+   * het veld ontbreekt.
+   */
+  publication?: MaterialPublication
+}
+
+// --------------------------------------------------------------------
+// Publication-status (uit datacontract-proposal.md sectie 3)
+// --------------------------------------------------------------------
+//
+// Datacontract-voorstel breidt `material.meta` uit met een `publication`-
+// blok dat aangeeft of dit material momenteel gepubliceerd is, en zo ja
+// via welk subscription-mechanisme (brand-tier-slot of standalone €150).
+//
+// Frontend-gedrag op basis van `isOnline`:
+//   true   → material toont in publieke overzichten (`/materials`,
+//            brand-detail, etc.)
+//   false  → material toont NIET publiek; wel in manufacturer-dashboard
+//            (Fase 2) met status "Offline"
+//
+// `source` is alleen informatief — dashboard kan tonen "Published via
+// Plus-tier" vs "Standalone subscription". Publieke pagina's gebruiken
+// alleen `isOnline`.
+//
+// Status: voorstel-shape (datacontract-proposal.md v0.1, 11-05-2026).
+// Wijkt Johan af, dan via deze interface + mapper bijwerken.
+
+/**
+ * Bron van de publicatie — waar komt het recht-om-online-te-zijn vandaan?
+ *  - `tier_slot`  — inbegrepen in brand-tier (basis/plus/partner)
+ *  - `standalone` — los €150/jaar-abonnement (alleen mogelijk voor brands
+ *                   op free-tier)
+ *  - `null`       — material is niet online (`isOnline: false`)
+ */
+export type PublicationSource = 'tier_slot' | 'standalone' | null
+
+/**
+ * Publication-status van een material.
+ *
+ * Het enige veld dat de frontend HARD nodig heeft is `isOnline`. De
+ * overige velden zijn voor het manufacturer-dashboard (Fase 2).
+ */
+export interface MaterialPublication {
+  /** Is dit material momenteel publiek zichtbaar? */
+  isOnline: boolean
+  /** Hoe is dit material online? Null als `isOnline: false`. */
+  source: PublicationSource
+  /** Einddatum van het huidige publication-recht. ISO-string. Null als offline. */
+  validUntil: string | null
+  /** `true` zolang Stripe-sync niet werkt — UI kan placeholder-state tonen. */
+  isPlaceholder: boolean
 }
 
 // --------------------------------------------------------------------
@@ -179,6 +233,13 @@ export interface MaterialListItem {
   /** Sortering. */
   date: string
   modified: string
+
+  /**
+   * Publication-status. Op overzichten gebruikt om offline materials
+   * te filteren vóórdat ze gerenderd worden. Mapper bouwt een
+   * placeholder als de API-meta het veld (nog) niet levert.
+   */
+  publication: MaterialPublication
 }
 
 /**
@@ -230,4 +291,11 @@ export interface Material {
   /** Datums. */
   date: string
   modified: string
+
+  /**
+   * Publication-status. Domain-type heeft dit ALTIJD; mapper bouwt een
+   * placeholder als de API-meta het veld (nog) niet levert. UI gebruikt
+   * met name `publication.isOnline` voor zichtbaarheids-beslissingen.
+   */
+  publication: MaterialPublication
 }

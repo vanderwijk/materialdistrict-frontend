@@ -1,14 +1,21 @@
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import { DM_Sans, DM_Serif_Display } from 'next/font/google'
 import { HeaderShell } from '@/components/layout/HeaderShell'
 import { Footer } from '@/components/layout/Footer'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { AuthProvider } from '@/components/providers/AuthContext'
-import { getCurrentUser } from '@/lib/auth/server'
+import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
+import {
+  getCurrentUser,
+  WordPressAuthError,
+} from '@/lib/api/wordpress'
+import { clearAuthCookie, getAuthCookie } from '@/lib/auth/cookies'
+import type { User } from '@/types/shared'
 import '@/styles/globals.css'
 
 /**
- * Fonts geladen via next/font/google — zelfgehost, geen externe requests.
+ * Fonts loaded via next/font/google — self-hosted, no external requests.
  */
 const dmSans = DM_Sans({
   subsets: ['latin'],
@@ -48,12 +55,13 @@ export const metadata: Metadata = {
 }
 
 /**
- * Inline script dat het theme zet vóór React hydrateert.
- * Voorkomt de "flash of wrong theme" wanneer een dark-mode user de pagina
- * laadt. Het script leest localStorage en valt terug op `prefers-color-scheme`.
+ * Inline script that sets the theme before React hydrates.
+ * Prevents the "flash of wrong theme" when a dark-mode user loads the
+ * page. The script reads localStorage and falls back to
+ * `prefers-color-scheme`.
  *
- * Het script is bewust klein en synchroon — moet uitgevoerd zijn vóór de body
- * gerenderd wordt.
+ * Intentionally small and synchronous — must execute before the body
+ * is rendered.
  */
 const themeInitScript = `
 (function() {
@@ -67,15 +75,46 @@ const themeInitScript = `
 })();
 `
 
+/**
+ * Server-side auth hydration.
+ *
+ * Wrapped in React.cache() so multiple components within the same render
+ * (layout + page + RSC subtree) can call `getInitialUser()` and only one
+ * WordPress request is actually issued. `cache()` resets between renders,
+ * so there is no staleness — each new request fetches fresh data.
+ *
+ * Error handling:
+ *  - No cookie → `null` (anonymous visitor).
+ *  - Cookie present but rejected by WordPress (`WordPressAuthError`) →
+ *    clear the cookie and return `null`. The next request is a clean
+ *    anonymous state.
+ *  - Unexpected backend failure (`WordPressError` or worse) → return
+ *    `null` and log. The site stays up; the user appears logged out
+ *    rather than seeing an error page for an auxiliary call.
+ */
+const getInitialUser = cache(async (): Promise<User | null> => {
+  const token = await getAuthCookie()
+  if (!token) return null
+
+  try {
+    const auth = await getCurrentUser(token)
+    return auth.user
+  } catch (err) {
+    if (err instanceof WordPressAuthError) {
+      await clearAuthCookie()
+      return null
+    }
+    console.error('[layout] auth hydration failed', err)
+    return null
+  }
+})
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Server-side auth-hydratie: we vragen de huidige user op aan de hand van de
-  // httpOnly session-cookie. Bij geen cookie of een verlopen JWT komt hier
-  // null terug — geen exception, geen flicker.
-  const initialUser = await getCurrentUser()
+  const initialUser = await getInitialUser()
 
   return (
     <html
@@ -87,6 +126,9 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="app-shell">
+        <a href="#main" className="skip-link">
+          Skip to main content
+        </a>
         <ThemeProvider>
           <AuthProvider initialUser={initialUser}>
             <HeaderShell />
@@ -94,6 +136,10 @@ export default async function RootLayout({
             <Footer />
           </AuthProvider>
         </ThemeProvider>
+        {/* Global structured data — Organization + WebSite on every page.
+            Per-page entities (Product/Article/Event/Book) live in the
+            individual page.tsx files. */}
+        <JsonLd data={[buildOrganization(), buildWebSite()]} />
       </body>
     </html>
   )

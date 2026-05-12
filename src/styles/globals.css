@@ -97,10 +97,17 @@ ol {
   --ct-brand-pale: #dce8f8;
   --ct-brand-dark: #183E90;
 
-  /* Content-type — Member / Insider / Talks (teal) */
-  --ct-member: #007890;
-  --ct-member-pale: #ddf2f5;
-  --ct-member-dark: #005A6A;
+  /* Content-type — Insider / Talks (teal) — sessie 3B: hernoemd van --ct-member */
+  --ct-insider: #007890;
+  --ct-insider-pale: #ddf2f5;
+  --ct-insider-mid: #1E8FA1;
+  --ct-insider-dark: #005A6A;
+
+  /* Backward-compat aliases (sessie 3B) — verwijderen in een toekomstige sessie zodra
+     alle externe references op --ct-insider zijn overgezet. NIET gebruiken in nieuwe code. */
+  --ct-member: var(--ct-insider);
+  --ct-member-pale: var(--ct-insider-pale);
+  --ct-member-dark: var(--ct-insider-dark);
 
   /* Surfaces & tekst (light) */
   --bg: #ffffff;
@@ -110,6 +117,12 @@ ol {
   --text: #0d1f2d;
   --text-muted: #5a6a7a;
   --text-hint: #9aabb8;
+
+  /* Interactive — links, active states (sessie 3B correctie 1C).
+     Eén semantisch token voor "interactieve navy-tint". Light mode = navy.
+     Dark mode override (zie sectie 3) zorgt voor leesbaar-blauw op donker. */
+  --link: var(--navy);
+  --link-hover: var(--navy-mid);
 
   /* Typografie */
   --font-display: 'DM Serif Display', Georgia, serif;
@@ -200,8 +213,20 @@ ol {
   --surface2: #1e2a3a;
   --border: #2d3f55;
   --text: #f0f6fc;
-  --text-muted: #8b9eb8;
-  --text-hint: #4d6278;
+
+  /* Sessie 3B correctie 1A — secundaire tekst lichter voor hoger contrast tegen --bg.
+     Was: --text-muted #8b9eb8, --text-hint #4d6278.
+     Nu: gemeten op WCAG AA — body-paragrafen, helper-text, breadcrumb, pagination,
+     footer-links, tabs-inactief krijgen automatisch hoger contrast. */
+  --text-muted: #b6c5d8;
+  --text-hint: #8093a8;
+
+  /* Sessie 3B correctie 1C — interactieve navy-tint in dark mode.
+     Light: navy. Dark: navy-light (lichter blauw, leesbaar op donker).
+     Toegepast op TextLink navy, HeaderNavItem actief, MobileNavItem actief,
+     Breadcrumb-links, Tabs actief. Primary-button blijft navy-fill (witte tekst). */
+  --link: var(--navy-light);
+  --link-hover: #6090d0;
 
   --shadow: 0 1px 4px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
   --shadow-lg: 0 6px 28px rgba(0,0,0,0.7), 0 2px 12px rgba(0,0,0,0.5);
@@ -213,7 +238,8 @@ ol {
   --ct-event-pale: #001a0e;
   --ct-book-pale: #1e1900;
   --ct-brand-pale: #081630;
-  --ct-member-pale: #001a22;
+  --ct-insider-pale: #001a22;
+  --ct-member-pale: #001a22; /* alias backward-compat */
 }
 
 /* ------------------------------------------------------------
@@ -409,9 +435,67 @@ h4 {
 .btn-danger { background: #C0392B; color: white; }
 .btn-danger:hover:not(:disabled) { background: #A93226; }
 
-/* Member/insider variant — gebruikt voor de "Insider"-knop in de header */
-.btn-member { background: var(--ct-member); color: white; }
-.btn-member:hover:not(:disabled) { background: var(--ct-member-dark); }
+/* Insider — teal-knop, sessie 3B correctie 3: hernoemd van .btn-member */
+.btn-insider {
+  background: var(--ct-insider);
+  color: white;
+}
+.btn-insider:hover:not(:disabled) {
+  background: var(--ct-insider-dark);
+}
+
+/* Backward-compat alias (sessie 3B): oude .btn-member blijft werken. */
+.btn-member {
+  background: var(--ct-insider);
+  color: white;
+}
+.btn-member:hover:not(:disabled) {
+  background: var(--ct-insider-dark);
+}
+
+/* Ghost — geen achtergrond, geen border, alleen tekst.
+   Voor tertiary-acties, vaak in dialog-toolbars of card-headers. */
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-muted);
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* Loading-state — toont een spinner naast het label, knop is inactief. */
+.btn.is-loading {
+  cursor: wait;
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: btn-spinner-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes btn-spinner-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-spinner {
+    animation: none;
+    /* Toon iets visueels — een gevulde cirkel — i.p.v. niet-roterende lege cirkel */
+    border-top-color: currentColor;
+    opacity: 0.6;
+  }
+}
+
+/* (sessie 3B: duplicate .btn-member block verwijderd — gehouden in §8 boven
+   onder .btn-insider met backward-compat alias.) */
 
 /* ------------------------------------------------------------
    9. Icon button — round 36x36 met border (header iconen)
@@ -427,7 +511,20 @@ h4 {
   background: transparent;
   color: var(--text-muted);
   flex-shrink: 0;
+  position: relative;
   transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+}
+
+/* WCAG 2.1 AAA target-size: hit-area is 44×44 ook al is het visueel 36×36.
+   Onzichtbaar pseudo-element vergroot het pointer-gebied zonder layout-effect. */
+.icon-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
 }
 
 .icon-btn:hover {
@@ -436,11 +533,14 @@ h4 {
 }
 
 /* ------------------------------------------------------------
+/* ------------------------------------------------------------
    10. Content-type tags (.ct-tag)
+       Sessie 3A batch 3: optionele icoon-prefix per content-type.
    ------------------------------------------------------------ */
 .ct-tag {
   display: inline-flex;
   align-items: center;
+  gap: 4px;
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
@@ -448,6 +548,26 @@ h4 {
   padding: 3px 9px;
   border-radius: 100px;
   white-space: nowrap;
+  line-height: 1;
+}
+
+.ct-tag-icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  /* Optical correction: icoon ietsje hoger dan tekst-baseline van uppercase
+     letters — geeft geblokte uppercase + linework-icoon dezelfde mid-line. */
+  margin-top: -1px;
+}
+
+.ct-tag-icon svg {
+  display: block;
+}
+
+.ct-tag-label {
+  display: inline-block;
+  /* uppercase line-height correctie zodat letters precies op cap-line zitten */
+  line-height: 1;
 }
 
 .ct-tag.ct-material { background: var(--ct-material-pale); color: var(--ct-material-dark); }
@@ -455,7 +575,28 @@ h4 {
 .ct-tag.ct-event    { background: var(--ct-event-pale);    color: var(--ct-event-dark); }
 .ct-tag.ct-book     { background: var(--ct-book-pale);     color: var(--ct-book-dark); }
 .ct-tag.ct-brand    { background: var(--ct-brand-pale);    color: var(--ct-brand-dark); }
-.ct-tag.ct-member   { background: var(--ct-member-pale);   color: var(--ct-member-dark); font-weight: 700; }
+.ct-tag.ct-talk     { background: var(--ct-insider-pale);  color: var(--ct-insider-dark); }
+.ct-tag.ct-insider  { background: var(--ct-insider-pale);  color: var(--ct-insider-dark); font-weight: 700; }
+
+/* Backward-compat (sessie 3B): oude .ct-member klasse blijft werken via alias-tokens. */
+.ct-tag.ct-member   { background: var(--ct-insider-pale);  color: var(--ct-insider-dark); font-weight: 700; }
+
+/* ------------------------------------------------------------
+   Sessie 3B correctie 1B — dark-mode overrides voor content-type tags.
+   Light: pale-fill + dark-text werkt (licht-bg + donker-text contrast).
+   Dark:  pales worden donker en darks blijven donker → onleesbaar.
+   Fix:   mid-fill (verzadigd, herkenbaar) + witte tekst (consistent met
+          Insider-pill conventie). Uitzondering: book heeft gele fill →
+          donkere tekst voor leesbaarheid.
+   ------------------------------------------------------------ */
+[data-theme="dark"] .ct-tag.ct-material { background: var(--ct-material); color: #ffffff; }
+[data-theme="dark"] .ct-tag.ct-article  { background: var(--ct-article);  color: #ffffff; }
+[data-theme="dark"] .ct-tag.ct-event    { background: var(--ct-event);    color: #ffffff; }
+[data-theme="dark"] .ct-tag.ct-book     { background: var(--ct-book);     color: #1f1d00; }
+[data-theme="dark"] .ct-tag.ct-brand    { background: var(--ct-brand);    color: #ffffff; }
+[data-theme="dark"] .ct-tag.ct-talk     { background: var(--ct-insider);  color: #ffffff; }
+[data-theme="dark"] .ct-tag.ct-insider  { background: var(--ct-insider);  color: #ffffff; }
+[data-theme="dark"] .ct-tag.ct-member   { background: var(--ct-insider);  color: #ffffff; }
 
 /* ------------------------------------------------------------
    11. Status badges (b-green/blue/amber/gray/red)
@@ -485,21 +626,32 @@ h4 {
 /* ------------------------------------------------------------
    12. Insider badge
    Note: design-tokens.md noemt een discrepantie tussen #1E8FA1
-   en var(--ct-member) #007890. We harmoniseren naar var(--ct-member)
+   en var(--ct-insider) #007890. We harmoniseren naar var(--ct-insider)
    per beslissing 4 in sessie 1.
+
+   Sessie 3A batch 3: tekst-alignment fix. Het label krijgt een eigen
+   <span class="ib-label"> wrapper zodat we de uppercase optical center
+   kunnen corrigeren — anders zit "INSIDER" net iets te hoog t.o.v. de
+   ster-cirkel.
+
+   Sessie 3B correctie 4: padding consistent over alle varianten. De
+   sterretje-cirkel staat in alle varianten op dezelfde optische afstand
+   van de linker pill-rand. Eerder had elke variant een eigen padding
+   (0 8px 0 3px / 0 10px / 0 5px 0 0), waardoor het icoon visueel
+   verschoof tussen default, is-padded en is-sm.
    ------------------------------------------------------------ */
 .insider-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   height: 20px;
-  background: var(--ct-member);
+  background: var(--ct-insider);
   color: white;
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  padding: 0 8px 0 3px;
+  padding: 0 9px;
   border-radius: 10px;
   white-space: nowrap;
   vertical-align: middle;
@@ -507,7 +659,9 @@ h4 {
 }
 
 .insider-badge.is-padded {
-  padding: 0 10px;
+  /* Iets meer ademruimte voor langere labels zoals "Insider settings".
+     Sterretje blijft op dezelfde verhouding tot de pill-rand. */
+  padding: 0 12px;
 }
 
 .insider-badge .ib-icon {
@@ -525,17 +679,34 @@ h4 {
   display: block;
 }
 
-/* Compact variant (gebruikt in dropdowns en lijsten) */
+.insider-badge .ib-label {
+  display: inline-block;
+  /* Optical alignment correctie: uppercase letters renderen op een hogere
+     visuele baseline dan de cirkel-mid. ~0.5px omlaag zet "INSIDER" optisch
+     op dezelfde hoogte als de ster-cirkel-mid. */
+  transform: translateY(0.5px);
+  line-height: 1;
+}
+
+/* Compact variant (gebruikt in dropdowns en lijsten).
+   Sessie 3B correctie 4: padding consistent met default-variant ratio. */
 .insider-badge.is-sm {
   height: 14px;
   font-size: 8px;
-  padding: 0 5px 0 0;
+  padding: 0 6px;
   letter-spacing: 0.06em;
+  gap: 4px;
 }
 
 .insider-badge.is-sm .ib-icon {
   width: 10px;
   height: 10px;
+}
+
+.insider-badge.is-sm .ib-label {
+  /* Bij kleinere font is de optical shift iets minder; kwart-pixel houdt
+     het scherp op standaard rendering. */
+  transform: translateY(0.25px);
 }
 
 /* ------------------------------------------------------------
@@ -614,6 +785,8 @@ h4 {
 }
 
 .field-wrap.error {
+  /* Batch 2: rode border behouden naast de status-cirkel — dubbele
+     visuele feedback bij invalid (gebruiker-keuze sessie 3A). */
   border-color: var(--red);
   background: var(--surface);
 }
@@ -855,6 +1028,10 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.mobile-nav-actions .btn {
+  width: 100%;
 }
 
 .mobile-nav-item {
@@ -1332,25 +1509,40 @@ h4 {
   justify-content: space-between;
 }
 
-.uf-header-title {
+/* Sessie 3B correctie 6 — header-title expliciet body-font (was eerder
+   in preview als DM Serif Display gerenderd door class-mismatch met
+   `.uf-title`). Beide klassenamen werken nu identiek. */
+.uf-header-title,
+.uf-title {
   font-size: 13px;
   font-weight: 700;
   color: white;
+  font-family: var(--font-body);
+  line-height: 1;
+  margin: 0;
 }
 
-.uf-header-clear {
+/* Sessie 3B correctie 6 — Clear als outline-button-stijl met witte border
+   en witte tekst (consistent met de "betere oude versie"). Beide
+   klassenamen werken: .uf-header-clear en .uf-clear. */
+.uf-header-clear,
+.uf-clear {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  color: white;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: var(--radius);
-  padding: 2px 8px;
+  padding: 3px 10px;
   cursor: pointer;
-  transition: background var(--transition-base), color var(--transition-base);
+  font-family: var(--font-body);
+  transition: background var(--transition-base), border-color var(--transition-base);
 }
 
-.uf-header-clear:hover {
-  background: rgba(255, 255, 255, 0.08);
+.uf-header-clear:hover,
+.uf-clear:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.7);
   color: white;
 }
 
@@ -1515,6 +1707,25 @@ h4 {
   align-items: start;
 }
 
+/* Page-header voor overzichtspagina's — Breadcrumb + h1 boven .ov-wrap.
+   Zelfde max-width en padding-x als .ov-wrap, alleen padding-bottom 0
+   zodat .ov-wrap zijn eigen top-padding behoudt. */
+.ov-page-header {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 24px var(--content-padding-desktop) 0;
+}
+
+.ov-page-header > h1 {
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .ov-page-header {
+    padding: 16px var(--content-padding-mobile) 0;
+  }
+}
+
 .ov-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .ov-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .ov-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
@@ -1548,19 +1759,24 @@ h4 {
 /* ------------------------------------------------------------
    20. Breadcrumb
    ------------------------------------------------------------ */
+/* Sessie 3B correctie 7 — visueel onderscheid in breadcrumb:
+   - Links (klikbare ouder-pagina's) → --text-muted, hover → --link
+   - Separator "/" → --text-hint (lichtst, want puur decoratief)
+   - Current page (.bc-last) → --text (prominentst, geen link)
+   Werkt automatisch correct in dark mode dankzij correctie 1 (lichter --text-muted/hint). */
 .breadcrumbs {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: var(--text-hint);
+  color: var(--text-muted);
   margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
 .breadcrumbs a,
 .breadcrumbs button {
-  color: var(--text-hint);
+  color: var(--text-muted);
   background: none;
   border: none;
   padding: 0;
@@ -1570,17 +1786,17 @@ h4 {
 
 .breadcrumbs a:hover,
 .breadcrumbs button:hover {
-  color: var(--navy-light);
+  color: var(--link);
 }
 
 .bc-sep {
-  color: var(--border);
+  color: var(--text-hint);
   margin: 0 2px;
 }
 
 .bc-last {
-  color: var(--text-muted);
-  font-weight: 500;
+  color: var(--text);
+  font-weight: 600;
 }
 
 /* ------------------------------------------------------------
@@ -1594,6 +1810,11 @@ h4 {
   overflow: hidden;
 }
 
+/* Sessie 3B correctie 5 — shimmer-gradient zichtbaar in beide modes.
+   Eerder: rgba(255,255,255,0.4) wit-band over bijna-witte --surface2 (#f5f7f8)
+   in light mode → wit op bijna-wit, animatie technisch wel maar visueel
+   onzichtbaar. Nu: donkere grijs-band over lichte surface zorgt voor
+   zichtbaar contrast. */
 .skeleton::after {
   content: '';
   position: absolute;
@@ -1601,19 +1822,27 @@ h4 {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
+    rgba(13, 31, 45, 0.08) 50%,
     transparent 100%
   );
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
 }
 
 [data-theme="dark"] .skeleton::after {
+  /* Lichte band over donkere surface — verhoogd van 0.05 naar 0.12 voor
+     zichtbare beweging (correctie 1 + 5). */
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.12) 50%,
     transparent 100%
   );
+}
+
+[data-theme="dark"] .skeleton {
+  /* Lichter dan --bg zodat de skeleton-blokken zelf ook visueel leesbaar zijn
+     als loading-placeholder (correctie 1 — losse staartje skeleton-zichtbaarheid). */
+  background: #243043;
 }
 
 .skeleton-text {
@@ -1644,7 +1873,10 @@ h4 {
 @media (prefers-reduced-motion: reduce) {
   .skeleton::after {
     animation: none;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(13, 31, 45, 0.08);
+  }
+  [data-theme="dark"] .skeleton::after {
+    background: rgba(255, 255, 255, 0.10);
   }
 }
 
@@ -2039,5 +2271,2838 @@ a:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   29. Detail-pagina shell + filter-helpers + card-overlay
+       (toevoeging na sessie 4 fundament-analyse)
+       Alle regels 1-op-1 overgenomen uit MaterialDistrict_MockUp_DEF.html
+   ------------------------------------------------------------ */
+
+/* Detail-pagina layout — 1fr main + 300px sidebar (mockup r.99-100, r.173-174) */
+.pub-layout {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 32px var(--content-padding-desktop) 80px;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  align-items: start;
+}
+
+.pub-layout-inner {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 36px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .pub-layout {
+    grid-template-columns: 1fr !important;
+    padding: 16px var(--content-padding-mobile) 48px !important;
+  }
+  .pub-layout-inner {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Filter-count badge — naast section-header en op individuele opties (mockup r.628-642) */
+.filter-count {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+  border-radius: 100px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-width: 22px;
+  justify-content: center;
+}
+
+/* Modifier voor "actief filter"-aantal in section header — navy pill */
+.filter-count.is-active {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+
+/* Modifier voor wanneer de badge inline naast een titel staat */
+.filter-count.is-inline {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* NB: Card overlay-buttons (Save/Compare op card-thumbs) gebruiken sinds
+   sessie 3 batch I de generieke <ActionButton size="sm" /> i.p.v. een
+   eigen .card-action-btn klasse. Zie globals.css §35 (.action-btn.is-sm). */
+
+/* Single-select option (radio-style) — gebruikt door FilterSidebar wanneer
+   selectMode='single'. Maakt van .uf-checkbox een ronde radio. */
+.uf-checkbox.is-radio {
+  border-radius: 50% !important;
+}
+
+.uf-checkbox.is-radio.checked::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+  display: block;
+}
+
+.uf-checkbox.is-radio.checked > svg {
+  display: none;
+}
+
+/* Saved-search button in filter-header — naast Clear, met Insider-mark voor non-members */
+.uf-header-save {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 3px 8px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-base);
+}
+
+.uf-header-save:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Action-cluster in filter-header (Save + Clear + close-knop) */
+.uf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Pagination — gedeeld over alle overzichtspagina's */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+}
+
+.pagination-btn:hover:not(:disabled):not(.is-active) {
+  /* Sessie 3A batch 4: hover = alleen border kleurt, geen achtergrond-shift.
+     Sessie 3B correctie 1C: --link token i.p.v. --navy voor dark-mode leesbaarheid. */
+  border-color: var(--link);
+  color: var(--text);
+}
+
+.pagination-btn.is-active {
+  background: var(--link);
+  color: white;
+  border-color: var(--link);
+  cursor: default;
+  /* Sessie 3A batch 4: actieve pagina is niet klikbaar — geen onnodige refresh */
+  pointer-events: none;
+}
+
+.pagination-btn:disabled {
+  /* Sessie 3A batch 4: behoud zelfde dimensies (geen layout-shift) */
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 6px;
+  color: var(--text-hint);
+  font-size: 13px;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------
+   30. Detail-page header (DetailHeader component)
+       Gemodelleerd op detailHeader() in mockup r.4840-4859
+   ------------------------------------------------------------ */
+.detail-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-header-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 24px var(--content-padding-desktop) 26px;
+}
+
+.detail-header-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--navy);
+  font-weight: 500;
+  margin-bottom: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity var(--transition-base);
+}
+
+.detail-header-back:hover {
+  opacity: 0.7;
+}
+
+.detail-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.detail-header-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-header-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+/* .detail-header-title — page-h1 op detail-pagina's.
+   Iets groter dan t-display-lg (44px ipv 38px) omdat detail-pagina's
+   een grotere typographic anchor gebruiken. Pas dit alleen aan wanneer
+   het type-systeem zelf wijzigt. */
+.detail-header-title {
+  font-family: var(--font-display);
+  font-size: 44px;
+  color: var(--text);
+  line-height: 1.05;
+  margin: 0 0 10px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+[data-theme="dark"] .detail-header-title {
+  color: white;
+}
+
+.detail-header-meta {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.detail-header-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .detail-header-inner {
+    padding: 16px var(--content-padding-mobile) 20px;
+  }
+  .detail-header-title {
+    font-size: 32px;
+  }
+}
+
+/* ------------------------------------------------------------
+   31. Detail-page actions
+       NB: Sinds sessie 3 batch I gebruikt <DetailActions /> de
+       generieke <ActionButton size="md" /> in plaats van een
+       eigen .detail-action klasse. Zie globals.css §35 (.action-btn.is-md).
+   ------------------------------------------------------------ */
+
+/* ------------------------------------------------------------
+   32. Type-systeem (utility-klassen)
+       Vervangt de losse font-family/font-size declaraties die in
+       de mockup overal inline geschreven zijn.
+
+       Filosofie: 5 display-niveaus + 3 tekst-utilities. Mockup heeft
+       17 verschillende font-sizes — die zijn hier geconsolideerd.
+
+       Scheiding tussen visueel (utility) en semantisch (HTML-element):
+       gebruik <h1 class="t-display-lg"> voor een page-titel, niet
+       <div class="t-display-lg">. De klasse zegt niets over hiërarchie.
+   ------------------------------------------------------------ */
+
+/* Display-titels (font-display = DM Serif Display) */
+.t-display-xl,
+.t-display-lg,
+.t-display-md,
+.t-display-sm,
+.t-display-xs {
+  font-family: var(--font-display);
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-weight: 400;
+  margin: 0;
+}
+
+[data-theme="dark"] .t-display-xl,
+[data-theme="dark"] .t-display-lg,
+[data-theme="dark"] .t-display-md,
+[data-theme="dark"] .t-display-sm,
+[data-theme="dark"] .t-display-xs {
+  color: white;
+}
+
+.t-display-xl { font-size: 52px; line-height: 1.05; letter-spacing: -0.03em; }
+.t-display-lg { font-size: 38px; line-height: 1.08; letter-spacing: -0.025em; }
+.t-display-md { font-size: 28px; line-height: 1.15; }
+.t-display-sm { font-size: 22px; line-height: 1.25; }
+.t-display-xs { font-size: 18px; line-height: 1.3; }
+
+@media (max-width: 768px) {
+  .t-display-xl { font-size: 38px; }
+  .t-display-lg { font-size: 30px; }
+  .t-display-md { font-size: 24px; }
+  .t-display-sm { font-size: 19px; }
+}
+
+/* Eyebrow — kleine uppercase label, vaak boven titel.
+   Mockup heeft dit 84x inline geschreven. */
+.t-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-hint);
+  margin: 0;
+}
+
+.t-eyebrow.is-accent {
+  color: var(--green-mid);
+}
+
+/* Meta — kleine info-regel onder titel (datum, auteur, categorie).
+   Mockup heeft dit 157x inline geschreven. */
+.t-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.t-meta.is-faint {
+  color: var(--text-hint);
+}
+
+/* Body-text — reguliere tekst en kleinere muted tekst */
+.t-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.t-body-sm {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.t-body-xs {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   33. Layout helpers (utility-klassen)
+       Voor herhaalde mini-layout patronen die anders inline gaan.
+   ------------------------------------------------------------ */
+
+/* Inline-flex helpers — minimum gap = 6px (= --space-1.5).
+   Voor patronen als "icoon + label naast elkaar". */
+.u-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.u-inline.u-gap-2 { gap: 8px; }
+.u-inline.u-gap-3 { gap: 12px; }
+
+/* Flex-row met gap, voor wrapping action-rows */
+.u-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.u-row.u-gap-3 { gap: 12px; }
+
+/* Stretch (verberg / toon op breedte) — uit batch G blijft, hier expliciet */
+.u-full-width {
+  width: 100%;
+}
+
+/* Visually-hidden voor checkbox/radio-inputs achter custom indicators */
+.u-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* display: contents — voor wrappers die hun children direct in het grid/flex
+   van de parent willen plaatsen zonder eigen box te zijn (semantische lijsten,
+   accessible group labels). */
+.u-contents {
+  display: contents;
+}
+
+/* Mobile-only / desktop-only zichtbaarheid (bestaat in mockup als
+   .show-mobile / .hide-mobile, hier alias voor subtiel ander gedrag) */
+.u-mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .u-mobile-only {
+    display: inline-flex;
+  }
+}
+
+/* Padding-y utilities voor kleine in-component tweaks */
+.u-py-1 { padding-top: 4px; padding-bottom: 4px; }
+.u-py-2 { padding-top: 8px; padding-bottom: 8px; }
+
+/* ------------------------------------------------------------
+   34. Card-thumb aspect-ratio modifiers
+       Vervangt inline aspectRatio props.
+   ------------------------------------------------------------ */
+.card-thumb { aspect-ratio: 16 / 9; }
+.card-thumb.is-portrait  { aspect-ratio: 3 / 4; }
+.card-thumb.is-landscape { aspect-ratio: 16 / 7; }
+.card-thumb.is-square    { aspect-ratio: 1 / 1; }
+.card-thumb.is-wide      { aspect-ratio: 21 / 9; }
+
+/* Card-thumb overlay-zone — voor action-buttons, badges, etc.
+   Stapelt children rechts-boven met gap. */
+.card-thumb-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+
+.card-thumb-overlay.is-bottom-left {
+  top: auto;
+  right: auto;
+  bottom: 8px;
+  left: 8px;
+}
+
+/* Sessie 3A batch 3: nieuwe positie voor de content-type Tag */
+.card-thumb-overlay.is-top-left {
+  top: 8px;
+  left: 8px;
+  right: auto;
+}
+
+/* ------------------------------------------------------------
+   35. ActionButton — generieke icon+label knop
+       Drie maten:
+        sm  = ronde overlay-knop (28x28) op card-thumbs
+        md  = detail-pagina action (38px hoog, met label)
+        lg  = primary CTA (46px hoog)
+       Vervangt: .card-action-btn, .detail-action, en losse
+       inline-styled icon-buttons in de mockup.
+   ------------------------------------------------------------ */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base), transform var(--transition-base);
+  font-family: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+/* Size: sm (overlay op card-thumb — rond, alleen icoon).
+   Achtergrond is vast wit, ongeacht theme, omdat de knop op een
+   image/gradient zit en dus geen --surface kleur kan gebruiken.
+
+   WCAG 2.1 AAA target-size: visueel 28×28, hit-area 44×44 via ::before. */
+.action-btn.is-sm {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: #5a6a73;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  font-size: 0;
+  position: relative;
+}
+
+.action-btn.is-sm::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+
+.action-btn.is-sm:hover {
+  background: white;
+  color: var(--text);
+  transform: scale(1.08);
+}
+
+/* Size: md (detail-pagina actions — icoon + label) */
+.action-btn.is-md {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+/* Size: lg (primary CTA) */
+.action-btn.is-lg {
+  height: 46px;
+  padding: 0 22px;
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Active-state (toggle-on, voor Save/Compare/etc.) */
+.action-btn.is-active {
+  border-color: var(--green-mid);
+  background: var(--green-pale);
+  color: var(--ct-material-dark);
+}
+
+.action-btn.is-sm.is-active {
+  background: white;
+  color: var(--green-mid);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+}
+
+[data-theme="dark"] .action-btn.is-active {
+  /* Sessie 3B correctie 1 — feller groen in dark mode.
+     Eerder: color: var(--green-light) = #163a16 (donker-op-donker, onleesbaar).
+     Nu:    helder mint-groen voor leesbare tekst+icoon contrast. */
+  background: rgba(46, 140, 50, 0.15);
+  border-color: var(--green-mid);
+  color: #6ee7b7;
+}
+
+/* sm.is-active blijft wit ook in dark mode (overlay op image, niet op surface) */
+[data-theme="dark"] .action-btn.is-sm.is-active {
+  background: white;
+  color: var(--green-mid);
+}
+
+/* ------------------------------------------------------------
+   36. ContentCard — standaard tegel voor alle content-types
+       Gebruikt .card als basis en voegt brand/title/meta/tags toe.
+       Vervangt het noodzakelijk bouwen van losse Material/Article/Brand-Cards.
+   ------------------------------------------------------------ */
+.content-card-eyebrow {
+  /* brand-naam of klein label boven titel */
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+/* Sessie 3A batch 3: title-row voor InsiderMark + titel naast elkaar */
+.content-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.content-card-title-row > .insider-mark {
+  /* Optical alignment: zit op hoogte van het hoofdletter-bovenstuk, niet
+     gecentreerd op alle regels. Een paar pixels omlaag voelt natuurlijker. */
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.content-card-title {
+  /* Sessie 3A batch 3: titel groter — 28px (≈ .t-display-md schaal). */
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0;
+  /* Max 2 regels voor consistente card-hoogte */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .content-card-title {
+    /* Op mobile iets compacter zodat 2 regels in de card-hoogte passen */
+    font-size: 22px;
+  }
+}
+
+.content-card-meta {
+  font-size: 11px;
+  color: var(--text-hint);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.content-card-meta-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.content-card-tags {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+/* Content-card header: tag links + insider-mark rechts */
+.content-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+/* ------------------------------------------------------------
+   37. Toegankelijkheid — skip-link, reduced motion, screen-reader
+   ------------------------------------------------------------ */
+
+/* Skip-to-main link — verschijnt alleen op focus, eerste tabstop
+   van de pagina. WCAG 2.4.1 (Bypass Blocks). */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--navy);
+  color: white;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  z-index: var(--z-toast);
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  top: 16px;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Respecteer reduced-motion voorkeur — sommige users krijgen
+   migraine/duizeligheid van animaties. WCAG 2.3.3 (AAA). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Visually hidden voor labels die wel voorgelezen moeten worden.
+   Alias voor .sr-only (al aanwezig op regel ~1015) — beide
+   gebruiken om met design-system-naming consistent te blijven. */
+.u-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* ------------------------------------------------------------
+   38. Page-utility — section spacing
+       Voor opeenvolgende secties op een page (bv. dashboard,
+       smoke-test, landing-pages).
+   ------------------------------------------------------------ */
+.u-section + .u-section {
+  margin-top: 32px;
+}
+
+@media (max-width: 768px) {
+  .u-section + .u-section { margin-top: 24px; }
+}
+
+/* Heading-margin reset binnen een .u-section */
+.u-section > h2:first-child,
+.u-section > h3:first-child {
+  margin-bottom: 12px;
+}
+
+/* ------------------------------------------------------------
+   39. Form fields — uitgebreid (sessie 3 batch I-v3)
+       Bouwt op bestaande .field-wrap (sectie 14 in dit bestand).
+       Voegt label, helper, error, select-chevron, checkbox/radio toe.
+   ------------------------------------------------------------ */
+
+/* Field-group: wrapper rond label + field + helper.
+   Batch 2: position-anchor voor de field-status-indicator (§41). */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+/* Label boven het veld */
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-label .field-required {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.field-label .field-optional {
+  color: var(--text-hint);
+  font-weight: 400;
+  font-size: 11px;
+}
+
+/* Helper text (onder veld, neutraal) */
+.field-helper {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* Error text (onder veld, rood)
+   Batch 2: visueel verborgen — error-feedback gaat nu via .field-status (§41).
+   De selector blijft bestaan voor backward-compat in HTML/oude templates. */
+.field-error {
+  display: none;
+}
+
+/* Disabled state — visueel doffer, niet-bewerkbaar */
+.field-wrap.is-disabled,
+.field-wrap[aria-disabled="true"] {
+  opacity: 0.55;
+  pointer-events: none;
+  background: var(--surface2);
+  border-color: var(--border);
+}
+
+/* Placeholder styling */
+.field-wrap input::placeholder,
+.field-wrap textarea::placeholder {
+  color: var(--text-hint);
+}
+
+/* Select — eigen chevron icoon (browser-default verbergen) */
+.field-wrap.is-select {
+  position: relative;
+}
+
+.field-wrap.is-select select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 36px;
+}
+
+.field-wrap.is-select::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%235a6a7a' stroke-width='2' viewBox='0 0 24 24'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  transform: translateY(-50%);
+}
+
+[data-theme="dark"] .field-wrap.is-select::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%238b9eb8' stroke-width='2' viewBox='0 0 24 24'><path d='M6 9l6 6 6-6'/></svg>");
+}
+
+/* Checkbox / Radio — gestyled label-wrap met custom indicator.
+   Verbergt de native input via .u-sr-only en rendert eigen <span>. */
+.choice {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding: 6px 0;
+}
+
+.choice:has(input:disabled) {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.choice-indicator {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--text-hint);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  position: relative;
+  margin-top: 1px;
+}
+
+.choice-indicator.is-checkbox {
+  border-radius: 4px;
+}
+
+.choice-indicator.is-radio {
+  border-radius: 50%;
+}
+
+/* Checked state */
+.choice input:checked ~ .choice-indicator {
+  border-color: var(--navy);
+  background: var(--navy);
+}
+
+.choice input:checked ~ .choice-indicator.is-checkbox::after {
+  content: '';
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.choice input:checked ~ .choice-indicator.is-radio::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Focus-visible op de hidden input bubbelt door naar de indicator */
+.choice input:focus-visible ~ .choice-indicator {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+.choice-label {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.choice-description {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* RadioGroup / CheckboxGroup container */
+.choice-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.choice-group.is-horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Field-row — voor naast-elkaar form fields (bv. firstName + lastName) */
+.field-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .field-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Icon support voor Input — icoon links of rechts in het veld */
+.field-wrap.has-icon-before,
+.field-wrap.has-icon-after {
+  display: flex;
+  align-items: center;
+}
+
+.field-wrap.has-icon-before input {
+  padding-left: 0;
+}
+
+.field-wrap.has-icon-after input {
+  padding-right: 0;
+}
+
+.field-icon-before,
+.field-icon-after {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 100%;
+  color: var(--text-hint);
+}
+
+.field-wrap:focus-within .field-icon-before,
+.field-wrap:focus-within .field-icon-after {
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------
+   40. Style-guide page (alleen voor /style-guide route)
+       Deze klassen zijn page-specifiek voor de design-system
+       documentation page. Niet gebruiken op andere pages.
+   ------------------------------------------------------------ */
+.sg-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px var(--content-padding-desktop) 80px;
+}
+
+@media (max-width: 768px) {
+  .sg-page { padding: 16px var(--content-padding-mobile) 48px; }
+}
+
+.sg-header {
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sg-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.sg-toc a {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.sg-toc a:hover {
+  background: var(--navy);
+  color: white;
+  border-color: var(--navy);
+}
+
+.sg-section {
+  margin-bottom: 64px;
+  scroll-margin-top: 80px;
+}
+
+.sg-section-header {
+  margin-bottom: 24px;
+}
+
+.sg-section-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+[data-theme="dark"] .sg-section-title { color: white; }
+
+.sg-section-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+.sg-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.sg-block-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sg-block-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sg-block-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.sg-block-demo {
+  padding: 32px 20px;
+  background: var(--bg);
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 80px;
+}
+
+.sg-block-demo.is-padded { padding: 32px; }
+.sg-block-demo.is-stack { flex-direction: column; align-items: stretch; }
+.sg-block-demo.is-tight { gap: 4px; }
+.sg-block-demo.is-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+@media (max-width: 768px) {
+  .sg-block-demo.is-grid { grid-template-columns: 1fr; }
+}
+
+/* Variant-grid: lijst van varianten met label */
+.sg-variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 24px 20px;
+  background: var(--bg);
+}
+
+.sg-variant {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.sg-variant-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+/* Color swatches */
+.sg-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.sg-swatch {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.sg-swatch-color {
+  height: 80px;
+}
+
+.sg-swatch-info {
+  padding: 10px 12px;
+  font-size: 11px;
+}
+
+.sg-swatch-name {
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  margin-bottom: 2px;
+}
+
+.sg-swatch-value {
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 10px;
+}
+
+/* Spacing visualizer */
+.sg-spacing-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sg-spacing-row:last-child { border-bottom: none; }
+
+.sg-spacing-label {
+  width: 100px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+
+.sg-spacing-bar {
+  height: 8px;
+  background: var(--navy);
+  border-radius: 2px;
+}
+
+/* Theme toggle voor style-guide */
+.sg-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--transition-base);
+}
+
+.sg-theme-toggle:hover { background: var(--surface2); }
+
+/* ------------------------------------------------------------
+   39. Style-guide pagina (/style-guide)
+       Layout en preview-blokken voor de visuele referentie.
+       Niet voor productie-pages — alleen op /style-guide.
+   ------------------------------------------------------------ */
+.sg-shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 32px var(--content-padding-desktop) 80px;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .sg-shell {
+    grid-template-columns: 1fr;
+    padding: 16px var(--content-padding-mobile) 48px;
+    gap: 20px;
+  }
+}
+
+.sg-nav {
+  position: sticky;
+  top: calc(var(--header-height-desktop) + 24px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  max-height: calc(100vh - var(--header-height-desktop) - 48px);
+  overflow-y: auto;
+}
+
+.sg-nav-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  padding: 4px 10px 8px;
+  margin: 0;
+}
+
+.sg-nav-link {
+  display: block;
+  padding: 6px 10px;
+  font-size: 13px;
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.sg-nav-link:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.sg-nav-link.is-active {
+  background: var(--navy);
+  color: white;
+}
+
+.sg-nav-subgroup {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  .sg-nav { display: none; }
+}
+
+/* Page-header van de style-guide */
+.sg-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sg-intro {
+  margin-top: 12px;
+  max-width: 60ch;
+}
+
+/* Sectie + subsectie binnen de style-guide */
+.sg-section {
+  scroll-margin-top: calc(var(--header-height-desktop) + 16px);
+  margin-bottom: 56px;
+}
+
+.sg-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--text);
+}
+
+[data-theme="dark"] .sg-section-header {
+  border-bottom-color: var(--border);
+}
+
+.sg-section-desc {
+  margin-bottom: 24px;
+  max-width: 65ch;
+}
+
+.sg-subsection {
+  scroll-margin-top: calc(var(--header-height-desktop) + 16px);
+  margin-bottom: 32px;
+}
+
+.sg-subsection-title {
+  margin-bottom: 6px;
+}
+
+.sg-subsection-desc {
+  margin-bottom: 14px;
+  max-width: 65ch;
+}
+
+/* Preview-blok — gestreept frame waarin een component-variant wordt getoond.
+   Het frame-padding is bewust ruim om witruimte rondom te tonen. */
+.sg-preview {
+  background:
+    linear-gradient(135deg, var(--surface2) 25%, transparent 25%) -10px 0,
+    linear-gradient(225deg, var(--surface2) 25%, transparent 25%) -10px 0,
+    linear-gradient(315deg, var(--surface2) 25%, transparent 25%),
+    linear-gradient(45deg,  var(--surface2) 25%, transparent 25%);
+  background-size: 20px 20px;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  min-height: 80px;
+  margin-bottom: 0;
+}
+
+.sg-preview.is-stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.sg-preview.is-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.sg-preview.is-light {
+  background: var(--surface);
+  background-image: none;
+}
+
+.sg-preview.is-tinted {
+  background: var(--surface);
+  background-image: none;
+  border: 1px dashed var(--border);
+}
+
+@media (max-width: 768px) {
+  .sg-preview.is-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Variant-label boven preview-blok */
+.sg-variant {
+  margin-bottom: 8px;
+}
+
+.sg-variant-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 769px) {
+  .sg-variant-grid.is-2 { grid-template-columns: repeat(2, 1fr); }
+  .sg-variant-grid.is-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Code-snippet ernaast — monospaced, ingedeukt */
+.sg-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  background: var(--surface2);
+  color: var(--text);
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  white-space: pre;
+  border: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+[data-theme="dark"] .sg-code {
+  background: #0d1117;
+}
+
+/* Color swatches grid */
+.sg-swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.sg-swatch {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.sg-swatch-color {
+  height: 64px;
+  display: block;
+}
+
+.sg-swatch-meta {
+  padding: 8px 12px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.sg-swatch-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.sg-swatch-token {
+  color: var(--text-muted);
+  font-family: ui-monospace, monospace;
+  font-size: 10px;
+}
+
+/* Type-specimen — toont elke schaal apart */
+.sg-type-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 16px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sg-type-row:last-child { border-bottom: none; }
+
+.sg-type-meta {
+  font-size: 11px;
+  color: var(--text-hint);
+  font-family: ui-monospace, monospace;
+}
+
+/* Spacing visualisatie */
+.sg-spacing-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.sg-spacing-row:last-child { border-bottom: none; }
+
+.sg-spacing-bar {
+  height: 12px;
+  background: var(--navy);
+  border-radius: 2px;
+}
+
+/* Token-tabel voor radius/shadow specimens */
+.sg-radius-grid,
+.sg-shadow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.sg-radius-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: ui-monospace, monospace;
+}
+
+.sg-shadow-tile {
+  background: var(--surface);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: ui-monospace, monospace;
+  border-radius: var(--radius-md);
+}
+
+/* TOC-anchor markers */
+.sg-anchor {
+  display: block;
+  height: 1px;
+  margin-top: -1px;
+}
+/* ============================================================ */
+/*  §40 — Style-guide: Iconen-sectie (toevoeging sessie 3A batch 1)
+/*  Scope: alleen `/style-guide`. Niet gebruiken op andere pages.
+/* ============================================================ */
+
+.sg-icon-category {
+  margin-top: 24px;
+}
+.sg-icon-category:first-of-type {
+  margin-top: 16px;
+}
+
+.sg-icons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sg-icon-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.sg-icon-tile:hover {
+  border-color: var(--text-hint);
+  background: var(--surface2);
+}
+
+.sg-icon-preview {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm, 6px);
+}
+[data-theme="dark"] .sg-icon-preview {
+  background: var(--surface2);
+}
+
+.sg-icon-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.sg-icon-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--text);
+  background: transparent;
+  padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sg-icon-source {
+  font-size: 10.5px;
+  color: var(--text-hint);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+  .sg-icons-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 6px;
+  }
+  .sg-icon-tile {
+    padding: 8px 10px;
+    gap: 10px;
+  }
+  .sg-icon-preview {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ============================================================
+   §41 — Form validation pattern (sessie 3A batch 2)
+   Status-indicator-cirkel rechts-boven het veld vervangt rode
+   borders en error-tekst. Submit-knop wordt rood bij submit-poging
+   met problemen. RadioGroup fieldset/legend genormaliseerd.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   41.1 Field-status-indicator
+   Een gekleurde cirkel met IconCheck (correct) of IconErrorMark (X)
+   rechts-boven de field-group. Default niet zichtbaar; .is-visible
+   triggert de scale/fade-in.
+   ------------------------------------------------------------ */
+.field-status {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  pointer-events: none;
+  z-index: 1;
+  /* Hidden default — .is-visible zet beide naar 1 */
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+.field-status.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.field-status.is-valid {
+  background: var(--green-mid);
+}
+
+.field-status.is-invalid {
+  background: var(--red);
+}
+
+/* Het icoon binnen de cirkel — strakke maat voor lucide stroke-iconen */
+.field-status > svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
+}
+
+/* Voor velden zonder visuele label (inline forms) zit de indicator
+   verticaal gecentreerd op het veld zelf. Zet .field-group.is-no-label
+   op de wrapper om dit gedrag te activeren. */
+.field-group.is-no-label .field-status {
+  top: 50%;
+  transform: translateY(-50%) scale(0.7);
+  right: 8px;
+}
+
+.field-group.is-no-label .field-status.is-visible {
+  transform: translateY(-50%) scale(1);
+}
+
+/* sr-only error message — gekoppeld via aria-errormessage. Voor
+   screen readers; visueel verborgen. */
+.field-status-message {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------------------------------------------
+   41.2 RadioGroup / CheckboxGroup fieldset+legend reset
+   Browser-default border + padding op <fieldset> verwijderen,
+   <legend> als eyebrow-stijl tekst renderen i.p.v. border-onderbreker.
+   ------------------------------------------------------------ */
+
+.field-group fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0; /* fix: chrome geeft fieldset min-content min-width */
+}
+
+.field-group fieldset > legend {
+  /* Reset legend's special border-breaking behavior */
+  padding: 0;
+  margin: 0 0 6px 0;
+  width: 100%;
+  display: block;
+  /* Zelfde stijl als .field-label */
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  align-items: center;
+  gap: 4px;
+}
+
+.field-group fieldset > legend .field-required {
+  color: var(--red);
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.field-group fieldset > legend .field-optional {
+  color: var(--text-hint);
+  font-weight: 400;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+/* ------------------------------------------------------------
+   41.3 Submit-button form-error state
+   Wordt geactiveerd door <Button formError /> (of .is-form-error
+   klasse) wanneer de form bij submit-poging onvolledig is. Tekst
+   en kleur veranderen tot alle vereiste velden correct zijn.
+   ------------------------------------------------------------ */
+
+.btn.is-form-error {
+  background: var(--red);
+  color: white;
+  border-color: var(--red);
+}
+
+.btn.is-form-error:hover:not(:disabled),
+.btn.is-form-error:focus-visible:not(:disabled) {
+  background: color-mix(in srgb, var(--red) 88%, black);
+  border-color: color-mix(in srgb, var(--red) 88%, black);
+}
+
+.btn.is-form-error:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   §42 — InsiderMark & Channel-tag overlay (sessie 3A batch 3)
+   Twee compacte componenten geïntroduceerd door de ContentCard
+   layout-overhaul:
+   - .insider-mark: icon-only sterretje-in-cirkel, 3 sizes
+   - .channel-tag-overlay: kleine pill voor op de thumb-overlay
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   42.1 InsiderMark — teal cirkel met sterretje, geen tekst
+   3 maten: xs (12px), sm (16px), md (20px)
+   ------------------------------------------------------------ */
+.insider-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ct-member);
+  color: white;
+  border-radius: 50%;
+  flex-shrink: 0;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.insider-mark.is-xs { width: 12px; height: 12px; }
+.insider-mark.is-sm { width: 16px; height: 16px; }
+.insider-mark.is-md { width: 20px; height: 20px; }
+
+.insider-mark svg {
+  display: block;
+  /* Nooit groter dan de cirkel zelf */
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------
+   42.2 Channel-tag-overlay — kleine pill voor channel-categorisatie
+   Op de thumb (linksonder), max 2 stuks per card. Donker-half-doorzichtig
+   zodat het over willekeurige image/gradient leesbaar blijft.
+   ------------------------------------------------------------ */
+.channel-tag-overlay {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 100px;
+  white-space: nowrap;
+  /* Backdrop-filter for browsers that support it — fallback is the bg above */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  line-height: 1;
+}
+
+/* In dark mode kunnen channel-overlay's iets minder donker zijn */
+[data-theme="dark"] .channel-tag-overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* ============================================================
+   §43 — Buttons, Links, Navigation (sessie 3A batch 4)
+   Nieuwe componenten + utilities die voorheen inline-gestyled waren.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   43.1 TextLink — navy tekstlink met optionele trailing-arrow
+   ------------------------------------------------------------ */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--transition-base);
+  white-space: nowrap;
+}
+
+.text-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Sessie 3B correctie 1C — TextLink-navy gebruikt --link token,
+   dat in dark mode automatisch naar --navy-light wisselt voor leesbaarheid. */
+.text-link-navy { color: var(--link); }
+.text-link-navy:hover { color: var(--link-hover); }
+
+.text-link-muted { color: var(--text-muted); }
+.text-link-muted:hover { color: var(--text); }
+
+.text-link-inherit { color: inherit; }
+
+.text-link-arrow {
+  display: inline-flex;
+  align-items: center;
+  transition: transform var(--transition-base);
+}
+
+.text-link:hover .text-link-arrow {
+  transform: translateX(2px);
+}
+
+/* ------------------------------------------------------------
+   43.2 Tabs — horizontale underline-style tab-rij
+   ------------------------------------------------------------ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  align-items: stretch;
+}
+
+.tab-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px; /* overlap de border van de container */
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-base), border-color var(--transition-base);
+}
+
+.tab-item:hover:not(:disabled):not(.is-active) {
+  color: var(--text);
+}
+
+.tab-item.is-active {
+  /* Sessie 3B correctie 1C — actieve tab kleur+border via --link token
+     zodat het in dark mode lichter blauw wordt en leesbaar blijft. */
+  color: var(--link);
+  border-bottom-color: var(--link);
+}
+
+.tab-item:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: -2px;
+  border-radius: 2px;
+}
+
+.tab-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tab-item-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border-radius: 100px;
+}
+
+.tab-item.is-active .tab-item-count {
+  background: var(--link);
+  color: white;
+}
+
+/* ------------------------------------------------------------
+   43.3 IconButton — generieke icon-only button
+   ------------------------------------------------------------ */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  position: relative;
+  color: var(--text);
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+  flex-shrink: 0;
+}
+
+.icon-btn.is-sm { width: 28px; height: 28px; }
+.icon-btn.is-md { width: 36px; height: 36px; }
+.icon-btn.is-lg { width: 44px; height: 44px; }
+
+.icon-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn-icon svg { display: block; }
+
+/* Variants */
+.icon-btn.is-ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.icon-btn.is-ghost:hover:not(:disabled) {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.icon-btn.is-subtle {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: var(--border);
+}
+.icon-btn.is-subtle:hover:not(:disabled) {
+  background: var(--surface);
+  border-color: var(--text-muted);
+}
+
+.icon-btn.is-solid {
+  background: var(--navy);
+  color: white;
+}
+.icon-btn.is-solid:hover:not(:disabled) {
+  background: var(--navy-2);
+}
+
+/* Active toggle-state */
+.icon-btn.is-active {
+  background: var(--surface2);
+  color: var(--navy);
+  border-color: var(--navy);
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Notification dot */
+.icon-btn-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  background: var(--red);
+  border: 1.5px solid var(--surface);
+  border-radius: 50%;
+}
+
+/* ------------------------------------------------------------
+   43.4 HeaderNavItem — top-level navigatie-link
+   ------------------------------------------------------------ */
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius);
+  position: relative;
+  transition: color var(--transition-base), background var(--transition-base);
+  white-space: nowrap;
+}
+
+.nav-item:hover {
+  background: var(--surface2);
+}
+
+.nav-item.is-active {
+  /* Sessie 3B correctie 1C — actieve nav-item via --link token. */
+  color: var(--link);
+}
+
+.nav-item.is-active::after {
+  /* Underline-indicator voor de actieve route */
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  height: 2px;
+  background: var(--link);
+  border-radius: 1px;
+}
+
+.nav-item.is-insider {
+  color: var(--ct-insider);
+}
+
+.nav-item.is-insider.is-active {
+  color: var(--ct-insider);
+}
+.nav-item.is-insider.is-active::after {
+  background: var(--ct-insider);
+}
+
+.nav-item-chevron {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 2px;
+  transition: transform var(--transition-base);
+}
+
+.nav-item.has-dropdown[aria-expanded="true"] .nav-item-chevron {
+  transform: rotate(180deg);
+}
+
+.nav-item:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------
+   43.5 MobileNavItem — drawer-item met grote tap-target
+   ------------------------------------------------------------ */
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  min-height: 52px;
+  transition: background var(--transition-base);
+}
+
+.mobile-nav-item:hover,
+.mobile-nav-item:focus-visible {
+  background: var(--surface2);
+  outline: none;
+}
+
+.mobile-nav-item.is-active {
+  /* Sessie 3B correctie 1C — actieve mobile-nav-item via --link token. */
+  color: var(--link);
+  background: var(--surface2);
+}
+
+.mobile-nav-item.is-insider {
+  color: var(--ct-insider);
+}
+
+.mobile-nav-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.mobile-nav-item.is-active .mobile-nav-item-icon,
+.mobile-nav-item.is-insider .mobile-nav-item-icon {
+  color: inherit;
+}
+
+.mobile-nav-item-label {
+  flex: 1 1 auto;
+}
+
+.mobile-nav-item-chevron {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-hint);
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------
+   43.6 FooterLink — site-footer text-link
+   ------------------------------------------------------------ */
+.footer-link {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color var(--transition-base);
+}
+
+.footer-link:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   §44 — Membership-gates (sessie 3A batch 5)
+   InsiderGate (4 varianten) + BrandTierGate (2 varianten) +
+   PreviewModeIndicator. Twee kleurenfamilies: teal voor Insider
+   (content-gating, promotioneel), navy/grijs voor BrandTier
+   (functionaliteit-gating, informatief).
+   ============================================================ */
+
+/* ============================================================
+   44.1 InsiderGate — gemeenschappelijke styling
+   Sessie 3B correctie 8: herzien naar mockup-patroon (mockup
+   regels rond .insider-modal-top + .insider-modal-body).
+   - Top-block: teal background, witte tekst, icoon-vierkant linksboven
+   - Body-block: witte achtergrond, benefits als kaartjes, teal CTA
+   Geldt voor alle 4 varianten (modal/paywall/panel/card).
+   ============================================================ */
+
+/* Top-block met teal Insider-branding. Overschrijft ook is-card-variant
+   die zijn eigen compact patroon heeft (zie 44.5). */
+.insider-gate-top {
+  background: var(--ct-insider);
+  color: white;
+  padding: 32px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* Icoon-vierkant met halftransparante witte achtergrond (niet meer een
+   teal cirkel — patroon uit mockup). */
+.insider-gate-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+  /* Sessie 3B correctie 9 — voorkomt vervorming in flex-contexten */
+  align-self: center;
+}
+
+.insider-gate-icon.is-lg {
+  width: 64px;
+  height: 64px;
+}
+
+/* Eyebrow nu op teal background — wit met opacity voor secundair gewicht. */
+.insider-gate-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Titel in DM Serif Display, wit op teal. */
+.insider-gate-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: white;
+  margin: 4px 0 0;
+}
+
+.insider-gate-sub {
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 440px;
+  margin-top: 4px;
+}
+
+/* Body-block met benefits-kaartjes en CTA. */
+.insider-gate-body {
+  background: var(--surface);
+  padding: 28px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.insider-gate-list-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Feature-grid: 2 kolommen, items als kaartjes met border. */
+.insider-gate-feature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 4px 0;
+}
+
+.insider-gate-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  line-height: 1.3;
+}
+
+.insider-gate-feature-item svg {
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+/* CTA-knop is teal-fill, niet navy. Op de component zelf wordt
+   className "btn btn-insider btn-md" gezet (zie InsiderGate.tsx). */
+.insider-gate-cta {
+  align-self: stretch;
+  margin-top: 4px;
+  justify-content: center;
+}
+
+.insider-gate-signin-link {
+  align-self: center;
+  font-size: 13px;
+  color: var(--ct-insider);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .insider-gate-signin-link {
+  color: var(--ct-insider-mid);
+}
+
+.insider-gate-signin-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.insider-gate-secondary {
+  align-self: center;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.insider-gate-secondary:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.insider-gate-footnote {
+  text-align: center;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.insider-gate-dontshow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.insider-gate-dontshow input[type="checkbox"] {
+  accent-color: var(--ct-insider);
+}
+
+/* ============================================================
+   44.2 InsiderGate Modal variant
+   ============================================================ */
+.insider-gate-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 31, 45, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: insider-gate-fade-in 150ms ease-out;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+@keyframes insider-gate-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.insider-gate-modal {
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  /* Geen padding: top-block en body-block hebben elk hun eigen padding. */
+  padding: 0;
+  max-width: 480px;
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: insider-gate-slide-up 220ms ease-out;
+  box-shadow: 0 20px 60px rgba(13, 47, 78, 0.25);
+}
+
+@keyframes insider-gate-slide-up {
+  from { transform: translateY(8px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.insider-gate-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  z-index: 2;
+  transition: background var(--transition-base);
+}
+
+.insider-gate-modal-close:hover {
+  background: rgba(255, 255, 255, 0.28);
+  color: white;
+}
+
+/* ============================================================
+   44.3 InsiderGate Paywall variant — article cut-off
+   ============================================================ */
+.insider-gate.is-paywall {
+  position: relative;
+  margin-top: -120px;
+  padding-top: 120px;
+}
+
+.insider-gate.is-paywall .insider-gate-fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, var(--bg) 80%);
+  pointer-events: none;
+}
+
+.insider-gate.is-paywall .insider-gate-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  /* Geen padding: top-block en body-block hebben eigen padding. */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   44.4 InsiderGate Panel variant — full page
+   ============================================================ */
+.insider-gate.is-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 48px 24px;
+}
+
+.insider-gate.is-panel .insider-gate-card.is-large {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  /* Geen padding op de wrapper: top-block en body hebben eigen padding. */
+  padding: 0;
+  max-width: 560px;
+  width: 100%;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel-variant: iets ruimere top-block padding voor full-page presentatie. */
+.insider-gate.is-panel .insider-gate-top {
+  padding: 40px 32px 32px;
+}
+
+.insider-gate.is-panel .insider-gate-body {
+  padding: 28px 36px 36px;
+}
+
+/* ============================================================
+   44.5 InsiderGate Card variant — compacte sidebar
+   Card-variant heeft een eigen compact patroon: één teal-omrand
+   block met eyebrow + titel + beknopte CTA. Maar met dezelfde
+   teal-branding-taal als de andere varianten.
+   ============================================================ */
+.insider-gate.is-card .insider-gate-card.is-compact {
+  background: var(--surface);
+  border: 1px solid var(--ct-insider);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 320px;
+  overflow: hidden;
+}
+
+/* Compact teal-strip bovenaan met eyebrow */
+.insider-gate.is-card .insider-gate-card-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: white;
+  background: var(--ct-insider);
+  padding: 8px 14px;
+}
+
+.insider-gate.is-card .insider-gate-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+  padding: 12px 14px 4px;
+  margin: 0;
+}
+
+.insider-gate.is-card .insider-gate-card-description {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  padding: 0 14px 12px;
+}
+
+.insider-gate.is-card .btn-insider,
+.insider-gate.is-card .insider-gate-cta {
+  margin: 0 14px;
+  align-self: stretch;
+}
+
+.insider-gate.is-card .insider-gate-signin-link {
+  padding: 8px 14px 12px;
+  text-align: center;
+}
+
+/* ============================================================
+   44.6 BrandTierGate — gemeenschappelijke styling
+   ============================================================ */
+
+.brand-tier-gate {
+  position: relative;
+}
+
+.brand-tier-gate-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--surface2);
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  /* Sessie 3B correctie 9 — cirkel altijd perfect rond.
+     flex-shrink: 0 voorkomt vervorming in flex-containers waar de
+     parent smaller wordt dan de inhoud (zoals in is-section variant
+     met centered-flex layout). */
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.brand-tier-gate-tier {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.brand-tier-gate-title {
+  margin: 4px 0 8px;
+  color: var(--text);
+}
+
+.brand-tier-gate-description {
+  color: var(--text-muted);
+  max-width: 480px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* Tier-specifieke kleuren — subtiele accenten */
+.brand-tier-gate.is-basis .brand-tier-gate-icon {
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+.brand-tier-gate.is-plus .brand-tier-gate-icon {
+  background: #e3ecf6;
+  color: var(--navy);
+}
+.brand-tier-gate.is-partner .brand-tier-gate-icon {
+  background: var(--navy);
+  color: white;
+}
+
+[data-theme="dark"] .brand-tier-gate.is-plus .brand-tier-gate-icon {
+  background: #1a2838;
+  color: #93c5fd;
+}
+
+/* ============================================================
+   44.7 BrandTierGate Page variant — full dashboard page
+   ============================================================ */
+.brand-tier-gate.is-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: 48px 24px;
+}
+
+.brand-tier-gate.is-page .brand-tier-gate-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 540px;
+  text-align: left;
+}
+
+/* ============================================================
+   44.8 BrandTierGate Section variant — inline overlay
+   ============================================================ */
+.brand-tier-gate.is-section {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.brand-tier-gate-content-blur {
+  filter: blur(6px);
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+.brand-tier-gate-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  /* Sessie 3B correctie 10 — meer padding-top zodat de eerste content
+     (lock-cirkel of eyebrow) ademruimte heeft tegen de bovenrand van
+     het gestippelde kader. Vooral merkbaar bij de Partner-variant die
+     geen lock-cirkel toont — daar plakte "PARTNER FEATURE" eerder
+     direct tegen de top. */
+  padding: 36px 24px 28px;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  gap: 4px;
+}
+
+[data-theme="dark"] .brand-tier-gate-overlay {
+  background: rgba(20, 20, 20, 0.85);
+}
+
+.brand-tier-gate.is-section .brand-tier-gate-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 4px;
+}
+
+.brand-tier-gate.is-section .brand-tier-gate-title {
+  font-size: 16px;
+  margin: 4px 0 4px;
+}
+
+.brand-tier-gate.is-section .brand-tier-gate-description {
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.brand-tier-gate-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Preview-active: geen overlay meer, content gewoon zichtbaar */
+.brand-tier-gate.is-section.is-preview-active {
+  border: 1px dashed var(--blue, #4070b0);
+  padding: 12px;
+}
+
+/* ============================================================
+   44.9 PreviewModeIndicator — globale fixed-bottom indicator
+   ============================================================ */
+.preview-mode-indicator {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  display: flex;
+  justify-content: center;
+  pointer-events: none; /* alleen de inner is klikbaar */
+  animation: preview-indicator-slide-up 200ms ease-out;
+}
+
+@keyframes preview-indicator-slide-up {
+  from { transform: translate(-50%, 16px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.preview-mode-indicator-inner {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #1a5a96;
+  color: white;
+  border-radius: 100px;
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+}
+
+.preview-mode-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #93c5fd;
+  flex-shrink: 0;
+  animation: preview-indicator-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes preview-indicator-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.preview-mode-indicator-text strong {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.preview-mode-indicator-sublabel {
+  opacity: 0.85;
+}
+
+.preview-mode-indicator-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.preview-mode-indicator-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+@media (max-width: 768px) {
+  .preview-mode-indicator-inner {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 16px;
+  }
+}
+
+/* ============================================================
+   §45 — Style-guide: prominente dark-mode toggle (sessie 3A batch 6)
+   Alleen actief op /style-guide. Toggle-segment naast de page-titel.
+   ============================================================ */
+
+.sg-page-header-with-toggle {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.sg-theme-toggle-prominent {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 4px;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.sg-theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 100px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.sg-theme-toggle-btn:hover:not(.is-active) {
+  color: var(--text);
+}
+
+.sg-theme-toggle-btn.is-active {
+  background: var(--navy);
+  color: white;
+}
+
+.sg-theme-toggle-btn:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .sg-page-header-with-toggle {
+    flex-direction: column;
+  }
+  .sg-theme-toggle-prominent {
+    align-self: stretch;
+    justify-content: center;
   }
 }

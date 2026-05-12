@@ -2,7 +2,24 @@ import Link from 'next/link'
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes, ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
 
-export type ButtonVariant = 'primary' | 'outline' | 'blue' | 'green' | 'danger' | 'member'
+/**
+ * Button-varianten.
+ *
+ * Sessie 3B correctie 3: `'member'` is hernoemd naar `'insider'`. De oude
+ * waarde `'member'` blijft als alias werken (backward-compat) en mapt
+ * intern naar dezelfde `.btn-insider` styling. Nieuwe code moet
+ * `'insider'` gebruiken.
+ */
+export type ButtonVariant =
+  | 'primary'
+  | 'outline'
+  | 'blue'
+  | 'green'
+  | 'danger'
+  | 'insider'
+  /** @deprecated Sessie 3B — gebruik `'insider'`. */
+  | 'member'
+  | 'ghost'
 export type ButtonSize = 'sm' | 'md' | 'lg'
 
 interface CommonProps {
@@ -10,6 +27,11 @@ interface CommonProps {
   size?: ButtonSize
   children: ReactNode
   className?: string
+  /**
+   * Toon een loading-spinner naast het label en zet de knop op `aria-busy`.
+   * Werkt alleen op de native button-variant (niet op link).
+   */
+  loading?: boolean
 }
 
 /** Native button — als 'as' niet wordt opgegeven of expliciet 'button' is. */
@@ -36,20 +58,34 @@ export type ButtonProps = ButtonAsButton | ButtonAsLink
  * @example
  *   <Button variant="primary">Click</Button>
  *   <Button variant="outline" size="sm">Cancel</Button>
- *   <Button as="link" href="/membership" variant="member">Become Insider</Button>
+ *   <Button as="link" href="/membership" variant="insider">Become Insider</Button>
+ *   <Button loading>Saving…</Button>
  */
 export function Button(props: ButtonProps) {
-  const { variant = 'primary', size = 'md', children, className, ...rest } = props
+  const {
+    variant = 'primary',
+    size = 'md',
+    children,
+    className,
+    loading = false,
+    ...rest
+  } = props
+
+  // Sessie 3B correctie 3: oude 'member' variant mappen naar 'insider'-klasse,
+  // zodat zowel oude als nieuwe code dezelfde teal-knop krijgt.
+  const variantClass = variant === 'member' ? 'insider' : variant
 
   const classes = cn(
     'btn',
-    `btn-${variant}`,
+    `btn-${variantClass}`,
     size !== 'md' && `btn-${size}`,
+    loading && 'is-loading',
     className,
   )
 
   if ('as' in props && props.as === 'link') {
-    // Link-variant — strip 'as' en 'href' uit rest, gebruik href op Link
+    // Link-variant — strip 'as' en 'href' uit rest, gebruik href op Link.
+    // Loading-state op link is geen UX-pattern; we negeren het hier stilletjes.
     const { as: _as, href, ...anchorProps } = rest as {
       as: 'link'
       href: string
@@ -62,9 +98,15 @@ export function Button(props: ButtonProps) {
   }
 
   // Button-variant — strip 'as' uit rest
-  const { as: _as, ...buttonProps } = rest as { as?: 'button' } & ButtonHTMLAttributes<HTMLButtonElement>
+  const { as: _as, disabled, ...buttonProps } = rest as { as?: 'button' } & ButtonHTMLAttributes<HTMLButtonElement>
   return (
-    <button className={classes} {...buttonProps}>
+    <button
+      className={classes}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      {...buttonProps}
+    >
+      {loading && <span className="btn-spinner" aria-hidden="true" />}
       {children}
     </button>
   )

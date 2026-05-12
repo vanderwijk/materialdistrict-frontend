@@ -95,8 +95,6 @@ interface CardThumbProps {
   alt?: string
   /** Vaste achtergrond-kleur of gradient als fallback / placeholder. */
   background?: string
-  /** Aspect ratio override. Default: 16/9 via .card-thumb. */
-  aspectRatio?: string
   /** Overlays (badges, action-knoppen) — gepositioneerd binnen de thumb. */
   children?: ReactNode
   className?: string
@@ -106,28 +104,32 @@ interface CardThumbProps {
  * Card thumbnail/media zone.
  * Zet `src` voor een afbeelding, of `background` voor een gradient/kleur.
  * `children` wordt absoluut gepositioneerd binnen de thumb (overlays).
+ *
+ * Voor aspect-ratio varianten: gebruik className 'is-portrait' / 'is-landscape' /
+ * 'is-square' / 'is-wide' (gedefinieerd in globals.css §34). Default: 16/9.
+ *
+ * NB: `background` prop is een dynamische CSS-waarde (gradient/kleur per item)
+ * die niet voorspelbaar is op compile-time, dus inline. Voor vaste kleuren:
+ * voeg een eigen klasse toe in globals.css.
  */
 function CardThumb({
   src,
   alt = '',
   background,
-  aspectRatio,
   children,
   className,
 }: CardThumbProps) {
-  const style: Record<string, string | undefined> = {}
-  if (background) style.background = background
-  if (aspectRatio) style.aspectRatio = aspectRatio
-
   return (
-    <div className={cn('card-thumb', className)} style={style}>
+    <div
+      className={cn('card-thumb', className)}
+      style={background ? { background } : undefined}
+    >
       {src && (
         <Image
           src={src}
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          style={{ objectFit: 'cover' }}
         />
       )}
       {children}

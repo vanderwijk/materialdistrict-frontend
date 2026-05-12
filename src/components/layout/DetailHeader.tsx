@@ -1,0 +1,126 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { IconChevronLeft } from '@/components/ui/icons'
+import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils/cn'
+import { Tag } from '@/components/ui/Tag'
+import { InsiderBadge } from '@/components/ui/InsiderBadge'
+
+// ============================================================
+// Types
+// ============================================================
+
+type ContentType =
+  | 'material'
+  | 'article'
+  | 'event'
+  | 'book'
+  | 'brand'
+  | 'talk'
+  | 'member'
+
+interface DetailHeaderTag {
+  /**
+   * Welk soort tag. 'content' = standaard content-type pill (Material/Article/...).
+   * 'insider' = Insider-badge. Meerdere tags is OK.
+   */
+  type: 'content' | 'insider'
+  /** Voor type='content': het content-type. */
+  contentType?: ContentType
+  /** Voor type='content': optioneel custom label. Default = nette versie van contentType. */
+  label?: string
+}
+
+// ============================================================
+// Component
+// ============================================================
+
+interface DetailHeaderProps {
+  /**
+   * Back-link configuratie. Bij click navigeert naar `back.href`.
+   * Geen `back` = geen terug-knop.
+   */
+  back?: {
+    label: string
+    href: string
+  }
+  /** Content-type tags / insider-badges boven de titel. */
+  tags?: DetailHeaderTag[]
+  /** Page title (h1). */
+  title: ReactNode
+  /** Optionele meta-regel onder de titel (bv. brand · datum · categorie). */
+  meta?: ReactNode
+  /** Action-knoppen rechts (Save, Compare, Share, etc.) — typisch via <DetailActions />. */
+  actions?: ReactNode
+  className?: string
+}
+
+/**
+ * DetailHeader — universele header voor alle detail-pagina's.
+ *
+ * Bevat: back-knop → content-type tags → h1 title → optionele meta → action-row.
+ *
+ * Gemodelleerd op `detailHeader()` uit MaterialDistrict_MockUp_DEF.html
+ * (regel 4840-4859). De mockup gebruikt inline styling; deze component
+ * gebruikt `.detail-header*` klassen die in globals.css staan, plus
+ * bestaande `.ct-tag`, `.insider-badge`, etc.
+ *
+ * @example
+ *   <DetailHeader
+ *     back={{ label: 'Materials', href: '/materials' }}
+ *     tags={[{ type: 'content', contentType: 'material' }]}
+ *     title="Recycled Glass Composite"
+ *     meta={<>By <strong>Eternit</strong> · Added 12 days ago</>}
+ *     actions={<DetailActions type="material" itemId={123} includeCompare />}
+ *   />
+ */
+export function DetailHeader({
+  back,
+  tags,
+  title,
+  meta,
+  actions,
+  className,
+}: DetailHeaderProps) {
+  const router = useRouter()
+
+  return (
+    <div className={cn('detail-header', className)}>
+      <div className="detail-header-inner">
+        {back && (
+          <button
+            type="button"
+            className="detail-header-back"
+            onClick={() => router.push(back.href)}
+          >
+            <IconChevronLeft size={14} strokeWidth={2.5} />
+            Back to {back.label}
+          </button>
+        )}
+
+        <div className="detail-header-row">
+          <div className="detail-header-main">
+            {tags && tags.length > 0 && (
+              <div className="detail-header-tags">
+                {tags.map((t, i) =>
+                  t.type === 'insider' ? (
+                    <InsiderBadge key={i} />
+                  ) : t.contentType ? (
+                    <Tag key={i} contentType={t.contentType} label={t.label} />
+                  ) : null,
+                )}
+              </div>
+            )}
+
+            <h1 className="detail-header-title">{title}</h1>
+
+            {meta && <div className="detail-header-meta">{meta}</div>}
+          </div>
+
+          {actions && <div className="detail-header-actions">{actions}</div>}
+        </div>
+      </div>
+    </div>
+  )
+}

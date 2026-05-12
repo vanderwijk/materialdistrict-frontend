@@ -45,11 +45,11 @@ export function Breadcrumb({
 
   return (
     <nav className={cn('breadcrumbs', className)} aria-label={ariaLabel}>
-      <ol style={{ display: 'contents' }}>
+      <ol className="u-contents">
         {allItems.map((item, idx) => {
           const isLast = idx === allItems.length - 1
           return (
-            <li key={idx} style={{ display: 'contents' }}>
+            <li key={idx} className="u-contents">
               {idx > 0 && (
                 <span className="bc-sep" aria-hidden="true">
                   {separator}

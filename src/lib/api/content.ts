@@ -12,6 +12,10 @@
  *  - `list<Entities>` voor lijsten → returns `{ items, total, totalPages }`
  *  - Lijst-helpers gebruiken altijd `*ListItem` (lichtgewicht).
  *  - Detail-helpers resolven relations standaard (overridable via `resolve` param).
+ *
+ * Sessie 4 (12-05-2026): `listMaterialsWithFacets` toegevoegd — het
+ * orchestratie-punt voor de /materials-overzichtspagina. Combineert
+ * FacetWP filtered + baseline + WP REST batch-fetch tot één UI-shape.
  */
 
 import type { Article } from '@/types/article'
@@ -19,6 +23,12 @@ import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event } from '@/types/event'
 import type { Material, MaterialListItem } from '@/types/material'
 import type { Talk } from '@/types/talk'
+import type { FacetSelection, MaterialSortValue } from '@/types/facetwp'
+
+import {
+  fetchMaterialFacetsBaseline,
+  fetchMaterialsFiltered,
+} from './facetwp'
 
 import {
   mapArticle,
@@ -27,12 +37,14 @@ import {
   mapBrandListItem,
   mapEvent,
   mapEventListItem,
+  mapFacetWPToFilterSections,
   mapMaterial,
   mapMaterialListItem,
   mapMedia,
   mapTalk,
   mapTalkListItem,
   splitGallery,
+  type MaterialFilterSection,
 } from './mappers'
 
 import {
@@ -41,6 +53,7 @@ import {
   type ListEventsParams,
   type ListMaterialsParams,
   type ListTalksParams,
+  type WPMaterialRawResponse,
   getArticleBySlug as fetchArticleBySlugRaw,
   getAttachmentsForPost,
   getBrandById as fetchBrandByIdRaw,
@@ -54,6 +67,7 @@ import {
   listEvents as listEventsRaw,
   listMaterials as listMaterialsRaw,
   listTalks as listTalksRaw,
+  wpFetch,
 } from './wordpress'
 
 // --------------------------------------------------------------------
@@ -111,8 +125,8 @@ export interface ListMaterialsResult {
  * Lijst materials voor overzichtspagina's (homepage carousels, "recente
  * materials", "materialen van brand X").
  *
- * Voor de hoofdoverzichtspagina /material met FacetWP-filtering: gebruik
- * `fetchMaterials` uit `./facetwp`.
+ * Voor de hoofdoverzichtspagina /materials met FacetWP-filtering: gebruik
+ * `listMaterialsWithFacets` hieronder.
  *
  * Resolves:
  *  - hero: featured_media → MediaImage. Default ON.
@@ -164,6 +178,167 @@ export async function listMaterials(
   )
 
   return { items, total, totalPages }
+}
+
+// --------------------------------------------------------------------
+// Material — FacetWP-overzichtspagina orchestrator
+// --------------------------------------------------------------------
+
+export interface ListMaterialsWithFacetsParams {
+  /** Geselecteerde facet-waarden (mag leeg zijn). */
+  selection?: FacetSelection
+  /** 1-indexed paginanummer. */
+  page?: number
+  /** Aantal per pagina. Default 12. */
+  perPage?: number
+  /** Sortering. */
+  sort?: MaterialSortValue
+  /** Vrije zoekterm. */
+  search?: string
+}
+
+export interface ListMaterialsWithFacetsResult {
+  /** Resolved material list items (hero + brand naam) — in FacetWP-sort-volgorde. */
+  items: MaterialListItem[]
+  /** Pager-state uit FacetWP. */
+  pager: {
+    page: number
+    perPage: number
+    totalRows: number
+    totalPages: number
+  }
+  /** Filter-secties voor de FilterSidebar — gemerged baseline + filtered. */
+  filterSections: MaterialFilterSection[]
+}
+
+/**
+ * Orchestrator voor `/materials` — combineert drie data-bronnen:
+ *
+ *  1. FacetWP filtered call → `results`-IDs + pager + actuele facet-state
+ *  2. FacetWP baseline call → volledige facet-set (label + choices + counts
+ *     voor de ongefilterde wereld). Nodig om de FilterSidebar altijd alle
+ *     facets te kunnen tonen, ook die zonder huidige selectie.
+ *  3. `/wp/v2/material?include=<ids>` → raw material-data voor de grid.
+ *
+ * Calls 1 en 2 draaien parallel; call 3 wacht op 1 (heeft de IDs nodig).
+ *
+ * Mapper-laag merged baseline (alle facets + labels + alle choices) met
+ * filtered (counts + selected) — zie `mapFacetWPToFilterSections`.
+ *
+ * Failure-modes:
+ *  - FacetWP-call faalt → exception bubbelt op naar de page → `error.tsx`
+ *  - WP-include-call faalt → idem
+ *  - Geen results → returnt items: [] (geen exception); page rendert dan
+ *    `EmptyState reason="filtered-out"` of `"no-results"`
+ */
+export async function listMaterialsWithFacets(
+  params: ListMaterialsWithFacetsParams = {},
+): Promise<ListMaterialsWithFacetsResult> {
+  // 1 + 2: parallel — filtered query én ongefilterde baseline
+  const [filteredResponse, baselineResponse] = await Promise.all([
+    fetchMaterialsFiltered({
+      facets: params.selection,
+      page: params.page,
+      perPage: params.perPage,
+      sort: params.sort,
+      search: params.search,
+    }),
+    fetchMaterialFacetsBaseline(),
+  ])
+
+  // 3: WP REST batch-fetch — alleen als er results zijn
+  const ids = filteredResponse.results
+  const rawItemsUnordered =
+    ids.length > 0 ? await fetchMaterialsByIds(ids) : []
+
+  // FacetWP geeft IDs in sort-volgorde; WP REST `include=` respecteert
+  // die volgorde niet noodzakelijk. Daarom re-orderen op basis van `ids`.
+  const orderedRawItems = reorderByIds(rawItemsUnordered, ids)
+
+  // Batch-resolve hero + brand-naam (zelfde patroon als listMaterials)
+  const heroIds = unique(
+    orderedRawItems.map((r) => r.featured_media).filter((id) => id > 0),
+  )
+  const brandIds = unique(
+    orderedRawItems
+      .map((r) => r.meta?.brand_id)
+      .filter((id): id is number => typeof id === 'number' && id > 0),
+  )
+
+  const [mediaMap, brandNameMap] = await Promise.all([
+    fetchMediaMap(heroIds),
+    fetchBrandNameMap(brandIds),
+  ])
+
+  const items: MaterialListItem[] = orderedRawItems.map((raw) =>
+    mapMaterialListItem(
+      raw,
+      raw.featured_media > 0 ? mediaMap.get(raw.featured_media) ?? null : null,
+      typeof raw.meta?.brand_id === 'number' && raw.meta.brand_id > 0
+        ? brandNameMap.get(raw.meta.brand_id) ?? null
+        : null,
+    ),
+  )
+
+  // FilterSections: baseline = volledige set, filtered = counts + selected
+  const filterSections = mapFacetWPToFilterSections(
+    baselineResponse,
+    filteredResponse,
+  )
+
+  return {
+    items,
+    pager: {
+      page: filteredResponse.pager.page,
+      perPage: filteredResponse.pager.per_page,
+      totalRows: filteredResponse.pager.total_rows,
+      totalPages: filteredResponse.pager.total_pages,
+    },
+    filterSections,
+  }
+}
+
+/**
+ * Helper: haal meerdere materials in één call via `?include=`.
+ *
+ * WP REST `per_page` heeft een maximum van 100 — als FacetWP ooit meer
+ * dan 100 IDs per pagina retourneert, splitsen we hier in chunks. Voor
+ * sessie 4 is `perPage` max 12 dus geen issue.
+ */
+async function fetchMaterialsByIds(
+  ids: number[],
+): Promise<WPMaterialRawResponse[]> {
+  if (ids.length === 0) return []
+
+  return wpFetch<WPMaterialRawResponse[]>('/wp/v2/material', {
+    params: {
+      include: ids,
+      per_page: ids.length,
+      orderby: 'include',
+    },
+  })
+}
+
+/**
+ * Sorteer een array van materials op de volgorde van de gegeven ID-lijst.
+ *
+ * Nodig omdat FacetWP de sort-volgorde bepaalt (newest first, etc.), maar
+ * `/wp/v2/material?include=` die volgorde niet noodzakelijk respecteert
+ * zonder expliciete `orderby=include`. Veiligheidsnet voor het geval
+ * `orderby=include` niet werkt zoals verwacht.
+ */
+function reorderByIds<T extends { id: number }>(
+  items: T[],
+  ids: number[],
+): T[] {
+  const map = new Map<number, T>()
+  for (const item of items) map.set(item.id, item)
+  const ordered: T[] = []
+  for (const id of ids) {
+    const item = map.get(id)
+    if (item) ordered.push(item)
+  }
+  return ordered
 }
 
 // --------------------------------------------------------------------
@@ -317,7 +492,9 @@ async function getMediaImage(id: number) {
  * Batch-fetch van media-IDs tot een Map<id, MediaImage>.
  * Gebruikt `include` om in één REST-call meerdere attachments te halen.
  */
-async function fetchMediaMap(ids: number[]): Promise<Map<number, ReturnType<typeof mapMedia>>> {
+async function fetchMediaMap(
+  ids: number[],
+): Promise<Map<number, ReturnType<typeof mapMedia>>> {
   const map = new Map<number, ReturnType<typeof mapMedia>>()
   if (ids.length === 0) return map
   const { getMediaBatch } = await import('./wordpress')

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
+import { IconChevronLeft, IconChevronRight, IconSearch } from './icons'
 import { cn } from '@/lib/utils/cn'
 
 /** Default channels — uit MaterialDistrict_MockUp_DEF.html */
@@ -119,7 +119,7 @@ export function ChannelBar({
             disabled={!canPrev}
             aria-label="Previous channels"
           >
-            <ChevronLeft size={10} strokeWidth={2} />
+            <IconChevronLeft size={10} strokeWidth={2} />
           </button>
         </div>
 
@@ -149,14 +149,14 @@ export function ChannelBar({
             disabled={!canNext}
             aria-label="Next channels"
           >
-            <ChevronRight size={10} strokeWidth={2} />
+            <IconChevronRight size={10} strokeWidth={2} />
           </button>
         </div>
 
         {onSearchChange && (
           <div className="channel-search-wrap">
             <div className="channel-search">
-              <Search size={12} strokeWidth={2} color="var(--text-hint)" aria-hidden="true" />
+              <IconSearch size={12} strokeWidth={2} color="var(--text-hint)" aria-hidden="true" />
               <input
                 type="text"
                 placeholder={searchPlaceholder}

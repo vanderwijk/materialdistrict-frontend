@@ -3,6 +3,8 @@
  * Letterlijk overgenomen uit MaterialDistrict_MockUp_DEF.html.
  * Niet in Lucide-react beschikbaar, dus eigen component.
  */
+import { useId } from 'react'
+
 interface InsiderIconProps {
   size?: number
   className?: string
@@ -11,6 +13,8 @@ interface InsiderIconProps {
 }
 
 export function InsiderIcon({ size = 14, className, filled = false }: InsiderIconProps) {
+  const reactId = useId()
+
   if (filled) {
     return (
       <svg
@@ -27,7 +31,7 @@ export function InsiderIcon({ size = 14, className, filled = false }: InsiderIco
   }
 
   // Mask-variant: cirkel met de ster eruit gemaskeerd (zoals in header member button)
-  const maskId = `insider-mask-${Math.random().toString(36).slice(2, 8)}`
+  const maskId = `insider-mask-${reactId.replace(/:/g, '')}`
   return (
     <svg
       width={size}

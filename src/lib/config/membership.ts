@@ -4,7 +4,17 @@
  * Dit is de ENIGE plek waar membership-instellingen worden gedefinieerd.
  * Nooit membership-logica verspreid over losse components of API-calls.
  *
- * Bron: project-bestand `membership-config.md`
+ * Bron: `datacontract-proposal.md` (v0.1) + `legacy-conversion-wip.md`
+ * (11-05-2026 avond) — manufacturer-prijzen herzien naar nieuw commercieel
+ * model: Plus €1.250→€1.500, Partner €3.750→€3.000, standalone material
+ * €150→€250. Sample-requests universeel bij elke publicatie (uit free-gates
+ * verwijderd). Grandfathered-prijzen en status-enums volgen na Johan's
+ * datacontract-input.
+ *
+ * Deze file bevat alleen primitive-tier-logica (werkt op `ReaderTier` /
+ * `ManufacturerTier`-strings, niet op User-objecten). User-aware helpers
+ * — die op een `User`-object werken — staan in `src/lib/auth/user-helpers.ts`
+ * om circulaire imports te voorkomen (shared.ts importeert uit deze file).
  */
 
 // ============================================================
@@ -43,8 +53,12 @@ export const INSIDER_PRICING = {
     interval: 'month' as const,
     cancelAnytime: true,
   },
-  // Jaarabonnement nog niet in mockup; placeholder voor later.
-  // annual: { amount: 96, currency: 'EUR', interval: 'year' },
+  annual: {
+    amount: 100,
+    currency: 'EUR' as const,
+    interval: 'year' as const,
+    cancelAnytime: true,
+  },
 } as const
 
 export const VAT = {
@@ -108,7 +122,7 @@ export const READER_FEATURES = {
 export const MANUFACTURER_PRICING = {
   free: {
     annual: 0,
-    materialPrice: 150, // per materiaal per jaar (losse publicatie)
+    materialPrice: 250, // per materiaal per jaar (losse publicatie, regulier tarief)
     materialsIncluded: 0,
   },
   basis: {
@@ -116,11 +130,11 @@ export const MANUFACTURER_PRICING = {
     materialsIncluded: 5,
   },
   plus: {
-    annual: 1250,
+    annual: 1500,
     materialsIncluded: 15,
   },
   partner: {
-    annual: 3750,
+    annual: 3000,
     materialsIncluded: Infinity,
   },
 } as const
@@ -153,7 +167,6 @@ export const MANUFACTURER_FEATURE_GATES: Record<ManufacturerTier, ManufacturerFe
   ],
   partner: [],
   free: [
-    'Receive Sample & Info Requests',
     'Access to Statistics',
     'Geo-based Lead Routing',
     'Add Brochures & Videos',
@@ -258,3 +271,4 @@ export function canReader(
 ): ReaderFeatureValue {
   return READER_FEATURES[tier][feature]
 }
+

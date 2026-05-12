@@ -1,9 +1,20 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { GitCompareArrows, Download, Package, FileText, Search, X, Check } from 'lucide-react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import Link from 'next/link'
+import {
+  IconCompare,
+  IconDownload,
+  IconCart,
+  IconArticle,
+  IconSearch,
+  IconBoard,
+  IconClose,
+  IconCheck,
+  IconInsiderInsights,
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
+import { InsiderMark } from './InsiderMark'
 
 // ============================================================
 // Feature presets — titel, omschrijving en icoon per feature
@@ -17,53 +28,58 @@ export type InsiderFeature =
   | 'savedSearch'
   | 'boards'
   | 'article'
+  | 'insights'
   | 'custom'
 
 interface FeatureConfig {
   title: string
   description: string
-  icon: React.ReactNode
+  icon: ReactNode
 }
 
 const FEATURE_PRESETS: Record<Exclude<InsiderFeature, 'custom'>, FeatureConfig> = {
   compare: {
     title: 'Compare materials side by side',
     description: 'See how materials stack up — properties, sustainability, and more.',
-    icon: <GitCompareArrows size={28} strokeWidth={1.6} />,
+    icon: <IconCompare size={28} strokeWidth={1.6} />,
   },
   download: {
     title: 'Download datasheets & brochures',
     description: 'Access technical PDFs, EPDs and installation guides from manufacturers.',
-    icon: <Download size={28} strokeWidth={1.6} />,
+    icon: <IconDownload size={28} strokeWidth={1.6} />,
   },
   sample: {
     title: 'Request samples',
     description: 'This manufacturer only accepts sample requests from verified Insider members.',
-    icon: <Package size={28} strokeWidth={1.6} />,
+    icon: <IconCart size={28} strokeWidth={1.6} />,
   },
   export: {
     title: 'Export as PDF',
     description: 'Download your comparison as a clean PDF to share with clients or colleagues.',
-    icon: <FileText size={28} strokeWidth={1.6} />,
+    icon: <IconDownload size={28} strokeWidth={1.6} />,
   },
   savedSearch: {
     title: 'Save searches & alerts',
     description: 'Save filter combinations and get notified when new materials match your criteria.',
-    icon: <Search size={28} strokeWidth={1.6} />,
+    icon: <IconSearch size={28} strokeWidth={1.6} />,
   },
   boards: {
     title: 'Organize materials in Boards',
     description: 'Group materials into project folders and share them with your team.',
-    icon: <Package size={28} strokeWidth={1.6} />,
+    icon: <IconBoard size={28} strokeWidth={1.6} />,
   },
   article: {
     title: 'Continue reading with Insider',
     description: 'Get unlimited access to in-depth articles, reports and Insider insights.',
-    icon: <FileText size={28} strokeWidth={1.6} />,
+    icon: <IconArticle size={28} strokeWidth={1.6} />,
+  },
+  insights: {
+    title: 'Insider insights & trend reports',
+    description: 'Quarterly trend reports, material forecasts and curated industry insights.',
+    icon: <IconInsiderInsights size={28} strokeWidth={1.6} />,
   },
 }
 
-/** De volledige lijst met Insider-features die in elke modal getoond wordt. */
 const ALL_INSIDER_FEATURES = [
   'Full material comparison',
   'Download PDFs & EPDs',
@@ -87,132 +103,190 @@ interface BaseProps {
   /** Override de feature-preset omschrijving. */
   description?: string
   /** Override het feature-preset icoon. */
-  icon?: React.ReactNode
+  icon?: ReactNode
   /** Lijst van features in het body-grid. Default: alle 8 Insider-features. */
   features?: string[]
   /** URL voor de primaire CTA. Default: /membership. */
   ctaHref?: string
-  /** Label voor de primaire CTA. Default: "Become an Insider →". */
+  /** Label voor de primaire CTA. Default: "Become an Insider — €10/month". */
   ctaLabel?: string
+  /** Login-fallback link voor reeds-Insider gebruikers (default: /sign-in). */
+  signInHref?: string
   className?: string
 }
 
-// ============================================================
-// Modal mode
-// ============================================================
-
 interface ModalProps extends BaseProps {
-  mode: 'modal'
-  /** Of de modal open is. */
+  variant: 'modal'
   open: boolean
-  /** Wordt aangeroepen wanneer de gebruiker de modal sluit (X, Escape, of "Maybe later"). */
   onClose: () => void
-  /**
-   * Callback wanneer de gebruiker "Don't show again" aanvinkt.
-   * Wanneer afwezig, wordt de checkbox niet getoond.
-   */
   onDismissForever?: (checked: boolean) => void
-  /** Initial state voor de "don't show" checkbox (typisch uit localStorage). */
   initialDismissed?: boolean
 }
 
-// ============================================================
-// Inline mode
-// ============================================================
-
-interface InlineProps extends BaseProps {
-  mode: 'inline'
-  open?: never
-  onClose?: never
-  onDismissForever?: never
-  initialDismissed?: never
+interface PaywallProps extends BaseProps {
+  /** Article cut-off pattern: gefadede preview-content boven de gate. */
+  variant: 'paywall'
 }
 
-type InsiderGateProps = ModalProps | InlineProps
+interface PanelProps extends BaseProps {
+  /** Full-page panel (Saved searches, Insider insights, Boards landing). */
+  variant: 'panel'
+}
+
+interface CardProps extends BaseProps {
+  /** Compacte sidebar-card binnen artikel-content. */
+  variant: 'card'
+}
+
+type InsiderGateProps = ModalProps | PaywallProps | PanelProps | CardProps
+
+// Backward-compat: oude `mode` prop accepteren als alias voor `variant`
+interface LegacyModeAlias {
+  mode?: 'modal' | 'inline'
+}
 
 // ============================================================
 // Component
 // ============================================================
 
 /**
- * InsiderGate — upgrade-prompt voor Insider-only features.
+ * InsiderGate — content-gating component voor Insider-only features/content.
  *
- * Modal mode: pop-up wanneer een free user op een gated feature klikt.
- * Inline mode: gate onder een afgekapte preview (bv. gated article body).
+ * Sessie 3A batch 5 — vier varianten:
+ *   - `modal` — pop-up wanneer free user op gated feature klikt
+ *   - `paywall` — article cut-off pattern (gefadede preview + gate eronder)
+ *   - `panel` — volledig page-niveau (Saved searches, Insider insights)
+ *   - `card` — compacte sidebar-card binnen artikel-content
  *
- * @example
- *   // Modal
- *   const [open, setOpen] = useState(false)
- *   <InsiderGate
- *     mode="modal"
- *     open={open}
- *     onClose={() => setOpen(false)}
- *     feature="compare"
- *   />
+ * Sessie 3B correctie 8 — alle varianten herzien naar mockup-patroon:
+ *   - Top-block met teal Insider-branding (icoon-vierkant, eyebrow, titel
+ *     in DM Serif Display, uitleg-tekst — alles in wit op teal)
+ *   - Body-block met witte achtergrond, benefits als kaartjes met groene
+ *     check, en teal CTA-knop (btn-insider, niet btn-primary)
  *
- *   // Inline
- *   <InsiderGate mode="inline" feature="article" />
+ * Verschilt van `<BrandTierGate>`: InsiderGate is content-gating voor
+ * specifiers/visitors (teal styling, "Become an Insider — €10/month",
+ * GEEN preview-modus). BrandTierGate is functionaliteit-gating voor
+ * brand-eigenaren (navy/grijs, "Upgrade to {tier}", MET preview).
+ *
+ * @example Modal:
+ *   <InsiderGate variant="modal" open={open} onClose={handleClose} feature="compare" />
+ *
+ * @example Paywall (article cut-off):
+ *   <article>
+ *     <p>{firstParagraphs}</p>
+ *     <InsiderGate variant="paywall" feature="article" />
+ *   </article>
+ *
+ * @example Panel (full page):
+ *   <InsiderGate variant="panel" feature="savedSearch" />
+ *
+ * @example Card (sidebar):
+ *   <InsiderGate variant="card" feature="insights" />
  */
-export function InsiderGate(props: InsiderGateProps) {
-  const config = props.feature !== 'custom'
-    ? FEATURE_PRESETS[props.feature]
-    : { title: '', description: '', icon: null }
+export function InsiderGate(props: InsiderGateProps & LegacyModeAlias) {
+  // Backward-compat: oude `mode` prop → nieuwe `variant` prop
+  // (TS struggles with the union narrow here; cast to a permissive shape)
+  const legacyMode = (props as { mode?: 'modal' | 'inline' }).mode
+  const variant: InsiderGateProps['variant'] =
+    props.variant ??
+    (legacyMode === 'inline' ? 'paywall' : legacyMode ?? 'modal')
+
+  const config =
+    props.feature !== 'custom'
+      ? FEATURE_PRESETS[props.feature]
+      : { title: '', description: '', icon: null as ReactNode }
 
   const title = props.title ?? config.title
   const description = props.description ?? config.description
   const icon = props.icon ?? config.icon
   const features = props.features ?? ALL_INSIDER_FEATURES
   const ctaHref = props.ctaHref ?? '/membership'
-  const ctaLabel = props.ctaLabel ?? 'Become an Insider →'
+  const ctaLabel = props.ctaLabel ?? 'Become an Insider — €10/month'
+  const signInHref = props.signInHref ?? '/sign-in'
 
-  const cardContent = (
-    <>
-      <GateTop title={title} description={description} icon={icon} />
-      <div className="insider-modal-body">
-        <div className="insider-modal-list-label">Included with Insider — €10/month</div>
-        <div className="insider-feature-grid">
-          {features.map((feat, i) => (
-            <div key={i} className="insider-feature-item">
-              <Check size={12} strokeWidth={2.5} color="var(--green)" aria-hidden="true" />
-              {feat}
-            </div>
-          ))}
-        </div>
-        <Link href={ctaHref} className="insider-modal-cta">
-          {ctaLabel}
-        </Link>
-        {props.mode === 'modal' && (
-          <>
-            <button type="button" className="insider-modal-secondary" onClick={props.onClose}>
-              Maybe later
-            </button>
-            {props.onDismissForever && (
-              <div className="insider-modal-footnote">
-                <label className="insider-modal-dontshow">
-                  <input
-                    type="checkbox"
-                    defaultChecked={props.initialDismissed}
-                    onChange={(e) => props.onDismissForever?.(e.target.checked)}
-                  />
-                  Don't show this again
-                </label>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </>
-  )
-
-  if (props.mode === 'modal') {
-    return <ModalShell open={props.open} onClose={props.onClose} className={props.className}>{cardContent}</ModalShell>
+  // === Modal variant ===
+  if (variant === 'modal' && 'open' in props && 'onClose' in props) {
+    return (
+      <ModalShell open={props.open} onClose={props.onClose} className={props.className}>
+        <GateTop title={title} description={description} icon={icon} />
+        <GateBody
+          features={features}
+          ctaHref={ctaHref}
+          ctaLabel={ctaLabel}
+          signInHref={signInHref}
+          onDismiss={props.onClose}
+          onDismissForever={props.onDismissForever}
+          initialDismissed={props.initialDismissed}
+        />
+      </ModalShell>
+    )
   }
 
-  // Inline mode
+  // === Paywall variant — article cut-off ===
+  if (variant === 'paywall') {
+    return (
+      <div className={cn('insider-gate is-paywall', props.className)}>
+        <div className="insider-gate-fade" aria-hidden="true" />
+        <div className="insider-gate-card">
+          <GateTop title={title} description={description} icon={icon} />
+          <GateBody
+            features={features}
+            ctaHref={ctaHref}
+            ctaLabel={ctaLabel}
+            signInHref={signInHref}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  // === Panel variant — full page ===
+  if (variant === 'panel') {
+    return (
+      <section
+        className={cn('insider-gate is-panel', props.className)}
+        aria-labelledby="insider-gate-panel-title"
+      >
+        <div className="insider-gate-card is-large">
+          <GateTop
+            title={title}
+            description={description}
+            icon={icon}
+            titleId="insider-gate-panel-title"
+            iconSize="lg"
+          />
+          <GateBody
+            features={features}
+            ctaHref={ctaHref}
+            ctaLabel={ctaLabel}
+            signInHref={signInHref}
+          />
+        </div>
+      </section>
+    )
+  }
+
+  // === Card variant — sidebar / inline-block ===
   return (
-    <div className={cn('insider-gate-inline', props.className)}>
-      <div className="insider-gate-card">{cardContent}</div>
-    </div>
+    <aside className={cn('insider-gate is-card', props.className)}>
+      <div className="insider-gate-card is-compact">
+        <div className="insider-gate-card-eyebrow">
+          <InsiderMark size="xs" />
+          <span>Insider only</span>
+        </div>
+        <div className="insider-gate-card-title">{title}</div>
+        {description && (
+          <p className="insider-gate-card-description">{description}</p>
+        )}
+        <Link href={ctaHref} className="btn btn-insider btn-sm insider-gate-cta">
+          {ctaLabel}
+        </Link>
+        <a href={signInHref} className="insider-gate-signin-link">
+          Already an Insider? Sign in →
+        </a>
+      </div>
+    </aside>
   )
 }
 
@@ -224,17 +298,88 @@ function GateTop({
   title,
   description,
   icon,
+  titleId,
+  iconSize = 'md',
 }: {
   title: string
   description: string
-  icon: React.ReactNode
+  icon: ReactNode
+  titleId?: string
+  iconSize?: 'md' | 'lg'
 }) {
   return (
-    <div className="insider-modal-top">
-      {icon && <div className="insider-modal-icon">{icon}</div>}
-      <div className="insider-modal-eyebrow">Insider only</div>
-      <div className="insider-modal-title">{title}</div>
-      {description && <div className="insider-modal-sub">{description}</div>}
+    <div className="insider-gate-top">
+      {icon && (
+        <div className={cn('insider-gate-icon', `is-${iconSize}`)}>{icon}</div>
+      )}
+      <div className="insider-gate-eyebrow">
+        <InsiderMark size="xs" />
+        <span>Insider only</span>
+      </div>
+      <div id={titleId} className="insider-gate-title">{title}</div>
+      {description && <div className="insider-gate-sub">{description}</div>}
+    </div>
+  )
+}
+
+function GateBody({
+  features,
+  ctaHref,
+  ctaLabel,
+  signInHref,
+  onDismiss,
+  onDismissForever,
+  initialDismissed,
+}: {
+  features: string[]
+  ctaHref: string
+  ctaLabel: string
+  signInHref: string
+  /** Modal-only: optionele "Maybe later" knop die de modal sluit. */
+  onDismiss?: () => void
+  /** Modal-only: optionele "Don't show this again" checkbox. */
+  onDismissForever?: (checked: boolean) => void
+  initialDismissed?: boolean
+}) {
+  return (
+    <div className="insider-gate-body">
+      <div className="insider-gate-list-label">Included with Insider</div>
+      <div className="insider-gate-feature-grid">
+        {features.map((feat, i) => (
+          <div key={i} className="insider-gate-feature-item">
+            <IconCheck size={12} strokeWidth={2.5} />
+            {feat}
+          </div>
+        ))}
+      </div>
+      {/* Sessie 3B correctie 8: CTA-knop is teal (btn-insider), niet navy. */}
+      <Link href={ctaHref} className="btn btn-insider btn-md insider-gate-cta">
+        {ctaLabel}
+      </Link>
+      <a href={signInHref} className="insider-gate-signin-link">
+        Already an Insider? Sign in →
+      </a>
+      {onDismiss && (
+        <button
+          type="button"
+          className="insider-gate-secondary"
+          onClick={onDismiss}
+        >
+          Maybe later
+        </button>
+      )}
+      {onDismissForever && (
+        <div className="insider-gate-footnote">
+          <label className="insider-gate-dontshow">
+            <input
+              type="checkbox"
+              defaultChecked={initialDismissed}
+              onChange={(e) => onDismissForever(e.target.checked)}
+            />
+            Don&apos;t show this again
+          </label>
+        </div>
+      )}
     </div>
   )
 }
@@ -242,19 +387,16 @@ function GateTop({
 interface ModalShellProps {
   open: boolean
   onClose: () => void
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
-/** Modal-overlay met focus-trap, ESC-close en click-outside-close. */
 function ModalShell({ open, onClose, children, className }: ModalShellProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
 
-  // Focus management + ESC handler
   useEffect(() => {
     if (!open) return
-
     previousFocusRef.current = document.activeElement as HTMLElement | null
 
     const handleKey = (e: KeyboardEvent) => {
@@ -265,13 +407,11 @@ function ModalShell({ open, onClose, children, className }: ModalShellProps) {
     }
     document.addEventListener('keydown', handleKey)
 
-    // Focus first focusable in modal
     const firstFocusable = overlayRef.current?.querySelector<HTMLElement>(
-      'a, button, input, [tabindex]:not([tabindex="-1"])'
+      'a, button, input, [tabindex]:not([tabindex="-1"])',
     )
     firstFocusable?.focus()
 
-    // Lock body scroll
     const originalOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
@@ -287,22 +427,21 @@ function ModalShell({ open, onClose, children, className }: ModalShellProps) {
   return (
     <div
       ref={overlayRef}
-      className="insider-modal-overlay"
+      className="insider-gate-modal-overlay"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="insider-modal-title"
     >
-      <div className={cn('insider-modal', className)}>
+      <div className={cn('insider-gate-modal', className)}>
         <button
           type="button"
-          className="insider-modal-close"
+          className="insider-gate-modal-close"
           onClick={onClose}
           aria-label="Close"
         >
-          <X size={16} strokeWidth={2} />
+          <IconClose size={16} strokeWidth={2} />
         </button>
         {children}
       </div>

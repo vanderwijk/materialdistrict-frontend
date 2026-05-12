@@ -16,7 +16,16 @@ interface InsiderBadgeProps {
  * Teal pill met witte ster-cirkel links en label rechts.
  *
  * Gebruik dit naast titels/cards. Voor een gewone content-type-pill
- * (zonder icoon, andere styling) gebruik <Tag contentType="member" />.
+ * (zonder icoon, andere styling) gebruik <Tag contentType="insider" />.
+ * Voor een icon-only marker zonder pill: gebruik <InsiderMark />.
+ *
+ * Sessie 3A batch 3: tekst-alignment fix — label krijgt expliciet een
+ * <span class="ib-label"> wrapper zodat de CSS de optical baseline kan
+ * corrigeren (uppercase letters renderen iets boven hun line-height-mid).
+ *
+ * Sessie 3B correctie 4: padding consistent gemaakt over alle varianten.
+ * Het sterretje staat in default, is-sm en is-padded op dezelfde optische
+ * afstand van de linker pill-rand.
  *
  * @example
  *   <InsiderBadge />                          // "Insider"
@@ -42,7 +51,7 @@ export function InsiderBadge({
       <span className="ib-icon">
         <InsiderIcon size={iconSize} filled className="text-white" />
       </span>
-      {children}
+      <span className="ib-label">{children}</span>
     </span>
   )
 }
