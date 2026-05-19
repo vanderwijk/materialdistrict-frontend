@@ -51,20 +51,36 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 /**
  * Store the JWT in an HttpOnly cookie.
  *
+ * Persistence (since session 6A — "Remember me" support):
+ *  - `persistent = true` (default): set an explicit `Expires` attribute
+ *    derived from `expiresAt`. The cookie survives browser restarts and
+ *    expires at the same moment the JWT becomes invalid server-side.
+ *  - `persistent = false`: omit the `Expires` attribute → the browser
+ *    treats this as a session cookie and drops it when the user closes
+ *    the browser. The token itself still expires after 7 days
+ *    server-side as a safety net.
+ *
+ * Why session-cookie instead of a short max-age (e.g. 1 day):
+ *  - "Remember me unchecked" universally maps to "forget me when I close
+ *    the browser" in user expectation, not "forget me after N hours".
+ *  - Avoids a second policy knob (cookie-lifetime vs token-lifetime).
+ *
  * @param token       JWT as returned by `/wp-json/md/v2/auth/login`
  * @param expiresAt   Unix timestamp (seconds) when the token expires.
- *                    Used to set the cookie `Expires` attribute so the
- *                    browser cleans it up at the same moment the token
- *                    becomes invalid server-side.
+ *                    Used to set the cookie `Expires` attribute when
+ *                    `persistent` is true.
+ * @param persistent  Whether the cookie survives browser restarts.
+ *                    Defaults to `true` for backward compatibility with
+ *                    callers that don't pass the flag (e.g. registration
+ *                    auto-login, where we want the same behaviour as a
+ *                    fresh login with "remember me" ticked).
  */
 export async function setAuthCookie(
   token: string,
   expiresAt: number,
+  persistent: boolean = true,
 ): Promise<void> {
   const store = await cookies()
-
-  // expiresAt is seconds since epoch; the cookies API takes a Date.
-  const expires = new Date(expiresAt * 1000)
 
   store.set({
     name: AUTH_COOKIE_NAME,
@@ -73,7 +89,10 @@ export async function setAuthCookie(
     secure: IS_PRODUCTION,
     sameSite: 'lax',
     path: '/',
-    expires,
+    // expiresAt is seconds since epoch; the cookies API takes a Date.
+    // Omit `expires` entirely when non-persistent so the browser treats
+    // it as a session cookie.
+    ...(persistent ? { expires: new Date(expiresAt * 1000) } : {}),
     // No `domain` attribute — defaults to the exact host that set it,
     // which is safer than scoping to the apex domain.
   })

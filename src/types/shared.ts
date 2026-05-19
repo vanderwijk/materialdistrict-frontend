@@ -271,20 +271,22 @@ export type AuthLoginResponse = AuthMeResponse
 /**
  * Stable error codes emitted by `/wp-json/md/v2/auth/*` endpoints.
  *
- * The first three are confirmed by Johan for the login flow (see
- * `vragen-johan.md` answer 6 and `wordpress-instructions-auth.md`).
- *
- * The last two are RESERVED for the password-reset flow and will be
- * confirmed by Johan when implementing `forgot-password` / `reset-password`
- * per `wordpress-instructions-auth.md`. They are listed here now so the
- * frontend can branch on them in advance and the type doesn't need to
- * change when Johan implements those endpoints.
- *
+ * Confirmed by Johan for login (see `vragen-johan.md` answer 6 and
+ * `wordpress-instructions-auth.md`):
  *  - `md_auth_invalid_request`  — required field missing (e.g. no email)
  *  - `md_auth_invalid_email`    — email format invalid
  *  - `md_auth_failed`           — email/password combo wrong
+ *
+ * Confirmed for the password-reset flow (same instruction doc):
  *  - `md_auth_invalid_token`    — reset token unknown, expired, or already used
  *  - `md_auth_weak_password`    — new password fails server-side strength check
+ *
+ * RESERVED for the registration flow (added in session 6A — pending
+ * Johan implementation per `wordpress-instructions-register.md`):
+ *  - `md_auth_email_taken`      — email already registered to an account
+ *
+ * `md_auth_weak_password` is reused on register (same strength rule as
+ * password-reset, no need for a separate code).
  */
 export type AuthErrorCode =
   | 'md_auth_invalid_request'
@@ -292,6 +294,7 @@ export type AuthErrorCode =
   | 'md_auth_failed'
   | 'md_auth_invalid_token'
   | 'md_auth_weak_password'
+  | 'md_auth_email_taken'
 
 /**
  * Error response shape from `/wp-json/md/v2/auth/*` endpoints.

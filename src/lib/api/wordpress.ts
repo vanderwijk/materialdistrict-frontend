@@ -516,14 +516,12 @@ export async function getMaterialBySlug(
 // --------------------------------------------------------------------
 
 /**
- * Haal alle attachments van een post op in chronologische upload-volgorde.
+ * Haal alle attachments van een post op, gesorteerd op `menu_order` ascending.
  *
- * De publieke WP REST API op materialdistrict.com accepteert GEEN
- * `orderby=menu_order` op `/wp/v2/media` (400 `rest_invalid_param`).
- * Daarom gebruiken we de dichtstbijzijnde stabiele fallback: `date asc`
- * (oudste upload eerst). Als een WP-omgeving later alsnog `menu_order`
- * exposeert in het response-payload, sorteren we daar client-side nog
- * defensief op vóór de datum.
+ * WP-conventie: als `menu_order` niet expliciet is gezet (alle waarden 0),
+ * valt WP terug op `date asc`. Dat is wat we willen voor MD: brands die
+ * de volgorde bewust instellen via WP-admin krijgen die volgorde, anders
+ * upload-volgorde (oudste eerst).
  *
  * Default `per_page=100` — galleries worden zelden groter; pagination
  * voor attachments is overkill.
@@ -532,30 +530,13 @@ export async function getAttachmentsForPost(
   postId: number,
   params?: { perPage?: number },
 ): Promise<WPMediaResponse[]> {
-  const items = await wpFetch<WPMediaResponse[]>('/wp/v2/media', {
+  return wpFetch<WPMediaResponse[]>('/wp/v2/media', {
     params: {
       parent: postId,
       per_page: params?.perPage ?? 100,
-      orderby: 'date',
+      orderby: 'menu_order',
       order: 'asc',
     },
-  })
-
-  return items.sort((left, right) => {
-    const leftMenuOrder = left.menu_order ?? 0
-    const rightMenuOrder = right.menu_order ?? 0
-
-    if (leftMenuOrder !== rightMenuOrder) {
-      return leftMenuOrder - rightMenuOrder
-    }
-
-    const leftDate = Date.parse(left.date)
-    const rightDate = Date.parse(right.date)
-    if (leftDate !== rightDate) {
-      return leftDate - rightDate
-    }
-
-    return left.id - right.id
   })
 }
 
@@ -1075,4 +1056,44 @@ export async function resetPassword(
     method: 'POST',
     body: { token, new_password: newPassword },
   })
+}
+
+/**
+ * Create a new account.
+ *
+ * Contract pending Johan implementation — see
+ * `wordpress-instructions-register.md`. The expected shape mirrors
+ * `/auth/login` exactly: on success WordPress returns the JWT plus the
+ * full user object, allowing the route handler to set the auth cookie
+ * and log the new user in without an extra round trip.
+ *
+ * Why first_name / last_name as separate fields (not a combined `name`):
+ * WordPress stores them as separate user-meta keys and the rest of the
+ * datacontract (see `auth-strategy.md` §4) already exposes them as
+ * nullable separate fields. Sending them split keeps the server side
+ * straightforward and avoids guessing at how to split a single string.
+ *
+ * @throws WordPressAuthError for:
+ *   - `md_auth_invalid_request`  — required field missing or empty
+ *   - `md_auth_invalid_email`    — email format invalid
+ *   - `md_auth_email_taken`      — email already registered
+ *   - `md_auth_weak_password`    — password fails server-side strength check
+ * @throws WordPressError for unexpected backend failures.
+ */
+export async function registerUser(args: {
+  email: string
+  password: string
+  firstName: string
+  lastName: string
+}): Promise<AuthMeResponse> {
+  const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/register', {
+    method: 'POST',
+    body: {
+      email: args.email,
+      password: args.password,
+      first_name: args.firstName,
+      last_name: args.lastName,
+    },
+  })
+  return mapAuthMeResponse(raw)
 }

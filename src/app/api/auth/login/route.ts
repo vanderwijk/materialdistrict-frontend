@@ -1,10 +1,11 @@
 /**
  * POST /api/auth/login
  *
- * Body: { email: string, password: string }
+ * Body: { email: string, password: string, rememberMe?: boolean }
  *
  * On success:
- *   - sets the HttpOnly auth cookie
+ *   - sets the HttpOnly auth cookie (persistent if rememberMe is true,
+ *     session-only otherwise — see `cookies.ts` setAuthCookie)
  *   - returns 200 with `{ user }` so the client can hydrate the UI
  *     without an extra round trip to /api/auth/me
  *
@@ -15,6 +16,9 @@
  *
  * The cookie is the single source of truth for token expiry; we do not
  * echo `expiresAt` back to the client.
+ *
+ * `rememberMe` defaults to true if omitted — preserves backward
+ * compatibility with callers from before session 6A.
  */
 
 import { NextResponse, type NextRequest } from 'next/server'
@@ -24,6 +28,7 @@ import { setAuthCookie } from '@/lib/auth/cookies'
 interface LoginBody {
   email: string
   password: string
+  rememberMe: boolean
 }
 
 function parseLoginBody(raw: unknown): LoginBody | null {
@@ -31,7 +36,10 @@ function parseLoginBody(raw: unknown): LoginBody | null {
   const b = raw as Record<string, unknown>
   if (typeof b.email !== 'string' || typeof b.password !== 'string') return null
   if (b.email.length === 0 || b.password.length === 0) return null
-  return { email: b.email, password: b.password }
+  // rememberMe is optional; default true (= persistent cookie, the
+  // pre-session-6A behaviour).
+  const rememberMe = typeof b.rememberMe === 'boolean' ? b.rememberMe : true
+  return { email: b.email, password: b.password, rememberMe }
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -55,7 +63,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   try {
     const auth = await loginUser(body.email, body.password)
-    await setAuthCookie(auth.token, auth.expiresAt)
+    await setAuthCookie(auth.token, auth.expiresAt, body.rememberMe)
     return NextResponse.json({ user: auth.user }, { status: 200 })
   } catch (err) {
     if (err instanceof WordPressAuthError) {
