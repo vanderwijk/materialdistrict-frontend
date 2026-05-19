@@ -169,7 +169,7 @@ export default async function MaterialsPage({
           ) : (
             <>
               <Suspense fallback={null}>
-                <MaterialsGrid items={result.items} searchTerm={search} />
+                <MaterialsGrid items={result.items} />
               </Suspense>
 
               {result.pager.totalPages > 1 && (
