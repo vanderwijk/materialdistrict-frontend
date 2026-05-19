@@ -1,7 +1,14 @@
 /**
  * `/materials` — overzichtspagina met FacetWP-filters, grid en pagination.
  *
- * Sessie 4 batch 3.
+ * Sessie 4 batch 3 — initial implementation.
+ * Sessie 6 (19-05-2026) — filter-sidebar rebuild:
+ *  - `<MaterialsFilterProvider>` rond filter + grid → trigger en sidebar
+ *    delen drawer-state via Context
+ *  - `<MaterialsFilterTrigger>` in eigen rij onder de page-header
+ *    (op desktop verborgen, op mobile zichtbaar) — fix voor Punt 22
+ *  - `.ov-grid-wrap` met `data-pending` voor optimistic dim tijdens
+ *    filter-transition (CSS-side, geen state-prop nodig)
  *
  * Server Component. Leest searchParams, roept `listMaterialsWithFacets()`
  * aan, en rendert de page-shell rond een client-side grid + pagination.
@@ -11,6 +18,7 @@
  *
  * Layout volgt `design-system.md §6.1` (overzichtspagina-shell):
  *   ov-page-header (breadcrumb + h1 + search)
+ *   ov-filter-trigger-row (alleen mobile, sessie 6)
  *   ov-wrap (FilterSidebar + main content)
  *
  * EmptyState bij 0 results — geen 404 (FacetWP-filter met 0 matches is
@@ -27,10 +35,16 @@ import { listMaterialsWithFacets } from '@/lib/api'
 import { parseFacetSelectionFromSearchParams } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { MaterialsContextWriter } from '@/lib/hooks/useMaterialsContext'
-import { MaterialsFilterSidebar } from './_components/MaterialsFilterSidebar'
+import {
+  MaterialsFilterProvider,
+  MaterialsFilterSidebar,
+  MaterialsFilterTrigger,
+  MaterialsGridDimWrapper,
+} from './_components/MaterialsFilterSidebar'
 import { MaterialsGrid } from './_components/MaterialsGrid'
 import { MaterialsPagination } from './_components/MaterialsPagination'
 import { MaterialsSearchInput } from './_components/MaterialsSearchInput'
+import { RecentlyViewedSection } from './_components/RecentlyViewedSection'
 import type { MaterialSortValue } from '@/types/facetwp'
 
 // --------------------------------------------------------------------
@@ -93,7 +107,7 @@ export default async function MaterialsPage({
   const queryString = buildQueryString(params)
 
   return (
-    <>
+    <MaterialsFilterProvider>
       <MaterialsContextWriter queryString={queryString} />
 
       <header className="ov-page-header">
@@ -113,13 +127,28 @@ export default async function MaterialsPage({
         </div>
       </header>
 
+      {/* Mobile filter-trigger rij — sessie 6 fix voor Punt 22.
+          Op desktop verborgen via CSS-media-query. Plaats: tussen
+          page-header en .ov-wrap, eigen rij zodat de drawer-trigger
+          niet in de grid-flow zit. */}
+      <div className="ov-filter-trigger-row">
+        <MaterialsFilterTrigger />
+        <div className="ov-filter-trigger-row-aside">
+          {/* Placeholder voor toekomstige sort-dropdown of view-toggle. */}
+        </div>
+      </div>
+
       <div className="ov-wrap">
         <MaterialsFilterSidebar
           sections={result.filterSections}
           preservedParams={{ q: search, sort }}
         />
 
-        <div>
+        {/* Grid-wrapper met data-pending hook (sessie 6). De wrapper
+            zet `data-pending="true"` tijdens filter-transitions zodat
+            CSS de inhoud subtiel kan dimmen. Eigen client-component
+            zodat page.tsx zelf server-rendered kan blijven. */}
+        <MaterialsGridDimWrapper>
           {result.items.length === 0 ? (
             hasActiveFilters ? (
               <EmptyState
@@ -140,7 +169,7 @@ export default async function MaterialsPage({
           ) : (
             <>
               <Suspense fallback={null}>
-                <MaterialsGrid items={result.items} />
+                <MaterialsGrid items={result.items} searchTerm={search} />
               </Suspense>
 
               {result.pager.totalPages > 1 && (
@@ -153,8 +182,10 @@ export default async function MaterialsPage({
               )}
             </>
           )}
-        </div>
+        </MaterialsGridDimWrapper>
       </div>
+
+      <RecentlyViewedSection />
 
       <JsonLd
         data={[
@@ -164,7 +195,7 @@ export default async function MaterialsPage({
           ]),
         ]}
       />
-    </>
+    </MaterialsFilterProvider>
   )
 }
 

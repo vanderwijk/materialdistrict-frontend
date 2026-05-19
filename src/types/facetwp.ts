@@ -10,7 +10,13 @@
  *  - Response top-level is `results: number[]` (post-IDs), niet `template`
  *  - Response `facets` is een object met getypte facet-results, niet HTML
  *  - Sort-waarden zijn `newest` / `oldest` / `az` / `za` (geen `_first`)
- *  - Request stuurt ALTIJD alle 18 facet-keys (lege arrays voor ongeselecteerd)
+ *  - Request stuurt ALTIJD alle facet-keys (lege arrays voor ongeselecteerd)
+ *
+ * Sessie 6 (19-05-2026) — 12 nieuwe environmental + content-composition
+ * facets toegevoegd. Activatie aan WP-zijde via `facetwp-import-
+ * environmental.json` (zie `wordpress-instructions-facetwp-environmental.md`).
+ * De frontend stuurt ze al mee in de request; tot Johan ze importeert
+ * negeert FacetWP de keys en vallen ze uit de UI weg via de mapper.
  *
  * Alle filterende facets zijn op `material` van toepassing.
  *
@@ -23,29 +29,44 @@
 
 /**
  * Filterende facets — material taxonomieën die de gebruiker kan aan/uit zetten.
+ *
+ * Gegroepeerd zoals ze in de FilterSidebar verschijnen — zie
+ * `MATERIAL_FACET_GROUPS` voor de runtime-mapping naar property-groepen.
  */
 export type MaterialFacetName =
   // Categorisering
   | 'material_category'
-  // Visueel
+  // Sensorial
   | 'glossiness'
   | 'translucence'
   | 'structure'
   | 'texture'
-  // Fysiek
   | 'hardness'
   | 'temperature'
   | 'acoustics'
   | 'odeur'
   | 'weight'
-  // Resistance
+  // Technical
   | 'fire_resistance'
   | 'uv_resistance'
   | 'weather_resistance'
   | 'scratch_resistance'
   | 'chemical_resistance'
-  // Duurzaamheid
+  // Environmental
   | 'renewable'
+  | 'energy_saving'
+  | 'climate_neutral'
+  | 'generates_energy'
+  | 'reduces_energy_use'
+  | 'reduces_water_use'
+  | 'reduces_waste'
+  | 'reduces_transport'
+  | 'sustainably_produced'
+  | 'free_from_toxins'
+  // Content composition
+  | 'biobased_content'
+  | 'recycled_content'
+  | 'upcycled_content'
 
 /** Vrije zoek-facet (SearchWP engine `swp_materials`). */
 export type MaterialSearchFacetName = 'search_materials'
@@ -67,15 +88,19 @@ export type AnyMaterialFacetName =
 
 /**
  * Volledige lijst van alle facet-keys die ALTIJD in de request worden
- * meegestuurd. Volgorde komt overeen met Johan's voorbeeld-payload.
+ * meegestuurd. Volgorde komt overeen met Johan's voorbeeld-payload,
+ * uitgebreid in sessie 6 met de environmental + content-composition
+ * facets.
  *
  * Conventie uit het contract: lege arrays voor facets zonder selectie,
- * niet weglaten.
+ * niet weglaten. Facets die aan WP-zijde nog niet als FacetWP-facet
+ * geconfigureerd zijn worden door FacetWP genegeerd zonder error.
  */
 export const ALL_MATERIAL_FACET_KEYS: readonly AnyMaterialFacetName[] = [
   'search_materials',
   'order',
   'material_category',
+  // Sensorial
   'glossiness',
   'translucence',
   'structure',
@@ -84,13 +109,28 @@ export const ALL_MATERIAL_FACET_KEYS: readonly AnyMaterialFacetName[] = [
   'temperature',
   'acoustics',
   'odeur',
+  'weight',
+  // Technical
   'fire_resistance',
   'uv_resistance',
   'weather_resistance',
   'scratch_resistance',
-  'weight',
   'chemical_resistance',
+  // Environmental
   'renewable',
+  'energy_saving',
+  'climate_neutral',
+  'generates_energy',
+  'reduces_energy_use',
+  'reduces_water_use',
+  'reduces_waste',
+  'reduces_transport',
+  'sustainably_produced',
+  'free_from_toxins',
+  // Content composition
+  'biobased_content',
+  'recycled_content',
+  'upcycled_content',
 ] as const
 
 /**
@@ -99,6 +139,7 @@ export const ALL_MATERIAL_FACET_KEYS: readonly AnyMaterialFacetName[] = [
  */
 export const MATERIAL_FILTER_FACETS: readonly MaterialFacetName[] = [
   'material_category',
+  // Sensorial
   'glossiness',
   'translucence',
   'structure',
@@ -107,14 +148,116 @@ export const MATERIAL_FILTER_FACETS: readonly MaterialFacetName[] = [
   'temperature',
   'acoustics',
   'odeur',
+  'weight',
+  // Technical
   'fire_resistance',
   'uv_resistance',
   'weather_resistance',
   'scratch_resistance',
-  'weight',
   'chemical_resistance',
+  // Environmental
   'renewable',
+  'energy_saving',
+  'climate_neutral',
+  'generates_energy',
+  'reduces_energy_use',
+  'reduces_water_use',
+  'reduces_waste',
+  'reduces_transport',
+  'sustainably_produced',
+  'free_from_toxins',
+  // Content composition
+  'biobased_content',
+  'recycled_content',
+  'upcycled_content',
 ] as const
+
+// --------------------------------------------------------------------
+// Property-groep-mapping (sessie 6) — leidend voor de FilterSidebar layout
+// --------------------------------------------------------------------
+
+/**
+ * Filter-groep-keys. Komen overeen met de mockup-structuur:
+ *  - `category`: het Material type-blok bovenaan (single-select)
+ *  - `sensorial` / `technical` / `environmental` / `content`:
+ *    de vier property-sub-groepen onder de "PROPERTIES"-separator
+ *
+ * Mockup-volgorde: Material type → Application (UI-placeholder) →
+ * Properties (Sensorial → Technical → Environmental → Content).
+ */
+export type MaterialFacetGroup =
+  | 'category'
+  | 'sensorial'
+  | 'technical'
+  | 'environmental'
+  | 'content'
+
+/** Display-labels voor de property-groep-kopjes in de FilterSidebar. */
+export const MATERIAL_FACET_GROUP_LABELS: Record<MaterialFacetGroup, string> = {
+  category: 'Material type',
+  sensorial: 'Sensorial',
+  technical: 'Technical',
+  environmental: 'Environmental',
+  content: 'Content composition',
+}
+
+/**
+ * Welke facets vallen onder welke property-groep. Statisch gebonden aan
+ * ons UI-ontwerp — niet uit de FacetWP-response af te leiden.
+ *
+ * Volgorde binnen elke groep = volgorde van weergave in de sidebar.
+ */
+export const MATERIAL_FACET_GROUPS: Record<MaterialFacetGroup, readonly MaterialFacetName[]> = {
+  category: ['material_category'],
+  sensorial: [
+    'glossiness',
+    'translucence',
+    'structure',
+    'texture',
+    'hardness',
+    'temperature',
+    'acoustics',
+    'odeur',
+    'weight',
+  ],
+  technical: [
+    'fire_resistance',
+    'uv_resistance',
+    'weather_resistance',
+    'scratch_resistance',
+    'chemical_resistance',
+  ],
+  environmental: [
+    'renewable',
+    'energy_saving',
+    'climate_neutral',
+    'generates_energy',
+    'reduces_energy_use',
+    'reduces_water_use',
+    'reduces_waste',
+    'reduces_transport',
+    'sustainably_produced',
+    'free_from_toxins',
+  ],
+  content: ['biobased_content', 'recycled_content', 'upcycled_content'],
+}
+
+/**
+ * Reverse-lookup: gegeven een facet-naam, in welke groep zit hij?
+ * Gegenereerd uit `MATERIAL_FACET_GROUPS` zodat één bron van waarheid
+ * blijft.
+ */
+export const MATERIAL_FACET_TO_GROUP: Record<MaterialFacetName, MaterialFacetGroup> = (() => {
+  const out = {} as Record<MaterialFacetName, MaterialFacetGroup>
+  for (const [group, facets] of Object.entries(MATERIAL_FACET_GROUPS) as Array<
+    [MaterialFacetGroup, readonly MaterialFacetName[]]
+  >) {
+    for (const facet of facets) {
+      out[facet] = group
+    }
+  }
+  return out
+})()
 
 // --------------------------------------------------------------------
 // Selectie (wat de UI naar de API stuurt)
@@ -130,7 +273,7 @@ export const MATERIAL_FILTER_FACETS: readonly MaterialFacetName[] = [
  *
  * Anders dan de oorspronkelijke modellering: in de UI mogen lege selecties
  * voorkomen — die worden tijdens het serialiseren naar lege arrays gemapt
- * voor alle 18 facet-keys (conform Johan's contract).
+ * voor alle facet-keys (conform Johan's contract).
  */
 export type FacetSelection = {
   [K in MaterialFacetName]?: string[]
@@ -146,8 +289,8 @@ export type FacetSelection = {
 /**
  * Inner body — wat onder de top-level `data`-key zit.
  *
- * Bevestigd door Johan's contract dat ALLE 18 facet-keys verplicht
- * aanwezig zijn (lege arrays voor ongeselecteerd).
+ * Bevestigd door Johan's contract dat ALLE facet-keys verplicht aanwezig
+ * zijn (lege arrays voor ongeselecteerd).
  */
 export interface FacetWPFetchRequestData {
   facets: {

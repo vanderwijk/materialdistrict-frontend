@@ -14,6 +14,13 @@
  * Sessie 4 (12-05-2026): `mapFacetWPToFilterSections` toegevoegd —
  * merget baseline (volledige facet-set) met filtered (counts + selected)
  * tot een UI-klare `MaterialFilterSection[]` voor de FilterSidebar.
+ *
+ * Sessie 6 (19-05-2026): `MaterialFilterSection.group` toegevoegd voor
+ * property-groep-mapping (Sensorial / Technical / Environmental /
+ * Content composition). `FACET_UI_HINTS` uitgebreid met 12 nieuwe
+ * environmental + content-composition facets. Mapper is robuust voor
+ * facets die nog niet in baseline staan (Johan's WP-import nog niet
+ * gedaan) — die worden overgeslagen, geen error.
  */
 
 import type { Article, ArticleListItem } from '@/types/article'
@@ -30,8 +37,10 @@ import type {
   WPAuthMeRawResponse,
 } from '@/types/shared'
 import {
+  MATERIAL_FACET_TO_GROUP,
   MATERIAL_FILTER_FACETS,
   type FacetWPFetchResponse,
+  type MaterialFacetGroup,
   type MaterialFacetName,
 } from '@/types/facetwp'
 
@@ -533,10 +542,17 @@ export function mapAuthMeResponse(raw: WPAuthMeRawResponse): AuthMeResponse {
  *
  * De `key` matcht een `MaterialFacetName` zodat we de selectie 1-op-1
  * terug kunnen mappen naar de FacetWP-request.
+ *
+ * Sessie 6 (19-05-2026): `group` toegevoegd. De FilterSidebar gebruikt
+ * dat om secties onder de juiste property-groep te plaatsen (Sensorial /
+ * Technical / Environmental / Content composition). `material_category`
+ * krijgt `group: 'category'` en wordt apart bovenaan getoond.
  */
 export interface MaterialFilterSection {
   /** Facet-naam (matcht een `MaterialFacetName`). */
   key: MaterialFacetName
+  /** Property-groep waaronder deze facet valt in de sidebar. */
+  group: MaterialFacetGroup
   /** Sectie-header, uit de baseline-response. */
   title: string
   /** Beschikbare opties met live counts. */
@@ -575,7 +591,9 @@ const FACET_UI_HINTS: Record<
     searchable: boolean
   }
 > = {
+  // Category
   material_category: { selectMode: 'single', defaultOpen: true, searchable: false },
+  // Sensorial
   glossiness: { selectMode: 'multi', defaultOpen: false, searchable: false },
   translucence: { selectMode: 'multi', defaultOpen: false, searchable: false },
   structure: { selectMode: 'multi', defaultOpen: false, searchable: false },
@@ -585,12 +603,27 @@ const FACET_UI_HINTS: Record<
   acoustics: { selectMode: 'multi', defaultOpen: false, searchable: false },
   odeur: { selectMode: 'multi', defaultOpen: false, searchable: false },
   weight: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  // Technical
   fire_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
   uv_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
   weather_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
   scratch_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
   chemical_resistance: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  // Environmental
   renewable: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  energy_saving: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  climate_neutral: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  generates_energy: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  reduces_energy_use: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  reduces_water_use: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  reduces_waste: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  reduces_transport: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  sustainably_produced: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  free_from_toxins: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  // Content composition
+  biobased_content: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  recycled_content: { selectMode: 'multi', defaultOpen: false, searchable: false },
+  upcycled_content: { selectMode: 'multi', defaultOpen: false, searchable: false },
 }
 
 /**
@@ -612,6 +645,12 @@ const FACET_UI_HINTS: Record<
  *
  * Pure function — geen side effects.
  *
+ * Sessie 6 robustness: facets die we wel kennen (`MATERIAL_FILTER_FACETS`)
+ * maar die nog niet in de baseline-response staan (Johan's WP-import nog
+ * niet gedaan, of facet uitgeschakeld) worden simpelweg overgeslagen.
+ * Geen error, geen lege sectie — ze verschijnen automatisch zodra ze in
+ * baseline opduiken.
+ *
  * @param baseline - response van `fetchMaterialFacetsBaseline()`
  * @param filtered - response van `fetchMaterialsFiltered(...)`
  */
@@ -624,8 +663,10 @@ export function mapFacetWPToFilterSections(
   for (const key of MATERIAL_FILTER_FACETS) {
     const baselineFacet = baseline.facets[key]
     if (!baselineFacet) {
-      // Facet niet in baseline-response — overslaan (mag niet voorkomen
-      // bij goed geconfigureerde FacetWP, maar defensief).
+      // Facet niet in baseline-response — overslaan. Dit treedt op voor
+      // de 12 environmental + content-composition facets totdat Johan
+      // ze in FacetWP heeft geactiveerd. Zodra dat gebeurt, verschijnen
+      // ze automatisch in de UI — geen frontend-deploy nodig.
       continue
     }
 
@@ -650,9 +691,11 @@ export function mapFacetWPToFilterSections(
     })
 
     const ui = FACET_UI_HINTS[key]
+    const group = MATERIAL_FACET_TO_GROUP[key]
 
     sections.push({
       key,
+      group,
       title: baselineFacet.label,
       options,
       selected: filteredFacet?.selected ?? [],

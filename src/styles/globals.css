@@ -186,6 +186,13 @@ ol {
   --insider-panel-width: 440px;
   --compare-slot: 120px;
 
+  /* Filter-sidebar sticky positionering (sessie 6) — semantische tokens
+     i.p.v. inline calc()'s. Hergebruikt door .uf-sidebar; later ook
+     herbruikbaar voor andere sticky elementen die onder de site-header
+     willen blijven plakken. */
+  --filter-sticky-top: calc(var(--header-height-desktop) + 16px);
+  --filter-sticky-max: calc(100vh - var(--header-height-desktop) - 32px);
+
   /* Z-index */
   --z-base: 1;
   --z-dropdown: 10;
@@ -1496,11 +1503,12 @@ h4 {
   border-radius: var(--radius-md);
   overflow: hidden;
   position: sticky;
-  top: calc(var(--header-height-desktop) + 50px);
+  top: var(--filter-sticky-top);
   min-width: var(--filter-sidebar-width);
-  max-height: calc(100vh - var(--header-height-desktop) - 70px);
+  max-height: var(--filter-sticky-max);
   overflow-y: auto;
   contain: layout paint;
+  transition: opacity var(--transition-base);
 }
 
 .uf-header {
@@ -7226,3 +7234,282 @@ mark.search-mark {
   background: rgba(245, 158, 11, 0.25);
   color: #fcd34d;
 }
+
+/* ------------------------------------------------------------
+   18b. Filter-sidebar — property-groep-accordion (sessie 6)
+   ------------------------------------------------------------ */
+
+/* Properties separator — non-clickable scheidingsstrook tussen
+   Material type/Application en de property-groepen. Eyebrow-stijl. */
+.uf-properties-separator {
+  padding: 6px 14px;
+  background: var(--surface2);
+  border-top: 2px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.uf-properties-separator > span {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-hint);
+}
+
+/* Property-groep wrapper (Sensorial / Technical / ...) — niveau 1 */
+.uf-group {
+  border-bottom: 1px solid var(--border);
+}
+
+.uf-group:last-child {
+  border-bottom: none;
+}
+
+.uf-group-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px 11px 16px;
+  background: var(--surface);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background var(--transition-fast);
+}
+
+.uf-group-toggle:hover {
+  background: var(--surface2);
+}
+
+.uf-group-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+}
+
+.uf-group-toggle .uf-chevron {
+  transition: transform var(--transition-slow);
+  flex-shrink: 0;
+  color: var(--text-hint);
+}
+
+.uf-group-toggle[aria-expanded="false"] .uf-chevron {
+  transform: rotate(-90deg);
+}
+
+/* Body van een open property-groep — bevat genest de facet-secties */
+.uf-group-body {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* Geneste facet-sectie (binnen een property-groep) — extra inspring */
+.uf-section.is-nested .uf-section-toggle {
+  padding-left: 26px;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.uf-section.is-nested .uf-section-toggle:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.uf-section.is-nested .uf-section-body {
+  padding-left: 26px;
+  background: var(--surface);
+  border-top: 1px solid var(--surface2);
+}
+
+/* Geneste sectie met actieve filters — accent op de toggle */
+.uf-section.is-nested:has(.filter-count.is-active) .uf-section-toggle {
+  color: var(--navy);
+  font-weight: 600;
+  background: rgba(24, 62, 144, 0.04);
+}
+
+/* ------------------------------------------------------------
+   18c. Filter-sidebar — option states (sessie 6)
+   ------------------------------------------------------------ */
+
+/* Ghost: optie met 0 hits in huidige filter, niet zelf geselecteerd.
+   Visueel gedimd, blijft klikbaar (om alleen-deze-selectie toe te staan). */
+.uf-option.is-ghost {
+  opacity: 0.4;
+}
+
+.uf-option.is-ghost:hover {
+  opacity: 0.7;
+}
+
+/* Radio-dot binnen de checkbox-cirkel voor single-select */
+.uf-checkbox.is-radio {
+  border-radius: 50%;
+}
+
+.uf-radio-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+
+/* Save-button — sessie 6: visueel aanwezig maar disabled tot de
+   saved-search-feature in een latere sessie gebouwd wordt. */
+.uf-header-save {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  border-radius: var(--radius);
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background var(--transition-base);
+}
+
+.uf-header-save:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.uf-header-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.uf-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Close-knop in de header is alleen zichtbaar op mobile (wanneer drawer open).
+   Vervangt de oude `.u-mobile-only`-klasse — directere koppeling aan deze
+   specifieke knop. */
+.uf-header-close {
+  display: none;
+}
+
+/* ------------------------------------------------------------
+   18d. Application placeholder (sessie 6)
+   ------------------------------------------------------------ */
+
+.uf-placeholder-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  font-style: italic;
+  margin: 4px 0 8px;
+}
+
+/* ------------------------------------------------------------
+   18e. Optimistic pending — sidebar + grid dim (sessie 6)
+   ------------------------------------------------------------ */
+
+/* Sidebar zelf blijft kleurvast tijdens de transition — alleen subtiele
+   indicatie. Grid mag duidelijk dimmen om "er gebeurt iets"-feedback te
+   geven. */
+.uf-sidebar.is-pending {
+  /* Bewust geen opacity-verlaging op de sidebar zelf: gebruiker is daar
+     net aan het klikken en moet niet plotseling iets gedimd zien.
+     Subtiele cursor-aanpassing zodat extra klikken niet vreemd voelen. */
+  cursor: progress;
+}
+
+.uf-sidebar.is-pending .uf-section-toggle,
+.uf-sidebar.is-pending .uf-group-toggle,
+.uf-sidebar.is-pending .uf-option {
+  /* Wel de interactieve elementen markeren */
+  cursor: progress;
+}
+
+/* Grid-wrapper dim — zet `data-pending="true"` op de grid-wrapper in
+   page.tsx wanneer de filter-transition loopt. CSS-only dimming, geen
+   JS-animaties — kost niets en is keurig in dark mode. */
+.ov-grid-wrap[data-pending="true"] {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+
+.ov-grid-wrap {
+  transition: opacity var(--transition-base);
+}
+
+/* ------------------------------------------------------------
+   18f. Mobile-trigger rij (sessie 6 — fix voor Punt 22)
+   ------------------------------------------------------------
+
+   De trigger-knop "Filters (N)" staat nu in een eigen rij onder de
+   page-header en boven de `.ov-wrap` grid. Op desktop is de hele rij
+   verborgen (sidebar is dan gewoon zichtbaar). Op mobile rendert de
+   sidebar als drawer — buiten de grid-flow — en de trigger opent hem.
+
+   De oude `.mob-filter-trigger`-display-toggle stond in §18 al — die
+   blijft werken; deze nieuwe wrapper plaatst hem op de juiste plek. */
+
+.ov-filter-trigger-row {
+  display: none;
+  /* Op mobile: eigen rij met de trigger links en ruimte rechts voor
+     latere additions (sort-dropdown bv.). */
+}
+
+@media (max-width: 1024px) {
+  .ov-filter-trigger-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--content-padding-mobile);
+    margin-bottom: 12px;
+    gap: 12px;
+  }
+
+  /* De drawer-aside zelf — stacking en transitie. We tonen 'm hard
+     bovenop alle pagina-content; de backdrop ligt iets eronder. */
+  .uf-sidebar {
+    z-index: var(--z-overlay);
+  }
+
+  .mob-filter-backdrop {
+    z-index: calc(var(--z-overlay) - 1);
+  }
+
+  /* Close-knop in de drawer-header alleen op mobile zichtbaar. */
+  .uf-header-close {
+    display: inline-flex;
+  }
+
+  /* De save-knop in drawer-header op kleine viewports wat compacter. */
+  .uf-header-save {
+    padding: 3px 6px;
+  }
+}
+
+/* ------------------------------------------------------------
+   18g. Page-header rij voor de trigger — desktop uitgesloten
+   ------------------------------------------------------------ */
+
+/* Trigger heeft een vaste minimum-height zodat de knop niet platdrukt
+   op smalle viewports. */
+.ov-filter-trigger-row .mob-filter-trigger {
+  min-height: 36px;
+}
+
+/* Spacing voor de trigger-rij content area aan de rechterzijde —
+   placeholder voor toekomstige sort-dropdown of view-toggle. */
+.ov-filter-trigger-row-aside {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
