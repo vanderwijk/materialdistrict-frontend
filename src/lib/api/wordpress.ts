@@ -424,7 +424,7 @@ export interface WPMediaResponse {
   source_url: string
   /** ID van de post waaraan deze attachment hangt. */
   post: number | null
-  /** WP geeft `menu_order` niet altijd terug — alleen wanneer expliciet gevraagd via orderby. */
+  /** Kan ontbreken op sommige installs/endpoints; behandel `undefined` als 0. */
   menu_order?: number
   author?: number
   media_details: {
@@ -629,14 +629,30 @@ export async function getAttachmentsForPost(
   postId: number,
   params?: { perPage?: number },
 ): Promise<WPMediaResponse[]> {
-  return wpFetch<WPMediaResponse[]>('/wp/v2/media', {
+  const attachments = await wpFetch<WPMediaResponse[]>('/wp/v2/media', {
     revalidate: MEDIA_REVALIDATE,
     params: {
       parent: postId,
       per_page: params?.perPage ?? 100,
-      orderby: 'menu_order',
-      order: 'asc',
     },
+  })
+
+  return attachments.sort((left, right) => {
+    const leftMenuOrder = left.menu_order ?? 0
+    const rightMenuOrder = right.menu_order ?? 0
+
+    if (leftMenuOrder !== rightMenuOrder) {
+      return leftMenuOrder - rightMenuOrder
+    }
+
+    const leftDate = Date.parse(left.date)
+    const rightDate = Date.parse(right.date)
+
+    if (Number.isNaN(leftDate) || Number.isNaN(rightDate)) {
+      return 0
+    }
+
+    return leftDate - rightDate
   })
 }
 
