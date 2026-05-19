@@ -4,7 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { useRouter } from 'next/navigation'
@@ -23,6 +25,12 @@ import { isInsider as userIsInsider } from '@/lib/auth/user-helpers'
  *      client-side fetch on first render — the user shape is already
  *      present in the initial HTML, so components like Header render
  *      correctly without a flash of logged-out state.
+ *   3. On subsequent soft navigations (router.push, Link clicks), the
+ *      root layout re-renders, `getInitialUser()` runs again on the
+ *      server, and a fresh `initialUser` is passed in. The provider
+ *      keeps client state in sync with this server-authoritative value
+ *      via a sync-effect (see below) — fixes the "auto-logout on
+ *      navigation" issue that occurred before session 6A's follow-up.
  *
  * Login flow (session 6A — `signIn` added):
  *   The /sign-in and /register pages POST credentials directly to
@@ -33,12 +41,9 @@ import { isInsider as userIsInsider } from '@/lib/auth/user-helpers'
  *   redirect and the next server render.
  *
  *   After `signIn(user)`, the page navigates with `router.push(next) +
- *   router.refresh()`. The refresh re-runs the Server Components, the
- *   server hydration reads the fresh cookie, and the next `AuthProvider`
- *   render seeds with the same user — reconciling client state with
- *   the authoritative server state. If the two disagree (rare; e.g.
- *   the user was logged out in another tab between the API response
- *   and the refresh), the server wins.
+ *   router.refresh()`. The refresh re-runs the Server Components, and
+ *   the sync-effect below reconciles client state with the new
+ *   `initialUser` once it arrives.
  *
  *   Note: `signIn` only manages local context state. It does NOT call
  *   /api/auth/login itself — credentials never flow through this file.
@@ -94,11 +99,60 @@ export function AuthProvider({
    * Server-hydrated user. Set by `app/layout.tsx` after reading the
    * auth cookie. `null` means "logged out" (no cookie, or cookie was
    * rejected and cleared during the server render).
+   *
+   * Re-evaluated on every server render (e.g. soft navigations,
+   * router.refresh()), so this prop changes as the cookie state
+   * changes server-side. The sync-effect below propagates those
+   * changes into client state.
    */
   initialUser: User | null
 }) {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(initialUser)
+
+  /**
+   * Server-state sync.
+   *
+   * Why this exists:
+   *   `useState(initialUser)` only consumes `initialUser` on the FIRST
+   *   render. On subsequent navigations React keeps the existing state
+   *   even if the prop changes. That caused two real bugs:
+   *
+   *   - "Auto-logout on navigation": a session cookie that expired or
+   *     was revoked server-side → server hydrates `initialUser = null`
+   *     on the next page → client still showed logged-in header. Gated
+   *     actions then failed with 401. The UI was lying.
+   *
+   *   - "Stays logged-out after login on a stale tab": browser tab open
+   *     since before login → AuthProvider mounted with `initialUser =
+   *     null` → user logs in elsewhere (or via signIn here) → on
+   *     navigation, server now gives a User but client state was stuck
+   *     at null.
+   *
+   * The optimistic-update path (`signIn(user)`) still works first —
+   * this effect only catches the case where the prop and state drift
+   * apart. To avoid an unnecessary re-render when they already agree,
+   * we compare by user-id (cheap and sufficient — User is replaced
+   * atomically server-side, never mutated in place).
+   *
+   * The first-render case is handled by `useState(initialUser)` itself,
+   * so we skip the effect on the initial mount. This avoids a redundant
+   * setUser call that React would otherwise short-circuit anyway, but
+   * also makes the intent explicit.
+   */
+  const isFirstRender = useRef(true)
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    setUser((prev) => {
+      // Same user (or both null) → don't trigger a re-render.
+      if (prev === initialUser) return prev
+      if (prev && initialUser && prev.id === initialUser.id) return prev
+      return initialUser
+    })
+  }, [initialUser])
 
   const signIn = useCallback((nextUser: User) => {
     setUser(nextUser)

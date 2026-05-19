@@ -234,6 +234,8 @@ export default async function MaterialDetailPage({
           <aside className="mat-sidebar">
             <GetInTouchCard
               materialSlug={material.slug}
+              materialId={material.id}
+              materialTitle={material.title}
               brandName={material.brandName}
             />
 

@@ -20,6 +20,19 @@ function getCurrentSection(pathname: string): HeaderSection | undefined {
 }
 
 /**
+ * Pages waar het GEEN zin heeft om "next=" mee te geven naar /sign-in.
+ * Als je vanaf /sign-in zelf op "Login" klikt → niet zichzelf als next
+ * meegeven. Idem voor /register en /forgot-password.
+ */
+function shouldCaptureNext(pathname: string): boolean {
+  if (pathname === '/sign-in') return false
+  if (pathname === '/register') return false
+  if (pathname === '/forgot-password') return false
+  if (pathname.startsWith('/reset-password')) return false
+  return true
+}
+
+/**
  * HeaderShell — connectie-laag tussen de pure presentational `<Header>`
  * en de runtime context (theme, auth, routing).
  *
@@ -32,6 +45,17 @@ export function HeaderShell() {
   const { theme, toggleTheme } = useTheme()
   const { isLoggedIn, isMember } = useAuth()
 
+  function handleLoginClick() {
+    // Capture the current page as ?next= so the user lands back where
+    // they started after signing in. Skipped for auth pages themselves
+    // (no point in bouncing /sign-in → /sign-in?next=/sign-in).
+    if (shouldCaptureNext(pathname)) {
+      router.push(`/sign-in?next=${encodeURIComponent(pathname)}`)
+    } else {
+      router.push('/sign-in')
+    }
+  }
+
   return (
     <Header
       currentSection={getCurrentSection(pathname)}
@@ -39,7 +63,7 @@ export function HeaderShell() {
       isMember={isMember}
       theme={theme}
       onThemeToggle={toggleTheme}
-      onLoginClick={() => router.push('/login')}
+      onLoginClick={handleLoginClick}
       onDashboardClick={() => router.push('/dashboard')}
       onInsiderClick={() => router.push('/membership')}
       onSearch={(q) => {

@@ -7513,3 +7513,176 @@ mark.search-mark {
   flex: 0 0 auto;
 }
 
+/* ============================================================
+   19. Auth pages (sign-in / register / forgot-password / reset-password)
+   ------------------------------------------------------------
+   Toegevoegd in sessie 6A. Vier auth-pagina's delen dezelfde card-
+   layout en form-conventies.
+
+   Klassen:
+     .auth-page         — full-width wrapper, centreert de card vert/horz.
+     .auth-card         — de card zelf (max-width ~440px).
+     .auth-card-header / -heading / -subheading / -body / -footer
+     .auth-card-footer-text / -link
+     .auth-form         — vertical-rhythm container voor form fields
+     .auth-form-row     — horizontale rij met "remember me" + forgot-link
+     .auth-form-grid-2  — twee inputs naast elkaar (first/last name)
+     .auth-form-link    — kleine inline link in form/footer
+     .auth-form-submit  — full-width submit
+     .auth-form-success — succes-banner met extra ademruimte
+     .auth-form-spacer  — vertical spacer matchend met FieldGroup
+   ============================================================ */
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-height-mobile) - 80px);
+  padding: var(--space-6) var(--content-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .auth-page {
+    min-height: calc(100vh - var(--header-height-tablet) - 80px);
+    padding: var(--space-10) var(--content-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .auth-page {
+    min-height: calc(100vh - var(--header-height-desktop) - 80px);
+    padding: var(--space-10) var(--content-padding-desktop);
+  }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6) var(--space-6) var(--space-7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+@media (min-width: 768px) {
+  .auth-card {
+    padding: var(--space-8);
+  }
+}
+
+[data-theme="dark"] .auth-card {
+  box-shadow: none;
+  background: var(--surface2);
+}
+
+.auth-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.auth-card-heading {
+  font-family: var(--font-display), serif;
+  font-size: var(--text-3xl);
+  line-height: 1.15;
+  margin: 0;
+  color: var(--text);
+}
+
+.auth-card-subheading {
+  font-size: var(--text-md);
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.auth-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.auth-card-footer {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+  font-size: var(--text-md);
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.auth-card-footer-text {
+  color: var(--text-muted);
+}
+
+.auth-card-footer-link {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auth-card-footer-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Form layout ------------------------------------------------ */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.auth-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.auth-form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 520px) {
+  .auth-form-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.auth-form-link {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-size: var(--text-md);
+  font-weight: 500;
+}
+
+.auth-form-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.auth-form-submit {
+  width: 100%;
+}
+
+.auth-form-success {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.auth-form-success p {
+  margin: 0;
+}
+
+.auth-form-spacer {
+  height: var(--space-2);
+}

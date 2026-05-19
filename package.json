@@ -5,6 +5,7 @@
   "description": "MaterialDistrict — Next.js frontend bovenop de bestaande WordPress/WooCommerce-omgeving.",
   "scripts": {
     "dev": "next dev",
+    "dev:fresh": "WP_CACHE_DISABLED=true next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
