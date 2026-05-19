@@ -13,13 +13,46 @@ const WP_HOST = process.env.WP_API_URL
   ? new URL(process.env.WP_API_URL).hostname
   : 'materialdistrict.com'
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
+function parseDevOrigins(value: string | undefined): string[] {
+  if (!value) {
+    return []
+  }
+
+  return value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+}
+
+const privateNetworkDevOrigins = [
+  '192.168.*.*',
+  '10.*.*.*',
+  ...Array.from({ length: 16 }, (_, index) => `172.${16 + index}.*.*`),
+]
+
+const allowedDevOrigins = isDevelopment
+  ? [
+      '*.local',
+      ...privateNetworkDevOrigins,
+      ...parseDevOrigins(process.env.ALLOWED_DEV_ORIGINS),
+    ]
+  : undefined
+
+const connectSrc = ["'self'", `https://${WP_HOST}`]
+
+if (isDevelopment) {
+	connectSrc.push('ws:', 'wss:')
+}
+
 const ContentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: https://${WP_HOST} https://secure.gravatar.com`,
   "font-src 'self' data:",
-  `connect-src 'self' https://${WP_HOST}`,
+  `connect-src ${connectSrc.join(' ')}`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -44,6 +77,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
+  allowedDevOrigins,
 
   images: {
     remotePatterns: [

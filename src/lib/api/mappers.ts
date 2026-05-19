@@ -36,6 +36,7 @@ import {
 } from '@/types/facetwp'
 
 import { parseMaterialProperties } from '@/lib/utils/material-properties'
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 import type {
   WPArticleRawResponse,
@@ -179,12 +180,13 @@ export function mapMaterialListItem(
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: raw.excerpt.rendered,
     hero: featuredImage ?? null,
     properties: parseMaterialProperties(raw.class_list),
-    brandName: brandName ?? null,
+    brandName: brandName ? decodeHtmlEntities(brandName) : null,
     brandId: raw.meta?.brand_id ?? null,
+    materialCode: stringOrNull(raw.meta?.material_code),
     featured: Boolean(raw.meta?.featured),
     date: raw.date,
     modified: raw.modified,
@@ -201,13 +203,14 @@ export function mapMaterialListItem(
 export function mapMaterial(
   raw: WPMaterialRawResponse,
   gallery: Gallery,
+  brandName?: string | null,
 ): Material {
   const m = raw.meta ?? {}
   return {
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     contentHtml: raw.content.rendered,
     excerptHtml: raw.excerpt.rendered,
 
@@ -223,6 +226,7 @@ export function mapMaterial(
     },
 
     brandId: typeof m.brand_id === 'number' && m.brand_id > 0 ? m.brand_id : null,
+    brandName: brandName ? decodeHtmlEntities(brandName) : null,
 
     // Default: sample-aanvraag AAN. Brand zet 'm uit met `disable_sample_request: true`.
     disableSampleRequest: Boolean(m.disable_sample_request),
@@ -259,7 +263,7 @@ export function mapBrandListItem(
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    name: raw.title.rendered,
+    name: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: raw.excerpt.rendered,
     logo: logo ?? null,
     country: stringOrNull(m._brand_country),
@@ -274,7 +278,7 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    name: raw.title.rendered,
+    name: decodeHtmlEntities(raw.title.rendered),
     contentHtml: raw.content.rendered,
     excerptHtml: raw.excerpt.rendered,
 
@@ -313,7 +317,7 @@ export function mapArticleListItem(
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
     authorId: raw.author,
@@ -335,7 +339,7 @@ export function mapArticle(
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     contentHtml: raw.content.rendered,
     excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
@@ -367,7 +371,7 @@ export function mapEventListItem(
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
     startsAt: combineDateTime(startDate, startTime),
@@ -386,7 +390,7 @@ export function mapEvent(raw: WPEventRawResponse, hero?: MediaImage | null): Eve
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     contentHtml: raw.content.rendered,
     excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
@@ -416,7 +420,7 @@ export function mapTalkListItem(
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
     date: raw.date,
@@ -428,7 +432,7 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     id: raw.id,
     slug: raw.slug,
     link: raw.link,
-    title: raw.title.rendered,
+    title: decodeHtmlEntities(raw.title.rendered),
     contentHtml: raw.content.rendered,
     excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
@@ -474,7 +478,7 @@ export function mapBrandMembership(
   return {
     id: raw.id,
     slug: raw.slug,
-    name: raw.name,
+    name: decodeHtmlEntities(raw.name),
     tier: raw.tier,
     status: raw.status,
     validUntil: raw.valid_until,
@@ -489,8 +493,8 @@ function mapUser(raw: WPAuthMeRawResponse['user']): User {
   return {
     id: raw.id,
     email: raw.email,
-    name: raw.name,
-    displayName: raw.display_name,
+    name: decodeHtmlEntities(raw.name),
+    displayName: decodeHtmlEntities(raw.display_name),
     firstName: raw.first_name,
     lastName: raw.last_name,
     roles: raw.roles,

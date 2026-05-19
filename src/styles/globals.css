@@ -1037,6 +1037,7 @@ h4 {
 .mobile-nav-item {
   display: flex;
   align-items: center;
+  gap: 14px;
   padding: 14px 18px;
   font-size: 15px;
   font-weight: 600;
@@ -1062,6 +1063,7 @@ h4 {
 /* Show / hide klassen voor responsive helpers */
 .hide-mobile { display: inline-flex; }
 .show-mobile { display: none; }
+.icon-btn.show-mobile { display: none; }
 
 /* Cart-button met badge */
 .cart-btn {
@@ -1080,6 +1082,7 @@ h4 {
   .header-nav { display: none; }
   .hide-mobile { display: none; }
   .show-mobile { display: inline-flex; }
+  .icon-btn.show-mobile { display: inline-flex; }
 }
 
 /* ------------------------------------------------------------
@@ -1134,7 +1137,7 @@ h4 {
 
 .footer-tagline {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.7;
   margin-bottom: 20px;
 }
@@ -1144,12 +1147,12 @@ h4 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.75);
   margin-bottom: 8px;
 }
 
 .footer-link {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.85);
   text-align: left;
   font-size: 13px;
   line-height: 2.2;
@@ -1200,13 +1203,13 @@ h4 {
 
 .footer-newsletter-note {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.75);
   margin-top: 6px;
 }
 
 .footer-contact {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 2.2;
 }
 
@@ -1218,7 +1221,7 @@ h4 {
 .footer-address {
   display: block;
   margin-top: 8px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 12px;
   line-height: 1.8;
   font-style: normal;
@@ -1250,9 +1253,9 @@ h4 {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 16px var(--content-padding-desktop);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.75);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1267,7 +1270,7 @@ h4 {
 
 .footer-legal-links button {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.75);
   background: none;
   border: none;
   cursor: pointer;
@@ -1276,7 +1279,7 @@ h4 {
 }
 
 .footer-legal-links button:hover {
-  color: rgba(255, 255, 255, 0.6);
+  color: white;
 }
 
 @media (max-width: 1024px) {
@@ -2422,12 +2425,13 @@ a:focus-visible {
 }
 
 .pagination-btn.is-active {
-  background: var(--link);
+  background: var(--navy);
   color: white;
-  border-color: var(--link);
+  border-color: var(--navy);
   cursor: default;
   /* Sessie 3A batch 4: actieve pagina is niet klikbaar — geen onnodige refresh */
   pointer-events: none;
+  font-weight: 600;
 }
 
 .pagination-btn:disabled {
@@ -2813,10 +2817,11 @@ a:focus-visible {
 
 /* Size: md (detail-pagina actions — icoon + label) */
 .action-btn.is-md {
-  height: 38px;
-  padding: 0 14px;
+  height: 42px;
+  padding: 0 16px;
   border-radius: var(--radius);
   font-size: 13px;
+  gap: 8px;
 }
 
 /* Size: lg (primary CTA) */
@@ -5125,7 +5130,7 @@ a:focus-visible {
 
 .mat-detail-wrap {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--space-10);
   margin-bottom: var(--space-12);
 }
@@ -5415,8 +5420,8 @@ a:focus-visible {
 
 .mat-body {
   max-width: 70ch;
-  font-size: var(--text-md);
-  line-height: 1.65;
+  font-size: 1.0625rem; /* 17px — leesbaarder op detail-page */
+  line-height: 1.7;
   color: var(--text);
   margin-bottom: var(--space-12);
 }
@@ -6645,4 +6650,579 @@ button.mat-gallery-hero:focus-visible {
   .mat-prevnext-spacer {
     display: none;
   }
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Mobile nav iconen per content-type                */
+/* ============================================================ */
+
+.mobile-nav-item-icon {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.mobile-nav-item.nav-materials .mobile-nav-item-icon { color: var(--ct-material); }
+.mobile-nav-item.nav-articles  .mobile-nav-item-icon { color: var(--ct-article); }
+.mobile-nav-item.nav-brands    .mobile-nav-item-icon { color: var(--ct-brand); }
+.mobile-nav-item.nav-events    .mobile-nav-item-icon { color: var(--ct-event); }
+.mobile-nav-item.nav-books     .mobile-nav-item-icon { color: var(--ct-book); }
+.mobile-nav-item.nav-talks     .mobile-nav-item-icon { color: var(--text-muted); }
+
+.mobile-nav-item.active .mobile-nav-item-icon {
+  /* Behoud type-kleur ook in active-state — de border-left geeft de focus al weer. */
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Dark mode fixes                                   */
+/* ============================================================ */
+
+/* "Back to Materials"-link was donkerblauw-op-donkergrijs in dark mode.
+   In dark mode willen we 'm laten contrasteren met de page-background.  */
+[data-theme="dark"] .detail-header-back {
+  color: var(--text);
+}
+[data-theme="dark"] .detail-header-back:hover {
+  opacity: 0.75;
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Properties grid (3 kolommen + pill semantics)     */
+/* ============================================================ */
+
+.mat-properties-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .mat-properties-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .mat-properties-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mat-property-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  padding: 14px 16px;
+}
+
+.mat-property-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  margin: 0 0 12px 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mat-property-group-rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mat-property-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.mat-property-row-label {
+  color: var(--text);
+}
+
+.mat-property-row-value {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* Pill semantics
+   - default: grijs, descriptief (Glossiness=Matte, Texture=Smooth)
+   - unknown: zwakker grijs, italic-vibe (rendert "Not specified")
+   - positive: groen (Yes, Good, sustainability=yes)
+   - neutral: amber (Moderate, Variable, Medium)
+   - negative: rood (No, Poor) */
+.mat-property-row-value.is-default {
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+.mat-property-row-value.is-unknown {
+  background: var(--surface2);
+  color: var(--text-hint);
+  font-weight: 500;
+  font-style: italic;
+}
+.mat-property-row-value.is-positive {
+  background: var(--green-pale);
+  color: var(--green-dark, #1a5a1d);
+}
+.mat-property-row-value.is-neutral {
+  background: #fef3c7;
+  color: #92400e;
+}
+.mat-property-row-value.is-negative {
+  background: #fde8e8;
+  color: #8a1c1c;
+}
+
+/* Dark-mode tweaks: zorg dat onze pills genoeg contrast houden */
+[data-theme="dark"] .mat-property-row-value.is-positive {
+  background: rgba(74, 168, 75, 0.18);
+  color: #93e09e;
+}
+[data-theme="dark"] .mat-property-row-value.is-neutral {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fcd34d;
+}
+[data-theme="dark"] .mat-property-row-value.is-negative {
+  background: rgba(220, 38, 38, 0.18);
+  color: #fca5a5;
+}
+[data-theme="dark"] .mat-property-row-value.is-default,
+[data-theme="dark"] .mat-property-row-value.is-unknown {
+  background: var(--surface2);
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Action button Insider variant                     */
+/* ============================================================ */
+
+/* Insider-feature: outline in Insider-blauw, niet de standaard grijze border.
+   Voor non-members: outline + trailing Insider-mark zichtbaar maken
+   dat dit een premium feature is.  */
+.action-btn.is-insider {
+  border-color: var(--ct-insider);
+  color: var(--ct-insider);
+}
+.action-btn.is-insider:hover {
+  background: var(--ct-insider-pale);
+  border-color: var(--ct-insider-mid);
+  color: var(--ct-insider-dark);
+}
+
+/* Insider-unlocked: user IS member, knop "voelt al van mij".
+   Gevulde Insider-blauwe achtergrond + witte tekst. */
+.action-btn.is-insider.is-insider-unlocked {
+  background: var(--ct-insider);
+  border-color: var(--ct-insider);
+  color: white;
+}
+.action-btn.is-insider.is-insider-unlocked:hover {
+  background: var(--ct-insider-dark);
+  border-color: var(--ct-insider-dark);
+  color: white;
+}
+.action-btn.is-insider.is-insider-unlocked.is-active {
+  /* Compare-knop in compare-lijst: nog duidelijker, met subtiele lichtere fill */
+  background: var(--ct-insider-dark);
+  border-color: var(--ct-insider-dark);
+}
+
+/* Mobile (Punt 21): actie-knoppen wrappen naar 2 rijen ipv horizontal
+   overflow. Labels behouden — niet icoon-only. */
+@media (max-width: 720px) {
+  .detail-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .detail-header-actions .action-btn.is-md {
+    /* Twee per rij: elk ~50% min gap. flex-basis bepaalt de wrap. */
+    flex: 1 1 calc(50% - 3px);
+    min-width: 0;
+    padding: 0 10px;
+    justify-content: center;
+  }
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Lightbox-navigatie + uitgeklapte filmstrip        */
+/* ============================================================ */
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 120ms ease, opacity 120ms ease;
+  z-index: 2;
+}
+.lightbox-nav:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+.lightbox-nav:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.lightbox-nav:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+.lightbox-nav--prev { left: 24px; }
+.lightbox-nav--next { right: 24px; }
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  width: auto;
+  height: auto;
+  display: block;
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 100px;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .lightbox-nav {
+    width: 40px;
+    height: 40px;
+  }
+  .lightbox-nav--prev { left: 12px; }
+  .lightbox-nav--next { right: 12px; }
+}
+
+/* Uitgeklapte filmstrip — meerdere rijen */
+.mat-gallery.is-expanded .mat-gallery-thumbs {
+  flex-wrap: wrap;
+}
+
+/* "− Less" tile in uitgeklapte state */
+.mat-gallery-thumb.is-collapse {
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12px;
+}
+.mat-gallery-thumb.is-collapse:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Prev/Next thumbnails                              */
+/* ============================================================ */
+
+.mat-prevnext-thumb {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm, 6px);
+  overflow: hidden;
+  background: var(--surface2);
+}
+.mat-prevnext-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .mat-prevnext-thumb {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — More from Brand                                   */
+/* ============================================================ */
+
+.mat-morefrombrand {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--content-padding-desktop) var(--space-12);
+}
+
+@media (max-width: 1024px) {
+  .mat-morefrombrand {
+    padding-left: var(--content-padding-tablet);
+    padding-right: var(--content-padding-tablet);
+  }
+}
+
+@media (max-width: 720px) {
+  .mat-morefrombrand {
+    padding-left: var(--content-padding-mobile);
+    padding-right: var(--content-padding-mobile);
+  }
+}
+
+.mat-morefrombrand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: var(--space-4);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--border);
+}
+
+.mat-morefrombrand-heading {
+  margin: 0;
+}
+
+.mat-morefrombrand-viewall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mat-morefrombrand-viewall:hover {
+  text-decoration: underline;
+}
+
+.mat-morefrombrand-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .mat-morefrombrand-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .mat-morefrombrand-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — MaterialCard eyebrow met brand + code-pill        */
+/* ============================================================ */
+
+.material-card-eyebrow-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+}
+
+.material-card-eyebrow-brand {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+
+.material-card-eyebrow-code {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Recently viewed sectie                            */
+/* ============================================================ */
+
+.recently-viewed {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-10) var(--content-padding-desktop) var(--space-12);
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  .recently-viewed {
+    padding-left: var(--content-padding-tablet);
+    padding-right: var(--content-padding-tablet);
+  }
+}
+
+@media (max-width: 720px) {
+  .recently-viewed {
+    padding-left: var(--content-padding-mobile);
+    padding-right: var(--content-padding-mobile);
+  }
+}
+
+.recently-viewed-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.recently-viewed-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (max-width: 1024px) {
+  .recently-viewed-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .recently-viewed-strip {
+    grid-auto-columns: 140px;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+  .recently-viewed-tile {
+    scroll-snap-align: start;
+  }
+}
+
+.recently-viewed-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.recently-viewed-thumb {
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface2);
+}
+
+.recently-viewed-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.recently-viewed-thumb-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--surface2);
+}
+
+.recently-viewed-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.recently-viewed-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.recently-viewed-brand {
+  font-size: 11px;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.recently-viewed-tile:hover .recently-viewed-name {
+  color: var(--navy);
+}
+
+
+/* ============================================================ */
+/* SESSIE 5 — Search-term highlight                             */
+/* ============================================================ */
+
+mark.search-mark {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 1px 3px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+[data-theme="dark"] mark.search-mark {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fcd34d;
 }

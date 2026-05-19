@@ -161,6 +161,8 @@ export function DetailActions({
         icon={<IconBoard size={13} strokeWidth={2} />}
         label="Add to board"
         trailing={insiderMark}
+        isInsiderFeature
+        isInsiderUnlocked={isMember}
         onClick={handleBoard}
       />
 
@@ -171,6 +173,8 @@ export function DetailActions({
           label={isInCompareList ? 'Added ✓' : 'Compare'}
           trailing={insiderMark}
           isActive={isInCompareList}
+          isInsiderFeature
+          isInsiderUnlocked={isMember}
           onClick={handleCompare}
         />
       )}

@@ -5,7 +5,6 @@
  *  - `<MaterialCard>` — wrapper rond ContentCard met Save/Compare overlay
  *  - `<CompareBar>` — sticky bottom-bar met slots
  *  - `<MaterialGallery>` — hero + filmstrip voor detail-pagina
- *  - `<SampleRequestForm>` — sample-aanvraag form met vier states
  *
  * Deze sectie is bewust local-state-based (eigen CompareProvider) zodat de
  * style-guide los staat van een echte data-laag. In productie zit de
@@ -18,14 +17,10 @@
 
 'use client'
 
-import { useState } from 'react'
 import { CompareBar, MaterialCard } from '@/components/ui'
-import {
-  MaterialGallery,
-  SampleRequestForm,
-} from '@/components/materials'
+import { MaterialGallery } from '@/components/materials'
 import { CompareProvider } from '@/lib/hooks/useCompare'
-import type { MaterialListItem } from '@/types/material'
+import type { MaterialListItem, MaterialProperties } from '@/types/material'
 import type { Gallery, MediaImage } from '@/types/media'
 
 // --------------------------------------------------------------------
@@ -85,7 +80,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
       'Recycled Glass Composite',
       '<stop offset="0" stop-color="#88a800"/><stop offset="1" stop-color="#4a5800"/>',
     ),
-    properties: {
+    properties: ({
       glossiness: 'semi-gloss',
       translucence: 'translucent',
       structure: 'closed',
@@ -101,9 +96,10 @@ const MOCK_MATERIALS: MaterialListItem[] = [
       scratch_resistance: 'good',
       chemical_resistance: 'good',
       renewable: 'partial',
-    },
+    } as unknown as MaterialProperties),
     brandName: 'Eternit',
     brandId: 1,
+    materialCode: null,
     featured: false,
     date: '2024-08-12T10:00:00',
     modified: '2024-08-12T10:00:00',
@@ -125,7 +121,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
       'Biobased Acoustic Panel',
       '<stop offset="0" stop-color="#dce8f8"/><stop offset="1" stop-color="#4070b0"/>',
     ),
-    properties: {
+    properties: ({
       glossiness: 'matt',
       translucence: 'opaque',
       structure: 'open',
@@ -141,9 +137,10 @@ const MOCK_MATERIALS: MaterialListItem[] = [
       scratch_resistance: 'low',
       chemical_resistance: 'medium',
       renewable: 'yes',
-    },
+    } as unknown as MaterialProperties),
     brandName: 'OBRO B.V.',
     brandId: 2,
+    materialCode: null,
     featured: true,
     date: '2024-09-01T10:00:00',
     modified: '2024-09-01T10:00:00',
@@ -165,7 +162,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
       'Translucent PVC Sheet',
       '<stop offset="0" stop-color="#f4e9d8"/><stop offset="1" stop-color="#7a5e30"/>',
     ),
-    properties: {
+    properties: ({
       glossiness: 'glossy',
       translucence: 'transparent',
       structure: 'closed',
@@ -181,9 +178,10 @@ const MOCK_MATERIALS: MaterialListItem[] = [
       scratch_resistance: 'medium',
       chemical_resistance: 'high',
       renewable: 'no',
-    },
+    } as unknown as MaterialProperties),
     brandName: 'OBRO B.V.',
     brandId: 2,
+    materialCode: null,
     featured: false,
     date: '2024-07-20T10:00:00',
     modified: '2024-07-20T10:00:00',
@@ -316,86 +314,8 @@ export function MaterialsSection() {
           <MaterialGallery gallery={MOCK_GALLERY} title="Recycled Glass Composite" />
         </div>
 
-        {/* SampleRequestForm — vier states */}
-        <h3
-          className="t-display-xs sg-subsection-title"
-          style={{ marginTop: 32 }}
-        >
-          SampleRequestForm — vier states
-        </h3>
-        <p className="t-body-sm sg-subsection-desc">
-          Onderscheid: niet-ingelogd (sign-in CTA), ingelogd-gesloten (knop
-          opent form), ingelogd-open (form met inline status), en brand-
-          uitgeschakeld (variant 4). Submit gaat in productie naar{' '}
-          <code>/api/sample-request</code> (placeholder tot W14).
-        </p>
-
-        <div className="sg-preview is-stack is-tinted">
-          <SampleRequestFormPreview />
-        </div>
-
         <CompareBar />
       </section>
     </CompareProvider>
-  )
-}
-
-// --------------------------------------------------------------------
-// Sub-preview component
-// --------------------------------------------------------------------
-
-/**
- * Aparte client-component voor de form-preview met state-toggle tussen
- * de vier states, zodat de style-guide-page geen extra state-tracking
- * hoeft te krijgen.
- */
-function SampleRequestFormPreview() {
-  const [state, setState] = useState<'logged-out' | 'logged-in' | 'disabled'>(
-    'logged-out',
-  )
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <div
-        role="group"
-        aria-label="Preview state"
-        style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}
-      >
-        <button
-          type="button"
-          className={`btn btn-outline btn-sm${state === 'logged-out' ? ' is-form-error' : ''}`}
-          onClick={() => setState('logged-out')}
-          aria-pressed={state === 'logged-out'}
-        >
-          Logged out
-        </button>
-        <button
-          type="button"
-          className={`btn btn-outline btn-sm${state === 'logged-in' ? ' is-form-error' : ''}`}
-          onClick={() => setState('logged-in')}
-          aria-pressed={state === 'logged-in'}
-        >
-          Logged in
-        </button>
-        <button
-          type="button"
-          className={`btn btn-outline btn-sm${state === 'disabled' ? ' is-form-error' : ''}`}
-          onClick={() => setState('disabled')}
-          aria-pressed={state === 'disabled'}
-        >
-          Disabled by brand
-        </button>
-      </div>
-
-      <div style={{ maxWidth: 360 }}>
-        <SampleRequestForm
-          materialId={9001}
-          materialTitle="Recycled Glass Composite"
-          brandName="Eternit"
-          isLoggedIn={state === 'logged-in'}
-          disabled={state === 'disabled'}
-        />
-      </div>
-    </div>
   )
 }

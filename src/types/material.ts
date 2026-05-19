@@ -56,6 +56,7 @@ import type { Gallery, MediaImage } from './media'
  *   renewable:            'yes' | 'no' | 'partial' | ''
  */
 export interface MaterialProperties {
+  // --- Sensorial (9) ---
   glossiness: string
   translucence: string
   structure: string
@@ -65,12 +66,30 @@ export interface MaterialProperties {
   acoustics: string
   odeur: string
   weight: string
+  // --- Technical (5) ---
   fire_resistance: string
   uv_resistance: string
   weather_resistance: string
   scratch_resistance: string
   chemical_resistance: string
+  // --- Environmental (10) ---
+  // `renewable` was er al. De andere komen pas uit WP zodra Johan ze
+  // aanlevert — tot dan zal mapper '' invullen en UI 'Not specified' tonen.
   renewable: string
+  energy_saving: string
+  climate_neutral: string
+  generates_energy: string
+  reduces_energy_use: string
+  reduces_water_use: string
+  reduces_waste: string
+  reduces_transport: string
+  sustainably_produced: string
+  free_from_toxins: string
+  // --- Content composition (3) ---
+  // Percentages of -ranges; ook nog niet in WP.
+  biobased_content: string
+  recycled_content: string
+  upcycled_content: string
 }
 
 /** Veldnamen die overeenkomen met de FacetWP-facets. */
@@ -228,6 +247,8 @@ export interface MaterialListItem {
   brandName: string | null
   /** Brand-ID (uit meta). Null als niet ingesteld. */
   brandId: number | null
+  /** Material-code (uit meta), bv. "WOO1234". Null als niet ingesteld. */
+  materialCode: string | null
   /** Featured op homepage / overzicht. */
   featured: boolean
   /** Sortering. */
@@ -266,6 +287,9 @@ export interface Material {
 
   /** Brand-relatie. `brand` is null tot opgelost; `brandId` mag ook null. */
   brandId: number | null
+
+  /** Brand-naam (resolved). Null als brand_id ontbreekt of niet kon worden opgehaald. */
+  brandName: string | null
 
   /** Sample-aanvraag. true = uitgeschakeld door brand. */
   disableSampleRequest: boolean

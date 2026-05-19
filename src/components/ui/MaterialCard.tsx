@@ -36,6 +36,7 @@ import type { MaterialListItem } from '@/types/material'
 import { useCompare } from '@/lib/hooks/useCompare'
 import { ActionButton } from './ActionButton'
 import { ContentCard } from './ContentCard'
+import { HighlightedText } from './HighlightedText'
 import { IconCompare, IconSave } from './icons'
 
 // --------------------------------------------------------------------
@@ -81,6 +82,11 @@ export interface MaterialCardProps {
    * Aanroeper toont typisch een toast/banner ("Up to 3 materials at a time").
    */
   onCompareLimitReached?: () => void
+  /**
+   * Wanneer gezet: markeert matches van deze term in titel en brand-naam
+   * met <mark>. Case-insensitive. Lege string = geen highlighting.
+   */
+  searchTerm?: string
   /** Optionele extra className op de card-wrapper. */
   className?: string
 }
@@ -98,6 +104,7 @@ export function MaterialCard({
   onRequireInsider,
   onToggleSave,
   onCompareLimitReached,
+  searchTerm,
   className,
 }: MaterialCardProps) {
   const { isInCompare, toggleCompare } = useCompare()
@@ -153,14 +160,39 @@ export function MaterialCard({
     material.hero?.sizes?.medium?.url ??
     material.hero?.sourceUrl
 
+  // Eyebrow: brand-naam links + material-code-pill rechts (Punt 9).
+  // Mockup-stijl. Als brand of code ontbreekt, blijft het andere over.
+  const eyebrowNode = (material.brandName || material.materialCode) ? (
+    <span className="material-card-eyebrow-row">
+      {material.brandName && (
+        <span className="material-card-eyebrow-brand">
+          {searchTerm ? (
+            <HighlightedText text={material.brandName} term={searchTerm} />
+          ) : (
+            material.brandName
+          )}
+        </span>
+      )}
+      {material.materialCode && (
+        <span className="material-card-eyebrow-code">{material.materialCode}</span>
+      )}
+    </span>
+  ) : undefined
+
+  const titleNode = searchTerm ? (
+    <HighlightedText text={material.title} term={searchTerm} />
+  ) : (
+    material.title
+  )
+
   return (
     <ContentCard
       href={material.link.startsWith('/') ? material.link : `/materials/${material.slug}`}
       contentType="material"
       thumbSrc={thumbSrc}
       thumbAlt={thumbAlt}
-      eyebrow={material.brandName ?? undefined}
-      title={material.title}
+      eyebrow={eyebrowNode}
+      title={titleNode}
       className={className}
       actions={
         <>

@@ -101,18 +101,32 @@ export async function getMaterial(
   if (!raw) return null
 
   const resolveGallery = options.resolve?.gallery ?? true
+  const brandId = typeof raw.meta?.brand_id === 'number' ? raw.meta.brand_id : null
+
+  // Brand-naam ophalen — parallel met gallery zodat het geen extra latency
+  // toevoegt. Faalbestendig: bij upstream-fout returnen we gewoon null en
+  // de detail-page valt terug op generieke "Get in touch" zonder brand.
+  const brandPromise: Promise<string | null> = brandId
+    ? fetchBrandByIdRaw(brandId)
+        .then((b) => (b ? b.title.rendered : null))
+        .catch(() => null)
+    : Promise.resolve(null)
 
   if (!resolveGallery) {
-    return mapMaterial(raw, { hero: null, thumbs: [], total: 0 })
+    const brandName = await brandPromise
+    return mapMaterial(raw, { hero: null, thumbs: [], total: 0 }, brandName)
   }
 
-  const attachmentsRaw = await getAttachmentsForPost(raw.id)
+  const [attachmentsRaw, brandName] = await Promise.all([
+    getAttachmentsForPost(raw.id),
+    brandPromise,
+  ])
   const attachments = attachmentsRaw
     .filter((a) => a.media_type === 'image')
     .map(mapMedia)
 
   const gallery = splitGallery(attachments, raw.featured_media)
-  return mapMaterial(raw, gallery)
+  return mapMaterial(raw, gallery, brandName)
 }
 
 export interface ListMaterialsResult {

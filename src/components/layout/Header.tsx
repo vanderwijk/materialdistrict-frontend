@@ -11,6 +11,13 @@ import {
   Sun,
   Menu,
   X,
+  Layers,
+  BookOpen,
+  Building2,
+  Calendar,
+  Book,
+  Mic,
+  type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { InsiderIcon } from '@/components/ui/icons/InsiderIcon'
@@ -55,15 +62,17 @@ interface NavItem {
   key: HeaderSection
   label: string
   href: string
+  /** Lucide icon-component voor mobile-menu rendering. */
+  icon: LucideIcon
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: 'materials', label: 'Materials', href: '/materials' },
-  { key: 'articles', label: 'Stories', href: '/articles' },
-  { key: 'brands', label: 'Brands', href: '/brands' },
-  { key: 'events', label: 'Events', href: '/events' },
-  { key: 'books', label: 'Books', href: '/books' },
-  { key: 'talks', label: 'Talks', href: '/talks' },
+  { key: 'materials', label: 'Materials', href: '/materials', icon: Layers },
+  { key: 'articles', label: 'Stories', href: '/articles', icon: BookOpen },
+  { key: 'brands', label: 'Brands', href: '/brands', icon: Building2 },
+  { key: 'events', label: 'Events', href: '/events', icon: Calendar },
+  { key: 'books', label: 'Books', href: '/books', icon: Book },
+  { key: 'talks', label: 'Talks', href: '/talks', icon: Mic },
 ]
 
 /**
@@ -289,20 +298,29 @@ export function Header({
               </button>
             </div>
             <nav className="mobile-nav-list" aria-label="Mobile navigation">
-              {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className={cn(
-                    'mobile-nav-item',
-                    `nav-${item.key}`,
-                    currentSection === item.key && 'active',
-                  )}
-                  onClick={() => setMobileOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const Icon = item.icon
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    className={cn(
+                      'mobile-nav-item',
+                      `nav-${item.key}`,
+                      currentSection === item.key && 'active',
+                    )}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <Icon
+                      size={18}
+                      strokeWidth={1.8}
+                      className="mobile-nav-item-icon"
+                      aria-hidden="true"
+                    />
+                    <span>{item.label}</span>
+                  </Link>
+                )
+              })}
             </nav>
             <div className="mobile-nav-actions">
               {!isLoggedIn && (

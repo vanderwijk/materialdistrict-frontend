@@ -2,14 +2,17 @@
  * Material properties utility
  * ----------------------------------------------------------------------
  * Parseert `class_list: string[]` (uit de WP REST `material`-response)
- * naar een gestructureerd `MaterialProperties`-object.
+ * naar een gestructureerd `MaterialProperties`-object van 24 velden,
+ * verdeeld over 4 groepen (Sensorial / Technical / Environmental /
+ * Content composition).
  *
- * `class_list` bevat post-classes die WP genereert, waaronder taxonomie-
- * term-slugs in de vorm `<facet>-<value>`. Bijvoorbeeld:
+ * `class_list` bevat post-classes die WP genereert, waaronder
+ * taxonomie-term-slugs in de vorm `<facet>-<value>`. Bijvoorbeeld:
  *   "glossiness-variable", "translucence-50-100-percent",
  *   "hardness-soft", "renewable-no", ...
  *
- * Dit bespaart een of meer extra `getTerms()`-calls op overzichtspagina's.
+ * Niet-ingevulde velden krijgen `''` als waarde — UI rendert die als
+ * "Not specified" zodat fabrikanten zien wat ze nog moeten aanvullen.
  */
 
 import type {
@@ -18,7 +21,12 @@ import type {
   MaterialTag,
 } from '@/types/material'
 
+// --------------------------------------------------------------------
+// FACETS — alle 24 properties die UI kent
+// --------------------------------------------------------------------
+
 const FACETS: readonly MaterialPropertyKey[] = [
+  // Sensorial
   'glossiness',
   'translucence',
   'structure',
@@ -28,12 +36,27 @@ const FACETS: readonly MaterialPropertyKey[] = [
   'acoustics',
   'odeur',
   'weight',
+  // Technical
   'fire_resistance',
   'uv_resistance',
   'weather_resistance',
   'scratch_resistance',
   'chemical_resistance',
+  // Environmental
   'renewable',
+  'energy_saving',
+  'climate_neutral',
+  'generates_energy',
+  'reduces_energy_use',
+  'reduces_water_use',
+  'reduces_waste',
+  'reduces_transport',
+  'sustainably_produced',
+  'free_from_toxins',
+  // Content composition (percentages)
+  'biobased_content',
+  'recycled_content',
+  'upcycled_content',
 ] as const
 
 const EMPTY_PROPERTIES: MaterialProperties = {
@@ -52,19 +75,26 @@ const EMPTY_PROPERTIES: MaterialProperties = {
   scratch_resistance: '',
   chemical_resistance: '',
   renewable: '',
+  energy_saving: '',
+  climate_neutral: '',
+  generates_energy: '',
+  reduces_energy_use: '',
+  reduces_water_use: '',
+  reduces_waste: '',
+  reduces_transport: '',
+  sustainably_produced: '',
+  free_from_toxins: '',
+  biobased_content: '',
+  recycled_content: '',
+  upcycled_content: '',
 }
+
+// --------------------------------------------------------------------
+// Parser
+// --------------------------------------------------------------------
 
 /**
  * Parseer `class_list` naar een gestructureerd properties-object.
- *
- * Algoritme: voor elke string in `class_list`, kijk of die start met
- * een bekende facet-prefix (`<facet>-`). Zo ja, dan is de rest de waarde.
- *
- * Belangrijk: facet-namen met underscore (`fire_resistance`) en waarden
- * met streepjes (`50-100-percent`) bestaan beide. We matchen op de
- * langste facet-prefix die past, anders zou `weather_resistance-good`
- * kunnen worden geïnterpreteerd als facet `weather` met waarde
- * `resistance-good`.
  *
  * Onbekende keys worden genegeerd (zoals `post-136538`, `material`,
  * `type-material`, `status-publish`, etc.).
@@ -92,31 +122,28 @@ export function parseMaterialProperties(
   return result
 }
 
+// --------------------------------------------------------------------
+// Humanizers
+// --------------------------------------------------------------------
+
 /**
  * Humaniseer een waarde-slug naar een leesbaar label.
- * Voor weergave in tags op de UI.
  *
  * Voorbeelden:
  *   '50-100-percent'  → '50–100%'
- *   'variable'        → 'Variable'
- *   'fire_resistance' → 'Fire resistance'
- *   'good'            → 'Good'
  *   '0-percent'       → '0%'
+ *   'variable'        → 'Variable'
+ *   'good'            → 'Good'
  */
 export function humanizeValue(value: string): string {
   if (!value) return ''
 
-  // Speciale case: percentages
-  const pctMatch = value.match(/^(\d+)-(\d+)-percent$/)
-  if (pctMatch) {
-    return `${pctMatch[1]}–${pctMatch[2]}%`
-  }
-  const singlePctMatch = value.match(/^(\d+)-percent$/)
-  if (singlePctMatch) {
-    return `${singlePctMatch[1]}%`
-  }
+  // Percentages
+  const pctRange = value.match(/^(\d+)-(\d+)-percent$/)
+  if (pctRange) return `${pctRange[1]}–${pctRange[2]}%`
+  const pctSingle = value.match(/^(\d+)-percent$/)
+  if (pctSingle) return `${pctSingle[1]}%`
 
-  // Default: vervang streepjes/underscores door spaties en kapitaliseer
   return value
     .replace(/[-_]/g, ' ')
     .replace(/\s+/g, ' ')
@@ -125,9 +152,21 @@ export function humanizeValue(value: string): string {
 
 /**
  * Humaniseer een facet-naam naar een label.
- * 'fire_resistance' → 'Fire resistance'
+ * 'fire_resistance' → 'Fire resistance', 'energy_saving' → 'Energy saving'.
  */
 export function humanizeFacet(facet: MaterialPropertyKey): string {
+  // Speciale gevallen waar de auto-titlecase te kort komt
+  const overrides: Partial<Record<MaterialPropertyKey, string>> = {
+    uv_resistance: 'UV resistance',
+    reduces_energy_use: 'Reduces energy-use',
+    reduces_water_use: 'Reduces water-use',
+    free_from_toxins: 'Free from toxins',
+    biobased_content: 'Biobased content',
+    recycled_content: 'Recycled content',
+    upcycled_content: 'Upcycled content',
+  }
+  if (overrides[facet]) return overrides[facet]!
+
   return facet
     .replace(/_/g, ' ')
     .replace(/^\w/, (c) => c.toUpperCase())
@@ -135,10 +174,11 @@ export function humanizeFacet(facet: MaterialPropertyKey): string {
 
 /**
  * Convert MaterialProperties naar een lijst van tags voor UI-weergave.
- * Lege waarden worden weggelaten.
+ * Lege waarden worden weggelaten (gebruik op MaterialCard waar maar een
+ * paar tags worden getoond — niet op de detail-page die ook lege rijen
+ * moet tonen).
  *
- * `limit` filtert de lijst op de eerste N (gebruik op cards die maar
- * een paar tags tonen).
+ * `limit` filtert op eerste N.
  */
 export function toMaterialTags(
   properties: MaterialProperties,
@@ -161,23 +201,9 @@ export function toMaterialTags(
 }
 
 // --------------------------------------------------------------------
-// Property groups (sessie 4 — detail page rebuild)
+// Property groups — 4 categorieën zoals mockup
 // --------------------------------------------------------------------
 
-/**
- * Vier semantische groepen waarin we de eigenschappen weergeven op de
- * detail-page (afgesproken indeling met Jeroen, sessie 4 part 2):
- *
- *  - sensorial:       zintuiglijke waarnemingen (glansgraad, structuur,
- *                     hardheid, temperatuur, geur, gewicht)
- *  - technical:       prestatiegerichte eigenschappen (brand-/UV-/weer-/
- *                     krasbestendigheid, chemische bestendigheid)
- *  - environmental:   hernieuwbaarheid en circulariteit
- *  - content:         materiaal-samenstelling (biobased%, recycled%,
- *                     upcycled% — komt nog niet uit Johan's WP)
- *
- * `content` blijft voorlopig leeg — komt zodra de data-laag het levert.
- */
 export type MaterialPropertyGroupKey =
   | 'sensorial'
   | 'technical'
@@ -206,27 +232,147 @@ const PROPERTY_GROUPS: Record<
     'scratch_resistance',
     'chemical_resistance',
   ],
-  environmental: ['renewable'],
-  content: [], // tot Johan biobased_content / recycled_content / upcycled_content levert
+  environmental: [
+    'renewable',
+    'energy_saving',
+    'climate_neutral',
+    'generates_energy',
+    'reduces_energy_use',
+    'reduces_water_use',
+    'reduces_waste',
+    'reduces_transport',
+    'sustainably_produced',
+    'free_from_toxins',
+  ],
+  content: ['biobased_content', 'recycled_content', 'upcycled_content'],
 }
 
 /** Display-labels voor de groep-kopjes. */
 export const PROPERTY_GROUP_LABELS: Record<MaterialPropertyGroupKey, string> = {
-  sensorial: 'Sensorial properties',
-  technical: 'Technical properties',
+  sensorial: 'Sensorial',
+  technical: 'Technical',
   environmental: 'Environmental',
   content: 'Content composition',
 }
 
+// --------------------------------------------------------------------
+// Semantic value scoring (positive / neutral / negative / unknown)
+// --------------------------------------------------------------------
+
 /**
- * Convert MaterialProperties naar een gegroepeerde lijst van tags, klaar
- * voor render. Lege groepen worden weggelaten zodat de UI niet "lege
- * kopjes" rendert.
+ * Welke semantische pill-kleur past bij een gegeven facet+value combinatie?
+ * Bron voor de CSS-klassen die op `.mat-property-tag-value` worden gezet.
  *
- * Returnt een array van groepen in vaste volgorde
- * (sensorial → technical → environmental → content) — ook al is dat
- * lexicaal onhandig, het volgt de mockup-volgorde en geeft consistente
- * page-structuur.
+ *  - 'positive'   → groen (Yes, Good, Renewable, Sustainably produced)
+ *  - 'neutral'    → geel (Moderate, Variable, Medium ...)
+ *  - 'negative'   → rood (No, Poor, Hard, etc — alleen voor
+ *                   sustainability-velden waar 'No' echt slecht is)
+ *  - 'unknown'    → grijs (lege waarde of "Unknown")
+ *  - 'default'    → grijs (descriptief, geen oordeel — bv Glossiness=Matte)
+ */
+export type PillSemantic = 'positive' | 'neutral' | 'negative' | 'unknown' | 'default'
+
+/**
+ * Voor sustainability-velden is een Yes positief en een No negatief.
+ * Voor andere velden is Yes/No descriptief, geen waarde-oordeel.
+ */
+const SUSTAINABILITY_FACETS = new Set<MaterialPropertyKey>([
+  'renewable',
+  'energy_saving',
+  'climate_neutral',
+  'generates_energy',
+  'reduces_energy_use',
+  'reduces_water_use',
+  'reduces_waste',
+  'reduces_transport',
+  'sustainably_produced',
+  'free_from_toxins',
+])
+
+export function getPillSemantic(
+  facet: MaterialPropertyKey,
+  rawValue: string,
+): PillSemantic {
+  if (!rawValue) return 'unknown'
+  const v = rawValue.toLowerCase()
+
+  // Sustainability: Yes = positief, No = negatief
+  if (SUSTAINABILITY_FACETS.has(facet)) {
+    if (v === 'yes') return 'positive'
+    if (v === 'no') return 'negative'
+  }
+
+  // Performance-velden (Technical resistance + acoustics): Good/Poor zijn oordeels-waarden
+  if (v === 'good' || v === 'yes') return 'positive'
+  if (v === 'moderate' || v === 'variable' || v === 'medium') return 'neutral'
+  if (v === 'poor' || v === 'no') return 'negative'
+  if (v === 'unknown') return 'unknown'
+
+  // Default: descriptieve waarde zonder oordeel
+  return 'default'
+}
+
+// --------------------------------------------------------------------
+// Grouped properties for detail-page render
+// --------------------------------------------------------------------
+
+export interface GroupedPropertyEntry {
+  facet: MaterialPropertyKey
+  /** Label van het facet, bv. "Glossiness". */
+  facetLabel: string
+  /** Raw waarde uit de mapper (lege string = niet gespecificeerd). */
+  rawValue: string
+  /** Display-label voor in de UI ("Not specified" als raw leeg is). */
+  displayValue: string
+  /** Semantische pill-kleur. */
+  semantic: PillSemantic
+}
+
+export interface GroupedPropertyResult {
+  group: MaterialPropertyGroupKey
+  label: string
+  entries: GroupedPropertyEntry[]
+}
+
+/**
+ * Voor de detail-page: rendert ALLE properties in 4 groepen, incl. lege.
+ * Lege waarden krijgen `"Not specified"` als display-label en een grijze
+ * pill. Dit motiveert brands om hun data aan te vullen.
+ *
+ * Voor MaterialCard (compact): gebruik `toMaterialTags` ipv deze functie
+ * — die slaat lege waarden over.
+ */
+export function getAllPropertyGroups(
+  properties: MaterialProperties,
+): GroupedPropertyResult[] {
+  const order: MaterialPropertyGroupKey[] = [
+    'sensorial',
+    'technical',
+    'environmental',
+    'content',
+  ]
+
+  return order.map((group) => ({
+    group,
+    label: PROPERTY_GROUP_LABELS[group],
+    entries: PROPERTY_GROUPS[group].map((facet): GroupedPropertyEntry => {
+      const rawValue = properties[facet]
+      const hasValue = rawValue !== ''
+      return {
+        facet,
+        facetLabel: humanizeFacet(facet),
+        rawValue,
+        displayValue: hasValue ? humanizeValue(rawValue) : 'Not specified',
+        semantic: hasValue ? getPillSemantic(facet, rawValue) : 'unknown',
+      }
+    }),
+  }))
+}
+
+/**
+ * Legacy alias — gebruikt door eerdere render-code die `groupTagsByCategory`
+ * verwachtte. Deze versie skipt lege waarden (oude gedrag); voor de
+ * nieuwe altijd-tonen-detail-page is `getAllPropertyGroups` de juiste.
  */
 export function groupTagsByCategory(
   properties: MaterialProperties,
@@ -235,22 +381,17 @@ export function groupTagsByCategory(
   label: string
   tags: MaterialTag[]
 }> {
-  const order: MaterialPropertyGroupKey[] = [
-    'sensorial',
-    'technical',
-    'environmental',
-    'content',
-  ]
-
-  return order
-    .map((group) => {
-      const tags: MaterialTag[] = []
-      for (const facet of PROPERTY_GROUPS[group]) {
-        const value = properties[facet]
-        if (!value) continue
-        tags.push({ facet, value, label: humanizeValue(value) })
-      }
-      return { group, label: PROPERTY_GROUP_LABELS[group], tags }
-    })
+  return getAllPropertyGroups(properties)
+    .map((g) => ({
+      group: g.group,
+      label: g.label,
+      tags: g.entries
+        .filter((e) => e.rawValue !== '')
+        .map((e) => ({
+          facet: e.facet,
+          value: e.rawValue,
+          label: e.displayValue,
+        })),
+    }))
     .filter((g) => g.tags.length > 0)
 }

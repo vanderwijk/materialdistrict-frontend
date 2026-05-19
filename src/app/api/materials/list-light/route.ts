@@ -35,6 +35,8 @@ interface LightMaterial {
   id: number
   slug: string
   title: string
+  /** Kleine thumbnail-URL voor prev/next-knoppen. Null als geen hero. */
+  thumbnailUrl: string | null
 }
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -76,6 +78,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       id: m.id,
       slug: m.slug,
       title: m.title,
+      thumbnailUrl:
+        m.hero?.sizes?.thumbnail?.url ??
+        m.hero?.sizes?.medium?.url ??
+        m.hero?.sourceUrl ??
+        null,
     }))
 
     return NextResponse.json({ items, totalRows: result.pager.totalRows })

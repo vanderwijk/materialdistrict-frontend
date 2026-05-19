@@ -32,6 +32,20 @@ interface ActionButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>
    */
   isActive?: boolean
   /**
+   * Markeer dat dit een Insider-only feature is. Voegt `.is-insider`
+   * class toe voor speciale styling (Insider-blauwe outline, gevulde
+   * achtergrond voor logged-in members).
+   *
+   * Combineer met `isInsiderUnlocked` om de gevulde state aan te zetten
+   * voor users die wél Insider zijn.
+   */
+  isInsiderFeature?: boolean
+  /**
+   * User is Insider-member — toont de knop in gevulde state (eigendoms-
+   * signaal). Alleen relevant in combinatie met isInsiderFeature.
+   */
+  isInsiderUnlocked?: boolean
+  /**
    * Voor accessibility wanneer er geen label is (bv. size='sm'). Verplicht bij 'sm'.
    */
   ariaLabel?: string
@@ -62,7 +76,7 @@ interface ActionButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>
  */
 export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
   function ActionButton(
-    { size = 'md', icon, label, trailing, isActive = false, ariaLabel, className, type = 'button', ...rest },
+    { size = 'md', icon, label, trailing, isActive = false, isInsiderFeature = false, isInsiderUnlocked = false, ariaLabel, className, type = 'button', ...rest },
     ref,
   ) {
     if (size === 'sm' && !ariaLabel) {
@@ -75,7 +89,14 @@ export const ActionButton = forwardRef<HTMLButtonElement, ActionButtonProps>(
       <button
         ref={ref}
         type={type}
-        className={cn('action-btn', `is-${size}`, isActive && 'is-active', className)}
+        className={cn(
+          'action-btn',
+          `is-${size}`,
+          isActive && 'is-active',
+          isInsiderFeature && 'is-insider',
+          isInsiderFeature && isInsiderUnlocked && 'is-insider-unlocked',
+          className,
+        )}
         aria-label={ariaLabel ?? label}
         aria-pressed={isActive ? true : undefined}
         {...rest}

@@ -53,7 +53,6 @@ import {
   type KeywordEntry,
 } from './_components/KeywordsSection'
 import { PrevNextNavigation } from './_components/PrevNextNavigation'
-import { SampleRequestFormSection } from './_components/SampleRequestFormSection'
 
 interface MaterialDetailPageProps {
   params: Promise<{ slug: string }>
@@ -215,17 +214,6 @@ export default async function MaterialDetailPage({
             <KeywordsSection keywords={keywords} />
 
             <PrevNextNavigation currentSlug={material.slug} />
-
-            {/* Sample request form — anchor voor Get-in-touch-CTA op
-                ingelogde users. ID-target voor de #sample-request scroll. */}
-            <section id="sample-request" className="mat-sample-section">
-              <SampleRequestFormSection
-                materialId={material.id}
-                materialTitle={material.title}
-                materialSlug={material.slug}
-                disabled={material.disableSampleRequest}
-              />
-            </section>
           </div>
 
           {/* Sidebar */}

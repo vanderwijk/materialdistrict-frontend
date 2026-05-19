@@ -8,11 +8,8 @@
  *
  * Imports vanuit pages:
  *
- *   import { MaterialGallery, SampleRequestForm } from '@/components/materials'
+ *   import { MaterialGallery } from '@/components/materials'
  */
 
 export { MaterialGallery } from './MaterialGallery'
 export type { MaterialGalleryProps } from './MaterialGallery'
-
-export { SampleRequestForm } from './SampleRequestForm'
-export type { SampleRequestFormProps } from './SampleRequestForm'
