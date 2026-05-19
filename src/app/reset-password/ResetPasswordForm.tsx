@@ -16,7 +16,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import {
-  FieldGroup,
   FormStateProvider,
   Input,
   SubmitButton,
@@ -163,16 +162,14 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
           }}
         />
 
-        <FieldGroup>
-          <SubmitButton
-            variant="primary"
-            size="lg"
-            disabled={state.kind === 'submitting'}
-            className="auth-form-submit"
-          >
-            {state.kind === 'submitting' ? 'Updating…' : 'Update password'}
-          </SubmitButton>
-        </FieldGroup>
+        <SubmitButton
+          variant="primary"
+          size="lg"
+          disabled={state.kind === 'submitting'}
+          className="auth-form-submit"
+        >
+          {state.kind === 'submitting' ? 'Updating…' : 'Update password'}
+        </SubmitButton>
       </form>
     </FormStateProvider>
   )

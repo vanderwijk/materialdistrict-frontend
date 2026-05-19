@@ -54,6 +54,7 @@ import {
   type ListMaterialsParams,
   type ListTalksParams,
   type WPMaterialRawResponse,
+  type WPTermResponse,
   getArticleBySlug as fetchArticleBySlugRaw,
   getAttachmentsForPost,
   getBrandById as fetchBrandByIdRaw,
@@ -62,6 +63,7 @@ import {
   getMaterialBySlug as fetchMaterialBySlugRaw,
   getMedia,
   getTalkBySlug as fetchTalkBySlugRaw,
+  getTerms,
   listArticles as listArticlesRaw,
   listBrands as listBrandsRaw,
   listEvents as listEventsRaw,
@@ -127,6 +129,109 @@ export async function getMaterial(
 
   const gallery = splitGallery(attachments, raw.featured_media)
   return mapMaterial(raw, gallery, brandName)
+}
+
+// --------------------------------------------------------------------
+// Material + keywords (detail-page orchestrator) — sessie 6 performance
+// --------------------------------------------------------------------
+
+/** Lichtgewicht keyword-shape voor de UI. */
+export interface MaterialKeyword {
+  name: string
+  slug: string
+}
+
+export interface MaterialDetailResult {
+  material: Material
+  /**
+   * Tag-taxonomie-termen, in dezelfde volgorde als WordPress ze teruggeeft
+   * (relevantie/alfabetisch — niet door ons gegarandeerd). Leeg array als
+   * het material geen tags heeft, of als de term-fetch faalde (zie jsdoc
+   * van `getMaterialDetail`).
+   */
+  keywords: MaterialKeyword[]
+}
+
+/**
+ * Detail-orchestrator voor `/materials/[slug]`.
+ *
+ * Sessie 6 (performance): vervangt het sequentiële paar
+ * `getMaterial(slug)` → `getTerms('tags', { include: tag_ids })` op de
+ * detail-page. Door alle drie de resolves (gallery, brand-naam, keywords)
+ * parallel te draaien ná de initiële material-fetch besparen we één
+ * round-trip op de TTFB van de page. Met WP-latency 150–400 ms per call
+ * is dat een duidelijk merkbare winst.
+ *
+ * Sequentie:
+ *   1. fetchMaterialBySlugRaw                (latency: X)
+ *   2. parallel: gallery + brand + keywords  (latency: max(Y, Z, W))
+ *
+ * Voorheen was stap 2 stap 2+3:
+ *   2. parallel: gallery + brand             (latency: max(Y, Z))
+ *   3. keywords                              (latency: W)
+ *   → totaal: X + max(Y, Z) + W
+ *
+ * Nu: X + max(Y, Z, W) — verschilt 100–400 ms in praktijk.
+ *
+ * Faalbestendigheid:
+ *  - Material niet gevonden → return `null` (page roept `notFound()` aan).
+ *  - Keywords-fetch faalt → `keywords: []`. Geen reden om de hele page te
+ *    laten falen voor een nice-to-have list.
+ *  - Brand/gallery faal → al afgehandeld door `getMaterial` zelf.
+ *
+ * Pages die alléén het material nodig hebben (bv. `generateMetadata`)
+ * blijven `getMaterial(slug)` aanroepen — die functie wijzigt niet.
+ */
+export async function getMaterialDetail(
+  slug: string,
+): Promise<MaterialDetailResult | null> {
+  // Stap 1: raw material — moeten we hebben vóór we tag-IDs kennen.
+  const raw = await fetchMaterialBySlugRaw(slug)
+  if (!raw) return null
+
+  // Tag-IDs extraheren — `taxonomies.tags` zit in de mapper, maar we hebben
+  // het hier sneller direct uit de raw response. WordPress noemt het veld
+  // `tags` op het material-CPT (de `post_tag`-taxonomie).
+  const rawTagIds = Array.isArray(raw.tags) ? raw.tags : []
+  const tagIds = rawTagIds.filter(
+    (id): id is number => typeof id === 'number' && id > 0,
+  )
+
+  // Brand-ID + gallery zoals in `getMaterial`.
+  const brandId = typeof raw.meta?.brand_id === 'number' ? raw.meta.brand_id : null
+
+  const brandPromise: Promise<string | null> = brandId
+    ? fetchBrandByIdRaw(brandId)
+        .then((b) => (b ? b.title.rendered : null))
+        .catch(() => null)
+    : Promise.resolve(null)
+
+  // Keywords parallel — wordPress noemt de taxonomie-endpoint `tags`.
+  // Faalbestendig: bij upstream-fout een lege array zodat de page laadt.
+  const keywordsPromise: Promise<MaterialKeyword[]> =
+    tagIds.length > 0
+      ? getTerms('tags', { include: tagIds, perPage: 50 })
+          .then((terms: WPTermResponse[]) =>
+            terms.map((t) => ({ name: t.name, slug: t.slug })),
+          )
+          .catch(() => [])
+      : Promise.resolve([])
+
+  // Stap 2: alles parallel.
+  const [attachmentsRaw, brandName, keywords] = await Promise.all([
+    getAttachmentsForPost(raw.id),
+    brandPromise,
+    keywordsPromise,
+  ])
+
+  const attachments = attachmentsRaw
+    .filter((a) => a.media_type === 'image')
+    .map(mapMedia)
+
+  const gallery = splitGallery(attachments, raw.featured_media)
+  const material = mapMaterial(raw, gallery, brandName)
+
+  return { material, keywords }
 }
 
 export interface ListMaterialsResult {

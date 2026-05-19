@@ -16,10 +16,13 @@
  *   │  ─ SampleRequestForm anchor         │                          │
  *   └────────────────────────────────────────────────────────────────┘
  *
- * Data:
- *  - `getMaterial(slug)` voor hoofd-content (server fetch)
- *  - `getTerms('tags', { include: tag_ids })` voor keyword-labels
- *    (alleen als er tag-IDs zijn — anders skip de fetch)
+ * Data (sessie 6 — performance):
+ *  - `getMaterialDetail(slug)` voor hoofd-content + keywords in één
+ *    parallelle orchestratie (gallery + brand-naam + tag-terms).
+ *  - `getMaterial(slug, { resolve: { gallery: false } })` in
+ *    `generateMetadata` — lichtgewicht variant voor metadata. Beide
+ *    calls hitten dezelfde WP-endpoint voor de raw material en delen
+ *    daardoor Next.js' fetch-cache.
  *
  * Geparkeerd tot Johan brand-data levert:
  *  - Brand-info-card in sidebar
@@ -36,10 +39,10 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { MaterialGallery } from '@/components/materials'
-import { getMaterial, getTerms } from '@/lib/api'
+import { getMaterial, getMaterialDetail } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct } from '@/lib/seo'
 import {
-  groupTagsByCategory,
+  getAllPropertyGroups,
   humanizeFacet,
   toMaterialTags,
 } from '@/lib/utils/material-properties'
@@ -53,6 +56,10 @@ import {
   type KeywordEntry,
 } from './_components/KeywordsSection'
 import { PrevNextNavigation } from './_components/PrevNextNavigation'
+import { BrandInfoCard } from './_components/BrandInfoCard'
+import { MoreFromBrand } from './_components/MoreFromBrand'
+import { MaterialBody } from './_components/MaterialBody'
+import { RecentlyViewedWriter } from '@/lib/hooks/useRecentlyViewedMaterials'
 
 interface MaterialDetailPageProps {
   params: Promise<{ slug: string }>
@@ -91,28 +98,22 @@ export default async function MaterialDetailPage({
   params,
 }: MaterialDetailPageProps) {
   const { slug } = await params
-  const material = await getMaterial(slug)
 
-  if (!material) {
+  // Sessie 6 (performance): één orchestrator-call die material, gallery,
+  // brand-naam én keyword-terms parallel ophaalt. Voorheen waren keywords
+  // een aparte sequentiële fetch ná `getMaterial`, wat 150–400 ms extra
+  // TTFB kostte. Zie `getMaterialDetail` voor de implementatie.
+  const detail = await getMaterialDetail(slug)
+
+  if (!detail) {
     notFound()
   }
 
+  const { material, keywords: keywordTerms } = detail
   const publishedLabel = formatDate(material.date)
 
-  // Keywords ophalen — alleen als er tag-IDs zijn.
-  let keywords: KeywordEntry[] = []
-  if (material.taxonomies.tags && material.taxonomies.tags.length > 0) {
-    try {
-      const terms = await getTerms('tags', {
-        include: material.taxonomies.tags,
-        perPage: 50,
-      })
-      keywords = terms.map((t) => ({ name: t.name, slug: t.slug }))
-    } catch {
-      // Faalbestendig: bij upstream-fout simpelweg geen keywords tonen.
-      keywords = []
-    }
-  }
+  // KeywordEntry shape is identiek aan MaterialKeyword — passthrough.
+  const keywords: KeywordEntry[] = keywordTerms
 
   // JSON-LD payload
   const tagsForJsonLd = toMaterialTags(material.properties)
@@ -129,11 +130,23 @@ export default async function MaterialDetailPage({
     })),
   })
 
-  // Gegroepeerde properties voor de detail-page
-  const propertyGroups = groupTagsByCategory(material.properties)
+  // Alle 24 properties in 4 groepen — lege waarden tonen "Not specified"
+  const propertyGroups = getAllPropertyGroups(material.properties)
 
   return (
     <>
+      <RecentlyViewedWriter
+        slug={material.slug}
+        title={material.title}
+        brandName={material.brandName}
+        thumbnailUrl={
+          material.gallery.hero?.sizes?.thumbnail?.url ??
+          material.gallery.hero?.sizes?.medium?.url ??
+          material.gallery.hero?.sourceUrl ??
+          null
+        }
+      />
+
       <article className="pub-wrap">
         <DetailHeader
           backNode={<MaterialDetailBackLink />}
@@ -168,43 +181,44 @@ export default async function MaterialDetailPage({
             )}
 
             {material.contentHtml ? (
-              <section
-                className="mat-body"
-                dangerouslySetInnerHTML={{ __html: material.contentHtml }}
-              />
+              <MaterialBody html={material.contentHtml} />
             ) : material.excerptHtml ? (
-              <section
-                className="mat-body"
-                dangerouslySetInnerHTML={{ __html: material.excerptHtml }}
-              />
+              <MaterialBody html={material.excerptHtml} />
             ) : null}
 
-            {/* Properties — gegroepeerd in pills, kop per groep */}
-            {propertyGroups.length > 0 && (
-              <section className="mat-properties" aria-labelledby="properties-title">
-                <h2 id="properties-title" className="mat-section-title">
-                  Material properties
-                </h2>
+            {/* Properties — gegroepeerd in pills, kop per groep.
+                Toont ALLE 24 properties. Lege waarden krijgen "Not
+                specified" + grijze pill zodat brands zien wat ze nog
+                kunnen invullen. */}
+            <section className="mat-properties" aria-labelledby="properties-title">
+              <h2 id="properties-title" className="mat-section-title">
+                Material properties
+              </h2>
+              <div className="mat-properties-grid">
                 {propertyGroups.map((group) => (
                   <div key={group.group} className="mat-property-group">
                     <p className="mat-property-group-label">{group.label}</p>
-                    <ul className="mat-property-group-tags">
-                      {group.tags.map((tag) => (
+                    <ul className="mat-property-group-rows" role="list">
+                      {group.entries.map((entry) => (
                         <li
-                          key={`${tag.facet}:${tag.label}`}
-                          className="mat-property-tag"
+                          key={entry.facet}
+                          className="mat-property-row"
                         >
-                          <span className="mat-property-tag-key">
-                            {humanizeFacet(tag.facet)}
+                          <span className="mat-property-row-label">
+                            {entry.facetLabel}
                           </span>
-                          <span>{tag.label}</span>
+                          <span
+                            className={`mat-property-row-value is-${entry.semantic}`}
+                          >
+                            {entry.displayValue}
+                          </span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 ))}
-              </section>
-            )}
+              </div>
+            </section>
 
             <VideosSection
               videoUrl={material.videoUrl}
@@ -220,21 +234,19 @@ export default async function MaterialDetailPage({
           <aside className="mat-sidebar">
             <GetInTouchCard
               materialSlug={material.slug}
-              brandName={null /* geparkeerd tot brand-resolve */}
+              materialId={material.id}
+              materialTitle={material.title}
+              brandName={material.brandName}
             />
 
-            <div className="mat-brand-block">
-              <span className="mat-brand-block-eyebrow">Material details</span>
-              <h2 className="mat-brand-block-name">
-                {material.materialCode || 'Material reference'}
-              </h2>
-              <p className="t-body-sm">Published {publishedLabel}</p>
-              {material.transportWeight && (
-                <p className="t-body-sm">
-                  Transport weight: {material.transportWeight}
-                </p>
-              )}
-            </div>
+            {material.brandName && (
+              <BrandInfoCard
+                brandName={material.brandName}
+                brandSlug={null /* TODO: brand-slug uit Material zodra WP-mapper het levert */}
+                country={null /* TODO: brand-country uit Material idem */}
+                materialSlug={material.slug}
+              />
+            )}
 
             <DownloadsCard
               materialSlug={material.slug}
@@ -245,6 +257,12 @@ export default async function MaterialDetailPage({
           </aside>
         </div>
       </article>
+
+      <MoreFromBrand
+        brandId={material.brandId}
+        brandName={material.brandName}
+        currentMaterialId={material.id}
+      />
 
       <JsonLd
         data={[

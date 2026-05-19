@@ -87,6 +87,18 @@ interface ContentCardProps {
    * Default: niet gezet (link gebruikt zijn tekst-content als label).
    */
   ariaLabel?: string
+  /**
+   * Pass-through naar `<Card prefetch>`. Sessie 6 (performance).
+   * Default: `undefined` (Next.js standaard viewport-prefetch). Zet op
+   * `false` om viewport-prefetch uit te schakelen.
+   */
+  prefetch?: boolean
+  /**
+   * Pass-through naar `<Card prefetchOn>`. Sessie 6 (performance).
+   * `'hover'` + `prefetch={false}` = prefetch op user-intent
+   * (mouseenter / focus / touchstart) in plaats van viewport.
+   */
+  prefetchOn?: 'render' | 'hover'
   className?: string
 }
 
@@ -104,6 +116,9 @@ interface ContentCardProps {
  *   - InsiderMark vóór de titel bij isInsiderOnly
  *   - Eyebrow is type-onafhankelijk: page bepaalt zelf wat er staat
  *     (brand-naam voor materials, datum voor articles, etc.)
+ *
+ * Sessie 6 (performance): nieuwe `prefetch` en `prefetchOn` props die
+ * worden doorgegeven aan Card. Default-gedrag is ongewijzigd.
  *
  * @example Material met overlay-knoppen:
  *   <ContentCard
@@ -152,6 +167,8 @@ export function ContentCard({
   tagLabel,
   titleAs = 'h3',
   ariaLabel,
+  prefetch,
+  prefetchOn,
   className,
 }: ContentCardProps) {
   // Thumb-ratio modifier (geen inline style)
@@ -173,7 +190,13 @@ export function ContentCard({
   const TitleTag = titleAs
 
   return (
-    <Card href={href} className={className} ariaLabel={ariaLabel}>
+    <Card
+      href={href}
+      className={className}
+      ariaLabel={ariaLabel}
+      prefetch={prefetch}
+      prefetchOn={prefetchOn}
+    >
       <Card.Thumb
         src={thumbSrc}
         alt={thumbAlt ?? ''}

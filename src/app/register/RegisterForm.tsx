@@ -22,7 +22,6 @@ import { useRef, useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Checkbox,
-  FieldGroup,
   FormStateProvider,
   Input,
   SubmitButton,
@@ -216,16 +215,14 @@ export function RegisterForm({ next }: RegisterFormProps) {
           }
         />
 
-        <FieldGroup>
-          <SubmitButton
-            variant="primary"
-            size="lg"
-            disabled={state.kind === 'submitting'}
-            className="auth-form-submit"
-          >
-            {state.kind === 'submitting' ? 'Creating account…' : 'Create account'}
-          </SubmitButton>
-        </FieldGroup>
+        <SubmitButton
+          variant="primary"
+          size="lg"
+          disabled={state.kind === 'submitting'}
+          className="auth-form-submit"
+        >
+          {state.kind === 'submitting' ? 'Creating account…' : 'Create account'}
+        </SubmitButton>
       </form>
     </FormStateProvider>
   )

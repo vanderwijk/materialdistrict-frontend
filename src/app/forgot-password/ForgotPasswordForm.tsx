@@ -16,7 +16,6 @@
 
 import { useRef, useState, type FormEvent } from 'react'
 import {
-  FieldGroup,
   FormStateProvider,
   Input,
   SubmitButton,
@@ -108,16 +107,14 @@ export function ForgotPasswordForm() {
           autoFocus
         />
 
-        <FieldGroup>
-          <SubmitButton
-            variant="primary"
-            size="lg"
-            disabled={state.kind === 'submitting'}
-            className="auth-form-submit"
-          >
-            {state.kind === 'submitting' ? 'Sending…' : 'Send reset link'}
-          </SubmitButton>
-        </FieldGroup>
+        <SubmitButton
+          variant="primary"
+          size="lg"
+          disabled={state.kind === 'submitting'}
+          className="auth-form-submit"
+        >
+          {state.kind === 'submitting' ? 'Sending…' : 'Send reset link'}
+        </SubmitButton>
       </form>
     </FormStateProvider>
   )

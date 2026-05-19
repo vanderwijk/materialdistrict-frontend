@@ -43,6 +43,8 @@ export { EmptyState } from './EmptyState'
 export { Card } from './Card'
 export type { CardProps } from './Card'
 
+export { HoverPrefetchLink } from './HoverPrefetchLink'
+
 export { ContentCard } from './ContentCard'
 export type { ContentCardThumbRatio } from './ContentCard'
 

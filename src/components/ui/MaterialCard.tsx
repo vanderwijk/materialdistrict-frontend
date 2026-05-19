@@ -29,6 +29,16 @@
  * de card toont alleen titel, brand en hero. De `properties` uit
  * `MaterialListItem` zijn beschikbaar maar onbenut tot we besluiten ze in
  * de card op te nemen.
+ *
+ * Sessie 6 (performance):
+ *  - `prefetch={false}` + `prefetchOn="hover"` op de onderliggende Card-Link.
+ *  - Reden: Next.js' default-gedrag prefetcht álle Link-elementen zodra ze
+ *    in viewport komen. Op `/materials` met 12 cards = 12 extra fetches per
+ *    page-load van 150-400 ms elk. Door hover/focus/touchstart-trigger
+ *    laden we alleen wat de user echt overweegt aan te klikken.
+ *  - Trade-off: eerste klik wordt 50-150 ms langzamer voor users die direct
+ *    klikken zonder hover. In de praktijk (cursor-flick + touch) is dat
+ *    nagenoeg onmerkbaar, terwijl de pagina-load merkbaar lichter wordt.
  */
 
 import { useCallback } from 'react'
@@ -194,6 +204,10 @@ export function MaterialCard({
       eyebrow={eyebrowNode}
       title={titleNode}
       className={className}
+      // Sessie 6: viewport-prefetch uit, hover/focus/touchstart aan.
+      // Zie de jsdoc bovenaan dit bestand voor de motivatie.
+      prefetch={false}
+      prefetchOn="hover"
       actions={
         <>
           <ActionButton

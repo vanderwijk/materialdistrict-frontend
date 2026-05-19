@@ -48,6 +48,94 @@ const WP_APP_PASSWORD = process.env.WP_APP_PASSWORD
 const DEFAULT_REVALIDATE = 3600
 
 // --------------------------------------------------------------------
+// Cache-kill-switch voor staging/dev (sessie 6 — feedback Johan)
+// --------------------------------------------------------------------
+//
+// Caching is geweldig in productie maar maakt content-tests verwarrend:
+// Johan past iets aan in WP-admin, ververst de frontend, ziet de oude
+// versie en denkt dat zijn wijziging niet is doorgekomen. Tot 24 uur
+// later (BRAND_REVALIDATE, MEDIA_REVALIDATE).
+//
+// Oplossing: één env-variabele die in dev/staging álle WP-fetches
+// dwingt naar `cache: 'no-store'`. In productie staat hij uit en blijft
+// de cache-tuning werken zoals gepland.
+//
+// Zet in `.env.local` (dev/staging):
+//   WP_CACHE_DISABLED=true
+//
+// Productie: zet 'm NIET (of expliciet op `false`). Default = uit.
+//
+// Scope:
+//   - `wpFetch` / `wpFetchPaginated`  → respecteren deze flag
+//   - `facetwpFetch` (in facetwp.ts)  → respecteert hem óók (zelfde flag)
+//   - `wpAuthFetch`                   → gebruikte al `cache: 'no-store'`,
+//                                       niet beïnvloed
+//
+// We exporteren een helper-functie zodat `facetwp.ts` 'm kan importeren
+// in plaats van de env-var twee keer te lezen. Eén bron van waarheid.
+
+const CACHE_DISABLED = process.env.WP_CACHE_DISABLED === 'true'
+
+// Waarschuwing als de cache-kill-switch per ongeluk aan staat in
+// productie. We crashen NIET — er zijn legitieme debug-sessies waar
+// dit zinvol is — maar maken het hard zichtbaar in de server-logs
+// zodat het niet maandenlang door iemand wordt vergeten.
+if (CACHE_DISABLED && process.env.NODE_ENV === 'production') {
+  console.warn(
+    '[wordpress.ts] WP_CACHE_DISABLED=true in production — every WP fetch ' +
+      'will hit the upstream WordPress server. Performance and load profile ' +
+      'will be significantly worse than designed. Unset this env var unless ' +
+      'you are actively debugging.',
+  )
+}
+
+/**
+ * True wanneer alle publieke WP-fetches `cache: 'no-store'` moeten
+ * gebruiken. Bedoeld voor staging/dev waar Johan content test.
+ *
+ * Geëxporteerd zodat `facetwp.ts` (en eventueel andere fetchers) dezelfde
+ * flag kunnen respecteren — niemand moet `process.env.WP_CACHE_DISABLED`
+ * direct lezen.
+ */
+export function isCacheDisabled(): boolean {
+  return CACHE_DISABLED
+}
+
+// --------------------------------------------------------------------
+// Per-content-type revalidate (sessie 6 — performance)
+// --------------------------------------------------------------------
+//
+// Verschillende content-types muteren met verschillende frequenties.
+// WordPress doet 150–400ms per single-fetch, dus elke cache-hit is winst.
+// Onderstaande waarden zijn conservatief gekozen: liever iets te lang dan
+// content die niet ververst. Bij brand-side wijzigingen die per direct
+// zichtbaar moeten zijn, kan Johan een on-demand revalidation-endpoint
+// inbouwen (`revalidateTag('material:1234')`) — pas dán hebben we ook
+// een reden om tags op de fetches te zetten. Voor nu: tijdsgebaseerd.
+
+/** Materials: brands wijzigen per item gemiddeld <1x per week. 6 uur. */
+const MATERIAL_REVALIDATE = 6 * 3600 // 21600s
+
+/** Brand-records: bijna nooit gewijzigd na aanmaak. 24 uur. */
+const BRAND_REVALIDATE = 24 * 3600 // 86400s
+
+/** Media: afbeeldingen-metadata wijzigt nooit na upload. 24 uur. */
+const MEDIA_REVALIDATE = 24 * 3600 // 86400s
+
+/** Taxonomie-termen (tags, themes, etc.): zelden gewijzigd. 24 uur. */
+const TERM_REVALIDATE = 24 * 3600 // 86400s
+
+/**
+ * Articles, events, talks, books — wisselend dynamisch. Events kunnen
+ * tot kort voor datum schuiven; articles worden af en toe ge-edit.
+ * Default (1 uur) houden voor deze types — beter expliciet maken zodat
+ * de keuze in de code zichtbaar is.
+ */
+const EDITORIAL_REVALIDATE = DEFAULT_REVALIDATE // 3600s
+
+
+
+// --------------------------------------------------------------------
 // Auth header (alleen meegestuurd als beide env-vars aanwezig zijn)
 // --------------------------------------------------------------------
 
@@ -142,7 +230,7 @@ export async function wpFetch<T>(
     signal: options.signal,
   }
 
-  if (options.noCache) {
+  if (options.noCache || CACHE_DISABLED) {
     fetchOptions.cache = 'no-store'
   } else {
     fetchOptions.next = {
@@ -212,7 +300,7 @@ export async function wpFetchPaginated<T>(
     signal: options.signal,
   }
 
-  if (options.noCache) {
+  if (options.noCache || CACHE_DISABLED) {
     fetchOptions.cache = 'no-store'
   } else {
     fetchOptions.next = {
@@ -288,6 +376,7 @@ export async function getTerms(
   // WP REST gebruikt `tags` als endpoint voor de `post_tag` taxonomie.
   // Voor custom taxonomieën is de slug direct het endpoint.
   return wpFetch<WPTermResponse[]>(`/wp/v2/${taxonomy}`, {
+    revalidate: TERM_REVALIDATE,
     params: {
       per_page: params?.perPage ?? 100,
       page: params?.page,
@@ -304,9 +393,12 @@ export async function getTerm(
   idOrSlug: number | string,
 ): Promise<WPTermResponse | null> {
   if (typeof idOrSlug === 'number') {
-    return wpFetchOrNull<WPTermResponse>(`/wp/v2/${taxonomy}/${idOrSlug}`)
+    return wpFetchOrNull<WPTermResponse>(`/wp/v2/${taxonomy}/${idOrSlug}`, {
+      revalidate: TERM_REVALIDATE,
+    })
   }
   const matches = await wpFetch<WPTermResponse[]>(`/wp/v2/${taxonomy}`, {
+    revalidate: TERM_REVALIDATE,
     params: { slug: idOrSlug, per_page: 1 },
   })
   return matches[0] ?? null
@@ -356,13 +448,16 @@ export interface WPMediaResponse {
 }
 
 export async function getMedia(id: number): Promise<WPMediaResponse | null> {
-  return wpFetchOrNull<WPMediaResponse>(`/wp/v2/media/${id}`)
+  return wpFetchOrNull<WPMediaResponse>(`/wp/v2/media/${id}`, {
+    revalidate: MEDIA_REVALIDATE,
+  })
 }
 
 /** Batch-versie voor gallery-ophalen zodra meta is ontsloten. */
 export async function getMediaBatch(ids: number[]): Promise<WPMediaResponse[]> {
   if (ids.length === 0) return []
   return wpFetch<WPMediaResponse[]>(`/wp/v2/media`, {
+    revalidate: MEDIA_REVALIDATE,
     params: { include: ids, per_page: ids.length, orderby: 'include' },
   })
 }
@@ -479,6 +574,7 @@ export async function listMaterials(
 ): Promise<{ items: WPMaterialRawResponse[]; total: number; totalPages: number }> {
   return wpFetchPaginated<WPMaterialRawResponse[]>('/wp/v2/material', {
     noCache: params.noCache,
+    revalidate: MATERIAL_REVALIDATE,
     params: {
       per_page: params.perPage ?? 12,
       page: params.page,
@@ -499,13 +595,16 @@ export async function listMaterials(
 export async function getMaterialById(
   id: number,
 ): Promise<WPMaterialRawResponse | null> {
-  return wpFetchOrNull<WPMaterialRawResponse>(`/wp/v2/material/${id}`)
+  return wpFetchOrNull<WPMaterialRawResponse>(`/wp/v2/material/${id}`, {
+    revalidate: MATERIAL_REVALIDATE,
+  })
 }
 
 export async function getMaterialBySlug(
   slug: string,
 ): Promise<WPMaterialRawResponse | null> {
   const matches = await wpFetch<WPMaterialRawResponse[]>('/wp/v2/material', {
+    revalidate: MATERIAL_REVALIDATE,
     params: { slug, per_page: 1 },
   })
   return matches[0] ?? null
@@ -531,6 +630,7 @@ export async function getAttachmentsForPost(
   params?: { perPage?: number },
 ): Promise<WPMediaResponse[]> {
   return wpFetch<WPMediaResponse[]>('/wp/v2/media', {
+    revalidate: MEDIA_REVALIDATE,
     params: {
       parent: postId,
       per_page: params?.perPage ?? 100,
@@ -592,6 +692,7 @@ export async function listBrands(
 ): Promise<{ items: WPBrandRawResponse[]; total: number; totalPages: number }> {
   return wpFetchPaginated<WPBrandRawResponse[]>('/wp/v2/brand', {
     noCache: params.noCache,
+    revalidate: BRAND_REVALIDATE,
     params: {
       per_page: params.perPage ?? 24,
       page: params.page,
@@ -608,13 +709,16 @@ export async function listBrands(
 export async function getBrandById(
   id: number,
 ): Promise<WPBrandRawResponse | null> {
-  return wpFetchOrNull<WPBrandRawResponse>(`/wp/v2/brand/${id}`)
+  return wpFetchOrNull<WPBrandRawResponse>(`/wp/v2/brand/${id}`, {
+    revalidate: BRAND_REVALIDATE,
+  })
 }
 
 export async function getBrandBySlug(
   slug: string,
 ): Promise<WPBrandRawResponse | null> {
   const matches = await wpFetch<WPBrandRawResponse[]>('/wp/v2/brand', {
+    revalidate: BRAND_REVALIDATE,
     params: { slug, per_page: 1 },
   })
   return matches[0] ?? null
@@ -665,6 +769,7 @@ export async function listArticles(
 ): Promise<{ items: WPArticleRawResponse[]; total: number; totalPages: number }> {
   return wpFetchPaginated<WPArticleRawResponse[]>('/wp/v2/article', {
     noCache: params.noCache,
+    revalidate: EDITORIAL_REVALIDATE,
     params: {
       per_page: params.perPage ?? 12,
       page: params.page,
@@ -682,13 +787,16 @@ export async function listArticles(
 export async function getArticleById(
   id: number,
 ): Promise<WPArticleRawResponse | null> {
-  return wpFetchOrNull<WPArticleRawResponse>(`/wp/v2/article/${id}`)
+  return wpFetchOrNull<WPArticleRawResponse>(`/wp/v2/article/${id}`, {
+    revalidate: EDITORIAL_REVALIDATE,
+  })
 }
 
 export async function getArticleBySlug(
   slug: string,
 ): Promise<WPArticleRawResponse | null> {
   const matches = await wpFetch<WPArticleRawResponse[]>('/wp/v2/article', {
+    revalidate: EDITORIAL_REVALIDATE,
     params: { slug, per_page: 1 },
   })
   return matches[0] ?? null
@@ -744,6 +852,7 @@ export async function listEvents(
 ): Promise<{ items: WPEventRawResponse[]; total: number; totalPages: number }> {
   return wpFetchPaginated<WPEventRawResponse[]>('/wp/v2/event', {
     noCache: params.noCache,
+    revalidate: EDITORIAL_REVALIDATE,
     params: {
       per_page: params.perPage ?? 12,
       page: params.page,
@@ -758,13 +867,16 @@ export async function listEvents(
 export async function getEventById(
   id: number,
 ): Promise<WPEventRawResponse | null> {
-  return wpFetchOrNull<WPEventRawResponse>(`/wp/v2/event/${id}`)
+  return wpFetchOrNull<WPEventRawResponse>(`/wp/v2/event/${id}`, {
+    revalidate: EDITORIAL_REVALIDATE,
+  })
 }
 
 export async function getEventBySlug(
   slug: string,
 ): Promise<WPEventRawResponse | null> {
   const matches = await wpFetch<WPEventRawResponse[]>('/wp/v2/event', {
+    revalidate: EDITORIAL_REVALIDATE,
     params: { slug, per_page: 1 },
   })
   return matches[0] ?? null
@@ -810,6 +922,7 @@ export async function listTalks(
 ): Promise<{ items: WPTalkRawResponse[]; total: number; totalPages: number }> {
   return wpFetchPaginated<WPTalkRawResponse[]>('/wp/v2/talk', {
     noCache: params.noCache,
+    revalidate: EDITORIAL_REVALIDATE,
     params: {
       per_page: params.perPage ?? 12,
       page: params.page,
@@ -824,13 +937,16 @@ export async function listTalks(
 export async function getTalkById(
   id: number,
 ): Promise<WPTalkRawResponse | null> {
-  return wpFetchOrNull<WPTalkRawResponse>(`/wp/v2/talk/${id}`)
+  return wpFetchOrNull<WPTalkRawResponse>(`/wp/v2/talk/${id}`, {
+    revalidate: EDITORIAL_REVALIDATE,
+  })
 }
 
 export async function getTalkBySlug(
   slug: string,
 ): Promise<WPTalkRawResponse | null> {
   const matches = await wpFetch<WPTalkRawResponse[]>('/wp/v2/talk', {
+    revalidate: EDITORIAL_REVALIDATE,
     params: { slug, per_page: 1 },
   })
   return matches[0] ?? null

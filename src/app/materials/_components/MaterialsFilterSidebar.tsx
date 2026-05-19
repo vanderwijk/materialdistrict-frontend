@@ -72,6 +72,7 @@ import {
   IconSaveSearch,
   InsiderIcon,
 } from '@/components/ui/icons'
+import { Skeleton } from '@/components/ui'
 import { cn } from '@/lib/utils/cn'
 import {
   MATERIAL_FACET_GROUP_LABELS,
@@ -700,23 +701,83 @@ function ApplicationPlaceholder({ isOpen, onToggle }: ApplicationPlaceholderProp
 }
 
 // ============================================================
-// MaterialsGridDimWrapper — sessie 6 optimistic dim
+// MaterialsGridDimWrapper — sessie 6 filter-transitie UI
 // ============================================================
 //
-// Wrapt het grid + pagination blok in `page.tsx`. Plaatst
-// `data-pending="true"` op de wrapper-div wanneer de filter-router-
-// transition loopt. CSS in `globals-additions-patch-sessie6.css`
-// pakt deze attribute op om de inhoud subtiel te dimmen.
+// Wrapt het grid + pagination blok in `page.tsx`. Twee niveaus van
+// feedback tijdens een filter-transitie:
+//
+//   1. CSS-dim (alle sessies sinds 6): `data-pending="true"` op de wrapper.
+//      Subtiele opacity-fade die aansluit bij CSS in
+//      `globals-additions-patch-sessie6.css`.
+//
+//   2. Skelet-swap (sessie 6 performance): zodra `isPending` true is,
+//      vervangen we de werkelijke grid-children door een skelet-grid
+//      met dezelfde card-layout. De wrapper omvat grid + pagination,
+//      dus die laatste verdwijnt mee tijdens de transitie — bewust,
+//      want hij hoort bij de result-set die net is opgevraagd. De
+//      filter-sidebar, page-header en breadcrumb blijven staan, zodat
+//      de gebruiker context én controls behoudt.
+//
+// Waarom een skelet bóvenop een dim?
+//  - De dim alleen voelt traag bij hoge WordPress-latency (150–400 ms
+//    plus FacetWP-filter). De cards blijven leesbaar maar niet-klikbaar,
+//    wat onbedoeld een illusie van responsiviteit ondermijnt.
+//  - Een skelet maakt de transitie *expliciet* — "er is iets aan het
+//    veranderen" — en geeft de gebruiker een psychologische pauze die
+//    overeenkomt met de werkelijke fetch-duur.
+//
+// A11y:
+//  - `aria-busy="true"` tijdens pending, zodat assistive tech weet dat
+//    de regio aan het updaten is.
+//  - `aria-live="polite"` zodat het geen aankondiging interrumpeert.
+//  - Skelet-cards zijn puur visueel (geen tekst), niet aria-hidden — de
+//    `Skeleton`-component levert zelf een `role="status"`-label.
 //
 // Bewust een eigen klein client-component (niet de hele grid client
 // maken). Server-component `page.tsx` blijft schoon.
 
+/** Aantal skelet-cards tijdens een filter-transitie. Spiegel van de
+ *  loading.tsx-fallback voor consistente eerste indruk. */
+const PENDING_SKELETON_COUNT = 12
+
 export function MaterialsGridDimWrapper({ children }: { children: ReactNode }) {
   const { isPending } = useMobileFilter()
   return (
-    <div className="ov-grid-wrap" data-pending={isPending ? 'true' : undefined}>
-      {children}
+    <div
+      className="ov-grid-wrap"
+      data-pending={isPending ? 'true' : undefined}
+      aria-busy={isPending ? 'true' : undefined}
+      aria-live="polite"
+    >
+      {isPending ? <MaterialsGridSkeleton /> : children}
     </div>
   )
 }
+
+/**
+ * Skelet-grid getoond tijdens een filter-router-transition.
+ *
+ * Layout matched intentioneel `MaterialsLoading` (in
+ * `src/app/materials/loading.tsx`): zelfde grid-klasse, zelfde
+ * card-skelet-stack, zelfde aantal placeholders. Zo voelt een filter-
+ * change identiek aan een eerste page-load — geen visuele sprongen.
+ */
+function MaterialsGridSkeleton() {
+  return (
+    <div className="ov-grid-3" aria-hidden="true">
+      {Array.from({ length: PENDING_SKELETON_COUNT }).map((_, i) => (
+        <div key={i} className="card">
+          <Skeleton variant="thumb" />
+          <div className="card-body">
+            <Skeleton width="30%" />
+            <Skeleton variant="title" width="90%" />
+            <Skeleton width="50%" />
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 

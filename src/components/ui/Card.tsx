@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { ReactNode, MouseEventHandler, KeyboardEvent } from 'react'
 import { cn } from '@/lib/utils/cn'
+import { HoverPrefetchLink } from './HoverPrefetchLink'
 
 // ============================================================
 // Card root — compositie wrapper
@@ -16,6 +17,26 @@ interface CardLinkProps extends CardBaseProps {
   href: string
   onClick?: never
   ariaLabel?: string
+  /**
+   * Next.js Link prefetch-strategie.
+   * Default: `undefined` — Next.js standaardgedrag (prefetch zodra in
+   * viewport). Zet expliciet op `false` om viewport-prefetch uit te zetten.
+   *
+   * Combineer met `prefetchOn="hover"` om op user-intent (hover/focus)
+   * te prefetchen zonder elke card-in-viewport te warmen.
+   *
+   * Sessie 6 (performance): gebruikt door MaterialCard om 12 simultane
+   * prefetches per `/materials`-page te voorkomen.
+   */
+  prefetch?: boolean
+  /**
+   * Wanneer de prefetch getriggerd wordt.
+   * - `'render'` (default): standaard Next.js gedrag — viewport-based.
+   * - `'hover'`: prefetch pas op `mouseenter` / `focus` / `touchstart`.
+   *   Zet `prefetch={false}` samen met deze waarde — anders heeft het
+   *   geen effect (Next.js zou alsnog viewport-prefetchen).
+   */
+  prefetchOn?: 'render' | 'hover'
 }
 
 interface CardClickableProps extends CardBaseProps {
@@ -47,15 +68,45 @@ type CardProps = CardLinkProps | CardClickableProps | CardStaticProps
  *  - href="..." → Link wrapper, klik = navigatie
  *  - onClick=...  → interactieve div, role="button" met keyboard support
  *  - geen van beide → presentational div
+ *
+ * Sessie 6 (performance): twee optionele Link-props:
+ *  - `prefetch` (boolean) — passthrough naar Next.js' Link
+ *  - `prefetchOn` ('render' | 'hover') — wanneer er geprefetched wordt
+ *
+ * Default-gedrag is ongewijzigd. Alleen MaterialCard zet
+ * `prefetch={false}` + `prefetchOn="hover"`. Andere content-types
+ * (articles, events, talks) blijven standaard viewport-prefetch gebruiken
+ * — die staan zelden 12+ per pagina, dus minder verspilling.
  */
 function CardRoot(props: CardProps) {
   const { children, className } = props
-  const isInteractive = 'href' in props && props.href || 'onClick' in props && props.onClick
+  const isInteractive = ('href' in props && props.href) || ('onClick' in props && props.onClick)
   const classes = cn('card', isInteractive && 'is-interactive', className)
 
   if ('href' in props && props.href) {
+    const prefetch = props.prefetch
+    const prefetchOn = props.prefetchOn ?? 'render'
+    const useHoverPrefetch = prefetchOn === 'hover' && prefetch === false
+
+    if (useHoverPrefetch) {
+      return (
+        <HoverPrefetchLink
+          href={props.href}
+          className={classes}
+          ariaLabel={props.ariaLabel}
+        >
+          {children}
+        </HoverPrefetchLink>
+      )
+    }
+
     return (
-      <Link href={props.href} className={classes} aria-label={props.ariaLabel}>
+      <Link
+        href={props.href}
+        className={classes}
+        aria-label={props.ariaLabel}
+        prefetch={prefetch}
+      >
         {children}
       </Link>
     )

@@ -37,7 +37,7 @@ import {
   type MaterialSortValue,
 } from '@/types/facetwp'
 
-import { WP_API_URL } from './wordpress'
+import { WP_API_URL, isCacheDisabled } from './wordpress'
 
 // --------------------------------------------------------------------
 // Endpoint + constants
@@ -119,7 +119,16 @@ export async function facetwpFetch(
     },
     body: JSON.stringify(body),
     signal: options?.signal,
-    next: { revalidate: options?.revalidate ?? DEFAULT_REVALIDATE_FILTERED },
+  }
+
+  // Sessie 6 — feedback Johan: cache-kill-switch voor staging/dev.
+  // Zie `isCacheDisabled` + de toplevel comment in `wordpress.ts`.
+  if (isCacheDisabled()) {
+    fetchOptions.cache = 'no-store'
+  } else {
+    fetchOptions.next = {
+      revalidate: options?.revalidate ?? DEFAULT_REVALIDATE_FILTERED,
+    }
   }
 
   const res = await fetch(FACETWP_FETCH_ENDPOINT, fetchOptions)

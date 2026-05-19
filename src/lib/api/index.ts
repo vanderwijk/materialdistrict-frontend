@@ -19,6 +19,7 @@ export {
   getBrand,
   getEvent,
   getMaterial,
+  getMaterialDetail,
   getTalk,
   listArticles,
   listBrands,
@@ -31,6 +32,8 @@ export type {
   ListMaterialsResult,
   ListMaterialsWithFacetsParams,
   ListMaterialsWithFacetsResult,
+  MaterialDetailResult,
+  MaterialKeyword,
 } from './content'
 
 // FacetWP — voor het hoofdoverzicht /materials met filtering

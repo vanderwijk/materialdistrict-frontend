@@ -28,7 +28,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
   Checkbox,
-  FieldGroup,
   FormStateProvider,
   Input,
   SubmitButton,
@@ -152,16 +151,14 @@ export function SignInForm({ next }: SignInFormProps) {
           </Link>
         </div>
 
-        <FieldGroup>
-          <SubmitButton
-            variant="primary"
-            size="lg"
-            disabled={state.kind === 'submitting'}
-            className="auth-form-submit"
-          >
-            {state.kind === 'submitting' ? 'Signing in…' : 'Sign in'}
-          </SubmitButton>
-        </FieldGroup>
+        <SubmitButton
+          variant="primary"
+          size="lg"
+          disabled={state.kind === 'submitting'}
+          className="auth-form-submit"
+        >
+          {state.kind === 'submitting' ? 'Signing in…' : 'Sign in'}
+        </SubmitButton>
       </form>
     </FormStateProvider>
   )
