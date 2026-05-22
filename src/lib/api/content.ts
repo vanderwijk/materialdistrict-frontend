@@ -141,6 +141,17 @@ export interface MaterialKeyword {
   slug: string
 }
 
+/**
+ * Material-category term — gebruikt voor de tags-rij boven de h1 op
+ * de detail-page (sessie 7 Punt 13). Zelfde shape als MaterialKeyword
+ * maar conceptueel anders: keywords zijn vrije tags (post_tag), terwijl
+ * material_category een hiërarchische taxonomie is.
+ */
+export interface MaterialCategoryTerm {
+  name: string
+  slug: string
+}
+
 export interface MaterialDetailResult {
   material: Material
   /**
@@ -150,6 +161,12 @@ export interface MaterialDetailResult {
    * van `getMaterialDetail`).
    */
   keywords: MaterialKeyword[]
+  /**
+   * Material-category termen — opgelost van de taxonomy-IDs op het
+   * material naar { name, slug }. Sessie 7 Punt 13: nodig voor de
+   * tags-rij boven de h1. Lege array bij faal/ontbreken.
+   */
+  materialCategoryTerms: MaterialCategoryTerm[]
 }
 
 /**
@@ -197,6 +214,16 @@ export async function getMaterialDetail(
     (id): id is number => typeof id === 'number' && id > 0,
   )
 
+  // Sessie 7 Punt 13: material_category-IDs extraheren voor de tags-rij
+  // boven de h1. WP CPT-veld heet `material_category` op de material-post
+  // (zie WPMaterialRawResponse in api/wordpress.ts).
+  const rawCategoryIds = Array.isArray(raw.material_category)
+    ? raw.material_category
+    : []
+  const categoryIds = rawCategoryIds.filter(
+    (id): id is number => typeof id === 'number' && id > 0,
+  )
+
   // Brand-ID + gallery zoals in `getMaterial`.
   const brandId = typeof raw.meta?.brand_id === 'number' ? raw.meta.brand_id : null
 
@@ -217,12 +244,28 @@ export async function getMaterialDetail(
           .catch(() => [])
       : Promise.resolve([])
 
+  // Sessie 7 Punt 13: material_category-terms parallel. Faalbestendig
+  // op exact dezelfde manier als keywords.
+  const categoryTermsPromise: Promise<MaterialCategoryTerm[]> =
+    categoryIds.length > 0
+      ? getTerms('material_category', {
+          include: categoryIds,
+          perPage: 50,
+        })
+          .then((terms: WPTermResponse[]) =>
+            terms.map((t) => ({ name: t.name, slug: t.slug })),
+          )
+          .catch(() => [])
+      : Promise.resolve([])
+
   // Stap 2: alles parallel.
-  const [attachmentsRaw, brandName, keywords] = await Promise.all([
-    getAttachmentsForPost(raw.id),
-    brandPromise,
-    keywordsPromise,
-  ])
+  const [attachmentsRaw, brandName, keywords, materialCategoryTerms] =
+    await Promise.all([
+      getAttachmentsForPost(raw.id),
+      brandPromise,
+      keywordsPromise,
+      categoryTermsPromise,
+    ])
 
   const attachments = attachmentsRaw
     .filter((a) => a.media_type === 'image')
@@ -231,7 +274,7 @@ export async function getMaterialDetail(
   const gallery = splitGallery(attachments, raw.featured_media)
   const material = mapMaterial(raw, gallery, brandName)
 
-  return { material, keywords }
+  return { material, keywords, materialCategoryTerms }
 }
 
 export interface ListMaterialsResult {

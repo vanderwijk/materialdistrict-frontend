@@ -6,7 +6,10 @@ import { AuthPageLayout } from '@/app/_auth-components/AuthPageLayout'
 import { SignInForm } from './SignInForm'
 
 export const metadata: Metadata = {
-  title: 'Sign in',
+  // Sessie 7 fix Punt 18: pagina-titel toont "Login" om uniform te zijn
+  // met de header-knop "Login". URL blijft /sign-in. Body-CTAs ("Sign in
+  // to get in touch" etc.) blijven voorlopig staan.
+  title: 'Login',
   // Auth pages should not appear in search results.
   robots: { index: false, follow: false },
 }
@@ -54,7 +57,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
 
   return (
     <AuthPageLayout
-      heading="Sign in"
+      heading="Login"
       subheading="Welcome back. Sign in to continue."
       footer={
         <>

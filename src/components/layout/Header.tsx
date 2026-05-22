@@ -137,6 +137,24 @@ export function Header({
     return () => document.removeEventListener('keydown', handler)
   }, [searchOpen])
 
+  // Sessie 7 fix Punt 20: click-buiten sluit search-overlay.
+  // Vervangt de oude `onBlur` op het input-veld (die was te aggressief —
+  // sluit ook wanneer je naar de close-knop tikt). Listener gebruikt
+  // mousedown ipv click zodat de overlay sluit vóórdat een eventuele
+  // klik op een ander element gefired wordt.
+  useEffect(() => {
+    if (!searchOpen) return
+    const handler = (e: MouseEvent) => {
+      const target = e.target as Node | null
+      const wrap = searchInputRef.current?.closest('.search-wrap')
+      if (wrap && target && !wrap.contains(target)) {
+        setSearchOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [searchOpen])
+
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault()
     onSearch?.(searchValue)
@@ -168,7 +186,13 @@ export function Header({
           ))}
         </nav>
 
-        {/* Search overlay — verschijnt over de header heen */}
+        {/* Search overlay — verschijnt over de header heen.
+            Sessie 7 fix Punt 20: op mobile is dit een full-width strip
+            over de hele header-rij (CSS-only). De close-knop is op
+            desktop verborgen via CSS — daar sluit ESC of klik-buiten
+            de overlay. onBlur is verwijderd omdat hij op mobile direct
+            triggerde bij tikken op de close-knop en ook op desktop te
+            aggressief was (sluiten bij tab-out naar submit). */}
         <div className={cn('search-wrap', searchOpen && 'open')}>
           <form onSubmit={handleSearchSubmit} role="search">
             <input
@@ -178,9 +202,16 @@ export function Header({
               placeholder="Search materials, brands, articles…"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              onBlur={() => setSearchOpen(false)}
               aria-label="Search"
             />
+            <button
+              type="button"
+              className="header-search-close"
+              onClick={() => setSearchOpen(false)}
+              aria-label="Close search"
+            >
+              <X size={16} strokeWidth={2} />
+            </button>
           </form>
         </div>
 
@@ -196,15 +227,31 @@ export function Header({
             <Search size={16} strokeWidth={2} />
           </button>
 
-          <Link href="/dashboard/bookmarks" className="icon-btn" aria-label="Bookmarks">
+          {/* Sessie 7 fix Punt 23: Save / Board / Cart-icoons alleen op
+              desktop in de header-rij. Op mobile waren ze daar te druk
+              en liepen ze uit beeld. Mobile-equivalenten staan in de
+              drawer onderaan dit component. */}
+          <Link
+            href="/dashboard/bookmarks"
+            className="icon-btn hide-mobile"
+            aria-label="Bookmarks"
+          >
             <Bookmark size={16} strokeWidth={2} />
           </Link>
 
-          <Link href="/dashboard/boards" className="icon-btn" aria-label="Boards">
+          <Link
+            href="/dashboard/boards"
+            className="icon-btn hide-mobile"
+            aria-label="Boards"
+          >
             <Folder size={16} strokeWidth={2} />
           </Link>
 
-          <Link href="/cart" className="icon-btn cart-btn" aria-label="Shopping cart">
+          <Link
+            href="/cart"
+            className="icon-btn cart-btn hide-mobile"
+            aria-label="Shopping cart"
+          >
             <ShoppingBag size={16} strokeWidth={2} />
             {cartCount > 0 && (
               <span className="cart-badge" aria-label={`${cartCount} items in cart`}>
@@ -323,31 +370,124 @@ export function Header({
               })}
             </nav>
             <div className="mobile-nav-actions">
-              {!isLoggedIn && (
-                <button
-                  type="button"
-                  className="btn btn-outline"
-                  onClick={() => {
-                    setMobileOpen(false)
-                    onLoginClick?.()
-                  }}
-                  style={{ width: '100%' }}
+              {/* Sessie 7 fix Punt 19+23: Save / Board / Cart als eerste
+                  groep onder de nav. Insider-features (Boards) krijgen
+                  een teal-mark voor non-members; CartCount-badge blijft
+                  zichtbaar als > 0. Save staat hierboven los van Boards
+                  omdat Save geen Insider-feature is. */}
+              <div className="mobile-nav-icon-row">
+                <Link
+                  href="/dashboard/bookmarks"
+                  className="mobile-nav-icon-link"
+                  onClick={() => setMobileOpen(false)}
                 >
-                  Login
-                </button>
-              )}
-              {isLoggedIn && (
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => {
-                    setMobileOpen(false)
-                    onDashboardClick?.()
-                  }}
-                  style={{ width: '100%' }}
+                  <Bookmark size={18} strokeWidth={2} aria-hidden="true" />
+                  <span>Save</span>
+                </Link>
+                <Link
+                  href="/dashboard/boards"
+                  className="mobile-nav-icon-link"
+                  onClick={() => setMobileOpen(false)}
                 >
-                  Dashboard
-                </button>
+                  <Folder size={18} strokeWidth={2} aria-hidden="true" />
+                  <span>Boards</span>
+                  {!isMember && (
+                    <InsiderIcon size={12} className="mobile-nav-icon-mark" />
+                  )}
+                </Link>
+                <Link
+                  href="/cart"
+                  className="mobile-nav-icon-link"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <ShoppingBag size={18} strokeWidth={2} aria-hidden="true" />
+                  <span>Cart</span>
+                  {cartCount > 0 && (
+                    <span
+                      className="mobile-nav-icon-badge"
+                      aria-label={`${cartCount} items`}
+                    >
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+              </div>
+
+              {/* Sessie 7 fix Punt 19: auth-acties onderaan, gescheiden
+                  door een hr (CSS border-top). Voor anonieme users:
+                  Login + Create account. Voor ingelogde: Dashboard. */}
+              {!isLoggedIn ? (
+                <div className="mobile-nav-auth">
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={() => {
+                      setMobileOpen(false)
+                      onLoginClick?.()
+                    }}
+                    style={{ width: '100%' }}
+                  >
+                    Login
+                  </button>
+                  <Link
+                    href="/register"
+                    className="btn btn-primary"
+                    onClick={() => setMobileOpen(false)}
+                    style={{
+                      width: '100%',
+                      textAlign: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    Create account
+                  </Link>
+                  {/* Sessie 7 — Become an Insider CTA voor anonieme users.
+                      Teal-styling consistent met `btn-member` zodat de
+                      Insider-feature visueel herkenbaar blijft. Linkt naar
+                      /membership waar de upsell-content staat. */}
+                  <Link
+                    href="/membership"
+                    className="btn btn-member mobile-nav-insider-cta"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    <InsiderIcon size={16} />
+                    Become an Insider
+                  </Link>
+                </div>
+              ) : (
+                <div className="mobile-nav-auth">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setMobileOpen(false)
+                      onDashboardClick?.()
+                    }}
+                    style={{ width: '100%' }}
+                  >
+                    Dashboard
+                  </button>
+                  {isMember && (
+                    <button
+                      type="button"
+                      className="btn btn-member"
+                      onClick={() => {
+                        setMobileOpen(false)
+                        onInsiderClick?.()
+                      }}
+                      style={{
+                        width: '100%',
+                        display: 'inline-flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: 6,
+                      }}
+                    >
+                      <InsiderIcon size={16} />
+                      Insider
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>

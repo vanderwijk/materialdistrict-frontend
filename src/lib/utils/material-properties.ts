@@ -312,6 +312,30 @@ export function getPillSemantic(
   return 'default'
 }
 
+/**
+ * Sessie 7 Punt 13: returnt de sustainability-facets waarvan de waarde
+ * `yes` is — voor de tags-rij boven de h1 op de detail-page. Volgorde
+ * volgt SUSTAINABILITY_FACETS (renewable, energy_saving, climate_neutral,
+ * ...) wat aansluit op hoe de WP-velden conventioneel worden geordend.
+ *
+ * Returnt een array van { facet, label } waarbij label de gehumaniseerde
+ * facet-naam is (bv. 'Renewable', 'Energy saving'). Brands die alleen
+ * `renewable=yes` hebben krijgen dus één tag. Brands zonder enige
+ * sustainability-Yes property: lege array (sectie rendert niets).
+ */
+export function getActiveSustainabilityFacets(
+  properties: MaterialProperties,
+): Array<{ facet: MaterialPropertyKey; label: string }> {
+  const result: Array<{ facet: MaterialPropertyKey; label: string }> = []
+  for (const facet of SUSTAINABILITY_FACETS) {
+    const value = properties[facet]
+    if (typeof value === 'string' && value.toLowerCase() === 'yes') {
+      result.push({ facet, label: humanizeFacet(facet) })
+    }
+  }
+  return result
+}
+
 // --------------------------------------------------------------------
 // Grouped properties for detail-page render
 // --------------------------------------------------------------------

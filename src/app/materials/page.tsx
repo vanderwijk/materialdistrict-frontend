@@ -169,7 +169,7 @@ export default async function MaterialsPage({
           ) : (
             <>
               <Suspense fallback={null}>
-                <MaterialsGrid items={result.items} />
+                <MaterialsGrid items={result.items} searchTerm={search} />
               </Suspense>
 
               {result.pager.totalPages > 1 && (
@@ -180,12 +180,19 @@ export default async function MaterialsPage({
                   />
                 </div>
               )}
+
+              {/* Sessie 7 fix Punt 3: Recently viewed staat nu binnen
+                  de .ov-wrap-grid, in dezelfde kolom als de grid
+                  (kolom 2 op desktop). Voorheen rendderde de sectie
+                  ná de </div> van .ov-wrap en kreeg dus de volle
+                  pagina-breedte — wat hem ook onder de filter-sidebar
+                  liet doorlopen. De .is-inline-variant overschrijft
+                  de full-bleed CSS van de standalone sectie. */}
+              <RecentlyViewedSection variant="inline" />
             </>
           )}
         </MaterialsGridDimWrapper>
       </div>
-
-      <RecentlyViewedSection />
 
       <JsonLd
         data={[

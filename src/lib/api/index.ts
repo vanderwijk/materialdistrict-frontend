@@ -32,6 +32,7 @@ export type {
   ListMaterialsResult,
   ListMaterialsWithFacetsParams,
   ListMaterialsWithFacetsResult,
+  MaterialCategoryTerm,
   MaterialDetailResult,
   MaterialKeyword,
 } from './content'

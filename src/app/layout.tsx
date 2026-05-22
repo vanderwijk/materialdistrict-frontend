@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-import { cache } from 'react'
+import { cache, Suspense } from 'react'
 import { DM_Sans, DM_Serif_Display } from 'next/font/google'
 import { HeaderShell } from '@/components/layout/HeaderShell'
 import { Footer } from '@/components/layout/Footer'
+import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { AuthProvider } from '@/components/providers/AuthContext'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
@@ -131,6 +132,16 @@ export default async function RootLayout({
         </a>
         <ThemeProvider>
           <AuthProvider initialUser={initialUser}>
+            {/* Sessie 7 fix Punt 17: ScrollToTop reset window-scroll
+                bij elke client-side route-change (PUSH/REPLACE).
+                Bij browser back/forward laat hij het over aan de
+                browser's native scroll-restoration. Eigen Suspense
+                omdat de component `useSearchParams()` gebruikt — in
+                Next.js 15+ moet die binnen een Suspense-boundary
+                staan. */}
+            <Suspense fallback={null}>
+              <ScrollToTop />
+            </Suspense>
             <HeaderShell />
             <main id="main">{children}</main>
             <Footer />

@@ -47,6 +47,7 @@ interface LightMaterial {
   id: number
   slug: string
   title: string
+  thumbnailUrl: string | null
 }
 
 interface ListLightResponse {
@@ -133,6 +134,20 @@ export function PrevNextNavigation({ currentSlug }: PrevNextNavigationProps) {
           <span className="mat-prevnext-arrow" aria-hidden="true">
             ←
           </span>
+          {/* Sessie 7 fix Punt 10: altijd een thumb-tile renderen, ook
+              wanneer WP geen hero levert. Met de vorige conditional
+              `{prev.thumbnailUrl && (...)}` verdween de hele tile bij
+              materials zonder hero — wat in productie het meest opvalt.
+              Een placeholder-vierkant in surface2 houdt het ritme van
+              de prev/next-rij intact. */}
+          <span className="mat-prevnext-thumb" aria-hidden="true">
+            {prev.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={prev.thumbnailUrl} alt="" />
+            ) : (
+              <span className="mat-prevnext-thumb-placeholder" />
+            )}
+          </span>
           <span className="mat-prevnext-label">
             <span className="mat-prevnext-eyebrow">Previous</span>
             <span className="mat-prevnext-title">{prev.title}</span>
@@ -150,6 +165,16 @@ export function PrevNextNavigation({ currentSlug }: PrevNextNavigationProps) {
           <span className="mat-prevnext-label">
             <span className="mat-prevnext-eyebrow">Next</span>
             <span className="mat-prevnext-title">{next.title}</span>
+          </span>
+          {/* Sessie 7 fix Punt 10: zie commentaar op de prev-link
+              hierboven. */}
+          <span className="mat-prevnext-thumb" aria-hidden="true">
+            {next.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={next.thumbnailUrl} alt="" />
+            ) : (
+              <span className="mat-prevnext-thumb-placeholder" />
+            )}
           </span>
           <span className="mat-prevnext-arrow" aria-hidden="true">
             →

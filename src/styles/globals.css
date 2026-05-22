@@ -1751,7 +1751,13 @@ h4 {
     grid-template-columns: 1fr;
     padding: 16px var(--content-padding-mobile) 48px;
   }
-  .ov-wrap > .uf-sidebar { display: none; }
+  /* Sessie 7 fix Punt 21: alleen verbergen wanneer NIET open. De
+     bestaande regel `.ov-wrap > .uf-sidebar { display: none }` heeft
+     dezelfde specificity (0,0,1,2) als `.uf-sidebar.mob-open` maar
+     stond verder achteraan in de CSS-volgorde → overrulede de mob-open
+     `display: block`. Resultaat: bij klik op de filter-knop zag de
+     user wel de backdrop, maar de drawer bleef onzichtbaar. */
+  .ov-wrap > .uf-sidebar:not(.mob-open) { display: none; }
   .ov-grid-2 { grid-template-columns: 1fr; }
   .ov-grid-3,
   .ov-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -2353,22 +2359,15 @@ a:focus-visible {
    eigen .card-action-btn klasse. Zie globals.css §35 (.action-btn.is-sm). */
 
 /* Single-select option (radio-style) — gebruikt door FilterSidebar wanneer
-   selectMode='single'. Maakt van .uf-checkbox een ronde radio. */
+   selectMode='single'. Maakt van .uf-checkbox een ronde radio.
+   Sessie 7 fix Punt 1: oude `::after`-dot weggehaald — die conflicteerde
+   met de child-`<span class="uf-radio-dot">` die de sessie-6 rebuild
+   rendert, wat in een dubbele donkere dot resulteerde. De inner-dot
+   styling staat nu in §"SESSIE 6 — FilterSidebar rebuild" (.uf-radio-dot).
+   Alleen de border-radius-override blijft hier zodat de eyebrow-positie
+   in de filter-sidebar bewaard wordt. */
 .uf-checkbox.is-radio {
   border-radius: 50% !important;
-}
-
-.uf-checkbox.is-radio.checked::after {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: white;
-  display: block;
-}
-
-.uf-checkbox.is-radio.checked > svg {
-  display: none;
 }
 
 /* Saved-search button in filter-header — naast Clear, met Insider-mark voor non-members */
@@ -2433,13 +2432,26 @@ a:focus-visible {
 }
 
 .pagination-btn.is-active {
+  /* Sessie 7 fix Punt 2: expliciet hardcoded var(--navy) in light mode
+     en var(--navy-light) override in dark mode. Voorheen kreeg deze
+     class soms een zachter blauw doordat ergens een latere regel
+     `var(--link)` injecteerde (light: navy, dark: navy-light) — wat
+     in dark mode prima leesbaar is maar in light mode tot een
+     zacht lichtblauwe pill leidde. Door beide modi expliciet te
+     pinnen voorkomen we die regressie. */
   background: var(--navy);
-  color: white;
+  color: #ffffff;
   border-color: var(--navy);
   cursor: default;
   /* Sessie 3A batch 4: actieve pagina is niet klikbaar — geen onnodige refresh */
   pointer-events: none;
   font-weight: 600;
+}
+
+[data-theme="dark"] .pagination-btn.is-active {
+  background: var(--navy-light);
+  border-color: var(--navy-light);
+  color: #ffffff;
 }
 
 .pagination-btn:disabled {
@@ -2461,10 +2473,15 @@ a:focus-visible {
 /* ------------------------------------------------------------
    30. Detail-page header (DetailHeader component)
        Gemodelleerd op detailHeader() in mockup r.4840-4859
+
+       Sessie 7 fix Punt 15: border-bottom weggehaald. Op de material-
+       detail-page veroorzaakte deze een ongewenste horizontale lijn
+       net boven de gallery-foto over de hele pagina-breedte. De
+       visuele scheiding tussen header en content komt nu uit de
+       achtergrond-kleur en spacing.
    ------------------------------------------------------------ */
 .detail-header {
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
 }
 
 .detail-header-inner {
@@ -4421,6 +4438,13 @@ a:focus-visible {
 
 /* ------------------------------------------------------------
    43.6 FooterLink — site-footer text-link
+   Sessie 7 fix Punt 16: deze generieke definitie (sessie 3A batch 4)
+   overschreef de site-footer-specifieke styling in §15 omdat ze
+   dezelfde class-naam delen en deze later in de file staat. Het
+   resultaat: text-muted (grijs) op donkere footer-achtergrond,
+   waardoor links slecht leesbaar werden. We laten deze definitie
+   intact voor mogelijke andere usage van `.footer-link` buiten de
+   site-footer, maar voegen daarna een specifieke override toe.
    ------------------------------------------------------------ */
 .footer-link {
   display: inline-block;
@@ -4435,6 +4459,25 @@ a:focus-visible {
   color: var(--text);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* Site-footer scope — overrules de generieke .footer-link styling
+   hierboven. Binnen de donkere footer-achtergrond zijn de links
+   altijd helder wit, niet text-muted. Sessie 7 fix Punt 16. */
+.site-footer .footer-link {
+  display: inline;
+  padding: 0;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  line-height: 2.2;
+  font-weight: 500;
+  transition: color var(--transition-base);
+}
+
+.site-footer .footer-link:hover {
+  color: #ffffff;
+  text-decoration: none;
 }
 
 /* ============================================================
@@ -5141,6 +5184,12 @@ a:focus-visible {
   grid-template-columns: minmax(0, 1fr) 320px;
   gap: var(--space-10);
   margin-bottom: var(--space-12);
+  /* Sessie 7 fix Punt 12: align-items start zodat de aside (sidebar)
+     zijn natural height behoudt. Default `stretch` rekte de aside
+     uit tot de hoogte van .mat-main, waardoor er geen ruimte was
+     om te sticken — `position: sticky` met top:72px werkte dan
+     visueel niet. */
+  align-items: start;
 }
 
 @media (max-width: 1024px) {
@@ -6246,6 +6295,13 @@ button.mat-gallery-hero:focus-visible {
   height: 100%;
   max-width: min(1600px, 95vw);
   max-height: 90vh;
+  /* Sessie 7 fix Punt 6: image was links uitgelijnd binnen de wrap
+     omdat `.lightbox-image` als block-element niet automatisch
+     centreert. Flex-centering zet de image (en placeholder/spinner)
+     altijd in het midden van de beschikbare ruimte. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 720px) {
@@ -6328,7 +6384,10 @@ button.mat-gallery-hero:focus-visible {
 
 .mat-getintouch-title {
   font-family: var(--font-display);
-  font-size: var(--text-2xl);
+  /* Sessie 7 fix Punt 4: was --text-2xl (20px) — te klein t.o.v. mockup.
+     Naar --text-3xl (28px) zodat de DM Serif Display correct ademruimte
+     krijgt als donkere CTA-card-header. */
+  font-size: var(--text-3xl);
   font-weight: 400;
   line-height: 1.2;
   margin: 0 0 var(--space-2) 0;
@@ -6697,121 +6756,99 @@ button.mat-gallery-hero:focus-visible {
 
 
 /* ============================================================ */
-/* SESSIE 5 — Properties grid (3 kolommen + pill semantics)     */
+/* SESSIE 5 — Properties grid (was 3 kolommen + pill semantics)  */
+/* Sessie 7 fix Punt 7 — terug naar één-koloms groepen met       */
+/* horizontale pill-rij per groep. Nam te veel ruimte als         */
+/* 3-koloms grid van bordered cards. Pills met semantische        */
+/* kleur staan in §SESSIE 7 hieronder.                           */
 /* ============================================================ */
 
 .mat-properties-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4);
-  align-items: start;
-}
-
-@media (max-width: 1100px) {
-  .mat-properties-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 720px) {
-  .mat-properties-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.mat-property-group {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-  padding: 14px 16px;
-}
-
-.mat-property-group-label {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-hint);
-  margin: 0 0 12px 0;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border);
-}
-
-.mat-property-group-rows {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-6);
 }
 
-.mat-property-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 14px;
-}
 
-.mat-property-row-label {
-  color: var(--text);
-}
+/* ============================================================ */
+/* SESSIE 7 — Property-pill semantics (Punt 7)                  */
+/* ============================================================ */
+/* De basis-styling voor `.mat-property-tag` zelf staat al in   */
+/* §"SESSIE 4 — Detail page" (regel ~5449). Hier voegen we      */
+/* alleen de semantische varianten toe — positief (groen),     */
+/* neutraal (amber), negatief (rood), unknown (italic-grijs),  */
+/* default (gewoon grijs). De label-prefix `.mat-property-tag- */
+/* key` blijft text-muted ongeacht semantic; alleen de waarde  */
+/* na de `:` krijgt visueel gewicht via achtergrond + kleur.   */
+/* ============================================================ */
 
-.mat-property-row-value {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-/* Pill semantics
-   - default: grijs, descriptief (Glossiness=Matte, Texture=Smooth)
-   - unknown: zwakker grijs, italic-vibe (rendert "Not specified")
-   - positive: groen (Yes, Good, sustainability=yes)
-   - neutral: amber (Moderate, Variable, Medium)
-   - negative: rood (No, Poor) */
-.mat-property-row-value.is-default {
+.mat-property-tag.is-default {
   background: var(--surface2);
-  color: var(--text-muted);
+  color: var(--text);
+  border-color: var(--border);
 }
-.mat-property-row-value.is-unknown {
+
+.mat-property-tag.is-unknown {
   background: var(--surface2);
   color: var(--text-hint);
-  font-weight: 500;
+  border-color: var(--border);
   font-style: italic;
 }
-.mat-property-row-value.is-positive {
+
+.mat-property-tag.is-positive {
   background: var(--green-pale);
   color: var(--green-dark, #1a5a1d);
+  border-color: var(--green-mid, var(--green));
 }
-.mat-property-row-value.is-neutral {
+.mat-property-tag.is-positive .mat-property-tag-key {
+  color: var(--green-dark, #1a5a1d);
+  opacity: 0.7;
+}
+
+.mat-property-tag.is-neutral {
   background: #fef3c7;
   color: #92400e;
+  border-color: #fcd34d;
 }
-.mat-property-row-value.is-negative {
+.mat-property-tag.is-neutral .mat-property-tag-key {
+  color: #92400e;
+  opacity: 0.7;
+}
+
+.mat-property-tag.is-negative {
   background: #fde8e8;
   color: #8a1c1c;
+  border-color: #f5b5b5;
+}
+.mat-property-tag.is-negative .mat-property-tag-key {
+  color: #8a1c1c;
+  opacity: 0.7;
 }
 
 /* Dark-mode tweaks: zorg dat onze pills genoeg contrast houden */
-[data-theme="dark"] .mat-property-row-value.is-positive {
+[data-theme="dark"] .mat-property-tag.is-positive {
   background: rgba(74, 168, 75, 0.18);
   color: #93e09e;
+  border-color: rgba(74, 168, 75, 0.4);
 }
-[data-theme="dark"] .mat-property-row-value.is-neutral {
+[data-theme="dark"] .mat-property-tag.is-positive .mat-property-tag-key {
+  color: #93e09e;
+}
+[data-theme="dark"] .mat-property-tag.is-neutral {
   background: rgba(245, 158, 11, 0.18);
   color: #fcd34d;
+  border-color: rgba(245, 158, 11, 0.4);
 }
-[data-theme="dark"] .mat-property-row-value.is-negative {
+[data-theme="dark"] .mat-property-tag.is-neutral .mat-property-tag-key {
+  color: #fcd34d;
+}
+[data-theme="dark"] .mat-property-tag.is-negative {
   background: rgba(220, 38, 38, 0.18);
   color: #fca5a5;
+  border-color: rgba(220, 38, 38, 0.4);
 }
-[data-theme="dark"] .mat-property-row-value.is-default,
-[data-theme="dark"] .mat-property-row-value.is-unknown {
-  background: var(--surface2);
+[data-theme="dark"] .mat-property-tag.is-negative .mat-property-tag-key {
+  color: #fca5a5;
 }
 
 
@@ -6975,6 +7012,15 @@ button.mat-gallery-hero:focus-visible {
   object-fit: cover;
   display: block;
 }
+/* Sessie 7 fix Punt 10: placeholder voor wanneer WP geen hero levert.
+   Een leeg vlak in surface2 — geen icoon — zodat de prev/next-rij
+   altijd hetzelfde ritme heeft, ook voor materials zonder gallery. */
+.mat-prevnext-thumb-placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--surface2);
+}
 
 @media (max-width: 720px) {
   .mat-prevnext-thumb {
@@ -7117,6 +7163,22 @@ button.mat-gallery-hero:focus-visible {
   .recently-viewed {
     padding-left: var(--content-padding-mobile);
     padding-right: var(--content-padding-mobile);
+  }
+}
+
+/* Sessie 7 fix Punt 3: inline-variant voor wanneer de sectie binnen
+   een grid-cell zit (op /materials in kolom 2 onder de pagination).
+   Reset alle full-bleed styling — de cell bepaalt zelf de breedte. */
+.recently-viewed.is-inline {
+  max-width: none;
+  margin: 0;
+  padding: var(--space-8) 0 0 0;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
+  .recently-viewed.is-inline {
+    padding: var(--space-6) 0 0 0;
   }
 }
 
@@ -7685,4 +7747,862 @@ mark.search-mark {
 
 .auth-form-spacer {
   height: var(--space-2);
+}
+
+
+/* ============================================================ */
+/* SESSIE 7 — Material overview & detail finetuning             */
+/* ============================================================ */
+/* Twee componenten kregen in sessie 4-5 hun JSX-implementatie  */
+/* maar de bijbehorende CSS-blokken ontbraken volledig in       */
+/* globals.css. Hierdoor renderden ze als ongestyled HTML.      */
+/* Verder een paar kleinere CSS-toevoegingen die bij batch 1    */
+/* van sessie 7 horen — zie commentaar per blok.                */
+/* ============================================================ */
+
+
+/* ------------------------------------------------------------
+   SESSIE 7 — BrandInfoCard (Punt 5)
+   ------------------------------------------------------------
+   Sidebar-card onder de Get-in-touch-card. Initialen-vierkant +
+   brand-naam + country + chevron. Voor niet-ingelogde users:
+   gated-blok met "Sign in"-CTA.
+   ------------------------------------------------------------ */
+
+.mat-brand-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.mat-brand-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  text-decoration: none;
+  color: var(--text);
+  transition: background var(--transition-base);
+}
+
+.mat-brand-card-header:not(.is-static):hover {
+  background: var(--surface2);
+}
+
+.mat-brand-card-header:not(.is-static):focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: -2px;
+}
+
+/* Initialen-vierkant — kleine kleurvlakje met 1-2 letters */
+.mat-brand-card-mark {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: var(--navy);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.mat-brand-card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mat-brand-card-name {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-brand-card-country {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-brand-card-chevron {
+  flex-shrink: 0;
+  color: var(--text-hint);
+  transition: transform var(--transition-base), color var(--transition-base);
+}
+
+.mat-brand-card-header:not(.is-static):hover .mat-brand-card-chevron {
+  color: var(--navy);
+  transform: translateX(2px);
+}
+
+/* Gated-blok onderaan voor niet-ingelogde users */
+.mat-brand-card-gated {
+  border-top: 1px solid var(--border);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mat-brand-card-gated-msg {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.mat-brand-card-gated-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--navy);
+  color: #ffffff;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius);
+  text-decoration: none;
+  transition: background var(--transition-base);
+}
+
+.mat-brand-card-gated-cta:hover {
+  background: #0f2e6e; /* iets donkerder navy voor hover */
+}
+
+.mat-brand-card-gated-cta:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+
+/* ------------------------------------------------------------
+   SESSIE 7 — GetInTouchModal (Punt 11)
+   ------------------------------------------------------------
+   Volledige modal-styling. Component bestond al sinds sessie 5
+   maar het CSS-blok was nooit toegevoegd. Resultaat in productie:
+   gigantisch telefoon-icoon, geen modal-container.
+
+   Layout volgt de mockup: dark-header met eyebrow + title + close,
+   options-grid met 5 multi-select knoppen, optional message-textarea,
+   sticky-footer met "Send request"-knop + hint.
+   ------------------------------------------------------------ */
+
+/* Backdrop — full-screen overlay */
+.git-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(13, 31, 45, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  animation: git-fade-in 120ms ease-out;
+}
+
+@keyframes git-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Modal-container */
+.git-modal {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - var(--space-8));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-lg);
+  animation: git-slide-up 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes git-slide-up {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Header — donkere navy-balk bovenaan */
+.git-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--navy);
+  color: #ffffff;
+}
+
+.git-eyebrow {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.git-title {
+  margin: var(--space-1) 0 0 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.git-submeta {
+  margin: var(--space-1) 0 0 0;
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.git-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-base);
+}
+
+.git-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.git-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Form-container — scrollt als nodig */
+.git-form {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.git-intro {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.git-intro strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Options-list — multi-select knoppen */
+.git-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.git-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--transition-base), background var(--transition-base);
+  font-family: var(--font-body);
+}
+
+.git-option:hover:not(.is-selected) {
+  border-color: var(--navy-light);
+  background: var(--surface2);
+}
+
+.git-option:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+.git-option.is-selected {
+  border-color: var(--green);
+  background: var(--green-pale);
+}
+
+.git-option-check {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.git-option.is-selected .git-option-check {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.git-option-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  background: var(--green-pale);
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.git-option-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.git-option.is-selected .git-option-icon {
+  background: var(--green);
+  color: #ffffff;
+}
+
+.git-option-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.git-option-label {
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.git-option-hint {
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+  line-height: 1.3;
+}
+
+/* Message textarea */
+.git-message-label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-hint);
+  margin-bottom: -2px; /* compenseert het gap van .git-form */
+}
+
+.git-message-optional {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text-hint);
+}
+
+.git-message {
+  width: 100%;
+  min-height: 88px;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text);
+  resize: vertical;
+  transition: border-color var(--transition-base);
+}
+
+.git-message:focus {
+  outline: none;
+  border-color: var(--navy-light);
+}
+
+.git-error {
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--red-pale, #fee2e2);
+  color: var(--red, #b91c1c);
+  font-size: var(--text-sm);
+  border-radius: var(--radius);
+}
+
+/* Footer met submit-knop */
+.git-footer {
+  border-top: 1px solid var(--border);
+  margin: var(--space-1) calc(-1 * var(--space-5)) calc(-1 * var(--space-5));
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.git-submit {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--green);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition-base);
+}
+
+.git-submit:hover:not(:disabled) {
+  background: var(--green-mid);
+}
+
+.git-submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.git-submit:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+.git-footer-hint {
+  margin: 0;
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-hint);
+  line-height: 1.5;
+}
+
+/* Success-state */
+.git-success {
+  padding: var(--space-8) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.git-success svg {
+  color: var(--green);
+}
+
+.git-success h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  color: var(--text);
+}
+
+.git-success p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+.git-success-close {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--transition-base), border-color var(--transition-base);
+}
+
+.git-success-close:hover {
+  background: var(--surface2);
+  border-color: var(--navy-light);
+}
+
+/* Mobile aanpassingen */
+@media (max-width: 560px) {
+  .git-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .git-modal {
+    max-width: 100%;
+    max-height: 92vh;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+  }
+  .git-header {
+    padding: var(--space-4);
+  }
+  .git-form {
+    padding: var(--space-4);
+  }
+  .git-footer {
+    margin: var(--space-1) calc(-1 * var(--space-4)) calc(-1 * var(--space-4));
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+
+/* ------------------------------------------------------------
+   SESSIE 7 — MaterialDetailActions twee-groepen layout (Punt 14)
+   ------------------------------------------------------------
+   Voor de material-detail-page splitsen we de action-row in twee
+   visuele groepen: links de gratis acties (Save + Share), rechts
+   de Insider acties (Add to board + Compare). Op mobile wrappen
+   ze onder elkaar in twee rijen.
+   ------------------------------------------------------------ */
+
+.mat-detail-actions-grouped {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.mat-detail-actions-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  /* Op mobile worden beide groepen full-width onder elkaar.
+     Save+Share blijft de eerste rij, Boards+Compare de tweede. */
+  .mat-detail-actions-grouped {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  .mat-detail-actions-group {
+    justify-content: flex-start;
+  }
+  .mat-detail-actions-group .action-btn.is-md {
+    flex: 1 1 calc(50% - var(--space-1));
+    min-width: 0;
+    justify-content: center;
+  }
+}
+
+
+/* ------------------------------------------------------------
+   SESSIE 7 — Material detail tags-rij (Punt 13)
+   ------------------------------------------------------------
+   Boven de DetailHeader maar binnen .pub-wrap rendert page.tsx
+   een rij met material-category termen + sustainability-Yes
+   properties (met groen check-icoontje). Aligneert met de
+   detail-header-inner padding/max-width.
+   ------------------------------------------------------------ */
+
+.mat-detail-tags-row {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-4) var(--content-padding-desktop) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+@media (max-width: 1024px) {
+  .mat-detail-tags-row {
+    padding: var(--space-3) var(--content-padding-tablet) 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .mat-detail-tags-row {
+    padding: var(--space-3) var(--content-padding-mobile) 0;
+  }
+}
+
+.mat-detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+}
+
+.mat-detail-tag--category {
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+
+.mat-detail-tag--sustainability {
+  background: var(--green-pale);
+  color: var(--green-dark, #1a5a1d);
+  border-color: var(--green-mid, var(--green));
+}
+
+.mat-detail-tag--sustainability .mat-detail-tag-icon {
+  color: var(--green);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .mat-detail-tag--sustainability {
+  background: rgba(74, 168, 75, 0.18);
+  color: #93e09e;
+  border-color: rgba(74, 168, 75, 0.4);
+}
+
+[data-theme="dark"] .mat-detail-tag--sustainability .mat-detail-tag-icon {
+  color: #93e09e;
+}
+
+/* Meta-regel code-pill (was: "Code X" als platte tekst, nu een
+   subtiele pill voor visueel groepering). */
+.mat-detail-meta-code {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  vertical-align: 1px;
+}
+
+
+/* ============================================================ */
+/* SESSIE 7 — Header mobile restructure (Punt 19, 20, 23)        */
+/* ============================================================ */
+/*
+   Wat er verandert op mobile (≤ 768px):
+   - Save / Board / Cart / Login / Insider verdwijnen uit de
+     header-rij (.hide-mobile in JSX). Header rij = logo + search
+     + darkmode + hamburger (4 items).
+   - Search-icon op mobile opent een full-width overlay-strip die
+     de hele header-rij overneemt (logo verdwijnt tijdens search).
+   - Drawer bevat extra rij Save/Boards/Cart + Login + Create account.
+*/
+
+/* Header-search heeft nu een sluit-knop ernaast. Op desktop blijft het
+   form de oorspronkelijke layout houden; flex zodat input + X knop
+   naast elkaar staan. */
+.search-wrap form[role="search"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.header-search-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface2);
+  color: var(--text-muted);
+  display: none; /* desktop: hidden — ESC/click-outside doet het werk */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.header-search-close:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.header-search-close:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+
+/* ------------------------------------------------------------
+   Mobile (≤ 768px) — search-overlay als full-width header-strip
+   ------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+  /* Search-wrap op mobile = volledige header-breedte. De inset reset
+     is belangrijk: de desktop-versie heeft left/right gepind op vaste
+     pixels, wat op mobile een smalle strip in het midden geeft. */
+  .search-wrap {
+    left: var(--content-padding-mobile);
+    right: var(--content-padding-mobile);
+    top: 50%;
+    transform: translateY(-50%);
+    /* Z-index boven logo + icons zodat de strip ze "overneemt" als-ie
+       open is. */
+    z-index: calc(var(--z-header) + 5);
+  }
+
+  /* Sluit-knop zichtbaar op mobile zodat de user de overlay kan sluiten
+     zonder ESC of een buiten-klik te raden. */
+  .header-search-close {
+    display: inline-flex;
+  }
+
+  /* Wanneer search open is: visueel maskeren van logo + actie-icons
+     zodat ze geen ruimte meer pakken / niet doorklikbaar zijn. Pure
+     CSS-trick: de search-wrap dekt ze al af via de hogere z-index, maar
+     we maken de header-inner achterliggend ook minder zichtbaar via
+     een class op de wrap-zelf. Pointer-events op de logo/actions
+     voorkomt accidental klikken. */
+  .site-header-inner:has(.search-wrap.open) .logo,
+  .site-header-inner:has(.search-wrap.open) .header-actions > *:not(.show-mobile):not([aria-label="Search"]) {
+    /* Geen visuele wijziging — overlay dekt al af. Wel pointer-events
+       uit voor zekerheid. */
+    pointer-events: none;
+  }
+
+  /* Search-input vult de hele overlay-strip op mobile, met box-shadow
+     voor visuele lift boven de header. */
+  .header-search {
+    height: 40px;
+    box-shadow: 0 4px 24px rgba(13, 47, 78, 0.18);
+  }
+}
+
+
+/* ------------------------------------------------------------
+   Mobile drawer — Save / Boards / Cart icon-row (Punt 19+23)
+   ------------------------------------------------------------ */
+
+.mobile-nav-icon-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.mobile-nav-icon-link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background var(--transition-base);
+}
+
+.mobile-nav-icon-link:hover {
+  background: var(--border);
+}
+
+.mobile-nav-icon-link:focus-visible {
+  outline: 2px solid var(--navy-light);
+  outline-offset: 2px;
+}
+
+.mobile-nav-icon-mark {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  color: var(--ct-member);
+}
+
+.mobile-nav-icon-badge {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  background: var(--ct-article);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ------------------------------------------------------------
+   Mobile drawer — auth-acties onderaan (Punt 19)
+   ------------------------------------------------------------ */
+
+.mobile-nav-auth {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Become an Insider CTA — anonieme users zien hem onder Login +
+   Create account. Standaard `btn btn-member` heeft geen layout-defaults
+   wanneer als Link gerenderd, dus we zetten width + flex hier
+   expliciet. */
+.mobile-nav-insider-cta {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  text-decoration: none;
 }

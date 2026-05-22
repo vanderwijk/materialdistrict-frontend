@@ -42,6 +42,7 @@ import { MaterialGallery } from '@/components/materials'
 import { getMaterial, getMaterialDetail } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct } from '@/lib/seo'
 import {
+  getActiveSustainabilityFacets,
   getAllPropertyGroups,
   humanizeFacet,
   toMaterialTags,
@@ -109,11 +110,18 @@ export default async function MaterialDetailPage({
     notFound()
   }
 
-  const { material, keywords: keywordTerms } = detail
+  const { material, keywords: keywordTerms, materialCategoryTerms } = detail
   const publishedLabel = formatDate(material.date)
 
   // KeywordEntry shape is identiek aan MaterialKeyword — passthrough.
   const keywords: KeywordEntry[] = keywordTerms
+
+  // Sessie 7 Punt 13: tags-rij boven de h1 = material-category termen
+  // + sustainability-Yes properties (met groen icoontje). De Yes-only
+  // filter zit in `getActiveSustainabilityFacets`. Volgorde:
+  // categories first, dan sustainability — zodat de eerste tag-rij
+  // begint met de meest specifieke classificatie.
+  const sustainabilityTags = getActiveSustainabilityFacets(material.properties)
 
   // JSON-LD payload
   const tagsForJsonLd = toMaterialTags(material.properties)
@@ -148,15 +156,79 @@ export default async function MaterialDetailPage({
       />
 
       <article className="pub-wrap">
+        {/* Sessie 7 Punt 13: tags-rij boven de h1 met
+              - material-category termen (resolved via getTerms)
+              - sustainability "Yes"-properties (groen check-icoontje)
+            DetailHeader's eigen `tags`-prop blijft staan met de
+            content-type pill, maar deze rij komt visueel eerst doordat
+            ze hier vóór de DetailHeader gerenderd wordt. CSS-class
+            `mat-detail-tags-row` aligneert met de detail-header-inner
+            padding/max-width. */}
+        {(materialCategoryTerms.length > 0 || sustainabilityTags.length > 0) && (
+          <div className="mat-detail-tags-row">
+            {materialCategoryTerms.map((term) => (
+              <span
+                key={`cat-${term.slug}`}
+                className="mat-detail-tag mat-detail-tag--category"
+              >
+                {term.name}
+              </span>
+            ))}
+            {sustainabilityTags.map((t) => (
+              <span
+                key={`sus-${t.facet}`}
+                className="mat-detail-tag mat-detail-tag--sustainability"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="mat-detail-tag-icon"
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                {t.label}
+              </span>
+            ))}
+          </div>
+        )}
+
         <DetailHeader
           backNode={<MaterialDetailBackLink />}
           tags={[{ type: 'content', contentType: 'material' }]}
           title={material.title}
           meta={
+            // Sessie 7 Punt 13: nieuwe meta-regel.
+            // `by [Brand]` · `[Country]` · `[Code]` · `Published [date]`.
+            // Brand-naam is PLAIN TEXT (geen link) — brand-pages bestaan
+            // nog niet, komen in sessie 8.
             <>
-              {material.materialCode && (
+              {material.brandName && (
                 <>
-                  Code <strong>{material.materialCode}</strong> ·{' '}
+                  by <strong>{material.brandName}</strong>
+                  {/* TODO sessie 8: country uit brand-data van WP zodra
+                      Johan dat veld blootstelt. Voor nu niet gerenderd. */}
+                  {material.materialCode && (
+                    <>
+                      {' · '}
+                      <span className="mat-detail-meta-code">
+                        {material.materialCode}
+                      </span>
+                    </>
+                  )}
+                  {' · '}
+                </>
+              )}
+              {!material.brandName && material.materialCode && (
+                <>
+                  Code <strong>{material.materialCode}</strong>
+                  {' · '}
                 </>
               )}
               Published <strong>{publishedLabel}</strong>
@@ -194,27 +266,27 @@ export default async function MaterialDetailPage({
               <h2 id="properties-title" className="mat-section-title">
                 Material properties
               </h2>
+              {/* Sessie 7 fix Punt 7: terug naar de horizontale pill-style
+                  ipv de 3-koloms grid (mat-property-row). Per groep een
+                  flex-wrap container met pills [label: value]. Semantische
+                  kleuren komen via `is-{semantic}` op de pill zelf. */}
               <div className="mat-properties-grid">
                 {propertyGroups.map((group) => (
                   <div key={group.group} className="mat-property-group">
                     <p className="mat-property-group-label">{group.label}</p>
-                    <ul className="mat-property-group-rows" role="list">
+                    <div className="mat-property-group-tags">
                       {group.entries.map((entry) => (
-                        <li
+                        <span
                           key={entry.facet}
-                          className="mat-property-row"
+                          className={`mat-property-tag is-${entry.semantic}`}
                         >
-                          <span className="mat-property-row-label">
-                            {entry.facetLabel}
+                          <span className="mat-property-tag-key">
+                            {entry.facetLabel}:
                           </span>
-                          <span
-                            className={`mat-property-row-value is-${entry.semantic}`}
-                          >
-                            {entry.displayValue}
-                          </span>
-                        </li>
+                          {entry.displayValue}
+                        </span>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -42,13 +42,14 @@ import type { MaterialListItem } from '@/types/material'
 
 export interface MaterialsGridProps {
   items: MaterialListItem[]
+  searchTerm?: string
 }
 
 // --------------------------------------------------------------------
 // Component
 // --------------------------------------------------------------------
 
-export function MaterialsGrid({ items }: MaterialsGridProps) {
+export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
 
@@ -132,6 +133,7 @@ export function MaterialsGrid({ items }: MaterialsGridProps) {
             onRequireInsider={handleRequireInsider}
             onToggleSave={handleToggleSave}
             onCompareLimitReached={handleCompareLimitReached}
+            searchTerm={searchTerm}
           />
         ))}
       </div>
