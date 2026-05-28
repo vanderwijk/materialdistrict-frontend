@@ -44,6 +44,7 @@ import {
   type MaterialFacetName,
 } from '@/types/facetwp'
 
+import { toStoryType } from '@/lib/config/story-types'
 import { parseMaterialProperties } from '@/lib/utils/material-properties'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
@@ -355,13 +356,14 @@ export function mapArticleListItem(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     authorId: raw.author,
     categoryIds: raw.categories ?? [],
     tagIds: raw.tags ?? [],
     featured: Boolean(m._featured),
-    insiderOnly: false, // BLOCKER sessie 6
+    type: toStoryType(m._story_type ?? m.type),
+    insiderOnly: Boolean(m._insider_only ?? m.insider_only),
     date: raw.date,
   }
 }
@@ -377,15 +379,16 @@ export function mapArticle(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     authorId: raw.author,
     authorName: authorName ?? null,
     categoryIds: raw.categories ?? [],
     tagIds: raw.tags ?? [],
     featured: Boolean(m._featured),
-    insiderOnly: false, // BLOCKER sessie 6
+    type: toStoryType(m._story_type ?? m.type),
+    insiderOnly: Boolean(m._insider_only ?? m.insider_only),
     date: raw.date,
     modified: raw.modified,
   }
