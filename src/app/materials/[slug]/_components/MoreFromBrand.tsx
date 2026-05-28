@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { listMaterialsWithFacets } from '@/lib/api'
+import { listMaterialsByBrand } from '@/lib/api'
 import { MaterialCard } from '@/components/ui/MaterialCard'
 
 /**
@@ -8,46 +8,49 @@ import { MaterialCard } from '@/components/ui/MaterialCard'
  * Render een "More from [Brand]"-sectie onderaan de detail-page met max
  * 3 andere materials van dezelfde brand.
  *
- * Server-component: doet z'n eigen FacetWP-query met `brand=<id>` als
- * filter. Sluit het huidige material uit zodat het niet als "More" voor
- * zichzelf verschijnt.
+ * Server-component. Sessie 5 (27-05-2026): de oude FacetWP-query is
+ * vervangen door de genormaliseerde REST-relatie-query `?brand_id=<id>`
+ * (Johan-handoff). FacetWP herkende geen `brand`-facet — daardoor toonde
+ * deze sectie eerder willekeurige materials (zie S7.1). De nieuwe query
+ * is production-verified en levert betrouwbaar brand-specifieke materials.
+ *
+ * Dit raakt ALLEEN MoreFromBrand. FacetWP blijft de filter-mechaniek voor
+ * het hoofdoverzicht /materials.
  *
  * Faalbestendig:
  *  - brand_id null → component rendert niets
- *  - FacetWP-fout → component rendert niets (geen kapotte page)
- *  - Resultaat ≤ 1 item (alleen het huidige) → niets renderen
+ *  - REST-fout → component rendert niets (geen kapotte page)
+ *  - Resultaat 0 items → niets renderen
  *
- * "View all →" linkt naar `/materials?brand=<id>` zodat de gebruiker de
- * volledige brand-collectie kan zien.
+ * "View all →" linkt naar het brand-overzicht. We gebruiken de brand-slug
+ * wanneer beschikbaar (directe brand-page); anders fallback op de
+ * materials-overview gefilterd op brand-id.
  */
 
 export interface MoreFromBrandProps {
   brandId: number | null
   brandName: string | null
+  /** Brand-slug voor de "View all"-link naar /brands/[slug]. Optioneel. */
+  brandSlug?: string | null
   currentMaterialId: number
 }
 
 export async function MoreFromBrand({
   brandId,
   brandName,
+  brandSlug,
   currentMaterialId,
 }: MoreFromBrandProps) {
   if (!brandId || !brandName) return null
 
   let items
   try {
-    // FacetWP brand-facet heet doorgaans 'brand'. We sturen brand_id mee
-    // omdat de backend mogelijk meerdere conventies kent.
-    const result = await listMaterialsWithFacets({
-      selection: {
-        // @ts-expect-error — `brand` is geen onderdeel van de strikte
-        // FacetSelection-type, maar FacetWP accepteert hem wel. Wanneer
-        // de filter-structuur officieel wordt uitgebreid (Punt 1b)
-        // kunnen we deze cast weghalen.
-        brand: [String(brandId)],
-      },
-      page: 1,
-      perPage: 4, // 1 extra om het huidige material te filteren
+    // Genormaliseerde relatie-query (Johan-handoff). per_page 4 → tot 3
+    // tonen na het uitsluiten van het huidige material (exclude doet dat
+    // al server-side, de slice is een veiligheidsnet).
+    const result = await listMaterialsByBrand(brandId, {
+      perPage: 4,
+      exclude: currentMaterialId,
     })
     items = result.items
   } catch {
@@ -59,6 +62,10 @@ export async function MoreFromBrand({
     .slice(0, 3)
 
   if (filtered.length === 0) return null
+
+  const viewAllHref = brandSlug
+    ? `/brands/${brandSlug}`
+    : `/materials?brand=${encodeURIComponent(String(brandId))}`
 
   return (
     <section
@@ -72,10 +79,7 @@ export async function MoreFromBrand({
         >
           More from {brandName}
         </h2>
-        <Link
-          href={`/materials?brand=${encodeURIComponent(String(brandId))}`}
-          className="mat-morefrombrand-viewall"
-        >
+        <Link href={viewAllHref} className="mat-morefrombrand-viewall">
           View all <span aria-hidden="true">→</span>
         </Link>
       </header>

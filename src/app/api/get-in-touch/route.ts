@@ -13,9 +13,10 @@
  *  - Voor nu: log de request en return success. Zodra de mail-transport
  *    bestaat, hier de daadwerkelijke email-call invoegen.
  *
- * Body shape:
+ * Body shape (precies één van materialId / brandId is verplicht):
  *   {
- *     materialId: number
+ *     materialId?: number
+ *     brandId?: number
  *     options: ('call_back' | 'catalogue' | 'rep' | 'sample' | 'question')[]
  *     message: string | null
  *   }
@@ -35,7 +36,8 @@ const VALID_OPTIONS = new Set([
 ])
 
 interface GetInTouchBody {
-  materialId: number
+  materialId?: number
+  brandId?: number
   options: string[]
   message: string | null
 }
@@ -43,9 +45,15 @@ interface GetInTouchBody {
 function isValidBody(input: unknown): input is GetInTouchBody {
   if (!input || typeof input !== 'object') return false
   const body = input as Record<string, unknown>
-  if (typeof body.materialId !== 'number' || !Number.isFinite(body.materialId)) {
-    return false
-  }
+
+  // Precies één target: materialId of brandId. Beide moeten (als gezet)
+  // een geldig getal zijn; minstens één is verplicht.
+  const hasMaterial =
+    typeof body.materialId === 'number' && Number.isFinite(body.materialId)
+  const hasBrand =
+    typeof body.brandId === 'number' && Number.isFinite(body.brandId)
+  if (!hasMaterial && !hasBrand) return false
+
   if (!Array.isArray(body.options) || body.options.length === 0) return false
   for (const opt of body.options) {
     if (typeof opt !== 'string' || !VALID_OPTIONS.has(opt)) return false
@@ -93,7 +101,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   console.info('[get-in-touch] request received', {
     userId: user.id,
     userEmail: user.email,
+    target: typeof raw.brandId === 'number' ? 'brand' : 'material',
     materialId: raw.materialId,
+    brandId: raw.brandId,
     options: raw.options,
     hasMessage: Boolean(message),
   })

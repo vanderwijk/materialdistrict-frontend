@@ -48,6 +48,71 @@ export function buildOrganization(): OrganizationSchema {
 }
 
 /**
+ * Brand → Organization structured data (sessie 5).
+ *
+ * Een brand is in Schema.org-context een Organization. Geeft Google de
+ * mogelijkheid een knowledge-panel / rich entity te tonen voor de
+ * fabrikant. Puurfunctie: `null` als er onvoldoende data is (geen naam).
+ *
+ * `sameAs` verzamelt de ingevulde social-URLs — Google gebruikt dit om
+ * de organisatie aan haar officiële profielen te koppelen.
+ */
+interface BrandForJsonLd {
+  slug: string
+  name: string
+  description?: string
+  logo?: string
+  website?: string | null
+  socials?: {
+    facebook?: string | null
+    instagram?: string | null
+    linkedin?: string | null
+    twitter?: string | null
+    youtube?: string | null
+  }
+}
+
+export function buildBrandOrganization(
+  brand: BrandForJsonLd,
+): OrganizationSchema | null {
+  if (!brand.name || !brand.slug) return null
+
+  const sameAs = brand.socials
+    ? [
+        brand.socials.linkedin,
+        brand.socials.twitter,
+        brand.socials.facebook,
+        brand.socials.instagram,
+        brand.socials.youtube,
+      ].filter((url): url is string => Boolean(url))
+    : []
+
+  const schema: OrganizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${SITE_URL}/brands/${brand.slug}#organization`,
+    name: brand.name,
+    // De canonieke URL van de brand binnen MaterialDistrict.
+    url: `${SITE_URL}/brands/${brand.slug}`,
+  }
+
+  if (brand.description) schema.description = brand.description
+  if (brand.logo) {
+    schema.image = brand.logo
+    schema.logo = brand.logo
+  }
+  // `website` (eigen brand-site) + socials samen in sameAs — verwijzen
+  // allemaal naar dezelfde echte entiteit elders op het web.
+  const external = [
+    ...(brand.website ? [brand.website] : []),
+    ...sameAs,
+  ]
+  if (external.length > 0) schema.sameAs = external
+
+  return schema
+}
+
+/**
  * WebSite-schema met sitelinks search-box.
  * Eén keer per page in root layout.
  */

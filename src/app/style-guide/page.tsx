@@ -57,6 +57,7 @@ import {
 } from '@/components/layout'
 import { DetailActions } from '@/components/ui/DetailActions'
 import { IconsSection } from './sections/IconsSection'
+import { BrandsSection } from './sections/BrandsSection'
 import { PreviewModeProvider } from '@/lib/hooks/usePreviewMode'
 
 /**
@@ -268,6 +269,9 @@ export default function StyleGuidePage() {
 
           {/* Iconen — overzicht van centrale icon-registry */}
           <IconsSection />
+
+          {/* Brands — sessie 5 (overzicht-component) */}
+          <BrandsSection />
 
           {/* ============================================================
               UI Components

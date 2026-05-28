@@ -195,6 +195,8 @@ export function mapMaterialListItem(
     properties: parseMaterialProperties(raw.class_list),
     brandName: brandName ? decodeHtmlEntities(brandName) : null,
     brandId: raw.meta?.brand_id ?? null,
+    brandSlug: stringOrNull(raw.meta?.brand_slug),
+    brandCountry: raw.meta?.brand_country?.label ?? null,
     materialCode: stringOrNull(raw.meta?.material_code),
     featured: Boolean(raw.meta?.featured),
     date: raw.date,
@@ -236,6 +238,8 @@ export function mapMaterial(
 
     brandId: typeof m.brand_id === 'number' && m.brand_id > 0 ? m.brand_id : null,
     brandName: brandName ? decodeHtmlEntities(brandName) : null,
+    brandSlug: stringOrNull(m.brand_slug),
+    brandCountry: m.brand_country?.label ?? null,
 
     // Default: sample-aanvraag AAN. Brand zet 'm uit met `disable_sample_request: true`.
     disableSampleRequest: Boolean(m.disable_sample_request),
@@ -262,6 +266,16 @@ export function mapMaterial(
 // --------------------------------------------------------------------
 // Brand
 // --------------------------------------------------------------------
+//
+// Normalized contract (Johan-handoff 27-05-2026): de plugin levert nu
+// schone genormaliseerde velden naast de raw underscore-velden. We
+// gebruiken de genormaliseerde als canonieke bron, en vallen alleen
+// terug op underscore-velden tijdens rollout (rollout-tolerantie).
+//
+// Weergave-keuzes:
+//  - country  → `country_detail.label` (leesbaar, bv. "Japan"), niet de
+//    kale code. Fallback op `_brand_country` als detail ontbreekt.
+//  - socials  → genormaliseerd `socials.*`, fallback op `_brand_*`.
 
 export function mapBrandListItem(
   raw: WPBrandRawResponse,
@@ -275,9 +289,11 @@ export function mapBrandListItem(
     name: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: raw.excerpt.rendered,
     logo: logo ?? null,
-    country: stringOrNull(m._brand_country),
-    partner: Boolean(m._partner),
-    featured: Boolean(m._featured),
+    country: m.country_detail?.label ?? stringOrNull(m._brand_country),
+    city: stringOrNull(m.city),
+    materialCount: typeof m.material_count === 'number' ? m.material_count : 0,
+    partner: truthyFlag(m.partner, m._partner),
+    featured: truthyFlag(m.featured, m._featured),
   }
 }
 
@@ -293,20 +309,27 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
 
     gallery,
 
-    country: stringOrNull(m._brand_country),
-    website: stringOrNull(m._brand_website),
-    email: stringOrNull(m._brand_email),
+    country: m.country_detail?.label ?? stringOrNull(m._brand_country),
+    city: stringOrNull(m.city),
+    address: stringOrNull(m.address),
+    website: m.website ?? stringOrNull(m._brand_website),
+    email: m.contact_email ?? stringOrNull(m._brand_email),
+
+    founded: displayValueOrNull(m.founded),
+    employees: displayValueOrNull(m.employees),
+
+    materialCount: typeof m.material_count === 'number' ? m.material_count : 0,
 
     socials: {
-      facebook: stringOrNull(m._brand_facebook),
-      instagram: stringOrNull(m._brand_instagram),
-      linkedin: stringOrNull(m._brand_linkedin),
-      twitter: stringOrNull(m._brand_twitter),
-      youtube: stringOrNull(m._brand_youtube),
+      facebook: m.socials?.facebook ?? stringOrNull(m._brand_facebook),
+      instagram: m.socials?.instagram ?? stringOrNull(m._brand_instagram),
+      linkedin: m.socials?.linkedin ?? stringOrNull(m._brand_linkedin),
+      twitter: m.socials?.twitter ?? stringOrNull(m._brand_twitter),
+      youtube: m.socials?.youtube ?? stringOrNull(m._brand_youtube),
     },
 
-    partner: Boolean(m._partner),
-    featured: Boolean(m._featured),
+    partner: truthyFlag(m.partner, m._partner),
+    featured: truthyFlag(m.featured, m._featured),
 
     date: raw.date,
     modified: raw.modified,
@@ -716,6 +739,34 @@ function stringOrNull(value: unknown): string | null {
   if (typeof value !== 'string') return null
   const trimmed = value.trim()
   return trimmed.length > 0 ? trimmed : null
+}
+
+/**
+ * Normaliseer een veld dat number óf string mag zijn (bv. `founded`,
+ * `employees`) naar een display-string. `0`, lege string en null/undefined
+ * worden null. Anders de getrimde string-representatie.
+ */
+function displayValueOrNull(value: unknown): string | null {
+  if (typeof value === 'number') {
+    return value > 0 ? String(value) : null
+  }
+  return stringOrNull(value)
+}
+
+/**
+ * Coerce een flag die als boolean óf string ('true'/'false') kan
+ * binnenkomen naar een echte boolean. Gebruikt voor de brand-velden
+ * `partner`/`featured` waar de genormaliseerde waarde een boolean is en
+ * de raw underscore-fallback een string. Prefereert de eerste niet-null
+ * waarde (genormaliseerd vóór raw).
+ */
+function truthyFlag(...values: unknown[]): boolean {
+  for (const value of values) {
+    if (value === undefined || value === null) continue
+    if (typeof value === 'boolean') return value
+    if (typeof value === 'string') return value.trim().toLowerCase() === 'true'
+  }
+  return false
 }
 
 /**

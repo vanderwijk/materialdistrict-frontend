@@ -506,6 +506,10 @@ export interface WPMaterialRawResponse {
    */
   meta: {
     brand_id?: number
+    /** Slug van het gekoppelde brand (Johan-handoff 27-05-2026). */
+    brand_slug?: string | null
+    /** Land van het gekoppelde brand als { code, label } (Johan-handoff). */
+    brand_country?: { code: string; label: string } | null
     disable_sample_request?: boolean
     material_code?: string
     short_description?: string
@@ -518,6 +522,9 @@ export interface WPMaterialRawResponse {
     datasheet_url?: string
     epd_url?: string
     product_url?: string
+    /** Raw underscore-velden (alleen rollout-fallback). */
+    _material_brand?: string | null
+    _material_code?: string | null
     [otherKey: string]: unknown
   }
   /** Standaard taxonomieën als ID-arrays op de post. */
@@ -549,6 +556,14 @@ export interface ListMaterialsParams {
   include?: number[]
   exclude?: number[]
   search?: string
+  /**
+   * Filter op brand-post-ID (Johan-handoff 27-05-2026). De plugin
+   * ondersteunt nu `?brand_id=<id>` op de material-collectie als
+   * code-gebaseerde relatie-query. Gebruikt voor MoreFromBrand en de
+   * materials-grid op de brand-detail-page. Dit is GEEN FacetWP-route —
+   * FacetWP blijft de filter-mechaniek voor het hoofdoverzicht.
+   */
+  brand_id?: number
   /** Filter op term-IDs van een specifieke taxonomie. */
   material_category?: number[]
   sector?: number[]
@@ -582,6 +597,7 @@ export async function listMaterials(
       include: params.include,
       exclude: params.exclude,
       search: params.search,
+      brand_id: params.brand_id,
       material_category: params.material_category,
       sector: params.sector,
       theme: params.theme,
@@ -675,16 +691,46 @@ export interface WPBrandRawResponse {
   excerpt: { rendered: string; protected: boolean }
   featured_media: number
   /**
-   * Ontsloten meta volgens developer-handover:
-   *   _brand_country, _brand_website, _brand_email,
-   *   socials (_brand_facebook, etc.), _partner, _featured
-   *
-   * BLOCKER (sessie 2): bevestigen via een echte fetch dat de
-   * underscore-velden daadwerkelijk verschijnen — WP filtert protected
-   * meta met underscore standaard weg, tenzij `auth_callback => __return_true`
-   * is gezet in `register_post_meta`.
+   * Normalized contract (Johan-handoff 27-05-2026, production verified).
+   * De plugin levert genormaliseerde velden naast de raw underscore-
+   * velden. Frontend gebruikt de genormaliseerde als canonieke bron;
+   * underscore alleen als rollout-fallback. `[otherKey]` blijft open
+   * voor velden die we (nog) niet expliciet typen (membership, etc.).
    */
-  meta: Record<string, unknown>
+  meta: {
+    featured?: boolean
+    partner?: boolean
+    country?: string | null
+    country_detail?: { code: string; label: string } | null
+    website?: string | null
+    contact_email?: string | null
+    socials?: {
+      facebook?: string | null
+      instagram?: string | null
+      linkedin?: string | null
+      twitter?: string | null
+      youtube?: string | null
+    } | null
+    material_count?: number
+    city?: string | null
+    address?: string | null
+    founded?: number | string | null
+    employees?: number | string | null
+    primary_user_id?: number | null
+    membership?: unknown
+    // Raw underscore (fallback)
+    _partner?: boolean | string | null
+    _featured?: boolean | string | null
+    _brand_country?: string | null
+    _brand_website?: string | null
+    _brand_email?: string | null
+    _brand_facebook?: string | null
+    _brand_instagram?: string | null
+    _brand_linkedin?: string | null
+    _brand_twitter?: string | null
+    _brand_youtube?: string | null
+    [otherKey: string]: unknown
+  }
   class_list: string[]
   acf: [] | Record<string, unknown>
   yoast_head_json?: Record<string, unknown>
@@ -698,6 +744,17 @@ export interface ListBrandsParams {
   include?: number[]
   exclude?: number[]
   search?: string
+  /**
+   * Filter op land (Optie A, sessie 5). Eén of meer landcodes/-labels;
+   * doorgegeven als `?brand_country=NL,DE`.
+   *
+   * BACKEND-AFHANKELIJK: de WP-kant moet deze query-param vertalen naar
+   * een `meta_query` op het brand-country-veld én facet-tellingen
+   * teruggeven. Tot Johan dat koppelt (open-issue sessie 5) negeert WP de
+   * param en komt alles ongefilterd terug — de filter-UI toont dan wel,
+   * maar filtert nog niet. Zie open-issues-patch-sessie5.md.
+   */
+  country?: string[]
   orderby?: 'date' | 'modified' | 'title' | 'id' | 'include'
   order?: 'asc' | 'desc'
   noCache?: boolean
@@ -716,6 +773,7 @@ export async function listBrands(
       include: params.include,
       exclude: params.exclude,
       search: params.search,
+      brand_country: params.country,
       orderby: params.orderby ?? 'title',
       order: params.order ?? 'asc',
     },

@@ -28,8 +28,24 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 export interface GetInTouchModalProps {
   open: boolean
   onClose: () => void
-  materialId: number
-  materialTitle: string
+  /**
+   * Material-context. Geef `materialId` + `materialTitle` mee voor een
+   * material-request (sessie 4, ongewijzigd gedrag).
+   */
+  materialId?: number
+  materialTitle?: string
+  /**
+   * Brand-context (sessie 5). Geef `brandId` mee voor een brand-request
+   * zonder material. Precies één van `materialId` / `brandId` hoort gezet
+   * te zijn.
+   */
+  brandId?: number
+  /**
+   * Header-titel. Voor material-context default `materialTitle`; voor
+   * brand-context geef je hier de brand-naam mee. Expliciete prop zodat
+   * de modal contextonafhankelijk de juiste kop toont.
+   */
+  title?: string
   /** Brand-naam — als bekend, anders generieke fallback. */
   brandName?: string | null
 }
@@ -123,6 +139,8 @@ export function GetInTouchModal({
   onClose,
   materialId,
   materialTitle,
+  brandId,
+  title,
   brandName,
 }: GetInTouchModalProps) {
   const [selected, setSelected] = useState<Set<RequestOptionKey>>(new Set())
@@ -198,7 +216,8 @@ export function GetInTouchModal({
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
         body: JSON.stringify({
-          materialId,
+          ...(typeof materialId === 'number' ? { materialId } : {}),
+          ...(typeof brandId === 'number' ? { brandId } : {}),
           options: Array.from(selected),
           message: message.trim() || null,
         }),
@@ -235,7 +254,7 @@ export function GetInTouchModal({
           <div>
             <p className="git-eyebrow">GET IN TOUCH</p>
             <h2 id="git-title" className="git-title">
-              {materialTitle}
+              {title ?? materialTitle ?? brandName ?? 'Get in touch'}
             </h2>
             <p className="git-submeta">
               via MaterialDistrict

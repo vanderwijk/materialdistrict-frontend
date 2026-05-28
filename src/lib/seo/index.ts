@@ -1,6 +1,7 @@
 export { JsonLd } from './JsonLd'
 export {
   buildOrganization,
+  buildBrandOrganization,
   buildWebSite,
   buildProduct,
   buildArticle,

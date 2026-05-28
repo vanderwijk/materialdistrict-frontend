@@ -3,44 +3,93 @@
  * ----------------------------------------------------------------------
  * Domain-model voor brand-CPT (de fabrikant achter een material).
  *
- * Meta-velden uit developer-handover:
- *   _brand_country, _brand_website, _brand_email, socials,
- *   _partner, _featured
+ * Normalized contract (Johan-handoff 27-05-2026, production verified):
+ * de plugin levert nu genormaliseerde, schone meta-velden naast de
+ * bestaande raw underscore-velden. De frontend gebruikt de
+ * genormaliseerde velden als canonieke bron; de underscore-velden zijn
+ * alleen rollout-tolerantie-fallback.
+ *
+ * Genormaliseerd:
+ *   featured, partner, country, country_detail, website, contact_email,
+ *   socials, material_count, city, address, founded, employees,
+ *   primary_user_id, membership
+ *
+ * Raw (fallback / debug):
+ *   _partner, _featured, _brand_country, _brand_website, _brand_email,
+ *   _brand_facebook, _brand_instagram, _brand_linkedin, _brand_twitter,
+ *   _brand_youtube
  *
  * Brand-detailpagina toont in de mockup ook een gallery (hero + thumbs).
  * Die komt — net als bij material — uit de attachments van de brand-post,
- * NIET uit een meta-veld. Zie session-log sessie 2.
+ * NIET uit een meta-veld (Johan-handoff §5: gallery-gedrag ongewijzigd).
+ * Zie session-log sessie 2.
  */
 
 import type { Gallery, MediaImage } from './media'
 
 /**
- * Meta-shape volgens developer-handover.
- * De underscore-prefix komt direct van WP/PHP — voor brand zijn er
- * (anders dan material) géén schone aliassen.
+ * Land-detail-object zoals de plugin het levert: ISO-code + leesbare
+ * label. `country` (kale code) en `country_detail.label` (leesbaar)
+ * komen beide mee; de UI gebruikt de label.
+ */
+export interface BrandCountryDetail {
+  code: string
+  label: string
+}
+
+/**
+ * Genormaliseerde socials-shape (Johan-handoff). Alle velden nullable —
+ * brands vullen vaak maar een deel in.
+ */
+export interface BrandSocialsMeta {
+  facebook?: string | null
+  instagram?: string | null
+  linkedin?: string | null
+  twitter?: string | null
+  youtube?: string | null
+}
+
+/**
+ * Meta-shape volgens het normalized contract (Johan-handoff 27-05-2026).
  *
- * BLOCKER (sessie 2): bevestigen of de underscore-velden via REST
- * écht zichtbaar zijn. WP filtert protected meta met underscore-prefix
- * standaard weg. De `register_post_meta` van de developer moet hier
- * `auth_callback => __return_true` hebben gezet om ze publiek te krijgen.
+ * Genormaliseerde velden zijn de canonieke bron. De underscore-velden
+ * blijven beschikbaar maar worden alleen als fallback gebruikt tijdens
+ * rollout — niet als primaire bron voor UI-rendering.
  */
 export interface BrandMeta {
-  /** Land-slug of -code, bv. 'NL', 'DE'. Onbekend formaat tot we een ingevulde brand zien. */
-  _brand_country?: string
-  _brand_website?: string
-  _brand_email?: string
+  // --- Genormaliseerd (canoniek) ---
+  featured?: boolean
+  partner?: boolean
+  /** Kale landcode, bv. 'JP'. Voor weergave: gebruik `country_detail.label`. */
+  country?: string | null
+  country_detail?: BrandCountryDetail | null
+  website?: string | null
+  contact_email?: string | null
+  socials?: BrandSocialsMeta | null
+  /** Aantal gepubliceerde materialen — door WP berekend. */
+  material_count?: number
+  city?: string | null
+  address?: string | null
+  /** Oprichtingsjaar (4 cijfers) of leeg. */
+  founded?: number | string | null
+  /** Aantal werknemers — exact getal of band (bv. '51-200'). */
+  employees?: number | string | null
+  /** Relatie naar primary user (Fase 2 claim-flow). */
+  primary_user_id?: number | null
+  /** Brand-membership-blok (Fase 2). Shape nog niet hard vastgelegd. */
+  membership?: unknown
 
-  /** Socials. Exacte veldnamen onder socials nog niet bekend uit handover. */
-  _brand_facebook?: string
-  _brand_instagram?: string
-  _brand_linkedin?: string
-  _brand_twitter?: string
-  _brand_youtube?: string
-
-  /** Partner-status (opvallendere placement). */
-  _partner?: boolean
-  /** Featured op overzicht / homepage. */
-  _featured?: boolean
+  // --- Raw underscore (alleen rollout-fallback) ---
+  _partner?: boolean | string | null
+  _featured?: boolean | string | null
+  _brand_country?: string | null
+  _brand_website?: string | null
+  _brand_email?: string | null
+  _brand_facebook?: string | null
+  _brand_instagram?: string | null
+  _brand_linkedin?: string | null
+  _brand_twitter?: string | null
+  _brand_youtube?: string | null
 }
 
 /** Lichtgewicht brand voor in een card op de brand-overzichtspagina. */
@@ -52,7 +101,12 @@ export interface BrandListItem {
   excerptHtml: string
   /** Logo of hero — uit `featured_media` van de brand-post. */
   logo: MediaImage | null
+  /** Leesbare landnaam (uit `country_detail.label`). Null als onbekend. */
   country: string | null
+  /** Vestigingsplaats. Null als niet ingevuld. */
+  city: string | null
+  /** Aantal gepubliceerde materialen — door WP berekend (`material_count`). */
+  materialCount: number
   partner: boolean
   featured: boolean
 }
@@ -70,9 +124,23 @@ export interface Brand {
   gallery: Gallery
 
   /** Contact + locatie. */
+  /** Leesbare landnaam (uit `country_detail.label`). Null als onbekend. */
   country: string | null
+  /** Vestigingsplaats. Null als niet ingevuld. */
+  city: string | null
+  /** Volledig vestigingsadres. Null als niet ingevuld. */
+  address: string | null
   website: string | null
   email: string | null
+
+  /** Bedrijfsgegevens (Batch B). Null als niet ingevuld. */
+  /** Oprichtingsjaar als string voor weergave (bv. '1923'). */
+  founded: string | null
+  /** Werknemers — exact getal of band, als string voor weergave. */
+  employees: string | null
+
+  /** Aantal gepubliceerde materialen — door WP berekend (`material_count`). */
+  materialCount: number
 
   /** Sociale media. */
   socials: {

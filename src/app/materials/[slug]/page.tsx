@@ -36,6 +36,7 @@
  */
 
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { MaterialGallery } from '@/components/materials'
@@ -204,16 +205,31 @@ export default async function MaterialDetailPage({
           tags={[{ type: 'content', contentType: 'material' }]}
           title={material.title}
           meta={
-            // Sessie 7 Punt 13: nieuwe meta-regel.
+            // Sessie 7 Punt 13 + sessie 5 (Johan-handoff 27-05-2026):
             // `by [Brand]` · `[Country]` · `[Code]` · `Published [date]`.
-            // Brand-naam is PLAIN TEXT (geen link) — brand-pages bestaan
-            // nog niet, komen in sessie 8.
+            // Brand-naam is nu een LINK naar /brands/[slug] zodra brand_slug
+            // beschikbaar is (handoff §4). Country komt uit
+            // material.brandCountry (brand_country.label) — conditioneel.
             <>
               {material.brandName && (
                 <>
-                  by <strong>{material.brandName}</strong>
-                  {/* TODO sessie 8: country uit brand-data van WP zodra
-                      Johan dat veld blootstelt. Voor nu niet gerenderd. */}
+                  by{' '}
+                  {material.brandSlug ? (
+                    <Link
+                      href={`/brands/${material.brandSlug}`}
+                      className="mat-detail-meta-brand-link"
+                    >
+                      <strong>{material.brandName}</strong>
+                    </Link>
+                  ) : (
+                    <strong>{material.brandName}</strong>
+                  )}
+                  {material.brandCountry && (
+                    <>
+                      {' · '}
+                      {material.brandCountry}
+                    </>
+                  )}
                   {material.materialCode && (
                     <>
                       {' · '}
@@ -314,8 +330,8 @@ export default async function MaterialDetailPage({
             {material.brandName && (
               <BrandInfoCard
                 brandName={material.brandName}
-                brandSlug={null /* TODO: brand-slug uit Material zodra WP-mapper het levert */}
-                country={null /* TODO: brand-country uit Material idem */}
+                brandSlug={material.brandSlug}
+                country={material.brandCountry}
                 materialSlug={material.slug}
               />
             )}
@@ -333,6 +349,7 @@ export default async function MaterialDetailPage({
       <MoreFromBrand
         brandId={material.brandId}
         brandName={material.brandName}
+        brandSlug={material.brandSlug}
         currentMaterialId={material.id}
       />
 

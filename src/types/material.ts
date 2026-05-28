@@ -123,6 +123,17 @@ export type MaterialPropertyKey = keyof MaterialProperties
 export interface MaterialMeta {
   /** Post-ID van het brand. 0 of undefined als niet ingesteld. */
   brand_id?: number
+  /**
+   * Slug van het gekoppelde brand (Johan-handoff 27-05-2026). Voor directe
+   * links naar `/brands/[slug]` zonder extra resolve. Null als geen brand.
+   */
+  brand_slug?: string | null
+  /**
+   * Land van het gekoppelde brand als { code, label } (Johan-handoff).
+   * Voor de country-regel onder de material-titel. Null als onbekend.
+   * NB: niet altijd aanwezig — conditioneel renderen.
+   */
+  brand_country?: { code: string; label: string } | null
   /** Of sample-aanvraag is UITGESCHAKELD voor dit material (default false). */
   disable_sample_request?: boolean
   material_code?: string
@@ -140,6 +151,9 @@ export interface MaterialMeta {
   datasheet_url?: string
   epd_url?: string
   product_url?: string
+  /** Raw underscore-velden (alleen rollout-fallback, niet primair gebruiken). */
+  _material_brand?: string | null
+  _material_code?: string | null
   /**
    * Publication-status — uitbreiding op `meta` per
    * `datacontract-proposal.md` sectie 3. Optioneel zolang Johan's
@@ -247,6 +261,10 @@ export interface MaterialListItem {
   brandName: string | null
   /** Brand-ID (uit meta). Null als niet ingesteld. */
   brandId: number | null
+  /** Brand-slug (uit meta, Johan-handoff). Null als niet ingesteld. Voor directe links. */
+  brandSlug: string | null
+  /** Leesbare brand-landnaam (uit meta `brand_country.label`). Null als onbekend. */
+  brandCountry: string | null
   /** Material-code (uit meta), bv. "WOO1234". Null als niet ingesteld. */
   materialCode: string | null
   /** Featured op homepage / overzicht. */
@@ -290,6 +308,12 @@ export interface Material {
 
   /** Brand-naam (resolved). Null als brand_id ontbreekt of niet kon worden opgehaald. */
   brandName: string | null
+
+  /** Brand-slug (uit meta, Johan-handoff). Null als niet ingesteld. Voor `/brands/[slug]`-link. */
+  brandSlug: string | null
+
+  /** Leesbare brand-landnaam (uit meta `brand_country.label`). Null als onbekend. */
+  brandCountry: string | null
 
   /** Sample-aanvraag. true = uitgeschakeld door brand. */
   disableSampleRequest: boolean

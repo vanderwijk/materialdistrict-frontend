@@ -17,6 +17,7 @@
 export {
   getArticle,
   getBrand,
+  getBrandCountryOptions,
   getEvent,
   getMaterial,
   getMaterialDetail,
@@ -25,10 +26,13 @@ export {
   listBrands,
   listEvents,
   listMaterials,
+  listMaterialsByBrand,
   listMaterialsWithFacets,
   listTalks,
 } from './content'
 export type {
+  BrandCountryOption,
+  ListMaterialsByBrandParams,
   ListMaterialsResult,
   ListMaterialsWithFacetsParams,
   ListMaterialsWithFacetsResult,

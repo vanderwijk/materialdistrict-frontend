@@ -504,6 +504,60 @@ function reorderByIds<T extends { id: number }>(
 }
 
 // --------------------------------------------------------------------
+// Material — relatie-query op brand (Johan-handoff 27-05-2026)
+// --------------------------------------------------------------------
+
+export interface ListMaterialsByBrandParams {
+  /** Aantal materials om op te halen. Default 12. */
+  perPage?: number
+  /** Material-ID om uit te sluiten (bv. het huidige material bij MoreFromBrand). */
+  exclude?: number
+  /** Hero-image resolven. Default true. */
+  resolveHero?: boolean
+  /** Brand-naam resolven. Default false — caller kent de brand-naam meestal al. */
+  resolveBrandName?: boolean
+}
+
+/**
+ * Lijst materials van één brand via de genormaliseerde REST-relatie-query
+ * `?brand_id=<id>` (Johan-handoff 27-05-2026, production verified).
+ *
+ * Dit is GEEN FacetWP-route. FacetWP blijft de filter-mechaniek voor het
+ * hoofdoverzicht `/materials`; deze functie is een dedicated code-
+ * gebaseerde relatie-query voor:
+ *  - MoreFromBrand op de material-detail-page
+ *  - de "Materials by [brand]"-grid op de brand-detail-page
+ *
+ * Bouwt voort op `listMaterials()` (hero + optionele brand-naam-resolve),
+ * dus de items zijn volledige `MaterialListItem`s die de bestaande
+ * MaterialCard zonder aanpassing kan renderen.
+ *
+ * Faalbestendig: de caller bepaalt wat er bij 0 resultaten gebeurt; deze
+ * functie geeft simpelweg een (mogelijk lege) lijst terug.
+ */
+export async function listMaterialsByBrand(
+  brandId: number,
+  params: ListMaterialsByBrandParams = {},
+): Promise<ListMaterialsResult> {
+  const {
+    perPage = 12,
+    exclude,
+    resolveHero = true,
+    resolveBrandName = false,
+  } = params
+
+  return listMaterials({
+    brand_id: brandId,
+    exclude: exclude ? [exclude] : undefined,
+    perPage,
+    orderby: 'date',
+    order: 'desc',
+    resolveHero,
+    resolveBrandName,
+  })
+}
+
+// --------------------------------------------------------------------
 // Brand
 // --------------------------------------------------------------------
 
@@ -550,9 +604,55 @@ export async function listBrands(
   return { items, total, totalPages }
 }
 
-// --------------------------------------------------------------------
-// Article
-// --------------------------------------------------------------------
+/**
+ * Land-facetoptie voor het brand-filter: waarde + label + telling.
+ */
+export interface BrandCountryOption {
+  /** Filterwaarde (= het label; brand-country is vrije tekst, geen code-taxonomie). */
+  value: string
+  label: string
+  count: number
+}
+
+/**
+ * Bouwt de Country-filteropties voor het brand-overzicht (Optie A,
+ * sessie 5).
+ *
+ * IDEAAL: WP levert facet-tellingen naast de gefilterde resultaten (net
+ * als FacetWP voor materials). Tot Johan dat koppelt (open-issue
+ * sessie 5) aggregeren we de landen hier client-side uit een ruime,
+ * ongefilterde brand-fetch. `resolveLogo: false` houdt dit licht — we
+ * hebben alleen `country` nodig, geen media.
+ *
+ * Beperking (genoteerd): de tellingen kloppen alleen als `aggregateMax`
+ * groot genoeg is om alle brands te dekken. Zolang de catalogus binnen
+ * één ruime fetch past is dat prima; daarboven zijn de tellingen een
+ * ondergrens tot de backend facet-counts levert. De landen-LIJST zelf is
+ * dan nog steeds bruikbaar als filter — alleen de getallen zijn dan
+ * indicatief.
+ */
+export async function getBrandCountryOptions(
+  aggregateMax = 100,
+): Promise<BrandCountryOption[]> {
+  const { items } = await listBrands({
+    perPage: aggregateMax,
+    page: 1,
+    resolveLogo: false,
+    orderby: 'title',
+    order: 'asc',
+  })
+
+  const counts = new Map<string, number>()
+  for (const brand of items) {
+    const country = brand.country?.trim()
+    if (!country) continue
+    counts.set(country, (counts.get(country) ?? 0) + 1)
+  }
+
+  return Array.from(counts.entries())
+    .map(([value, count]) => ({ value, label: value, count }))
+    .sort((a, b) => a.label.localeCompare(b.label))
+}
 
 export async function getArticle(slug: string): Promise<Article | null> {
   const raw = await fetchArticleBySlugRaw(slug)

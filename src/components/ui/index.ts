@@ -71,6 +71,8 @@ export { InsiderIcon } from './icons/InsiderIcon'
 // --- Sessie 4 — Materials components ---
 export { MaterialCard } from './MaterialCard'
 export type { MaterialCardProps } from './MaterialCard'
+export { BrandTile } from './BrandTile'
+export type { BrandTileProps } from './BrandTile'
 
 export { CompareBar } from './CompareBar'
 export type { CompareBarProps } from './CompareBar'
