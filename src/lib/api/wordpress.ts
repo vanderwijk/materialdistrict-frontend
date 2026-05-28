@@ -687,8 +687,9 @@ export interface WPBrandRawResponse {
   type: 'brand'
   link: string
   title: { rendered: string }
-  content: { rendered: string; protected: boolean }
-  excerpt: { rendered: string; protected: boolean }
+  content?: { rendered: string; protected: boolean }
+  /** Omitted when the brand post type does not register `excerpt` support. */
+  excerpt?: { rendered: string; protected: boolean }
   featured_media: number
   /**
    * Normalized contract (Johan-handoff 27-05-2026, production verified).

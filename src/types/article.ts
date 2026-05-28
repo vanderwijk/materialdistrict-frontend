@@ -1,27 +1,41 @@
 /**
  * Article types
  * ----------------------------------------------------------------------
- * Domain-model voor article-CPT (redactionele content / blog).
+ * Domain-model voor article-CPT (redactionele content / stories).
  *
  * Meta-velden uit developer-handover:
  *   _featured (alleen)
  *
- * Insider-gating voor "Insider articles" gebeurt waarschijnlijk via een
- * extra meta-veld (bv. `_insider_only`) dat NOG NIET in de handover zit.
- * BLOCKER voor sessie 6 — niet voor sessie 2.
- *
  * Auteurs / categorieën komen via standaard WP `author` en `categories`
  * (taxonomieën), niet via meta.
+ *
+ * Twee velden zijn VOORBEREID maar nog niet door de backend ontsloten
+ * (Optie A, analoog aan het Country-filter in sessie 5):
+ *
+ *  - `insiderOnly` (D2): Insider-only gating. Verwacht een meta-veld zoals
+ *    `_insider_only?: boolean`. De mapper vult voorlopig `false` in; één
+ *    regel zodra Johan het veld bevestigt.
+ *  - `type` (D1): story-segmentatie (news/people/collaborations/projects/
+ *    partner). Verwacht het WP-veld `article.type` / taxonomy `story_type`.
+ *    De mapper vult voorlopig de default `'news'` in.
+ *
+ * Zie `src/lib/config/story-types.ts` voor de StoryType-config en
+ * `open-issues` (D1/D2) voor de openstaande backend-vraag.
  */
 
+import type { StoryType } from '@/lib/config/story-types'
 import type { MediaImage } from './media'
 
 export interface ArticleMeta {
   _featured?: boolean
   /**
-   * BLOCKER sessie 6: Insider-only gating.
-   * Verwacht een veld zoals `_insider_only?: boolean` of een aparte
-   * Insider-categorie. Bevestigen met opdrachtgever / developer.
+   * VOORBEREID (D2): Insider-only gating. Verwacht een veld zoals
+   * `_insider_only?: boolean` of een aparte Insider-categorie. Tot dan
+   * mapt de mapper `insiderOnly` als `false`.
+   */
+  /**
+   * VOORBEREID (D1): story-type. Verwacht `article.type` of taxonomy
+   * `story_type`. Tot dan mapt de mapper `type` als `'news'`.
    */
 }
 
@@ -39,7 +53,9 @@ export interface ArticleListItem {
   /** Tags. */
   tagIds: number[]
   featured: boolean
-  /** Voor Insider-only weergave (zodra gating-meta ontsloten is). */
+  /** Story-segmentatie (D1, voorbereid — default 'news' tot Johan koppelt). */
+  type: StoryType
+  /** Voor Insider-only weergave (D2, voorbereid — default false tot Johan koppelt). */
   insiderOnly: boolean
   date: string
 }
@@ -57,6 +73,9 @@ export interface Article {
   categoryIds: number[]
   tagIds: number[]
   featured: boolean
+  /** Story-segmentatie (D1, voorbereid — default 'news' tot Johan koppelt). */
+  type: StoryType
+  /** Insider-only gating (D2, voorbereid — default false tot Johan koppelt). */
   insiderOnly: boolean
   date: string
   modified: string

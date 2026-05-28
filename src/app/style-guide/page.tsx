@@ -58,6 +58,7 @@ import {
 import { DetailActions } from '@/components/ui/DetailActions'
 import { IconsSection } from './sections/IconsSection'
 import { BrandsSection } from './sections/BrandsSection'
+import { ArticlesSection } from './sections/ArticlesSection'
 import { PreviewModeProvider } from '@/lib/hooks/usePreviewMode'
 
 /**
@@ -272,6 +273,9 @@ export default function StyleGuidePage() {
 
           {/* Brands — sessie 5 (overzicht-component) */}
           <BrandsSection />
+
+          {/* Articles / Stories — sessie 6 (story-type-palet + article-card) */}
+          <ArticlesSection />
 
           {/* ============================================================
               UI Components

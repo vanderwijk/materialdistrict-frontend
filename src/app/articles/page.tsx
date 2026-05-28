@@ -1,0 +1,339 @@
+/**
+ * `/articles` — articles/stories-overzichtspagina met story-type-filter,
+ * search, grid en paginatie.
+ *
+ * Sessie 6.
+ *
+ * Server Component. Leest searchParams (q, story_type, page), haalt
+ * articles + story-type-opties op, en rendert de overzichts-shell rond een
+ * `ContentCard`-grid. Volgt dezelfde shell als /brands en /materials
+ * (design-system §6.1): `ov-page-header` + `ov-wrap`.
+ *
+ * URL-structuur:
+ *   /articles?q=timber&story_type=people&page=2
+ *
+ * Story-type-filter (D1, Optie A): de selectie gaat als `?story_type=` naar
+ * WP. Tot Johan het veld/taxonomy koppelt (open-issue D1) mapt elk article
+ * op de default 'news' en filtert de backend nog niet op type — de UI
+ * toont de filter wel, met een indicatieve-counts-hint. Zie open-issues.
+ *
+ * Insider-only (D2, Optie A): `article.insiderOnly` is voorbereid maar mapt
+ * voorlopig `false`; cards tonen de InsiderMark zodra het veld gekoppeld is.
+ *
+ * EmptyState bij 0 resultaten — geen 404 (een filter/zoek met 0 matches is
+ * een geldige query). Twee varianten: met of zonder actieve filters.
+ *
+ * De mockup-functie `renderArticlesOverview()` delegeert naar
+ * `renderStoriesOverview()`; deze page volgt die structuur (type-sidebar
+ * links, People- + Partner-CTA's, type-intro-banner, featured + grid,
+ * Nominate-sectie).
+ */
+
+import type { Metadata } from 'next'
+import { Suspense } from 'react'
+import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { Button, ContentCard, EmptyState } from '@/components/ui'
+import { getArticleStoryTypeOptions, listArticles } from '@/lib/api'
+import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import {
+  STORY_TYPE_META,
+  isStoryType,
+  type StoryType,
+} from '@/lib/config/story-types'
+import { ArticlesTypeFilter } from './_components/ArticlesTypeFilter'
+import { ArticlesPagination } from './_components/ArticlesPagination'
+import { ArticlesSearchInput } from './_components/ArticlesSearchInput'
+
+const ARTICLES_PER_PAGE = 12
+
+/**
+ * Optie A — staat van de backend-koppeling voor `story_type` (D1). Zolang
+ * dit `false` is filtert WP nog niet op type en zijn de sidebar-counts
+ * indicatief. Eén plek om te flippen zodra Johan koppelt.
+ */
+const STORY_TYPE_BACKEND_CONNECTED = false
+
+export const metadata: Metadata = {
+  title: 'Stories',
+  description:
+    'News, people, collaborations, projects and partner stories — all connected through materials. Read the latest from MaterialDistrict.',
+  alternates: { canonical: '/articles' },
+  openGraph: {
+    title: 'Stories | MaterialDistrict',
+    description:
+      'News, people, collaborations, projects and partner stories — all connected through materials.',
+    type: 'website',
+    url: '/articles',
+  },
+}
+
+interface ArticlesPageProps {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
+
+/** Parse `?page=` naar een 1-based paginanummer (default 1). */
+function parsePage(raw: string | string[] | undefined): number {
+  const value = Array.isArray(raw) ? raw[0] : raw
+  const n = Number.parseInt(value ?? '1', 10)
+  return Number.isFinite(n) && n > 0 ? n : 1
+}
+
+/** Parse `?story_type=` naar een geldige StoryType of null. */
+function parseStoryType(raw: string | string[] | undefined): StoryType | null {
+  const value = Array.isArray(raw) ? raw[0] : raw
+  return isStoryType(value) ? value : null
+}
+
+/** Datumlabel — en-GB, consistent met de andere detail/overzicht-pages. */
+function formatDate(value: string): string {
+  return new Date(value).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
+
+export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
+  const params = await searchParams
+
+  const search =
+    (Array.isArray(params.q) ? params.q[0] : params.q)?.trim() || undefined
+  const selectedType = parseStoryType(params.story_type)
+  const page = parsePage(params.page)
+
+  // Articles + story-type-opties parallel. De type-opties komen uit een
+  // ruime ongefilterde fetch (zie getArticleStoryTypeOptions); de
+  // gefilterde lijst gebruikt de story_type-param (Optie A).
+  const [result, typeOptions] = await Promise.all([
+    listArticles({
+      perPage: ARTICLES_PER_PAGE,
+      page,
+      search,
+      storyType: selectedType ?? undefined,
+    }),
+    getArticleStoryTypeOptions(),
+  ])
+
+  const totalTypeCount = typeOptions.reduce((sum, o) => sum + o.count, 0)
+  const hasActiveFilters = selectedType !== null || Boolean(search)
+  const total = result.total
+  const activeMeta = selectedType ? STORY_TYPE_META[selectedType] : null
+
+  // Featured = eerste item; rest in het grid (mockup-patroon).
+  const [featured, ...rest] = result.items
+
+  return (
+    <>
+      <header className="ov-page-header">
+        <div className="ov-page-header-main">
+          <Breadcrumb items={[{ label: 'Stories' }]} />
+          <h1 className="t-display-lg">Stories</h1>
+          {total > 0 && (
+            <p className="t-body">
+              {total.toLocaleString('en-US')} {total === 1 ? 'story' : 'stories'}
+              {hasActiveFilters ? ' matching your filters' : ''}
+            </p>
+          )}
+        </div>
+        <div className="ov-page-header-aside">
+          <ArticlesSearchInput initialValue={search ?? ''} />
+        </div>
+      </header>
+
+      <div className="ov-wrap">
+        <div className="articles-sidebar-col">
+          <ArticlesTypeFilter
+            options={typeOptions}
+            selectedType={selectedType}
+            totalCount={totalTypeCount}
+            pendingBackend={!STORY_TYPE_BACKEND_CONNECTED}
+          />
+
+          {/* People CTA */}
+          <div className="articles-cta articles-cta-people">
+            <div className="articles-cta-eyebrow">People</div>
+            <div className="articles-cta-title">
+              Know someone driving the transition?
+            </div>
+            <p className="articles-cta-body">
+              Nominate a person for a People story.
+            </p>
+            <Button
+              as="link"
+              href="#nominate"
+              variant="green"
+              size="sm"
+              className="articles-cta-btn"
+            >
+              Nominate →
+            </Button>
+          </div>
+
+          {/* Partner CTA */}
+          <div className="articles-cta articles-cta-partner">
+            <div className="articles-cta-eyebrow articles-cta-eyebrow-navy">
+              Partner stories
+            </div>
+            <div className="articles-cta-title articles-cta-title-dark">
+              Tell your brand story
+            </div>
+            <p className="articles-cta-body articles-cta-body-muted">
+              Partner members get 1 brand story per year, distributed to
+              80,000+ specifiers.
+            </p>
+            <Button
+              as="link"
+              href="/membership"
+              variant="outline"
+              size="sm"
+              className="articles-cta-btn"
+            >
+              View Partner →
+            </Button>
+          </div>
+        </div>
+
+        <div>
+          {/* Type-intro-banner wanneer een type actief is (mockup-patroon) */}
+          {activeMeta && (
+            <div
+              className="articles-type-intro"
+              style={{
+                background: activeMeta.pale,
+                borderColor: `${activeMeta.color}22`,
+              }}
+            >
+              <span
+                className="articles-type-intro-icon"
+                style={{ background: activeMeta.color }}
+                aria-hidden="true"
+                dangerouslySetInnerHTML={{ __html: activeMeta.icon }}
+              />
+              <span className="articles-type-intro-text">
+                <span
+                  className="articles-type-intro-label"
+                  style={{ color: activeMeta.color }}
+                >
+                  {activeMeta.label}
+                </span>
+                <span className="articles-type-intro-desc">
+                  {activeMeta.desc}
+                </span>
+              </span>
+              <Button
+                as="link"
+                href="/articles"
+                variant="outline"
+                size="sm"
+                className="articles-type-intro-clear"
+              >
+                × Clear
+              </Button>
+            </div>
+          )}
+
+          {result.items.length === 0 ? (
+            hasActiveFilters ? (
+              <EmptyState
+                title="No stories match these filters"
+                description="Try a different story type or clear your search to see more."
+                actions={
+                  <Button as="link" href="/articles" variant="outline" size="sm">
+                    Clear filters
+                  </Button>
+                }
+              />
+            ) : (
+              <EmptyState
+                title="No stories available"
+                description="There are currently no stories to show. Please check back later."
+              />
+            )
+          ) : (
+            <>
+              <Suspense fallback={null}>
+                {/* Featured (eerste item) — volle breedte */}
+                {featured && (
+                  <div className="articles-featured">
+                    <ContentCard
+                      href={`/articles/${featured.slug}`}
+                      contentType="article"
+                      thumbSrc={featured.hero?.sourceUrl}
+                      thumbAlt={featured.hero?.alt ?? featured.title}
+                      thumbRatio="landscape"
+                      eyebrow={formatDate(featured.date)}
+                      title={featured.title}
+                      meta={STORY_TYPE_META[featured.type].label}
+                      tagLabel={STORY_TYPE_META[featured.type].label}
+                      isInsiderOnly={featured.insiderOnly}
+                      titleAs="h2"
+                    />
+                  </div>
+                )}
+
+                {rest.length > 0 && (
+                  <div className="ov-grid-3">
+                    {rest.map((article) => (
+                      <ContentCard
+                        key={article.id}
+                        href={`/articles/${article.slug}`}
+                        contentType="article"
+                        thumbSrc={article.hero?.sourceUrl}
+                        thumbAlt={article.hero?.alt ?? article.title}
+                        eyebrow={formatDate(article.date)}
+                        title={article.title}
+                        meta={STORY_TYPE_META[article.type].label}
+                        tagLabel={STORY_TYPE_META[article.type].label}
+                        isInsiderOnly={article.insiderOnly}
+                      />
+                    ))}
+                  </div>
+                )}
+              </Suspense>
+
+              {result.totalPages > 1 && (
+                <div className="ov-pagination">
+                  <ArticlesPagination
+                    currentPage={page}
+                    totalPages={result.totalPages}
+                  />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Nominate-sectie (mockup-patroon). Statisch in v1 — de submit
+              is nog niet aan een endpoint gekoppeld; zie open-issues. */}
+          <section id="nominate" className="articles-nominate">
+            <div className="articles-nominate-intro">
+              <div className="articles-cta-eyebrow articles-cta-eyebrow-navy">
+                Nominate a person
+              </div>
+              <h2 className="t-display-md">
+                Know someone driving the transition?
+              </h2>
+              <p className="t-body">
+                A People story is about the individual — their choices, their
+                convictions, their work. We select based on impact, not
+                profile. You can nominate yourself or someone else.
+              </p>
+              <p className="articles-nominate-note">
+                Every nomination is reviewed by the MaterialDistrict editorial
+                team. We reach out personally.
+              </p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <JsonLd
+        data={[
+          buildBreadcrumbList([
+            { label: 'Home', url: '/' },
+            { label: 'Stories' },
+          ]),
+        ]}
+      />
+    </>
+  )
+}

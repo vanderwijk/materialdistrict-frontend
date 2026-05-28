@@ -26,6 +26,12 @@ import type { Talk } from '@/types/talk'
 import type { FacetSelection, MaterialSortValue } from '@/types/facetwp'
 
 import {
+  STORY_TYPES,
+  storyTypeLabel,
+  type StoryType,
+} from '@/lib/config/story-types'
+
+import {
   fetchMaterialFacetsBaseline,
   fetchMaterialsFiltered,
 } from './facetwp'
@@ -681,9 +687,56 @@ export async function listArticles(
   return { items, total, totalPages }
 }
 
-// --------------------------------------------------------------------
-// Event
-// --------------------------------------------------------------------
+/**
+ * Story-type filteroptie voor het article-overzicht: type + label + telling.
+ */
+export interface StoryTypeOption {
+  value: StoryType
+  label: string
+  count: number
+}
+
+/**
+ * Bouwt de story-type-filteropties voor het `/articles` overzicht (Optie A,
+ * D1 — voorbereid).
+ *
+ * In tegenstelling tot het brand-Country-filter is de optie-SET hier vast
+ * (de vijf canonieke types uit `STORY_TYPE_META`); alleen de TELLINGEN
+ * worden geaggregeerd. Zolang Johan `story_type` nog niet levert mapt de
+ * mapper elk article op de default `'news'` — dan staat de volledige
+ * telling bij News en de andere types op 0. De sidebar toont dan alle vijf
+ * types met die (indicatieve) counts; zodra het veld gekoppeld is verdelen
+ * de tellingen zich vanzelf, zonder frontend-wijziging.
+ *
+ * Aggregeert client-side uit één ruime, ongefilterde article-fetch
+ * (`resolveHero: false` houdt dit licht — we tellen alleen types). De
+ * tellingen zijn een ondergrens als de catalogus niet binnen `aggregateMax`
+ * past; de type-LIJST zelf blijft hoe dan ook volledig en bruikbaar als
+ * filter. Analoog aan `getBrandCountryOptions` (sessie 5).
+ */
+export async function getArticleStoryTypeOptions(
+  aggregateMax = 100,
+): Promise<StoryTypeOption[]> {
+  const { items } = await listArticles({
+    perPage: aggregateMax,
+    page: 1,
+    resolveHero: false,
+    orderby: 'date',
+    order: 'desc',
+  })
+
+  const counts = new Map<StoryType, number>()
+  for (const type of STORY_TYPES) counts.set(type, 0)
+  for (const article of items) {
+    counts.set(article.type, (counts.get(article.type) ?? 0) + 1)
+  }
+
+  return STORY_TYPES.map((type) => ({
+    value: type,
+    label: storyTypeLabel(type),
+    count: counts.get(type) ?? 0,
+  }))
+}
 
 export async function getEvent(slug: string): Promise<Event | null> {
   const raw = await fetchEventBySlugRaw(slug)

@@ -56,6 +56,11 @@ import type {
   WPTalkRawResponse,
 } from './wordpress'
 
+/** WP REST may omit `excerpt` when the post type does not support it (e.g. brand). */
+function wpRenderedHtml(field?: { rendered?: string } | null): string {
+  return field?.rendered ?? ''
+}
+
 // --------------------------------------------------------------------
 // Media
 // --------------------------------------------------------------------
@@ -287,7 +292,7 @@ export function mapBrandListItem(
     slug: raw.slug,
     link: raw.link,
     name: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     logo: logo ?? null,
     country: m.country_detail?.label ?? stringOrNull(m._brand_country),
     city: stringOrNull(m.city),
@@ -304,8 +309,8 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
     slug: raw.slug,
     link: raw.link,
     name: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
 
     gallery,
 

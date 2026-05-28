@@ -16,6 +16,7 @@
 // Domain API (gebruikelijk)
 export {
   getArticle,
+  getArticleStoryTypeOptions,
   getBrand,
   getBrandCountryOptions,
   getEvent,
@@ -39,6 +40,7 @@ export type {
   MaterialCategoryTerm,
   MaterialDetailResult,
   MaterialKeyword,
+  StoryTypeOption,
 } from './content'
 
 // FacetWP — voor het hoofdoverzicht /materials met filtering
