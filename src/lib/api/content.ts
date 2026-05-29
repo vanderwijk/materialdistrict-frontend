@@ -805,9 +805,23 @@ export async function getRelatedContent(
 export async function getEvent(slug: string): Promise<Event | null> {
   const raw = await fetchEventBySlugRaw(slug)
   if (!raw) return null
-  const hero =
-    raw.featured_media > 0 ? await getMediaImage(raw.featured_media) : null
-  return mapEvent(raw, hero)
+
+  const heroId = raw.featured_media > 0 ? raw.featured_media : null
+  // Events leveren een expliciete gallery als attachment-ID's in `meta.gallery`
+  // (anders dan material/brand, die `?parent=` gebruiken). Resolve hero +
+  // gallery in één media-map en bouw de Gallery met `splitGallery`.
+  const galleryIds = (raw.meta?.gallery ?? []).filter((id) => id > 0)
+  const mediaIds = unique([...(heroId ? [heroId] : []), ...galleryIds])
+  const mediaMap = await fetchMediaMap(mediaIds)
+
+  const hero = heroId ? mediaMap.get(heroId) ?? null : null
+  const galleryImages = galleryIds.flatMap((id) => {
+    const img = mediaMap.get(id)
+    return img ? [img] : []
+  })
+  const gallery = splitGallery(galleryImages, heroId ?? undefined)
+
+  return mapEvent(raw, hero, gallery)
 }
 
 export async function listEvents(

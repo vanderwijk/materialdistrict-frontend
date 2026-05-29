@@ -6107,6 +6107,297 @@ a:focus-visible {
 }
 
 /* ------------------------------------------------------------
+   Events overzicht + detail (sessie 8)
+   ------------------------------------------------------------ */
+
+/* Volledige-breedte overzicht-wrapper (geen sidebar) — voor /events. */
+.ov-wrap-full {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 32px var(--content-padding-desktop) 80px;
+}
+@media (max-width: 1024px) {
+  .ov-wrap-full { padding: 24px var(--content-padding-tablet) 80px; }
+}
+@media (max-width: 768px) {
+  .ov-wrap-full { padding: 20px var(--content-padding-mobile) 80px; }
+}
+
+/* Event-card — band met hero + navy datum-badge, body met type/titel/locatie. */
+.event-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  color: inherit;
+}
+.event-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.event-card:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.event-card-band {
+  position: relative;
+  height: 120px;
+  background: var(--surface2);
+  overflow: hidden;
+}
+.event-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.event-card-band-fallback {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--surface2), var(--border));
+}
+
+.event-card-date {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  line-height: 1;
+}
+.event-card-date-day { font-size: 18px; font-weight: 700; }
+.event-card-date-month {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.event-card-past {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 2px 8px;
+  border-radius: 100px;
+}
+
+.event-card-body { padding: 14px; }
+.event-card-type {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  margin-bottom: 6px;
+}
+.event-card-title {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  margin-bottom: 4px;
+}
+.event-card-location {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Video-embed (VideoEmbed) — vult de container die de parent dimensioneert. */
+.video-embed-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #000;
+}
+.video-embed-fallback {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--link);
+  text-decoration: none;
+}
+.video-embed-fallback:hover { text-decoration: underline; }
+
+/* ---- Event-detail: media-viewer ---- */
+.event-media { margin-bottom: 32px; }
+.event-media-main {
+  position: relative;
+  aspect-ratio: 16 / 7;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: var(--surface2);
+}
+.event-media-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.event-media-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.event-media-nav.is-prev { left: 12px; }
+.event-media-nav.is-next { right: 12px; }
+.event-media-counter {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+.event-media-strip { display: flex; gap: 6px; }
+.event-media-thumb {
+  position: relative;
+  flex: 1;
+  aspect-ratio: 16 / 9;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  padding: 0;
+  cursor: pointer;
+  background: var(--surface2);
+}
+.event-media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.event-media-thumb.is-active { border-color: var(--navy); }
+.event-media-thumb.is-video { background: #1a2a3a; }
+.event-media-thumb-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+
+/* ---- Event-detail: beschrijving ---- */
+.event-detail-body {
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+.event-detail-body > * + * { margin-top: 1em; }
+
+/* ---- Event-detail: sidebar ---- */
+.event-aside {
+  position: sticky;
+  top: 82px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+@media (max-width: 1024px) {
+  .event-aside { position: static; }
+}
+
+.event-register-card {
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+.event-register-eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.55;
+  margin-bottom: 8px;
+}
+.event-register-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+.event-register-meta { font-size: 13px; opacity: 0.65; margin-bottom: 18px; }
+.event-register-btn { width: 100%; justify-content: center; }
+
+.event-facts-card,
+.event-other-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.event-facts-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-size: 13px;
+}
+.event-facts-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.event-facts-row:last-child { border-bottom: none; }
+.event-facts-label { color: var(--text-hint); flex-shrink: 0; }
+.event-facts-value { font-weight: 500; color: var(--text); text-align: right; }
+
+.event-other-item {
+  display: block;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.12s;
+}
+.event-other-item:last-child { border-bottom: none; }
+.event-other-item:hover { background: var(--surface2); }
+.event-other-type {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-hint);
+  margin-bottom: 3px;
+}
+.event-other-title { display: block; font-size: 13px; font-weight: 600; color: var(--text); }
+.event-other-meta { display: block; font-size: 12px; color: var(--text-hint); margin-top: 2px; }
+
+/* ------------------------------------------------------------
    Detail-page wrapper
    ------------------------------------------------------------ */
 

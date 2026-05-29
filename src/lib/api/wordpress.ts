@@ -1070,6 +1070,71 @@ export async function getArticleRelated(
 // Event endpoints
 // --------------------------------------------------------------------
 
+/**
+ * Gedenormaliseerde venue op het event (`meta.venue`). Object of `null`
+ * (geen venue toegekend / online event). Adresvelden zijn nullable; lege
+ * strings komen als `null`. `country` is een kale ISO-code; `country_detail`
+ * de `{code,label}`-resolve (zelfde vorm als brand-country). Bron: Johan's
+ * sessie-8-handoff (plugin-commit b64c8de).
+ */
+export interface WPEventVenueRaw {
+  id: number
+  name: string
+  slug: string
+  street?: string | null
+  postcode?: string | null
+  city?: string | null
+  /** Kale ISO-3166-alpha-2 code, bv. "NL". */
+  country?: string | null
+  country_detail?: { code: string; label: string } | null
+}
+
+/**
+ * Eén video-entry op `meta.videos[]`. `url` kan YouTube of Vimeo zijn
+ * (incl. unlisted `vimeo.com/{id}/{hash}`). `title`/`thumbnail` nullable.
+ */
+export interface WPEventVideoRaw {
+  url: string
+  title?: string | null
+  thumbnail?: string | null
+}
+
+/**
+ * Event-meta zoals gecureerd door de `rest_prepare_event`-filter. We typeren
+ * de frontend-relevante sleutels; overige blijven toegestaan via de
+ * index-signature.
+ */
+export interface WPEventMeta {
+  featured?: boolean
+  /** ISO yyyy-mm-dd, of null. */
+  date_start?: string | null
+  date_end?: string | null
+  /** hh:mm, of null. */
+  time_start?: string | null
+  time_end?: string | null
+  /** Vrije tekst (bv. "Free", "€25"), of null. */
+  costs?: string | null
+  external_website?: string | null
+  is_md_event?: boolean
+  /** Event-type-taxonomy als compacte terms (meestal 1 item). */
+  event_type?: WPMetaTermRaw[]
+  /** Canonieke enkele slug; fallback "other" wanneer geen term. */
+  event_type_slug?: string
+  /** Channel-tags als compacte terms. */
+  channels?: WPMetaTermRaw[]
+  /** Themes als compacte terms (sessie 8: meegenomen, nog niet gerenderd). */
+  themes?: WPMetaTermRaw[]
+  /** Legacy gecombineerde locatie-string — niet gebruiken; zie `venue`. */
+  location?: WPMetaTermRaw[]
+  /** Gestructureerde, gedenormaliseerde venue. Object of null. */
+  venue?: WPEventVenueRaw | null
+  /** Videos (YouTube/Vimeo). Lege array, nooit null. */
+  videos?: WPEventVideoRaw[]
+  /** Attachment-ID's voor de gallery. Lege array, nooit null. */
+  gallery?: number[]
+  [otherKey: string]: unknown
+}
+
 export interface WPEventRawResponse {
   id: number
   date: string
@@ -1085,12 +1150,11 @@ export interface WPEventRawResponse {
   excerpt: { rendered: string; protected: boolean }
   featured_media: number
   /**
-   * Ontsloten meta volgens handover:
-   *   _featured, _event_date_start, _event_date_end,
-   *   _event_time_start, _event_time_end,
-   *   _event_external_website, _event_costs
+   * Gecureerde meta (sessie-8-handoff, plugin-commit b64c8de): date/time-
+   * velden, costs, external_website, is_md_event, featured, event_type(+slug),
+   * channels, themes, venue, videos, gallery.
    */
-  meta: Record<string, unknown>
+  meta: WPEventMeta
   class_list: string[]
   yoast_head_json?: Record<string, unknown>
   _links: Record<string, unknown>

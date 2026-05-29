@@ -48,6 +48,8 @@ export { HoverPrefetchLink } from './HoverPrefetchLink'
 export { ContentCard } from './ContentCard'
 export type { ContentCardThumbRatio } from './ContentCard'
 
+export { VideoEmbed } from './VideoEmbed'
+
 // --- Gates & preview ---
 export { InsiderGate } from './InsiderGate'
 export type { InsiderFeature } from './InsiderGate'

@@ -31,7 +31,7 @@ import type {
   TaxonomyTerm,
 } from '@/types/article'
 import type { Brand, BrandListItem } from '@/types/brand'
-import type { Event, EventListItem } from '@/types/event'
+import type { Event, EventListItem, EventVenue, EventVideo } from '@/types/event'
 import type { Material, MaterialListItem, MaterialPublication } from '@/types/material'
 import type { Gallery, ImageSizeKey, MediaImage, MediaSize } from '@/types/media'
 import type { Talk, TalkListItem, TalkSpeaker } from '@/types/talk'
@@ -53,11 +53,14 @@ import {
 import { parseMaterialProperties } from '@/lib/utils/material-properties'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { toStoryType } from '@/lib/config/story-types'
+import { toEventType } from '@/lib/config/event-types'
 
 import type {
   WPArticleRawResponse,
   WPBrandRawResponse,
   WPEventRawResponse,
+  WPEventVenueRaw,
+  WPEventVideoRaw,
   WPMaterialRawResponse,
   WPMediaResponse,
   WPMetaTermRaw,
@@ -459,15 +462,55 @@ export function mapRelatedItem(raw: WPRelatedItemRaw): RelatedItem | null {
 // Event
 // --------------------------------------------------------------------
 
+/**
+ * Resolve de gedenormaliseerde venue (`meta.venue`) naar de domain-shape.
+ * `null` bij geen venue (online events). `country` komt bij voorkeur uit
+ * `country_detail` ({code,label}); valt terug op de kale ISO-code als
+ * `country_detail` ontbreekt, en op `null` als beide leeg zijn.
+ */
+function mapEventVenue(raw: WPEventVenueRaw | null | undefined): EventVenue | null {
+  if (!raw || typeof raw.id !== 'number') return null
+  const country = raw.country_detail
+    ? { code: raw.country_detail.code, label: raw.country_detail.label }
+    : stringOrNull(raw.country)
+      ? { code: raw.country as string, label: raw.country as string }
+      : null
+  return {
+    id: raw.id,
+    slug: raw.slug,
+    name: raw.name,
+    street: stringOrNull(raw.street),
+    postcode: stringOrNull(raw.postcode),
+    city: stringOrNull(raw.city),
+    country,
+  }
+}
+
+/**
+ * Resolve `meta.videos[]` naar de domain-shape. Entries zonder geldige `url`
+ * worden weggefilterd; `title`/`thumbnail` normaliseren naar `null` bij leeg.
+ * Provider-detectie (YouTube/Vimeo/unlisted) zit in de video-util, niet hier.
+ */
+function mapEventVideos(raw: WPEventVideoRaw[] | undefined): EventVideo[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((v) => {
+      const url = stringOrNull(v.url)
+      if (!url) return null
+      return { url, title: stringOrNull(v.title), thumbnail: stringOrNull(v.thumbnail) }
+    })
+    .filter((v): v is EventVideo => v !== null)
+}
+
 export function mapEventListItem(
   raw: WPEventRawResponse,
   hero?: MediaImage | null,
 ): EventListItem {
   const m = raw.meta ?? {}
-  const startDate = stringOrNull(m._event_date_start)
-  const endDate = stringOrNull(m._event_date_end)
-  const startTime = stringOrNull(m._event_time_start)
-  const endTime = stringOrNull(m._event_time_end)
+  const startDate = stringOrNull(m.date_start)
+  const endDate = stringOrNull(m.date_end)
+  const startTime = stringOrNull(m.time_start)
+  const endTime = stringOrNull(m.time_end)
   return {
     id: raw.id,
     slug: raw.slug,
@@ -475,18 +518,28 @@ export function mapEventListItem(
     title: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
+    type: toEventType(m.event_type_slug ?? m.event_type?.[0]?.slug),
     startsAt: combineDateTime(startDate, startTime),
     endsAt: combineDateTime(endDate, endTime),
-    featured: Boolean(m._featured),
+    startDate,
+    startTime,
+    isMdEvent: Boolean(m.is_md_event),
+    venue: mapEventVenue(m.venue),
+    channels: mapChannels(m.channels),
+    featured: Boolean(m.featured),
   }
 }
 
-export function mapEvent(raw: WPEventRawResponse, hero?: MediaImage | null): Event {
+export function mapEvent(
+  raw: WPEventRawResponse,
+  hero: MediaImage | null,
+  gallery: Gallery,
+): Event {
   const m = raw.meta ?? {}
-  const startDate = stringOrNull(m._event_date_start)
-  const endDate = stringOrNull(m._event_date_end)
-  const startTime = stringOrNull(m._event_time_start)
-  const endTime = stringOrNull(m._event_time_end)
+  const startDate = stringOrNull(m.date_start)
+  const endDate = stringOrNull(m.date_end)
+  const startTime = stringOrNull(m.time_start)
+  const endTime = stringOrNull(m.time_end)
   return {
     id: raw.id,
     slug: raw.slug,
@@ -495,15 +548,21 @@ export function mapEvent(raw: WPEventRawResponse, hero?: MediaImage | null): Eve
     contentHtml: wpRenderedHtml(raw.content),
     excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
+    type: toEventType(m.event_type_slug ?? m.event_type?.[0]?.slug),
     startsAt: combineDateTime(startDate, startTime),
     endsAt: combineDateTime(endDate, endTime),
     startDate,
     endDate,
     startTime,
     endTime,
-    externalWebsite: stringOrNull(m._event_external_website),
-    costs: stringOrNull(m._event_costs),
-    featured: Boolean(m._featured),
+    isMdEvent: Boolean(m.is_md_event),
+    externalWebsite: stringOrNull(m.external_website),
+    costs: stringOrNull(m.costs),
+    featured: Boolean(m.featured),
+    venue: mapEventVenue(m.venue),
+    channels: mapChannels(m.channels),
+    videos: mapEventVideos(m.videos),
+    gallery,
     date: raw.date,
     modified: raw.modified,
   }
