@@ -29,18 +29,17 @@ interface StaticPageProps {
   params: Promise<{ pageSlug: string }>
 }
 
-/**
- * Alleen de allowlist-segmenten zijn geldige routes. Elk ander single-segment
- * pad krijgt zo Next's echte 404 (HTTP 404) zonder dat deze page-component
- * draait — dus geen soft-404 (HTTP 200) voor willekeurige paden, en deze
- * catch-all kapt geen onbekende paden af.
- */
+// Alleen de allowlist-segmenten zijn geldige params. Defense-in-depth naast
+// de notFound()-gate in de component zelf.
 export const dynamicParams = false
 
-/**
- * Pre-render alle allowlist-pagina's op build-time. In combinatie met
- * `dynamicParams = false` is dit tevens de harde routegrens.
- */
+// BELANGRIJK: deze route heeft bewust GEEN loading.tsx. Een loading-boundary
+// maakt een Suspense-shell die direct als HTTP 200 wordt gestreamd; een
+// daarna aangeroepen notFound() kan de status dan niet meer naar 404 zetten
+// (soft-404). Zonder loading.tsx commit notFound() vóór het streamen, dus
+// onbekende slugs krijgen een echte HTTP 404.
+
+/** Pre-render alle allowlist-pagina's op build-time. */
 export function generateStaticParams(): Array<{ pageSlug: string }> {
   return STATIC_PAGE_SLUGS.map((pageSlug) => ({ pageSlug }))
 }
