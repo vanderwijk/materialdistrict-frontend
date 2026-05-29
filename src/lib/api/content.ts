@@ -624,25 +624,51 @@ export interface BrandCountryOption {
 }
 
 /**
- * Bouwt de Country-filteropties voor het brand-overzicht (Optie A,
- * sessie 5).
+ * Bouwt de Country-filteropties voor het brand-overzicht.
  *
- * IDEAAL: WP levert facet-tellingen naast de gefilterde resultaten (net
- * als FacetWP voor materials). Tot Johan dat koppelt (open-issue
- * sessie 5) aggregeren we de landen hier client-side uit een ruime,
- * ongefilterde brand-fetch. `resolveLogo: false` houdt dit licht — we
- * hebben alleen `country` nodig, geen media.
+ * Sessie 5 vervolg-patch (29-05-2026): Johan levert nu een dedicated
+ * facet-endpoint `/wp-json/md/v2/brands/country-facets` met
+ * onafhankelijke per-land-tellingen (6h server-cache). De primaire pad
+ * is dit endpoint; bij fout of lege respons valt de functie terug op
+ * de oude client-side aggregatie uit een ruime brand-fetch — onnauwkeurig
+ * boven de fetch-grens, maar beter dan een leeg filter.
  *
- * Beperking (genoteerd): de tellingen kloppen alleen als `aggregateMax`
- * groot genoeg is om alle brands te dekken. Zolang de catalogus binnen
- * één ruime fetch past is dat prima; daarboven zijn de tellingen een
- * ondergrens tot de backend facet-counts levert. De landen-LIJST zelf is
- * dan nog steeds bruikbaar als filter — alleen de getallen zijn dan
- * indicatief.
+ * `aggregateMax` blijft als parameter (default 100) — alleen gebruikt
+ * door de fallback. Geen breaking change voor callers.
+ *
+ * `value` = het label dat in `?brand_country=` teruggestuurd wordt
+ * (zie Johan-spec). De WP-brand-filter accepteert zowel ISO-codes als
+ * labels en normaliseert die naar codes — onze checkbox-logica blijft
+ * dus kloppen omdat `brand.country` in de mapper óók een label is.
  */
 export async function getBrandCountryOptions(
   aggregateMax = 100,
 ): Promise<BrandCountryOption[]> {
+  // Primaire pad: dedicated facet-endpoint (Johan-handoff 29-05-2026).
+  try {
+    const { fetchBrandCountryFacets } = await import('./wordpress')
+    const facets = await fetchBrandCountryFacets()
+    if (facets.length > 0) {
+      return facets.map((f) => ({
+        value: f.value,
+        label: f.label,
+        count: f.count,
+      }))
+    }
+    // Lege facets-array → endpoint werkt maar levert niks. Doorvallen
+    // naar de fallback is dan veiliger dan een leeg filter tonen.
+  } catch (err) {
+    // Endpoint-failure (netwerk, 5xx) → fallback. Server-side log zodat
+    // we het merken als de fallback ooit structureel actief is.
+    console.warn(
+      '[getBrandCountryOptions] facets-endpoint faalde, fallback op aggregatie:',
+      err,
+    )
+  }
+
+  // Fallback: aggregeer landen uit een ruime, ongefilterde brand-fetch.
+  // Was tot 29-05-2026 het primaire pad; nu alleen vangnet bij endpoint-
+  // problemen. Tellingen zijn een ondergrens bij grote catalogi.
   const { items } = await listBrands({
     perPage: aggregateMax,
     page: 1,

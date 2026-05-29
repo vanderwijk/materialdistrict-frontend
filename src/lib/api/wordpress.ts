@@ -799,6 +799,47 @@ export async function getBrandBySlug(
 }
 
 // --------------------------------------------------------------------
+// Brand-facets endpoint (Johan-handoff 29-05-2026)
+// --------------------------------------------------------------------
+//
+// Custom endpoint `/wp-json/md/v2/brands/country-facets`. Levert
+// onafhankelijke per-land-tellingen voor de filter-sidebar. 6-uur
+// server-cache aan WP-kant; aan onze kant matched op BRAND_REVALIDATE
+// zodat data-versheid consistent is met de brand-collectie.
+//
+// Field-by-field normalisatie: WP-zijde kan een item leveren met
+// ontbrekende value/label/count — dan vallen we terug op redelijke
+// defaults i.p.v. de hele lijst af te keuren.
+
+export interface WPBrandCountryFacetRaw {
+  value: string
+  label: string
+  count: number
+}
+
+export interface WPBrandCountryFacetsRawResponse {
+  facets?: Array<{
+    value?: string
+    label?: string
+    count?: number
+  }>
+}
+
+export async function fetchBrandCountryFacets(): Promise<
+  WPBrandCountryFacetRaw[]
+> {
+  const response = await wpFetch<WPBrandCountryFacetsRawResponse>(
+    '/md/v2/brands/country-facets',
+    { revalidate: BRAND_REVALIDATE },
+  )
+  return (response.facets ?? []).map((f) => ({
+    value: f.value ?? f.label ?? '',
+    label: f.label ?? f.value ?? '',
+    count: typeof f.count === 'number' ? f.count : 0,
+  }))
+}
+
+// --------------------------------------------------------------------
 // Article endpoints
 // --------------------------------------------------------------------
 
