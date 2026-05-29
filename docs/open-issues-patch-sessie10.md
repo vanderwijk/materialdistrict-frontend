@@ -1,60 +1,46 @@
-# Open issues — patch sessie 10 (Homepage)
+# Open issues — patch sessie 10 (Homepage) — revisie 2
 
 > Append-only patch voor `open-issues.md`. Build-order stap 10 (Homepage).
-> Datum: 29-05-2026.
+> Datum: 29-05-2026. Revisie 2 verwerkt de Johan-instructie (route-group +
+> CSS-comment) en twee homepage-uitbreidingen.
+
+## Opgelost in deze revisie
+
+- **CSS-build-bug (`*/` in comment)** — de sessie-10-comment bevatte via
+  `.grid-*/.btn*` de tekens `*/`, wat de build brak. Comment herschreven
+  zonder `*/`. (Johan-instructie issue 1.)
+- **Soft-404-regressie door root-`loading.tsx`** — homepage + loading +
+  components verplaatst naar route-group `src/app/(home)/`, zodat de
+  loading-boundary alleen voor de homepage geldt. URL blijft `/`.
+  (Johan-instructie issue 2.)
+- **`contentType="material"`-verificatie** — gesloten: de productie-build
+  op `main` slaagt met de homepage, dus `"material"` zit in de
+  `ContentType`-union.
 
 ## Open — wacht op andere lagen / data-bron
 
 ### S10.1 — Books-blok + Insider-prijzen op de homepage 🟡
 **Eigenaar:** Johan (Books-data) + Claude (frontend-koppeling)
-**Raakt:** homepage Events+Books-rij, Books-sidebarwidget, Insider-CTA-copy
-
-De homepage rendert de Books-plekken nu als nette placeholder
-("Featured books are coming soon"). De Insider-CTA verkoopt op waarde en
-linkt naar `/membership`, maar toont **bewust geen prijs of korting** —
-prijzen/kortingen horen in `src/lib/config/membership.ts` (kwaliteitseis 5),
-niet hardcoded.
-
-**Wat er moet (frontend, zodra beschikbaar):**
-- `src/types/book.ts`, de `listBooks`-signatuur (`woocommerce.ts`) en
-  `src/lib/config/membership.ts` aanleveren/bevestigen.
-- Featured-book-kaart (filter `featured`, terugval nieuwste) + Books-
-  sidebarwidget aanhaken.
-- Member-prijs (10% korting) via een membership-helper tonen op de
-  book-kaart; "€x/month" + "x% off books" in de Insider-CTA uit de config.
-
-**Wanneer:** zodra de Books-sessie (stap 9) data oplevert die de homepage
-kan consumeren. Niet blokkerend voor de rest van de homepage.
+Books-plek + Books-sidebarwidget + concrete Insider-prijs (€x/maand, x%
+korting) wachten op `src/types/book.ts`, `listBooks` (`woocommerce.ts`) en
+`src/lib/config/membership.ts`. Nu nette placeholder; Insider-CTA verkoopt
+op waarde zonder hardcoded prijs. Niet blokkerend.
 
 ### S10.2 — Volledige categorie-carousel op de homepage 🟢
 **Eigenaar:** Claude (+ databron-beslissing)
-**Raakt:** de categoriestrip onder de hero
-
-De mockup heeft een geanimeerde categorie-carousel (material-types met
-prev/next-paging). v1 levert een **minimale strip** met één "All materials"-
-link, omdat er geen kant-en-klare "alle material-categorieën"-bron in de
-API-laag is (alleen per-material `material_category`-termen). Zodra er een
-lichte categorie-/term-endpoint of -config is, kan de carousel als client-
-eiland toegevoegd worden zonder de rest te raken.
+v1 levert een minimale categoriestrip (één "All materials"-link). Geen
+kant-en-klare "alle material-categorieën"-bron in de API-laag. Carousel kan
+later als client-eiland toegevoegd worden.
 
 ### S10.3 — Echte "Featured partners"-bron 🟢
 **Eigenaar:** Jeroen + Claude
-**Raakt:** de partners-sectie onderaan de homepage
-
-De partners-grid toont nu zes placeholders. Een echte bron (bv. brands met
-partner-tier, of een door redactie gecureerde lijst) vereist een endpoint/
-veld dat nog niet bestaat. Beslissen welke bron, dan aanhaken.
-
-## Bevestigd / te verifiëren deze sessie
-
-- **`contentType="material"`** wordt op de homepage gebruikt voor de
-  material-kaarten (via `ContentCard`). In de bestaande pagina's komt alleen
-  `"article"`/`"talk"` voor. Bij de eerste `npm run build` verifiëren dat
-  `"material"` in de `ContentType`-union zit; zo niet, één-regel-fix.
+Partners-grid toont nu zes placeholders. Echte bron (brands met partner-tier
+of gecureerde lijst) vereist een endpoint/veld dat nog niet bestaat.
 
 ## Wijzigingen — append onderaan de lijst
 
-- **v1.x (29-05-2026)** — Sessie 10: homepage gebouwd. Drie follow-ups
-  toegevoegd: S10.1 (Books-blok + Insider-prijzen, wacht op Books-domeinlaag
-  + membership-config), S10.2 (volledige categorie-carousel), S10.3 (echte
-  partners-bron). Geen items afgesloten.
+- **v1.x (29-05-2026, rev 2)** — Sessie 10 homepage: route-group `(home)`
+  + CSS-comment-fix verwerkt (Johan-instructie). Twee uitbreidingen gebouwd:
+  featured-article-hero (verschijnt als de promo-hero weg is) en het
+  manufacturer-promoblok in de sidebar. `contentType="material"`-item
+  gesloten. S10.1–S10.3 blijven open.

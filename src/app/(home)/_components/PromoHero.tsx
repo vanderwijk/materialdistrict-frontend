@@ -1,55 +1,29 @@
 'use client'
 
 /**
- * HomeHero — de gast-hero bovenaan de homepage (sessie 10).
+ * PromoHero — de blauw/groene promoband bovenaan, alleen voor uitgelogde
+ * bezoekers (sessie 10). Zichtbaarheid + dismiss lopen via HomeHeroProvider,
+ * zodat wegklikken direct de FeaturedArticleHero toont.
  *
- * Client-component omdat de zichtbaarheid van `useAuth().isLoggedIn` afhangt
- * (alleen tonen voor uitgelogde bezoekers, mockup-gedrag) en omdat de
- * dismiss-knop in localStorage schrijft. AuthContext wordt server-side
- * gehydrateerd (sessie B1/B2, beslissing 66), dus voor een gast staat de
- * hero óók in de SSR-HTML — geen flash, LCP-vriendelijk.
- *
- * De canonieke <h1> van de pagina staat (visueel verborgen) in de
- * server-component page.tsx; de zichtbare hero-titel is daarom een <h2>.
+ * De canonieke <h1> van de pagina staat (visueel verborgen) in page.tsx; de
+ * zichtbare hero-titel is daarom een <h2>.
  */
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/components/providers/AuthContext'
-
-const DISMISS_KEY = 'md_hero_dismissed'
+import { useHomeHero } from './HomeHeroProvider'
 
 function formatCount(n: number): string {
   return new Intl.NumberFormat('en-US').format(n)
 }
 
-interface HomeHeroProps {
+interface PromoHeroProps {
   /** Live material-telling voor de hero-copy ("3,200+"). */
   materialCount: number
 }
 
-export function HomeHero({ materialCount }: HomeHeroProps) {
-  const { isLoggedIn } = useAuth()
-  const [dismissed, setDismissed] = useState(false)
-
-  useEffect(() => {
-    try {
-      if (window.localStorage.getItem(DISMISS_KEY) === '1') setDismissed(true)
-    } catch {
-      /* localStorage niet beschikbaar — hero gewoon tonen. */
-    }
-  }, [])
-
-  if (isLoggedIn || dismissed) return null
-
-  function dismiss() {
-    try {
-      window.localStorage.setItem(DISMISS_KEY, '1')
-    } catch {
-      /* negeren */
-    }
-    setDismissed(true)
-  }
+export function PromoHero({ materialCount }: PromoHeroProps) {
+  const { showPromo, dismissPromo } = useHomeHero()
+  if (!showPromo) return null
 
   return (
     <section className="hero" aria-label="MaterialDistrict introduction">
@@ -74,7 +48,7 @@ export function HomeHero({ materialCount }: HomeHeroProps) {
           <button
             type="button"
             className="hero-dismiss"
-            onClick={dismiss}
+            onClick={dismissPromo}
             aria-label="Dismiss manufacturer message"
           >
             ×

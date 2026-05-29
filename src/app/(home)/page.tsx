@@ -1,25 +1,21 @@
 /**
  * `/` — Homepage (build-order stap 10, sessie 10).
  *
- * Server Component. Aggregeert de andere content-types tot één "magazine"-
- * pagina, volgens de mockup-functie `renderHomepage()`. Eén Promise.all met
- * drie brede fetches (materials/articles/events); books volgt zodra de
- * Books-domeinlaag bevestigd is (nu placeholder).
+ * Staat in route-group `(home)` zodat de homepage-`loading.tsx` alleen voor de
+ * homepage geldt en niet app-breed een Suspense-boundary maakt (anders soft-404
+ * op `[pageSlug]`/auth-routes — zie Johan-instructie 29-05). De route-group
+ * verandert de URL niet: dit serveert nog steeds `/`.
  *
- * Eén materials-fetch voedt vier dingen tegelijk (geen aparte calls):
- *   - hero-telling → total
- *   - Latest materials → eerste 3
- *   - Featured materials → filter `featured` (terugval: eerste 3)
- *   - sidebar-materials → eerste 4 (Top stories → Materials-tab)
+ * Server Component. Aggregeert de content-types tot één "magazine"-pagina. Eén
+ * Promise.all (materials/articles/events); books volgt zodra de Books-domeinlaag
+ * er is (nu placeholder).
  *
- * Auth-afhankelijke UI zit in kleine `'use client'`-eilanden (HomeHero,
- * InsiderCtaBlock, TopStoriesWidget) via `useAuth()` — net als ArticleBodyGate.
- * AuthContext is server-gehydrateerd, dus voor gasten staat de hero in de
- * SSR-HTML (LCP).
+ * Hero-bovenkant: gast ziet de promo-band (PromoHero); klikt die weg → dan
+ * verschijnt de FeaturedArticleHero. Ingelogde users zien meteen de
+ * FeaturedArticleHero. De wissel loopt via HomeHeroProvider (gedeelde state).
  *
- * SEO: één canonieke <h1> (visueel verborgen, altijd aanwezig — de gast-hero
- * kan verborgen zijn voor ingelogde users), section-koppen als <h2>, WebSite +
- * Organization JSON-LD. Geen Breadcrumb op de root.
+ * SEO: één canonieke <h1> (visueel verborgen, altijd aanwezig — de promo-hero
+ * kan verborgen zijn), section-koppen als <h2>, WebSite + Organization JSON-LD.
  */
 
 import type { Metadata } from 'next'
@@ -30,7 +26,12 @@ import { JsonLd, buildWebSite, buildOrganization } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { sortEventsByDate } from '@/app/events/_lib/events-order'
 import { EventCard } from '@/app/events/_components/EventCard'
-import { HomeHero } from './_components/HomeHero'
+import { HomeHeroProvider } from './_components/HomeHeroProvider'
+import { PromoHero } from './_components/PromoHero'
+import {
+  FeaturedArticleHero,
+  type FeaturedArticleVM,
+} from './_components/FeaturedArticleHero'
 import { InsiderCtaBlock } from './_components/InsiderCtaBlock'
 import {
   TopStoriesWidget,
@@ -121,6 +122,17 @@ export default async function HomePage() {
   // --- Articles ----------------------------------------------------------
   const latestStories = artRes.items.slice(0, 3)
 
+  // Featured-article hero = het nieuwste/eerste artikel (= top story).
+  const lead = artRes.items[0] ?? null
+  const featuredArticle: FeaturedArticleVM | null = lead
+    ? {
+        href: `/articles/${lead.slug}`,
+        title: lead.title,
+        thumbUrl: lead.hero?.sourceUrl,
+        meta: `${formatDate(lead.date)} · Article`,
+      }
+    : null
+
   // --- Events: featured & aankomend eerst, anders eerstvolgende ----------
   const orderedEvents = sortEventsByDate(eventRes.items)
   const upcoming = orderedEvents.filter((e) => !e.isPast)
@@ -141,176 +153,197 @@ export default async function HomePage() {
   }))
 
   return (
-    <div className="fade-in">
-      <h1 className="sr-only">
-        MaterialDistrict — materials, stories, events and books
-      </h1>
+    <HomeHeroProvider>
+      <div className="fade-in">
+        <h1 className="sr-only">
+          MaterialDistrict — materials, stories, events and books
+        </h1>
 
-      <HomeHero materialCount={materialCount} />
+        <PromoHero materialCount={materialCount} />
 
-      {/* Categorierij — minimale strip (volledige carousel = follow-up S10.x). */}
-      <nav className="hp-cats" aria-label="Material categories">
-        <div className="hp-cats-inner">
-          <Link href="/materials" className="hp-cat-link">
-            All materials
-          </Link>
-        </div>
-      </nav>
+        {/* Categorierij — minimale strip (volledige carousel = follow-up S10.x). */}
+        <nav className="hp-cats" aria-label="Material categories">
+          <div className="hp-cats-inner">
+            <Link href="/materials" className="hp-cat-link">
+              All materials
+            </Link>
+          </div>
+        </nav>
 
-      <div className="hp-main">
-        <div className="hp-content">
-          {/* Latest materials */}
-          <section className="hp-section">
-            <div className="section-hd">
-              <h2 className="section-title">Latest materials</h2>
-              <Link href="/materials" className="section-link">
-                All materials →
-              </Link>
-            </div>
-            <div className="grid-3">
-              {latestMaterials.map((m) => (
-                <ContentCard
-                  key={m.id}
-                  href={`/materials/${m.slug}`}
-                  contentType="material"
-                  thumbSrc={m.hero?.sourceUrl}
-                  thumbAlt={m.hero?.alt ?? m.title}
-                  eyebrow={m.brandName ?? undefined}
-                  title={m.title}
-                />
-              ))}
-            </div>
-          </section>
+        <div className="hp-main">
+          <div className="hp-content">
+            {/* Featured-article hero (verschijnt als de promo-hero weg is) */}
+            <FeaturedArticleHero article={featuredArticle} />
 
-          {/* Latest stories */}
-          <section className="hp-section">
-            <div className="section-hd">
-              <h2 className="section-title">Latest stories</h2>
-              <Link href="/articles" className="section-link">
-                All articles →
-              </Link>
-            </div>
-            <div className="grid-3">
-              {latestStories.map((a) => (
-                <ContentCard
-                  key={a.id}
-                  href={`/articles/${a.slug}`}
-                  contentType="article"
-                  thumbSrc={a.hero?.sourceUrl}
-                  thumbAlt={a.hero?.alt ?? a.title}
-                  eyebrow={formatDate(a.date)}
-                  title={a.title}
-                  tagLabel={STORY_TYPE_META[a.type].label}
-                  channelTags={a.channels.map((c) => c.label)}
-                  isInsiderOnly={a.insiderOnly}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Featured materials */}
-          <section className="hp-section">
-            <div className="section-hd">
-              <h2 className="section-title">Featured materials</h2>
-              <Link href="/materials" className="section-link">
-                All materials →
-              </Link>
-            </div>
-            <div className="grid-3">
-              {featuredMaterials.map((m) => (
-                <ContentCard
-                  key={m.id}
-                  href={`/materials/${m.slug}`}
-                  contentType="material"
-                  thumbSrc={m.hero?.sourceUrl}
-                  thumbAlt={m.hero?.alt ?? m.title}
-                  eyebrow={m.brandName ?? undefined}
-                  title={m.title}
-                />
-              ))}
-            </div>
-          </section>
-
-          {/* Events + Books */}
-          <section className="hp-section">
-            <div className="grid-2">
-              <div>
-                <div className="section-hd">
-                  <h2 className="section-title">Events</h2>
-                  <Link href="/events" className="section-link">
-                    All events →
-                  </Link>
-                </div>
-                {featuredEvent ? (
-                  <EventCard event={featuredEvent} />
-                ) : (
-                  <p className="hp-empty">No featured events at this time.</p>
-                )}
+            {/* Latest materials */}
+            <section className="hp-section">
+              <div className="section-hd">
+                <h2 className="section-title">Latest materials</h2>
+                <Link href="/materials" className="section-link">
+                  All materials →
+                </Link>
               </div>
-              <div>
-                <div className="section-hd">
-                  <h2 className="section-title">Books</h2>
-                  <Link href="/books" className="section-link">
-                    All books →
-                  </Link>
-                </div>
-                {/* Placeholder — Books-domeinlaag (type/listBooks/membership)
-                    nog niet beschikbaar. Wordt aangehaakt zodra die er zijn. */}
-                <p className="hp-empty">Featured books are coming soon.</p>
+              <div className="grid-3">
+                {latestMaterials.map((m) => (
+                  <ContentCard
+                    key={m.id}
+                    href={`/materials/${m.slug}`}
+                    contentType="material"
+                    thumbSrc={m.hero?.sourceUrl}
+                    thumbAlt={m.hero?.alt ?? m.title}
+                    eyebrow={m.brandName ?? undefined}
+                    title={m.title}
+                  />
+                ))}
               </div>
-            </div>
-          </section>
+            </section>
 
-          {/* Insider-CTA (verborgen voor actieve Insiders) */}
-          <InsiderCtaBlock />
+            {/* Latest stories */}
+            <section className="hp-section">
+              <div className="section-hd">
+                <h2 className="section-title">Latest stories</h2>
+                <Link href="/articles" className="section-link">
+                  All articles →
+                </Link>
+              </div>
+              <div className="grid-3">
+                {latestStories.map((a) => (
+                  <ContentCard
+                    key={a.id}
+                    href={`/articles/${a.slug}`}
+                    contentType="article"
+                    thumbSrc={a.hero?.sourceUrl}
+                    thumbAlt={a.hero?.alt ?? a.title}
+                    eyebrow={formatDate(a.date)}
+                    title={a.title}
+                    tagLabel={STORY_TYPE_META[a.type].label}
+                    channelTags={a.channels.map((c) => c.label)}
+                    isInsiderOnly={a.insiderOnly}
+                  />
+                ))}
+              </div>
+            </section>
 
-          {/* What users say (statisch in v1) */}
-          <section className="hp-section">
-            <div className="section-hd">
-              <h2 className="section-title">What users say</h2>
-            </div>
-            <div className="quote-grid">
-              {QUOTES.map((q) => (
-                <figure className="quote-card" key={q.name}>
-                  <div className="quote-mark" aria-hidden="true">
-                    &ldquo;
+            {/* Featured materials */}
+            <section className="hp-section">
+              <div className="section-hd">
+                <h2 className="section-title">Featured materials</h2>
+                <Link href="/materials" className="section-link">
+                  All materials →
+                </Link>
+              </div>
+              <div className="grid-3">
+                {featuredMaterials.map((m) => (
+                  <ContentCard
+                    key={m.id}
+                    href={`/materials/${m.slug}`}
+                    contentType="material"
+                    thumbSrc={m.hero?.sourceUrl}
+                    thumbAlt={m.hero?.alt ?? m.title}
+                    eyebrow={m.brandName ?? undefined}
+                    title={m.title}
+                  />
+                ))}
+              </div>
+            </section>
+
+            {/* Events + Books */}
+            <section className="hp-section">
+              <div className="grid-2">
+                <div>
+                  <div className="section-hd">
+                    <h2 className="section-title">Events</h2>
+                    <Link href="/events" className="section-link">
+                      All events →
+                    </Link>
                   </div>
-                  <blockquote className="quote-text">{q.quote}</blockquote>
-                  <div className="quote-divider" aria-hidden="true" />
-                  <figcaption>
-                    <div className="quote-name">{q.name}</div>
-                    <div className="quote-role">{q.role}</div>
-                  </figcaption>
-                </figure>
-              ))}
-            </div>
-          </section>
-
-          {/* Featured partners (placeholder-bron in v1 — open issue S10.x) */}
-          <section className="hp-section">
-            <div className="section-hd">
-              <h2 className="section-title">Featured partners</h2>
-            </div>
-            <div className="partner-grid">
-              {PARTNERS.map((p) => (
-                <div className="partner-card" key={p}>
-                  {p}
+                  {featuredEvent ? (
+                    <EventCard event={featuredEvent} />
+                  ) : (
+                    <p className="hp-empty">No featured events at this time.</p>
+                  )}
                 </div>
-              ))}
+                <div>
+                  <div className="section-hd">
+                    <h2 className="section-title">Books</h2>
+                    <Link href="/books" className="section-link">
+                      All books →
+                    </Link>
+                  </div>
+                  {/* Placeholder — Books-domeinlaag (type/listBooks/membership)
+                      nog niet beschikbaar. Wordt aangehaakt zodra die er zijn. */}
+                  <p className="hp-empty">Featured books are coming soon.</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Insider-CTA (verborgen voor actieve Insiders) */}
+            <InsiderCtaBlock />
+
+            {/* What users say (statisch in v1) */}
+            <section className="hp-section">
+              <div className="section-hd">
+                <h2 className="section-title">What users say</h2>
+              </div>
+              <div className="quote-grid">
+                {QUOTES.map((q) => (
+                  <figure className="quote-card" key={q.name}>
+                    <div className="quote-mark" aria-hidden="true">
+                      &ldquo;
+                    </div>
+                    <blockquote className="quote-text">{q.quote}</blockquote>
+                    <div className="quote-divider" aria-hidden="true" />
+                    <figcaption>
+                      <div className="quote-name">{q.name}</div>
+                      <div className="quote-role">{q.role}</div>
+                    </figcaption>
+                  </figure>
+                ))}
+              </div>
+            </section>
+
+            {/* Featured partners (placeholder-bron in v1 — open issue S10.x) */}
+            <section className="hp-section">
+              <div className="section-hd">
+                <h2 className="section-title">Featured partners</h2>
+              </div>
+              <div className="partner-grid">
+                {PARTNERS.map((p) => (
+                  <div className="partner-card" key={p}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <aside className="hp-sidebar" aria-label="More from MaterialDistrict">
+            <TopStoriesWidget
+              articles={sidebarArticles}
+              materials={sidebarMaterials}
+            />
+
+            {/* Manufacturer-promo */}
+            <div className="sidebar-cta">
+              <p className="sidebar-cta-eyebrow">For manufacturers</p>
+              <p className="sidebar-cta-title">
+                Show your material to architects &amp; specifiers
+              </p>
+              <p className="sidebar-cta-desc">
+                Add your materials to the platform and become visible in a
+                curated guide for sustainable architecture.
+              </p>
+              <Link href="/register" className="btn btn-green">
+                Add your materials →
+              </Link>
             </div>
-          </section>
+
+            {/* Books-sidebarwidget volgt met de Books-domeinlaag. */}
+          </aside>
         </div>
 
-        <aside className="hp-sidebar" aria-label="More from MaterialDistrict">
-          <TopStoriesWidget
-            articles={sidebarArticles}
-            materials={sidebarMaterials}
-          />
-          {/* Books-sidebarwidget volgt met de Books-domeinlaag. */}
-        </aside>
+        <JsonLd data={[buildWebSite(), buildOrganization()]} />
       </div>
-
-      <JsonLd data={[buildWebSite(), buildOrganization()]} />
-    </div>
+    </HomeHeroProvider>
   )
 }

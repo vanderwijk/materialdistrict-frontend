@@ -1,84 +1,73 @@
-# Session-log — patch sessie 10 (Homepage)
+# Session-log — patch sessie 10 (Homepage) — revisie 2
 
 > Append-only entry voor `session-log.md`. Build-order stap 10 = Sessie 10.
-> Als laatste opgesteld, na de bestandslijst-bevestiging en het schrijven
-> van de bestanden.
+> Revisie 2: Johan-instructie (route-group + CSS-comment) verwerkt en twee
+> homepage-uitbreidingen toegevoegd.
 
-## Sessie 10 — Homepage (29-05-2026) ✅
-
-Stap 10. De homepage brengt de eerder gebouwde content-types samen tot één
-"magazine"-pagina, conform de mockup-functie `renderHomepage()`. Server
-Component met drie kleine `'use client'`-eilanden voor de auth-/interactie-
-afhankelijke delen.
+## Sessie 10 — Homepage (29-05-2026) ✅ (rev 2)
 
 ### Aangemaakte / gewijzigde bestanden
 
-- `src/app/page.tsx` — **vervangt** de smoke-test. Server-component: één
-  `Promise.all` (materials/articles/events), featured-resolutie met
-  terugval, `generateMetadata`, WebSite+Organization JSON-LD, verborgen
-  canonieke `<h1>`, statische quotes + partners, books als placeholder.
-- `src/app/loading.tsx` — **nieuw**. Loading-skeleton (hero + grids +
-  sidebar) via bestaande `Skeleton`, alleen klassen, geen inline styles.
-- `src/app/_components/HomeHero.tsx` — **nieuw**. Gast-hero; verborgen voor
-  ingelogde users (`useAuth().isLoggedIn`), wegklikbaar via
-  `localStorage['md_hero_dismissed']`.
-- `src/app/_components/TopStoriesWidget.tsx` — **nieuw**. Sidebar-widget met
-  Articles/Materials-tab; krijgt al-gemapte, serializeerbare lijsten.
-- `src/app/_components/InsiderCtaBlock.tsx` — **nieuw**. Insider-CTA;
-  verborgen voor actieve Insiders (`useAuth().isMember`). Bewust geen
-  hardcoded prijs/korting.
-- `src/styles/globals.css` — **gewijzigd**. Sectie "SESSIE 10 — Homepage"
-  aan het eind toegevoegd (~+490 regels): hero, categoriestrip, `hp-main`-
-  layout, `section-hd`/`section-link`, `sw-card` + story-list, quotes,
-  partners, Insider-CTA, hero-skeleton, responsive. Niets bestaands
-  gewijzigd; alle nieuwe regels via tokens (dark mode automatisch).
+> De homepage staat nu in route-group `src/app/(home)/` (URL blijft `/`).
 
-### Beslissingen (Sessie 10 — nummering doorzetten vanaf laatste in session-log.md bij invoegen)
+- `src/app/(home)/page.tsx` — **vervangt** de vorige (root-)homepage.
+  Server-component: `Promise.all` (materials/articles/events), featured-
+  resolutie met terugval, `generateMetadata`, WebSite+Organization JSON-LD,
+  verborgen canonieke `<h1>`, hero-bovenkant via provider, statische quotes +
+  partners, sidebar met Top stories + manufacturer-promo, books-placeholder.
+- `src/app/(home)/loading.tsx` — loading-skeleton (verplaatst naar `(home)`).
+- `src/app/(home)/_components/HomeHeroProvider.tsx` — **nieuw**. Gedeelde
+  client-state `showPromo`; promo en article-hero zijn elkaars tegenpool.
+- `src/app/(home)/_components/PromoHero.tsx` — **nieuw** (verving HomeHero).
+  Gast-promoband; zichtbaarheid + dismiss via de provider.
+- `src/app/(home)/_components/FeaturedArticleHero.tsx` — **nieuw**. Groot
+  "Featured article"-blok bovenaan de contentkolom; toont wanneer de promo
+  weg is (uitgelogd-weggeklikt of ingelogd). Titel hergebruikt
+  `.ed-featured-title`.
+- `src/app/(home)/_components/TopStoriesWidget.tsx` — verplaatst (ongewijzigd).
+- `src/app/(home)/_components/InsiderCtaBlock.tsx` — verplaatst (ongewijzigd).
+- **Verwijderen:** `_components/HomeHero.tsx` (vervangen door PromoHero +
+  HomeHeroProvider + FeaturedArticleHero).
+- `src/styles/globals.css` — **gewijzigd**. (1) Sessie-10-comment herschreven
+  zonder `*/` (build-fix). (2) Nieuwe regels toegevoegd: `.hp-hero-article*`
+  (featured-article-hero) en de `.sidebar-cta`-kaart + `-eyebrow`/`-desc`
+  (manufacturer-promo). Niets bestaands gewijzigd buiten de comment.
 
-1. **Featured is data-driven met terugval.** Featured materials/event/book
-   uit een `featured`-flag; bij lege set terugval op nieuwste/eerstvolgende,
-   zodat er nooit een leeg blok valt.
-2. **Eén materials-fetch voedt vier afgeleiden** (count, latest, featured,
-   sidebar-materials) — geen aparte calls, geen waterfalls.
-3. **Hero-telling is live** uit `listMaterials().total` met `Intl.NumberFormat`
-   en `3200` als terugval; weergave "3,200+".
-4. **Material-kaarten via `ContentCard`** (brand=eyebrow, naam=titel) i.p.v.
-   `MaterialCard` — homepage hoeft geen compare/bookmark; blijft server-
-   rendered en licht (LCP).
-5. **Auth-afhankelijke UI als client-eilanden** (HomeHero, InsiderCtaBlock,
-   TopStoriesWidget) via `useAuth()`; page blijft server-component. Past op
-   het bestaande patroon (ArticleBodyGate e.a.).
-6. **Canonieke `<h1>` verborgen + altijd aanwezig**; hero-titel is `<h2>`.
-   Zo blijft de "één h1"-eis kloppen ook als de gast-hero verborgen is.
-7. **Insider-CTA verborgen voor members** en zonder hardcoded prijs — prijzen
-   horen in `membership.ts` (kwaliteitseis 5).
-8. **Quotes en partners statisch in v1** (geen WP-bron); partners als
-   placeholder. Vastgelegd als open issue S10.3.
-9. **Section-koppen op de design-system-waarde** (`.section-title`, 44px) en
-   **hero-gradient via tokens** (`var(--navy)`→`var(--green)`) — design-system
-   is leidend boven de mockup voor styling.
+### Beslissingen (Sessie 10 — nummering doorzetten bij invoegen)
 
-### API-bevindingen
+1–9. (Zie revisie 1.) Featured data-driven met terugval; één materials-fetch;
+   live hero-telling; material-kaarten via ContentCard; auth-UI als client-
+   eilanden; verborgen canonieke h1; Insider-CTA verborgen voor members +
+   geen hardcoded prijs; quotes/partners statisch; design-system leidend
+   (section-title 44px, gradient via tokens).
+10. **Promo-hero en featured-article-hero zijn elkaars tegenpool** via een
+    gedeelde client-context (HomeHeroProvider): gast ziet de promo, wegklikken
+    toont direct de article-hero; ingelogde users zien meteen de article-hero.
+11. **Featured-article-hero = het nieuwste/eerste artikel** (= top story).
+    Geen aparte `featured`-flag-afhankelijkheid → geen leeg blok.
+12. **Manufacturer-promo in de sidebar** ("Show your material to architects &
+    specifiers") — statisch, altijd zichtbaar, knop naar `/register`.
+13. **Route-group `(home)`** voor de homepage (Johan-instructie issue 2):
+    loading-boundary alleen voor de homepage, geen app-brede soft-404.
+14. **CSS-comments bevatten nooit `*/`** (Johan-instructie issue 1):
+    selector-opsommingen met komma's/"en", niet met slashes.
 
-- `listMaterials()` geeft `{ items, total, totalPages }` — `total` direct
-  bruikbaar als hero-telling (geen aparte count-helper nodig).
-- Geen kant-en-klare "alle material-categorieën"-helper in de API-laag
-  (alleen per-material `material_category`-termen) → categorie-carousel
-  geparkeerd (S10.2).
-- `contentType` wordt in bestaande pagina's alleen als `"article"`/`"talk"`
-  gebruikt; homepage gebruikt `"material"` → bij eerste build verifiëren dat
-  dit in de `ContentType`-union zit.
+### Werkwijze-noot
 
-### Openstaande issues (zie open-issues-patch-sessie10.md)
+- `globals.css` is een gedeeld bestand. Deze levering gaat uit van een `main`
+  waarvan de sessie-10-CSS-sectie gelijk is aan de eerder geleverde (met door
+  de andere agent gefixte comment). Reconcileer bij twijfel tegen de actuele
+  `main` vóór merge.
 
-- S10.1 — Books-blok + Insider-prijzen (wacht op `book.ts` / `listBooks` /
-  `membership.ts`).
+### Openstaande issues (zie open-issues-patch-sessie10.md rev 2)
+
+- S10.1 — Books-blok + Insider-prijzen (wacht op Books-domeinlaag + membership).
 - S10.2 — Volledige categorie-carousel.
 - S10.3 — Echte partners-bron.
+- Gesloten: `contentType="material"`-verificatie (build groen op main).
 
-### Volgende sessie
+### Volgende sessie / definition-of-done
 
-Stap 11 (algemene templates) is grotendeels al gedaan (deel 1). Resterend
-voor de homepage: Books-domeinlaag + `membership.ts` aanhaken (S10.1) zodra
-beschikbaar; daarna `npm run build` + Lighthouse/axe-steekproef +
-drie-viewport-walkthrough als definition-of-done.
+`npm run build` + `next start` + de 404-curl-checks uit de Johan-instructie;
+Lighthouse/axe-steekproef; drie-viewport-walkthrough. Books + `membership.ts`
+aanhaken zodra beschikbaar (S10.1).
