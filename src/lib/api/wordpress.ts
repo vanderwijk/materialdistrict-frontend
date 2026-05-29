@@ -913,6 +913,42 @@ export async function getArticleBySlug(
 }
 
 /**
+ * Lichtgewicht story-type-telling (sessie 7 - perf-fix).
+ *
+ * `getArticleStoryTypeOptions` (content.ts) heeft per artikel alleen de
+ * canonieke story-type-slug nodig, maar haalde via `listArticles` de VOLLEDIGE
+ * artikelen op (incl. `content.rendered`-bodies). Bij ~100 artikelen liep dat
+ * over de 2 MB Next-data-cache-limiet -> niet cachebaar -> trage /articles
+ * (4-5s). `_fields=id,meta` houdt de payload minimaal (geen bodies) en
+ * cachebaar. We lezen de platte canonieke slug `meta._story_type` (WP levert
+ * `news` als er geen term is), met val-back op `meta.story_type[0].slug`.
+ */
+export async function listArticleStoryTypeSlugs(max = 100): Promise<string[]> {
+  const rows = await wpFetch<
+    Array<{
+      id: number
+      meta?: {
+        _story_type?: string | null
+        story_type?: Array<{ slug?: string }> | null
+      }
+    }>
+  >('/wp/v2/article', {
+    revalidate: EDITORIAL_REVALIDATE,
+    params: {
+      per_page: max,
+      orderby: 'date',
+      order: 'desc',
+      // Alleen id + meta; geen content/excerpt-bodies -> klein & cachebaar.
+      _fields: ['id', 'meta'],
+    },
+  })
+
+  return rows.map(
+    (r) => r.meta?._story_type ?? r.meta?.story_type?.[0]?.slug ?? 'news',
+  )
+}
+
+/**
  * Related-content (D5). SearchWP-Related-endpoint met taxonomie-overlap-
  * fallback (Johan 29-05). Retourneert een PLATTE array van gemixte items
  * (article/material/talk). 1-uur transient cache WP-zijde; we spiegelen

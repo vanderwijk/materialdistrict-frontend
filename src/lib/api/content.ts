@@ -716,18 +716,23 @@ export interface StoryTypeOption {
 export async function getArticleStoryTypeOptions(
   aggregateMax = 100,
 ): Promise<StoryTypeOption[]> {
-  const { items } = await listArticles({
-    perPage: aggregateMax,
-    page: 1,
-    resolveHero: false,
-    orderby: 'date',
-    order: 'desc',
-  })
+  // Perf-fix (sessie 7): tel alleen de canonieke story-type-slug per artikel
+  // via een lichtgewicht raw-fetch (id + meta), i.p.v. 100 VOLLEDIGE artikelen
+  // met `content.rendered`-bodies op te halen. Die volle payload liep over de
+  // 2 MB Next-data-cache-limiet -> niet cachebaar -> elke /articles-render deed
+  // de trage upstream-fetch (4-5s). De lichte variant blijft ruim onder 2 MB en
+  // is dus weer cachebaar. Dynamische import houdt de diff tot deze functie
+  // beperkt (merge-veilig naast de parallelle Brands-sessie).
+  const { listArticleStoryTypeSlugs } = await import('./wordpress')
+  const slugs = await listArticleStoryTypeSlugs(aggregateMax)
 
   const counts = new Map<StoryType, number>()
   for (const type of STORY_TYPES) counts.set(type, 0)
-  for (const article of items) {
-    counts.set(article.type, (counts.get(article.type) ?? 0) + 1)
+  for (const slug of slugs) {
+    // Onbekende slug -> 'news' (zelfde degrade-semantiek als de mapper);
+    // nooit een artikel uit de totalen laten vallen.
+    const type = (counts.has(slug as StoryType) ? slug : 'news') as StoryType
+    counts.set(type, (counts.get(type) ?? 0) + 1)
   }
 
   return STORY_TYPES.map((type) => ({
