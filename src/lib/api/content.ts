@@ -728,44 +728,54 @@ export interface StoryTypeOption {
 /**
  * Bouwt de story-type-filteropties voor het `/articles` overzicht.
  *
- * In tegenstelling tot het brand-Country-filter is de optie-SET hier vast
- * (de vijf canonieke types uit `STORY_TYPE_META`); alleen de TELLINGEN
- * worden geaggregeerd. Sinds sessie 6b levert WP de `story_type`-taxonomy,
- * dus de tellingen verdelen zich over de echte types.
+ * Sinds sessie 6b is `story_type` een echte WP-taxonomy en geeft het
+ * standaard term-endpoint per term een `count`-veld met het aantal
+ * gepubliceerde artikelen — onafhankelijk van catalogusgrootte. We
+ * leunen daarop via `getStoryTypeCounts()`: één lichte call, exacte
+ * tellingen, geen sampling.
  *
- * Aggregeert client-side uit één ruime, ongefilterde article-fetch
- * (`resolveHero: false` houdt dit licht — we tellen alleen types). De
- * tellingen zijn een ondergrens als de catalogus niet binnen `aggregateMax`
- * past; de type-LIJST zelf blijft hoe dan ook volledig en bruikbaar als
- * filter. Analoog aan `getBrandCountryOptions` (sessie 5).
+ * Belangrijke regel — géén fallback-naar-`'news'` voor onbekende slugs.
+ * Een artikel zonder `story_type`-term hoort in geen enkele filter-bucket
+ * thuis (zou anders News kunstmatig opblazen met ongecategoriseerde
+ * content). De mapper-default `'news'` in `toStoryType()` blijft staan —
+ * die gaat over de *weergave* van één artikel, niet over de filter-
+ * tellingen. Dat zijn twee aparte vragen.
+ *
+ * De optie-SET is vast (de vijf canonieke types uit `STORY_TYPE_META`);
+ * we mappen elke type op `counts[slug] ?? 0` zodat een nog-niet-
+ * gepubliceerd type netjes 0 toont.
+ *
+ * Dynamische import houdt de diff tot deze functie beperkt (merge-veilig
+ * naast parallelle sessies).
  */
-export async function getArticleStoryTypeOptions(
-  aggregateMax = 100,
-): Promise<StoryTypeOption[]> {
-  // Perf-fix (sessie 7): tel alleen de canonieke story-type-slug per artikel
-  // via een lichtgewicht raw-fetch (id + meta), i.p.v. 100 VOLLEDIGE artikelen
-  // met `content.rendered`-bodies op te halen. Die volle payload liep over de
-  // 2 MB Next-data-cache-limiet -> niet cachebaar -> elke /articles-render deed
-  // de trage upstream-fetch (4-5s). De lichte variant blijft ruim onder 2 MB en
-  // is dus weer cachebaar. Dynamische import houdt de diff tot deze functie
-  // beperkt (merge-veilig naast de parallelle Brands-sessie).
-  const { listArticleStoryTypeSlugs } = await import('./wordpress')
-  const slugs = await listArticleStoryTypeSlugs(aggregateMax)
-
-  const counts = new Map<StoryType, number>()
-  for (const type of STORY_TYPES) counts.set(type, 0)
-  for (const slug of slugs) {
-    // Onbekende slug -> 'news' (zelfde degrade-semantiek als de mapper);
-    // nooit een artikel uit de totalen laten vallen.
-    const type = (counts.has(slug as StoryType) ? slug : 'news') as StoryType
-    counts.set(type, (counts.get(type) ?? 0) + 1)
-  }
+export async function getArticleStoryTypeOptions(): Promise<StoryTypeOption[]> {
+  const { getStoryTypeCounts } = await import('./wordpress')
+  const counts = await getStoryTypeCounts()
 
   return STORY_TYPES.map((type) => ({
     value: type,
     label: storyTypeLabel(type),
-    count: counts.get(type) ?? 0,
+    count: counts[type] ?? 0,
   }))
+}
+
+/**
+ * Totaal aantal gepubliceerde artikelen — voor de "All"-rij in de
+ * story-type-filter. Bewust losgekoppeld van `getArticleStoryTypeOptions`:
+ * de som van getypte tellingen geeft een misleidend laag totaal zolang er
+ * ongecategoriseerde artikelen zijn (3.211 totaal vs. ~1 getypeerd op 29-05).
+ *
+ * Eén lichte call: `per_page: 1` haalt minimale data binnen; de
+ * `X-WP-Total`-header (door `wpFetchPaginated` als `total` teruggegeven)
+ * is de bron van waarheid.
+ */
+export async function getArticleTotalCount(): Promise<number> {
+  const { total } = await listArticles({
+    perPage: 1,
+    page: 1,
+    resolveHero: false,
+  })
+  return total
 }
 
 /**

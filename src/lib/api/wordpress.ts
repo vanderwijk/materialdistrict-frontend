@@ -954,6 +954,48 @@ export async function getArticleBySlug(
 }
 
 /**
+ * Exacte story-type-tellingen uit de WP-taxonomy `story_type`.
+ *
+ * Eén lichte call op het standaard term-endpoint: WP geeft per term een
+ * `count`-veld dat het aantal GEPUBLICEERDE artikelen telt — onafhankelijk
+ * van catalogusgrootte, geen sampling, geen aanname. Vervangt het
+ * sampling-pad via `listArticleStoryTypeSlugs` voor de filter-counts: dat
+ * pad had een cap (alleen nieuwste N artikelen) en degradeerde
+ * ongecategoriseerde artikelen naar `'news'`, wat op grote catalogi met
+ * deels-ongetypeerde content tot foute counts leidt.
+ *
+ * `hide_empty: false` is essentieel — zonder die flag verbergt WP terms
+ * met `count = 0`, en dan zou de filter-sidebar incompleet zijn.
+ * `_fields` houdt de response klein. `EDITORIAL_REVALIDATE` (3600s) lijnt
+ * de cache uit met de overige editorial endpoints.
+ */
+export async function getStoryTypeCounts(): Promise<Record<string, number>> {
+  const terms = await wpFetch<Array<{ slug: string; count: number }>>(
+    '/wp/v2/story_type',
+    {
+      revalidate: EDITORIAL_REVALIDATE,
+      params: {
+        per_page: 100,
+        hide_empty: false,
+        _fields: ['slug', 'count'],
+      },
+    },
+  )
+
+  const counts: Record<string, number> = {}
+  for (const t of terms) counts[t.slug] = t.count
+  return counts
+}
+
+/**
+ * @deprecated Voor sidebar-counts: gebruik `getStoryTypeCounts()`. Dit
+ * pad heeft een sampling-cap (alleen nieuwste N) en degradeert
+ * ongecategoriseerde artikelen naar `'news'` — fout bij grote catalogi.
+ *
+ * Behouden voor backwards compat zolang er nog callers buiten
+ * `getArticleStoryTypeOptions` zijn. Veilig te verwijderen zodra een
+ * codebase-grep `listArticleStoryTypeSlugs` nergens meer aantreft.
+ *
  * Lichtgewicht story-type-telling (sessie 7 - perf-fix).
  *
  * `getArticleStoryTypeOptions` (content.ts) heeft per artikel alleen de

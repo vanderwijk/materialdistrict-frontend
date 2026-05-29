@@ -17,6 +17,7 @@
 export {
   getArticle,
   getArticleStoryTypeOptions,
+  getArticleTotalCount,
   getBrand,
   getBrandCountryOptions,
   getEvent,

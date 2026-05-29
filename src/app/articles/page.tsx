@@ -35,7 +35,11 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ContentCard, EmptyState } from '@/components/ui'
-import { getArticleStoryTypeOptions, listArticles } from '@/lib/api'
+import {
+  getArticleStoryTypeOptions,
+  getArticleTotalCount,
+  listArticles,
+} from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import {
   STORY_TYPE_META,
@@ -103,10 +107,13 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const selectedType = parseStoryType(params.story_type)
   const page = parsePage(params.page)
 
-  // Articles + story-type-opties parallel. De type-opties komen uit een
-  // ruime ongefilterde fetch (zie getArticleStoryTypeOptions); de
-  // gefilterde lijst gebruikt de story_type-param (Optie A).
-  const [result, typeOptions] = await Promise.all([
+  // Articles + story-type-opties + totaal-count parallel. De type-opties
+  // komen uit het lichte WP-term-endpoint (`getStoryTypeCounts`) — exacte
+  // tellingen per type, ongeacht catalogusgrootte. Het totaal-aantal komt
+  // los uit een minimale `per_page=1`-call (X-WP-Total); we tellen de
+  // type-counts NIET op, want ongecategoriseerde artikelen horen in geen
+  // type-bucket maar wel in "All".
+  const [result, typeOptions, totalArticleCount] = await Promise.all([
     listArticles({
       perPage: ARTICLES_PER_PAGE,
       page,
@@ -114,9 +121,9 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
       storyType: selectedType ?? undefined,
     }),
     getArticleStoryTypeOptions(),
+    getArticleTotalCount(),
   ])
 
-  const totalTypeCount = typeOptions.reduce((sum, o) => sum + o.count, 0)
   const hasActiveFilters = selectedType !== null || Boolean(search)
   const total = result.total
   const activeMeta = selectedType ? STORY_TYPE_META[selectedType] : null
@@ -147,7 +154,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           <ArticlesTypeFilter
             options={typeOptions}
             selectedType={selectedType}
-            totalCount={totalTypeCount}
+            totalCount={totalArticleCount}
             pendingBackend={!STORY_TYPE_BACKEND_CONNECTED}
           />
 
