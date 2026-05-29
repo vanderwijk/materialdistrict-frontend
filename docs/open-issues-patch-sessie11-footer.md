@@ -11,18 +11,19 @@ byte-identiek.
   correct naar live routes. Ongewijzigd.
 - **Legal** (gefixt):
   - Privacy policy → `/privacy-statement` (live, Batch A).
-  - Terms of use → interim externe link naar `https://materialdistrict.com/terms/`
-    (serveert nu de PDF) — zie S11.5.
+  - Terms of use → directe externe link naar de stabiele PDF op
+    materiahost.nl (besluit 29-05) — zie S11.5 (opgelost).
   - Cookie settings → VERBORGEN (uitgecommentd) tot er een consent-tool is — zie S11.6.
 
-### S11.5 — Eigen Terms-pagina (Jeroen wil dit "straks anders")
-**Eigenaar:** Jeroen (beslissing) → Claude (bouw)
-`/terms/` linkt nu naar de Terms-PDF (V20.01, april 2020). Te beslissen hoe we
-dit op de frontend willen: (a) de PDF op de frontend hosten en daar naartoe
-linken, of (b) een echte terms-content-pagina bouwen. Optie (b) kan via dezelfde
-generieke pagetemplate als er een WP-`page` met terms-content is — dan één regel
-in `PAGE_SLUG_MAP` + de footer-link omzetten van extern naar `/terms` (intern).
-Tot die beslissing blijft de interim externe link staan.
+### S11.5 — Terms-link — OPGELOST (29-05)
+**Besluit (29-05):** voorlopig als PDF houden (optie 2) — versievast juridisch
+document. Er bestaat géén WP-`page` met terms-content. Footer-link “Terms of use”
+wijst nu direct naar de canonieke, stabiele asset-URL:
+`https://materiahost.nl/assets/MaterialDistrict_TermsConditions_V20-01.pdf`
+(HTTP 200, application/pdf, geen redirect, buiten de WAF). Gewone externe link
+in nieuw tabblad; geen CSP-aanpassing nodig (we embedden niet). Versie V20.01
+(april 2020) is voorlopig actueel. Willen we later een echte content-pagina,
+dan via dezelfde page-template (één regel in `PAGE_SLUG_MAP` + link naar intern).
 
 ### S11.6 — "Cookie settings" heeft een consent-tool nodig
 **Eigenaar:** Jeroen + Claude

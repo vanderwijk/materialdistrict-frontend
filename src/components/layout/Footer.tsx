@@ -46,9 +46,10 @@ const MANUFACTURER_LINKS: FooterLink[] = [
 
 const LEGAL_LINKS: FooterLink[] = [
   { label: 'Privacy policy', href: '/privacy-statement' },
-  // Terms of use: directe link naar de versievaste PDF (V20.01) op de aparte
-  // asset-host. Stabieler dan de /terms/-redirect (geen WAF/redirect). Indien
-  // we later een echte terms-content-pagina bouwen, omzetten naar intern.
+  // Terms blijft voorlopig een versievast PDF-document (besluit 29-05, S11.5):
+  // directe link naar de stabiele asset-host (HTTP 200, application/pdf, geen
+  // redirect, buiten de WAF). Externe download in nieuw tabblad via `external`.
+  // Geen CSP-aanpassing nodig zolang we niet embedden (iframe/object).
   {
     label: 'Terms of use',
     href: 'https://materiahost.nl/assets/MaterialDistrict_TermsConditions_V20-01.pdf',
