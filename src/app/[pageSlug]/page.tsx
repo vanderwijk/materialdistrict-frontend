@@ -30,8 +30,16 @@ interface StaticPageProps {
 }
 
 /**
- * Pre-render alle allowlist-pagina's op build-time. Onbekende segmenten
- * worden alsnog door de page zelf naar notFound() gestuurd.
+ * Alleen de allowlist-segmenten zijn geldige routes. Elk ander single-segment
+ * pad krijgt zo Next's echte 404 (HTTP 404) zonder dat deze page-component
+ * draait — dus geen soft-404 (HTTP 200) voor willekeurige paden, en deze
+ * catch-all kapt geen onbekende paden af.
+ */
+export const dynamicParams = false
+
+/**
+ * Pre-render alle allowlist-pagina's op build-time. In combinatie met
+ * `dynamicParams = false` is dit tevens de harde routegrens.
  */
 export function generateStaticParams(): Array<{ pageSlug: string }> {
   return STATIC_PAGE_SLUGS.map((pageSlug) => ({ pageSlug }))
