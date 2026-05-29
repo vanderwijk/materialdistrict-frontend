@@ -1,4 +1,5 @@
 export { JsonLd } from './JsonLd'
+export { buildPageMetadata } from './page-metadata'
 export {
   buildOrganization,
   buildBrandOrganization,

@@ -35,6 +35,7 @@ import type { Event, EventListItem, EventVenue, EventVideo } from '@/types/event
 import type { Material, MaterialListItem, MaterialPublication } from '@/types/material'
 import type { Gallery, ImageSizeKey, MediaImage, MediaSize } from '@/types/media'
 import type { Talk, TalkListItem, TalkSpeaker } from '@/types/talk'
+import type { Page, PageSeo } from '@/types/page'
 import type {
   AuthMeResponse,
   BrandMembership,
@@ -64,6 +65,7 @@ import type {
   WPMaterialRawResponse,
   WPMediaResponse,
   WPMetaTermRaw,
+  WPPageRaw,
   WPRelatedItemRaw,
   WPTalkRawResponse,
   WPTalkSpeakerRaw,
@@ -640,6 +642,43 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     companyName: m.company_name ?? null,
     speakers: mapTalkSpeakers(raw.speakers),
     channels: mapChannels(m.channels),
+  }
+}
+
+// --------------------------------------------------------------------
+// Page (WP-core `page`-posttype) — sessie 11
+// --------------------------------------------------------------------
+
+/**
+ * Map een raw WP-`page` naar het `Page`-domaintype. Geen relations om te
+ * resolven (v1: geen hero). Yoast-velden worden genormaliseerd naar `seo`;
+ * de robots-strings worden naar booleans omgezet (default index/follow).
+ *
+ * Hergebruikt de bestaande `wpRenderedHtml()`-guard, zodat een ontbrekend
+ * `title`/`content`-veld niet crasht (zelfde voorzorg als article/brand).
+ */
+export function mapPage(raw: WPPageRaw): Page {
+  const y = raw.yoast_head_json
+  const robots = y?.robots ?? {}
+
+  const seo: PageSeo = {
+    title: y?.title ?? null,
+    description: y?.description ?? null,
+    ogTitle: y?.og_title ?? null,
+    ogDescription: y?.og_description ?? null,
+    ogImage: y?.og_image?.[0]?.url ?? null,
+    yoastCanonical: y?.canonical ?? null,
+    index: robots.index !== 'noindex',
+    follow: robots.follow !== 'nofollow',
+  }
+
+  return {
+    id: raw.id,
+    slug: raw.slug,
+    title: decodeHtmlEntities(wpRenderedHtml(raw.title)),
+    contentHtml: wpRenderedHtml(raw.content),
+    modified: raw.modified,
+    seo,
   }
 }
 

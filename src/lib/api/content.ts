@@ -23,6 +23,7 @@ import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event } from '@/types/event'
 import type { Material, MaterialListItem } from '@/types/material'
 import type { Talk } from '@/types/talk'
+import type { Page } from '@/types/page'
 import type { FacetSelection, MaterialSortValue } from '@/types/facetwp'
 
 import {
@@ -47,6 +48,7 @@ import {
   mapMaterial,
   mapMaterialListItem,
   mapMedia,
+  mapPage,
   mapRelatedItem,
   mapTalk,
   mapTalkListItem,
@@ -72,6 +74,7 @@ import {
   getMaterialBySlug as fetchMaterialBySlugRaw,
   getMedia,
   getTalkBySlug as fetchTalkBySlugRaw,
+  getPageBySlug as fetchPageBySlugRaw,
   getTerms,
   listArticles as listArticlesRaw,
   listBrands as listBrandsRaw,
@@ -696,6 +699,22 @@ export async function getArticle(slug: string): Promise<Article | null> {
     raw.featured_media > 0 ? await getMediaImage(raw.featured_media) : null
   // Author-naam-resolve: TODO sessie 2-vervolg via /wp/v2/users/<id>
   return mapArticle(raw, hero, null)
+}
+
+// --------------------------------------------------------------------
+// Page (statische contentpagina's) — sessie 11
+// --------------------------------------------------------------------
+
+/**
+ * Haal één statische contentpagina (WP-`page`) op slug en map naar het
+ * `Page`-domaintype. Geen hero-resolve in v1 (`featured_media` is op deze
+ * pagina's vrijwel altijd 0). De allowlist-gate zit in de route, niet hier:
+ * deze functie fetcht exact de slug die de route doorgeeft.
+ */
+export async function getPage(slug: string): Promise<Page | null> {
+  const raw = await fetchPageBySlugRaw(slug)
+  if (!raw) return null
+  return mapPage(raw)
 }
 
 export async function listArticles(

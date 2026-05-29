@@ -953,6 +953,60 @@ export async function getArticleBySlug(
   return matches[0] ?? null
 }
 
+// --------------------------------------------------------------------
+// Pages (WP-core `page`-posttype) — sessie 11
+// --------------------------------------------------------------------
+//
+// Statische redactionele pagina's (About, FAQ, Jobs, Become a partner,
+// Privacy Statement). Het core `page`-posttype is standaard REST-enabled,
+// inclusief Yoast (`yoast_head_json`) — geen WP-wijziging nodig. We fetchen
+// ALTIJD op slug; de allowlist (`src/lib/config/static-pages.ts`) bepaalt
+// welke slugs publiek mogen worden. Zie
+// `instructie-andere-agent-standaard-paginas.md`.
+
+export interface WPPageRaw {
+  id: number
+  slug: string
+  title: { rendered: string }
+  content: { rendered: string }
+  modified: string
+  featured_media: number
+  yoast_head_json?: {
+    title?: string
+    description?: string
+    og_title?: string
+    og_description?: string
+    og_image?: Array<{ url: string }>
+    canonical?: string
+    robots?: Record<string, string>
+  }
+}
+
+/**
+ * Haal één WP-`page` op slug. Geeft `null` als de slug niet bestaat.
+ * `_fields` houdt de payload klein. `EDITORIAL_REVALIDATE` (1 uur) lijnt
+ * met de andere redactionele content.
+ */
+export async function getPageBySlug(slug: string): Promise<WPPageRaw | null> {
+  const matches = await wpFetch<WPPageRaw[]>('/wp/v2/pages', {
+    revalidate: EDITORIAL_REVALIDATE,
+    params: {
+      slug,
+      per_page: 1,
+      _fields: [
+        'id',
+        'slug',
+        'title',
+        'content',
+        'modified',
+        'featured_media',
+        'yoast_head_json',
+      ],
+    },
+  })
+  return matches[0] ?? null
+}
+
 /**
  * Exacte story-type-tellingen uit de WP-taxonomy `story_type`.
  *
