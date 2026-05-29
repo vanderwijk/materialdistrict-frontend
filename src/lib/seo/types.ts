@@ -55,6 +55,19 @@ export interface ArticleSchema extends BaseThing {
   articleSection?: string
 }
 
+export interface VideoObjectSchema extends BaseThing {
+  '@type': 'VideoObject'
+  name: string
+  /** ISO 8601 datum waarop de talk plaatsvond/geüpload werd. */
+  uploadDate: string
+  thumbnailUrl?: string
+  /** Vimeo player-embed-URL. */
+  embedUrl?: string
+  contentUrl?: string
+  /** ISO 8601 duur, bv. "PT23M55S". */
+  duration?: string
+}
+
 export interface EventSchema extends BaseThing {
   '@type': 'Event'
   startDate: string
@@ -129,6 +142,7 @@ export type StructuredData =
   | OrganizationSchema
   | ProductSchema
   | ArticleSchema
+  | VideoObjectSchema
   | EventSchema
   | BookSchema
   | BreadcrumbListSchema

@@ -34,7 +34,7 @@ import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event, EventListItem } from '@/types/event'
 import type { Material, MaterialListItem, MaterialPublication } from '@/types/material'
 import type { Gallery, ImageSizeKey, MediaImage, MediaSize } from '@/types/media'
-import type { Talk, TalkListItem } from '@/types/talk'
+import type { Talk, TalkListItem, TalkSpeaker } from '@/types/talk'
 import type {
   AuthMeResponse,
   BrandMembership,
@@ -63,6 +63,7 @@ import type {
   WPMetaTermRaw,
   WPRelatedItemRaw,
   WPTalkRawResponse,
+  WPTalkSpeakerRaw,
 } from './wordpress'
 
 /**
@@ -512,10 +513,36 @@ export function mapEvent(raw: WPEventRawResponse, hero?: MediaImage | null): Eve
 // Talk
 // --------------------------------------------------------------------
 
+/**
+ * C10 — parse `talk_duration` naar seconden. Formaat: "mm:ss" (2 segmenten)
+ * of "h:mm:ss" (3 segmenten). `null` bij leeg of ongeldig (geen "0 min" in UI).
+ */
+function parseTalkDuration(raw: string | undefined): number | null {
+  if (!raw) return null
+  const parts = raw.trim().split(':')
+  if (parts.length !== 2 && parts.length !== 3) return null
+  const nums = parts.map((p) => Number(p))
+  if (nums.some((n) => !Number.isFinite(n) || n < 0)) return null
+  return parts.length === 3
+    ? nums[0] * 3600 + nums[1] * 60 + nums[2]
+    : nums[0] * 60 + nums[1]
+}
+
+/** C11 — map de opgeloste persons-objects. Lege array bij ontbreken (geen UI-rommel). */
+function mapTalkSpeakers(raw: WPTalkSpeakerRaw[] | undefined): TalkSpeaker[] {
+  if (!Array.isArray(raw)) return []
+  return raw.map((s) => ({
+    id: s.id,
+    name: decodeHtmlEntities(s.name),
+    slug: s.slug,
+  }))
+}
+
 export function mapTalkListItem(
   raw: WPTalkRawResponse,
   hero?: MediaImage | null,
 ): TalkListItem {
+  const m = raw.meta ?? {}
   return {
     id: raw.id,
     slug: raw.slug,
@@ -524,10 +551,19 @@ export function mapTalkListItem(
     excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     date: raw.date,
+    // C14: talk-default `true` bij afwezig veld (≠ article-default false).
+    // `??` negeert alleen null/undefined, dus een expliciete `false` blijft false.
+    insiderOnly: Boolean(m._insider_only ?? m.insider_only ?? true),
+    vimeoId: m.vimeo_id ?? null,
+    durationSeconds: parseTalkDuration(m.talk_duration),
+    companyName: m.company_name ?? null,
+    speakers: mapTalkSpeakers(raw.speakers),
+    channels: mapChannels(m.channels),
   }
 }
 
 export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk {
+  const m = raw.meta ?? {}
   return {
     id: raw.id,
     slug: raw.slug,
@@ -538,6 +574,13 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     hero: hero ?? null,
     date: raw.date,
     modified: raw.modified,
+    // C14: talk-default `true` bij afwezig veld (≠ article-default false).
+    insiderOnly: Boolean(m._insider_only ?? m.insider_only ?? true),
+    vimeoId: m.vimeo_id ?? null,
+    durationSeconds: parseTalkDuration(m.talk_duration),
+    companyName: m.company_name ?? null,
+    speakers: mapTalkSpeakers(raw.speakers),
+    channels: mapChannels(m.channels),
   }
 }
 

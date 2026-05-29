@@ -22,6 +22,7 @@ import type {
   EventSchema,
   OrganizationSchema,
   ProductSchema,
+  VideoObjectSchema,
   WebSiteSchema,
 } from './types'
 
@@ -235,6 +236,61 @@ export function buildArticle(article: ArticleForJsonLd): ArticleSchema | null {
     schema.author = { '@type': 'Person', name: article.author.name }
   }
   if (article.category) schema.articleSection = article.category
+
+  return schema
+}
+
+/**
+ * Talk → VideoObject structured data.
+ *
+ * Vereist `title` + `uploadDate`. `embedUrl` (Vimeo), `thumbnailUrl`,
+ * `description` en `duration` (ISO 8601) zijn aanbevolen voor video-rich-
+ * results. Retourneert null als titel of uploadDate ontbreekt.
+ */
+interface VideoForJsonLd {
+  slug: string
+  title: string
+  description?: string
+  thumbnailUrl?: string
+  uploadDate: string
+  vimeoId?: string | null
+  durationSeconds?: number | null
+}
+
+/** Seconden → ISO 8601 duur (bv. 1435 → "PT23M55S"). */
+function isoDuration(seconds: number): string {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = seconds % 60
+  let out = 'PT'
+  if (h > 0) out += `${h}H`
+  if (m > 0) out += `${m}M`
+  if (s > 0 || (h === 0 && m === 0)) out += `${s}S`
+  return out
+}
+
+export function buildVideoObject(
+  video: VideoForJsonLd,
+): VideoObjectSchema | null {
+  if (!video.title || !video.uploadDate) return null
+
+  const url = `${SITE_URL}/talks/${video.slug}`
+  const schema: VideoObjectSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    '@id': url,
+    name: video.title,
+    uploadDate: video.uploadDate,
+  }
+
+  if (video.description) schema.description = video.description
+  if (video.thumbnailUrl) schema.thumbnailUrl = video.thumbnailUrl
+  if (video.vimeoId) {
+    schema.embedUrl = `https://player.vimeo.com/video/${video.vimeoId}`
+  }
+  if (video.durationSeconds && video.durationSeconds > 0) {
+    schema.duration = isoDuration(Math.round(video.durationSeconds))
+  }
 
   return schema
 }

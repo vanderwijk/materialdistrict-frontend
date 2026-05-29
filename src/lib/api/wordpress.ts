@@ -1108,6 +1108,34 @@ export async function getEventBySlug(
 // Talk endpoints
 // --------------------------------------------------------------------
 
+/**
+ * Raw speaker-object op de talk-response (C11). De `persons`-taxonomy wordt
+ * WP-zijde via `register_rest_field` opgelost naar objects (niet kale term-id's).
+ */
+export interface WPTalkSpeakerRaw {
+  id: number
+  name: string
+  slug: string
+}
+
+/**
+ * Getypt talk-meta-blok (C-TALK, Johan 29-05). Alle velden optioneel — WP kan
+ * ze weglaten; de mapper vult fallbacks (talk-default insider_only = true).
+ */
+export interface WPTalkMetaRaw {
+  /** C14 — Insider-only (talk-default true). Canoniek + underscore-alias. */
+  insider_only?: boolean
+  _insider_only?: boolean
+  /** C10 — Vimeo-id voor de embed. */
+  vimeo_id?: string
+  /** C10 — duur als "mm:ss" (2 segmenten) of "h:mm:ss" (3 segmenten). */
+  talk_duration?: string
+  /** C12 — bedrijfsnaam (platte tekst, geen brand-koppeling). */
+  company_name?: string
+  /** C13 — channel-tags. */
+  channels?: WPMetaTermRaw[]
+}
+
 export interface WPTalkRawResponse {
   id: number
   date: string
@@ -1122,8 +1150,10 @@ export interface WPTalkRawResponse {
   content: { rendered: string; protected: boolean }
   excerpt: { rendered: string; protected: boolean }
   featured_media: number
-  /** Geen specifieke talk-meta in handover. Mogelijk leeg. */
-  meta: Record<string, unknown>
+  /** C-TALK-meta (Johan 29-05). Velden optioneel; mapper vult fallbacks. */
+  meta: WPTalkMetaRaw
+  /** C11 — speakers (persons-taxonomy) als opgeloste objects via register_rest_field. */
+  speakers?: WPTalkSpeakerRaw[]
   class_list: string[]
   yoast_head_json?: Record<string, unknown>
   _links: Record<string, unknown>

@@ -22,9 +22,9 @@ const TYPE_LABEL: Record<RelatedContentType, string> = {
 }
 
 /**
- * Interne route per type. Articles (deze sessie) en materials (sessie 4/5)
- * hebben een detail-route; talks-detail komt in sessie 7 — tot dan vallen
- * we terug op de door WP geleverde permalink (`item.link`).
+ * Interne route per type. Articles (sessie 6), materials (sessie 4/5) en
+ * talks (sessie 7) hebben een detail-route. Onbekende types vallen terug op
+ * de door WP geleverde permalink (`item.link`).
  */
 function hrefFor(item: RelatedItem): string {
   switch (item.type) {
@@ -32,6 +32,8 @@ function hrefFor(item: RelatedItem): string {
       return `/articles/${item.slug}`
     case 'material':
       return `/materials/${item.slug}`
+    case 'talk':
+      return `/talks/${item.slug}`
     default:
       return item.link
   }
