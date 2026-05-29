@@ -12,13 +12,15 @@
  * URL-structuur:
  *   /articles?q=timber&story_type=people&page=2
  *
- * Story-type-filter (D1, Optie A): de selectie gaat als `?story_type=` naar
- * WP. Tot Johan het veld/taxonomy koppelt (open-issue D1) mapt elk article
- * op de default 'news' en filtert de backend nog niet op type — de UI
- * toont de filter wel, met een indicatieve-counts-hint. Zie open-issues.
+ * Story-type-filter (D1): de selectie gaat als `?story_type=` naar WP en
+ * filtert server-side (WP-taxonomy `story_type`, tax_query). De sidebar-
+ * counts zijn live (sessie 6b).
  *
- * Insider-only (D2, Optie A): `article.insiderOnly` is voorbereid maar mapt
- * voorlopig `false`; cards tonen de InsiderMark zodra het veld gekoppeld is.
+ * Insider-only (D2): `article.insiderOnly` komt uit `meta.insider_only`;
+ * cards tonen de InsiderMark voor Insider-only articles (sessie 6b).
+ *
+ * Channels (D3): `article.channels` voedt de witte channel-pills onderaan
+ * de card-thumb (`channelTags`), zelfde patroon als materials (sessie 6b).
  *
  * EmptyState bij 0 resultaten — geen 404 (een filter/zoek met 0 matches is
  * een geldige query). Twee varianten: met of zonder actieve filters.
@@ -47,11 +49,11 @@ import { ArticlesSearchInput } from './_components/ArticlesSearchInput'
 const ARTICLES_PER_PAGE = 12
 
 /**
- * Optie A — staat van de backend-koppeling voor `story_type` (D1). Zolang
- * dit `false` is filtert WP nog niet op type en zijn de sidebar-counts
- * indicatief. Eén plek om te flippen zodra Johan koppelt.
+ * Staat van de backend-koppeling voor `story_type` (D1). Sinds sessie 6b
+ * `true`: WP filtert server-side op de `story_type`-taxonomy en de sidebar-
+ * counts zijn live. Eén plek om te flippen als de koppeling ooit wegvalt.
  */
-const STORY_TYPE_BACKEND_CONNECTED = false
+const STORY_TYPE_BACKEND_CONNECTED = true
 
 export const metadata: Metadata = {
   title: 'Stories',
@@ -265,6 +267,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                       title={featured.title}
                       meta={STORY_TYPE_META[featured.type].label}
                       tagLabel={STORY_TYPE_META[featured.type].label}
+                      channelTags={featured.channels.map((c) => c.label)}
                       isInsiderOnly={featured.insiderOnly}
                       titleAs="h2"
                     />
@@ -284,6 +287,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         title={article.title}
                         meta={STORY_TYPE_META[article.type].label}
                         tagLabel={STORY_TYPE_META[article.type].label}
+                        channelTags={article.channels.map((c) => c.label)}
                         isInsiderOnly={article.insiderOnly}
                       />
                     ))}

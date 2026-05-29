@@ -9,14 +9,11 @@
  * de mockup `MaterialDistrict_MockUp_DEF.html` → `STORY_TYPE_META`. De
  * waarden hieronder zijn 1-op-1 daaruit overgenomen.
  *
- * BACKEND-STATUS (Optie A, analoog aan het Country-filter in sessie 5):
- * het WP-veld `article.type` / `story_type` is op het moment van bouwen
- * NOG NIET door Johan ontsloten (open vraag D1 + D2). De frontend-laag is
- * volledig voorbereid: de mapper vult `'news'` als default in, de
- * filter-sidebar en pills renderen, en de `?story_type=`-param gaat klaar
- * richting WP. Tot Johan koppelt filtert de backend nog niet op type —
- * de UI markeert dat. Eén mapper-regel + één wordpress-param zodra het
- * veld bevestigd is. Zie `open-issues` (D1/D2).
+ * BACKEND-STATUS (sessie 6b — live): het WP-veld is ontsloten als de
+ * taxonomy `story_type`, geëxposeerd op `meta.story_type` (`{id,slug,label}[]`)
+ * met `meta._story_type` als platte canonieke slug. De mapper leest die
+ * slug, de filter-sidebar/pills renderen en `?story_type=` filtert server-
+ * side. `'news'` blijft de mapper-default voor onbekende/ontbrekende slugs.
  *
  * De vijf types matchen Johan's D1-spec exact:
  *   news · people · collaborations · projects · partner
@@ -33,7 +30,7 @@ export type StoryType =
   | 'projects'
   | 'partner'
 
-/** De default voor articles zonder (nog) een ontsloten type-veld. */
+/** Fallback-default voor articles met een onbekende/ontbrekende type-slug. */
 export const DEFAULT_STORY_TYPE: StoryType = 'news'
 
 /**

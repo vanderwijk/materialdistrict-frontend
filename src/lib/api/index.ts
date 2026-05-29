@@ -22,6 +22,7 @@ export {
   getEvent,
   getMaterial,
   getMaterialDetail,
+  getRelatedContent,
   getTalk,
   listArticles,
   listBrands,

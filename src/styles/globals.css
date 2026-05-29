@@ -9604,6 +9604,24 @@ mark.search-mark {
   letter-spacing: 0.08em;
   padding: 2px 9px;
   border-radius: 100px;
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+
+/* Per content-type (D5 — gemixte related-items: article/material/talk). */
+.article-related-pill[data-content-type='article'] {
+  background: var(--ct-article-pale);
+  color: var(--ct-article-dark);
+}
+
+.article-related-pill[data-content-type='material'] {
+  background: var(--ct-material-pale);
+  color: var(--ct-material-dark);
+}
+
+.article-related-pill[data-content-type='talk'] {
+  background: var(--ct-insider-pale);
+  color: var(--ct-insider-dark);
 }
 
 .article-related-date {

@@ -42,7 +42,8 @@ export function ArticlesSection() {
           de bron-van-waarheid (<code>STORY_TYPE_META</code>) voor de
           type-filter, de type-pills en de type-intro-banner. Het overzicht
           gebruikt de universele <code>&lt;ContentCard&gt;</code> met
-          content-type <code>article</code>. De type-filter, search en
+          content-type <code>article</code> en voedt de witte channel-pills
+          via <code>channelTags</code> (D3). De type-filter, search en
           paginatie zijn URL-gestuurd, en de detail-componenten (gating,
           sidebar, actions) zijn auth-afhankelijk — alleen te zien op een
           echte <code>/articles</code>- of <code>/articles/[slug]</code>-pagina.
@@ -128,6 +129,7 @@ export function ArticlesSection() {
           title="Biophilic timber: where material meets wellbeing"
           meta="People"
           tagLabel="People"
+          channelTags={['Biobased']}
         />
         <ContentCard
           href="#"
@@ -137,6 +139,7 @@ export function ArticlesSection() {
           title="Closing loops in interior fit-outs"
           meta="Collaborations"
           tagLabel="Collaborations"
+          channelTags={['Recycling', 'Interiors']}
           isInsiderOnly
         />
       </div>

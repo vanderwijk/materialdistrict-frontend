@@ -1,87 +1,88 @@
-MaterialDistrict — Sessie 6 (Articles / Stories) — eind-zip
+MaterialDistrict — Sessie 6b (Articles v2-update) — eind-zip
 ============================================================
-Datum: 28-05-2026
-Root: src/ (+ docs/) — pak uit in de project-root.
+Datum: 29-05-2026
+Root: src/ (+ docs/ + WP-instructie). Pak uit in de project-root.
 
-Deze zip bevat UITSLUITEND de bestanden die in sessie 6 nieuw zijn of
-gewijzigd. Niet-gewijzigde bestanden en componenten die alleen voor de
-geïsoleerde typecheck zijn meegekopieerd (stubs) zitten er bewust NIET in —
-overschrijf je codebase niet met stubs.
+AANPASSING op de 28-05-productie, GEEN herbouw. Vier afgebakende
+wijzigingen (D1 mapper-shape, D2 insider_only, D3 channels, D5 SearchWP-
+related) + comment-opruim, op basis van Johan's 29-05-antwoord.
+
+Deze zip bevat UITSLUITEND nieuwe of in sessie 6 / 6b gewijzigde bestanden.
+Niet-gewijzigde siblings en stubs die alleen voor de geisoleerde typecheck
+dienden (media, material, brand, event, talk, facetwp, woocommerce, shared,
+utils, DetailHeader, ui-barrel, seo) zitten er bewust NIET in.
 
 
-DATALAAG (gewijzigd)
---------------------
-src/lib/config/story-types.ts        NIEUW    StoryType + STORY_TYPE_META (1-op-1 uit mockup) + helpers.
-src/types/article.ts                 GEWIJZIGD `type: StoryType` toegevoegd aan Article + ArticleListItem; docstring naar Optie-A.
-src/lib/api/mappers.ts               GEWIJZIGD article-mappers: `type: toStoryType(m._story_type)` + `insiderOnly: false` (D1/D2 voorbereid).
-src/lib/api/wordpress.ts             GEWIJZIGD `storyType`-param in ListArticlesParams → `story_type` naar WP.
-src/lib/api/content.ts               GEWIJZIGD `getArticleStoryTypeOptions()` + `StoryTypeOption`.
-src/lib/api/index.ts                 GEWIJZIGD barrel-export van bovenstaande.
+GEWIJZIGD IN SESSIE 6b
+----------------------
+src/types/article.ts          + TaxonomyTerm; + channels[] op Article/ArticleListItem;
+                                + RelatedItem/RelatedContentType (D5); docstrings v2-live.
+src/lib/api/wordpress.ts      WPArticleRawResponse.meta getypt (D1/D2/D3); + WPMetaTermRaw;
+                                + WPRelatedItemRaw + getArticleRelated() (D5).
+src/lib/api/mappers.ts        article-mappers: D1-fallback, D2-insider, D3-channels (mapChannels);
+                                + mapRelatedItem() (D5). Optie-A-comments verwijderd.
+src/lib/api/content.ts        + getRelatedContent() (D5, faalbestendig); story-type-docstring opgeschoond.
+src/lib/api/index.ts          barrel: + getRelatedContent.
+src/app/articles/page.tsx     channelTags op beide ContentCards (D3); STORY_TYPE_BACKEND_CONNECTED=true.
+src/app/articles/[slug]/page.tsx
+                              getNeighboursAndRelated -> getNeighbours + losse getRelatedContent (D5); dode locals weg.
+src/app/articles/[slug]/_components/ArticleRelated.tsx
+                              herschreven voor gemixte RelatedItem-types (pill per content-type, thumbnail, "Related").
+src/app/style-guide/sections/ArticlesSection.tsx
+                              channel-pills op de sample-cards.
+src/styles/globals.css        .article-related-pill default + per-content-type-kleuren ([data-content-type]).
+                                Brace-balans 1414/1414 (was 1411).
 
-OVERZICHT /articles (nieuw)
----------------------------
-src/app/articles/page.tsx                              NIEUW  Server component: q/story_type/page, type-filter, featured+grid, CTAs, nominate, JSON-LD.
-src/app/articles/layout.tsx                            NIEUW  CompareProvider voor de detail-sidebar.
-src/app/articles/loading.tsx                           NIEUW  Overzicht-skeleton.
-src/app/articles/_components/ArticlesTypeFilter.tsx    NIEUW  Single-select story-type-sidebar (type-kleuren + counts).
-src/app/articles/_components/ArticlesSearchInput.tsx   NIEUW  Debounced search.
-src/app/articles/_components/ArticlesPagination.tsx    NIEUW  URL-bridge naar generieke Pagination.
+ONGEWIJZIGD T.O.V. 28-05 (meegeleverd voor een complete oplevering)
+-------------------------------------------------------------------
+src/lib/config/story-types.ts (alleen comment-opruim)
+src/app/articles/layout.tsx, loading.tsx, [slug]/loading.tsx
+src/app/articles/_components/Articles{TypeFilter,SearchInput,Pagination}.tsx
+src/app/articles/[slug]/_components/Article{BodyGate,DetailActions,DetailSidebar,PrevNext}.tsx
+src/app/style-guide/page.tsx, page-patch-sessie6.md
 
-DETAIL /articles/[slug] (nieuw)
--------------------------------
-src/app/articles/[slug]/page.tsx                                 NIEUW  generateMetadata, notFound, gating, sidebar, prev/next, related, buildArticle JSON-LD.
-src/app/articles/[slug]/loading.tsx                              NIEUW  Detail-skeleton.
-src/app/articles/[slug]/_components/ArticleBodyGate.tsx          NIEUW  D2-gating: preview + InsiderGate-paywall (client).
-src/app/articles/[slug]/_components/ArticleDetailActions.tsx     NIEUW  Save/Share/board (geen compare).
-src/app/articles/[slug]/_components/ArticleDetailSidebar.tsx     NIEUW  Reading-progress, latest-materials, newsletter, insider-upsell.
-src/app/articles/[slug]/_components/ArticlePrevNext.tsx          NIEUW  Vorige/volgende article.
-src/app/articles/[slug]/_components/ArticleRelated.tsx           NIEUW  Related by story-type (rijlijst).
-
-STYLE-GUIDE
------------
-src/app/style-guide/sections/ArticlesSection.tsx   NIEUW     Story-type-palet + sample article-card.
-src/app/style-guide/page.tsx                       GEWIJZIGD Import + render van ArticlesSection (patch al toegepast).
-src/app/style-guide/page-patch-sessie6.md          NIEUW     Documenteert de twee page.tsx-wijzigingen.
-
-CSS
----
-src/styles/globals.css   GEWIJZIGD  Twee nieuwe secties aan het einde: "SESSIE 6 — Articles / Stories (overzicht)"
-                                    en "SESSIE 6 — Article / Story detail". Eén centraal bestand; alleen bestaande
-                                    tokens. Brace-balans 1411/1411 (baseline 1313). Volledig bestand meegeleverd.
 
 DOCS
 ----
-docs/open-issues-patch-sessie6-articles.md     NIEUW  W17 (D1), W18 (D2) + S6.1–S6.4 + changelog v1.8.
-docs/session-log-patch-sessie6-articles.md     NIEUW  Sessie-6-logsectie (append bovenaan session-log.md).
+docs/open-issues-update-sessie6b-resultaat.md   NIEUW  W17/W18/W19/W20 gesloten; S6.2 herijkt; S6.7 nieuw; changelog v2.0.
+docs/session-log-patch-sessie6b.md              NIEUW  Sessie-6b-logsectie.
+docs/open-issues-update-sessie6b.md             29-05 pre-sessie (lineage)
+docs/open-issues-patch-sessie6-articles.md      28-05 (lineage)
+docs/session-log-patch-sessie6-articles.md      28-05 (lineage)
 
 WORDPRESS-INSTRUCTIE (voor Johan)
 ---------------------------------
-wordpress-instructions-articles.md             NIEUW  Strakke deploy-checklist voor de twee WP-velden (story_type + insider_only),
-                                                      incl. PHP-snippets, het process/partner-beslispunt, curl-verificatie en
-                                                      afvink-checklist. Talks insider_only (C14) als 'meteen meenemen'.
+wordpress-instructions-articles-v1.2.md   NIEUW  Alles live; definitieve shapes (alle op meta.*); checklist afgevinkt.
+
+
+DEFINITIEVE SHAPES (Johan 29-05)
+--------------------------------
+- D1: meta.story_type ({id,slug,label}[]) + meta._story_type / meta.type (platte slug). Filter ?story_type=slug,slug.
+- D2/C14: meta.insider_only (boolean) + meta._insider_only. Article default false, talk default true.
+- D3: meta.channels ({id,slug,label}[]).
+- D5: GET /wp-json/md/v2/articles/{slug}/related?limit=N -> platte array
+      {type,id,slug,title,thumbnail,link}. 1u transient, default 6, max 20.
 
 
 VERIFICATIE (offline — geen volledige codebase-typecheck mogelijk)
 ------------------------------------------------------------------
-- Datalaag geïsoleerd (types+config+mappers+content+wordpress+facetwp+
-  woocommerce+index+utils): tsc --strict + noUnusedLocals → exit 0.
-- Articles overzicht- én detail-laag (alle pages + componenten): geïsoleerde
-  TSX-typecheck tegen echte React 19 / Next 15 + signature-getrouwe stubs voor
-  niet-geüploade dependencies → exit 0.
-- ArticlesSection (style-guide): aparte typecheck → exit 0.
-- CSS brace-balans: 1411/1411.
+- Datalaag: tsc --strict + noUnusedLocals + noUnusedParameters over de echte
+  article.ts + story-types.ts + raw-meta-blok + beide article-mappers
+  + RelatedItem/mapRelatedItem/getRelatedContent (verbatim) -> exit 0.
+- Articles-laag (TSX): tsc --strict tegen ECHTE React 19 / Next 15: de echte
+  ArticleRelated.tsx + ArticlesSection.tsx + page-surface-harnas
+  (getNeighbours, Promise.all-tuple, RelatedItem[] -> props, channelTags) -> exit 0.
+- CSS brace-balans globals.css: 1414/1414.
 
-KANTTEKENING (voor code-review)
--------------------------------
-`DetailHeader` zat niet in de uploads; de typecheck draaide tegen een stub.
-De `{ type: 'insider' }`-tagvariant op de article-detailheader is afgeleid,
-niet geverifieerd tegen de echte component — checken bij review (open-issue S6.2).
+NIET OFFLINE VERIFIEERBAAR (te checken bij integratie)
+------------------------------------------------------
+- Volledige in-repo compile van page.tsx tegen de echte ongewijzigde buren
+  (DetailHeader, @/lib/seo, sidebar-componenten). Wijzigingen zijn chirurgisch.
+- S6.2: de { type: 'insider' }-tagvariant op DetailHeader firet nu daadwerkelijk
+  (insiderOnly is live data) — contract-match checken tegen de echte component.
 
 
-OPTIE A — KOPPELPUNTEN VOOR JOHAN (één plek per veld)
------------------------------------------------------
-- D1 (story-type): mapt AUTOMATISCH mee. Zodra WP `meta._story_type` levert,
-  vult `toStoryType(m._story_type)` het in — geen frontend-wijziging. Zet ook
-  STORY_TYPE_BACKEND_CONNECTED = true in articles/page.tsx (verbergt de hint).
-- D2 (insider-only): in mappers.ts de twee regels `insiderOnly: false` →
-  `insiderOnly: Boolean(m._insider_only)`.
+DRIFT
+-----
+Geen. De 28-05-zip is nooit naar live gedeployed (alleen testserver) en is de
+enige basis. Alleen aangeraakt wat veranderen moest.

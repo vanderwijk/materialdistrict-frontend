@@ -18,7 +18,7 @@
  * FacetWP filtered + baseline + WP REST batch-fetch tot één UI-shape.
  */
 
-import type { Article } from '@/types/article'
+import type { Article, RelatedItem } from '@/types/article'
 import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event } from '@/types/event'
 import type { Material, MaterialListItem } from '@/types/material'
@@ -47,6 +47,7 @@ import {
   mapMaterial,
   mapMaterialListItem,
   mapMedia,
+  mapRelatedItem,
   mapTalk,
   mapTalkListItem,
   splitGallery,
@@ -62,6 +63,8 @@ import {
   type WPMaterialRawResponse,
   type WPTermResponse,
   getArticleBySlug as fetchArticleBySlugRaw,
+  getArticleRelated as fetchArticleRelatedRaw,
+  RELATED_DEFAULT_LIMIT,
   getAttachmentsForPost,
   getBrandById as fetchBrandByIdRaw,
   getBrandBySlug as fetchBrandBySlugRaw,
@@ -697,16 +700,12 @@ export interface StoryTypeOption {
 }
 
 /**
- * Bouwt de story-type-filteropties voor het `/articles` overzicht (Optie A,
- * D1 — voorbereid).
+ * Bouwt de story-type-filteropties voor het `/articles` overzicht.
  *
  * In tegenstelling tot het brand-Country-filter is de optie-SET hier vast
  * (de vijf canonieke types uit `STORY_TYPE_META`); alleen de TELLINGEN
- * worden geaggregeerd. Zolang Johan `story_type` nog niet levert mapt de
- * mapper elk article op de default `'news'` — dan staat de volledige
- * telling bij News en de andere types op 0. De sidebar toont dan alle vijf
- * types met die (indicatieve) counts; zodra het veld gekoppeld is verdelen
- * de tellingen zich vanzelf, zonder frontend-wijziging.
+ * worden geaggregeerd. Sinds sessie 6b levert WP de `story_type`-taxonomy,
+ * dus de tellingen verdelen zich over de echte types.
  *
  * Aggregeert client-side uit één ruime, ongefilterde article-fetch
  * (`resolveHero: false` houdt dit licht — we tellen alleen types). De
@@ -736,6 +735,30 @@ export async function getArticleStoryTypeOptions(
     label: storyTypeLabel(type),
     count: counts.get(type) ?? 0,
   }))
+}
+
+/**
+ * D5 — gerelateerde content voor een article-detailpage. Hookt op het
+ * SearchWP-Related-endpoint via de raw-fetcher en mapt naar gemixte
+ * `RelatedItem`'s (article/material/talk).
+ *
+ * Faalbestendig: bij een fout, niet-array-response of leeg resultaat een
+ * lege lijst — `ArticleRelated` rendert dan niets (geen UI-rommel).
+ * Onbekende content-types worden door `mapRelatedItem` weggefilterd.
+ */
+export async function getRelatedContent(
+  slug: string,
+  limit: number = RELATED_DEFAULT_LIMIT,
+): Promise<RelatedItem[]> {
+  try {
+    const raw = await fetchArticleRelatedRaw(slug, limit)
+    if (!Array.isArray(raw)) return []
+    return raw
+      .map(mapRelatedItem)
+      .filter((item): item is RelatedItem => item !== null)
+  } catch {
+    return []
+  }
 }
 
 export async function getEvent(slug: string): Promise<Event | null> {

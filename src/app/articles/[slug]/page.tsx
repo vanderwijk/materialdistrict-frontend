@@ -16,13 +16,16 @@
  *              prev/next · related
  *       aside: ArticleDetailSidebar
  *
- * Gating (D2, Optie A): de body loopt via <ArticleBodyGate>. Voor
- * Insider-only articles ziet een niet-member de excerpt-preview + de
- * InsiderGate-paywall; members en niet-gated content zien de volledige
- * body. `insiderOnly` mapt voorlopig op `false` (open-issue D2).
+ * Gating (D2): de body loopt via <ArticleBodyGate>. Voor Insider-only
+ * articles ziet een niet-member de excerpt-preview + de InsiderGate-
+ * paywall; members en niet-gated content zien de volledige body.
+ * `insiderOnly` komt uit `meta.insider_only` (sessie 6b).
  *
- * Story-type (D1, Optie A): het type stuurt de meta-label en de
- * related-by-type. Mapt voorlopig op 'news' (open-issue D1).
+ * Story-type (D1): het type stuurt de meta-label. Komt uit de WP-taxonomy
+ * `story_type` via `meta._story_type` (sessie 6b).
+ *
+ * Related (D5): gemixte content (article/material/talk) uit het SearchWP-
+ * Related-endpoint via `getRelatedContent()` (sessie 6b).
  *
  * Author (Q3, sessie 6): niet geresolved — byline is "Story by
  * MaterialDistrict", zoals de mockup. Author-resolve is een open issue.
@@ -38,7 +41,12 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
-import { getArticle, listArticles, listMaterials } from '@/lib/api'
+import {
+  getArticle,
+  getRelatedContent,
+  listArticles,
+  listMaterials,
+} from '@/lib/api'
 import { JsonLd, buildArticle, buildBreadcrumbList } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { ArticleBodyGate } from './_components/ArticleBodyGate'
@@ -51,12 +59,8 @@ import {
   ArticlePrevNext,
   type ArticlePrevNextNeighbour,
 } from './_components/ArticlePrevNext'
-import {
-  ArticleRelated,
-  type ArticleRelatedItem,
-} from './_components/ArticleRelated'
+import { ArticleRelated } from './_components/ArticleRelated'
 
-const RELATED_COUNT = 3
 const SIDEBAR_MATERIALS = 3
 const NEIGHBOUR_SCAN = 100
 const WORDS_PER_MINUTE = 200
@@ -67,13 +71,6 @@ interface ArticleDetailPageProps {
 
 function stripHtml(value: string): string {
   return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
-}
-
-/** Korte excerpt voor related-items: gestript + afgekapt op ~120 tekens. */
-function shortExcerpt(html: string, max = 120): string | undefined {
-  const text = stripHtml(html)
-  if (!text) return undefined
-  return text.length > max ? `${text.slice(0, max).trimEnd()}…` : text
 }
 
 /** Lees-tijd uit body-lengte (200 wpm). Min. 1 min. */
@@ -121,19 +118,16 @@ export async function generateMetadata({
 }
 
 /**
- * Prev/next + related, berekend uit één datum-gesorteerde article-lijst.
- * Faalbestendig: bij een fout geen buren/related (componenten renderen
- * dan niets). Lichte fetch (geen hero-resolve voor de buren-scan; related
- * krijgt wel hero's mee via een aparte lichte map — hier houden we het
- * simpel en gebruiken de hero uit dezelfde lijst).
+ * Prev/next-buren, berekend uit één datum-gesorteerde article-lijst.
+ * Faalbestendig: bij een fout geen buren (de component rendert dan niets).
+ * Lichte fetch (geen hero-resolve voor de buren-scan).
+ *
+ * Sessie 6b (D5): related zit NIET langer hier — dat komt nu via het
+ * SearchWP-endpoint (`getRelatedContent`), parallel opgehaald in de page.
  */
-async function getNeighboursAndRelated(
-  currentSlug: string,
-  currentType: string,
-): Promise<{
+async function getNeighbours(currentSlug: string): Promise<{
   prev: ArticlePrevNextNeighbour | null
   next: ArticlePrevNextNeighbour | null
-  related: ArticleRelatedItem[]
 }> {
   try {
     const { items } = await listArticles({
@@ -146,27 +140,12 @@ async function getNeighboursAndRelated(
     const prevItem = idx > 0 ? items[idx - 1] : null
     const nextItem = idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
 
-    const related: ArticleRelatedItem[] = items
-      .filter((a) => a.slug !== currentSlug && a.type === currentType)
-      .slice(0, RELATED_COUNT)
-      .map((a) => ({
-        id: a.id,
-        slug: a.slug,
-        title: a.title,
-        type: a.type,
-        dateLabel: formatDate(a.date),
-        excerpt: shortExcerpt(a.excerptHtml),
-        heroUrl: a.hero?.sizes?.medium?.url ?? a.hero?.sourceUrl,
-        insiderOnly: a.insiderOnly,
-      }))
-
     return {
       prev: prevItem ? { slug: prevItem.slug, title: prevItem.title } : null,
       next: nextItem ? { slug: nextItem.slug, title: nextItem.title } : null,
-      related,
     }
   } catch {
-    return { prev: null, next: null, related: [] }
+    return { prev: null, next: null }
   }
 }
 
@@ -197,8 +176,9 @@ export default async function ArticleDetailPage({
   const article = await getArticle(slug)
   if (!article) notFound()
 
-  const [{ prev, next, related }, sidebarMaterials] = await Promise.all([
-    getNeighboursAndRelated(slug, article.type),
+  const [{ prev, next }, related, sidebarMaterials] = await Promise.all([
+    getNeighbours(slug),
+    getRelatedContent(slug),
     getSidebarMaterials(),
   ])
 

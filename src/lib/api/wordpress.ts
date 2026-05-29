@@ -687,9 +687,8 @@ export interface WPBrandRawResponse {
   type: 'brand'
   link: string
   title: { rendered: string }
-  content?: { rendered: string; protected: boolean }
-  /** Omitted when the brand post type does not register `excerpt` support. */
-  excerpt?: { rendered: string; protected: boolean }
+  content: { rendered: string; protected: boolean }
+  excerpt: { rendered: string; protected: boolean }
   featured_media: number
   /**
    * Normalized contract (Johan-handoff 27-05-2026, production verified).
@@ -803,6 +802,17 @@ export async function getBrandBySlug(
 // Article endpoints
 // --------------------------------------------------------------------
 
+/**
+ * Compacte taxonomy-term zoals de MaterialDistrict-plugin die op
+ * `meta.<taxonomy>` exposeert (Johan-antwoord 29-05): `{ id, slug, label }`.
+ * Gebruikt door `story_type` (D1) en `channels` (D3).
+ */
+export interface WPMetaTermRaw {
+  id: number
+  slug: string
+  label: string
+}
+
 export interface WPArticleRawResponse {
   id: number
   date: string
@@ -818,7 +828,24 @@ export interface WPArticleRawResponse {
   content: { rendered: string; protected: boolean }
   excerpt: { rendered: string; protected: boolean }
   featured_media: number
-  meta: Record<string, unknown> // _featured (alleen volgens handover)
+  /**
+   * Meta-velden zoals geëxposeerd door de MaterialDistrict-plugin. We
+   * typeren ALLEEN de frontend-aliassen + publieke meta die de mapper
+   * gebruikt; overige sleutels blijven toegestaan via de index-signature.
+   */
+  meta: {
+    _featured?: boolean
+    /** D1 — platte canonieke story-type-slug (backward-compat alias). */
+    _story_type?: string | null
+    /** D1 — story-type-taxonomy als compacte terms (canonieke bron). */
+    story_type?: WPMetaTermRaw[]
+    /** D2 — Insider-only gating (boolean) + underscore-alias voor de mapper. */
+    insider_only?: boolean
+    _insider_only?: boolean
+    /** D3 — channel-tags als compacte terms. */
+    channels?: WPMetaTermRaw[]
+    [otherKey: string]: unknown
+  }
   categories: number[]
   tags: number[]
   class_list: string[]
@@ -835,8 +862,9 @@ export interface ListArticlesParams {
   tags?: number[]
   author?: number
   /**
-   * Canonieke story-type slug(s) voor de `?story_type=`-collectiefilter op
-   * `/wp/v2/article` (komma-gescheiden toegestaan). Server-side tax_query.
+   * Story-type filter (D1, live). Gaat als `story_type` naar WP en filtert
+   * server-side op de `story_type`-taxonomy (tax_query). Komma-separated
+   * slugs worden ondersteund (`?story_type=news,people`).
    */
   storyType?: string
   orderby?: 'date' | 'modified' | 'title' | 'id'
@@ -858,6 +886,7 @@ export async function listArticles(
       categories: params.categories,
       tags: params.tags,
       author: params.author,
+      // D1 (live): filtert server-side op de story_type-taxonomy.
       story_type: params.storyType,
       orderby: params.orderby ?? 'date',
       order: params.order ?? 'desc',
@@ -881,6 +910,41 @@ export async function getArticleBySlug(
     params: { slug, per_page: 1 },
   })
   return matches[0] ?? null
+}
+
+/**
+ * Related-content (D5). SearchWP-Related-endpoint met taxonomie-overlap-
+ * fallback (Johan 29-05). Retourneert een PLATTE array van gemixte items
+ * (article/material/talk). 1-uur transient cache WP-zijde; we spiegelen
+ * dat met `revalidate`. `limit` default 6, geclampt op [1, 20].
+ */
+export interface WPRelatedItemRaw {
+  type: string
+  id: number
+  slug: string
+  title: string
+  thumbnail: string | null
+  link: string
+}
+
+export const RELATED_DEFAULT_LIMIT = 6
+export const RELATED_MAX_LIMIT = 20
+
+export async function getArticleRelated(
+  slug: string,
+  limit: number = RELATED_DEFAULT_LIMIT,
+): Promise<WPRelatedItemRaw[]> {
+  const clamped = Math.min(
+    Math.max(1, Math.round(limit)),
+    RELATED_MAX_LIMIT,
+  )
+  return wpFetch<WPRelatedItemRaw[]>(
+    `/md/v2/articles/${encodeURIComponent(slug)}/related`,
+    {
+      revalidate: EDITORIAL_REVALIDATE,
+      params: { limit: clamped },
+    },
+  )
 }
 
 // --------------------------------------------------------------------

@@ -1,84 +1,79 @@
 /**
  * ArticleRelated
  * ----------------------------------------------------------------------
- * "Related articles"-blok onderaan de article-detail-page. Conform de
- * mockup: een compacte rij-lijst (thumb · type-pill · datum · titel ·
- * 2-regelig excerpt) — geen card-grid. De page levert de gerelateerde
- * items als props (server-side berekend: zelfde story-type, andere slug).
+ * "Related"-blok onderaan de article-detail-page. Conform de mockup een
+ * compacte rij-lijst (thumb · type-pill · titel) — geen card-grid.
  *
- * Sessie 6. Rendert niets bij een lege lijst.
+ * Sessie 6b (D5): de items komen nu uit het SearchWP-Related-endpoint en
+ * zijn GEMIXT (article/material/talk), geleverd als `RelatedItem`'s door
+ * `getRelatedContent()`. Het endpoint levert geen datum/excerpt/insider-
+ * vlag, dus de rij toont type-pill + titel + thumbnail.
  *
- * Insider-mark: items tonen een Insider-pill zodra `insiderOnly` true is
- * (D2, voorbereid — voorlopig altijd false tot Johan koppelt).
+ * Rendert niets bij een lege lijst.
  */
 
 import Link from 'next/link'
-import { InsiderMark } from '@/components/ui'
-import { STORY_TYPE_META, type StoryType } from '@/lib/config/story-types'
+import type { RelatedContentType, RelatedItem } from '@/types/article'
 
-export interface ArticleRelatedItem {
-  id: number
-  slug: string
-  title: string
-  type: StoryType
-  dateLabel: string
-  excerpt?: string
-  heroUrl?: string
-  insiderOnly: boolean
+const TYPE_LABEL: Record<RelatedContentType, string> = {
+  article: 'Article',
+  material: 'Material',
+  talk: 'Talk',
+}
+
+/**
+ * Interne route per type. Articles (deze sessie) en materials (sessie 4/5)
+ * hebben een detail-route; talks-detail komt in sessie 7 — tot dan vallen
+ * we terug op de door WP geleverde permalink (`item.link`).
+ */
+function hrefFor(item: RelatedItem): string {
+  switch (item.type) {
+    case 'article':
+      return `/articles/${item.slug}`
+    case 'material':
+      return `/materials/${item.slug}`
+    default:
+      return item.link
+  }
 }
 
 export interface ArticleRelatedProps {
-  items: ArticleRelatedItem[]
+  items: RelatedItem[]
 }
 
 export function ArticleRelated({ items }: ArticleRelatedProps) {
   if (items.length === 0) return null
 
   return (
-    <section className="article-related" aria-label="Related articles">
-      <h2 className="article-related-head t-display-md">Related articles</h2>
+    <section className="article-related" aria-label="Related">
+      <h2 className="article-related-head t-display-md">Related</h2>
       <ul className="article-related-list" role="list">
-        {items.map((item) => {
-          const meta = STORY_TYPE_META[item.type]
-          return (
-            <li key={item.id}>
-              <Link
-                href={`/articles/${item.slug}`}
-                className="article-related-item"
-              >
-                <span
-                  className="article-related-thumb"
-                  style={
-                    item.heroUrl
-                      ? { backgroundImage: `url(${item.heroUrl})` }
-                      : undefined
-                  }
-                  aria-hidden="true"
-                />
-                <span className="article-related-body">
-                  <span className="article-related-meta">
-                    <span
-                      className="article-related-pill"
-                      style={{ background: meta.pale, color: meta.color }}
-                    >
-                      {meta.label}
-                    </span>
-                    <span className="article-related-date">
-                      {item.dateLabel}
-                    </span>
-                    {item.insiderOnly && <InsiderMark size="xs" />}
+        {items.map((item) => (
+          <li key={`${item.type}-${item.id}`}>
+            <Link href={hrefFor(item)} className="article-related-item">
+              <span
+                className="article-related-thumb"
+                style={
+                  item.thumbnail
+                    ? { backgroundImage: `url(${item.thumbnail})` }
+                    : undefined
+                }
+                aria-hidden="true"
+              />
+              <span className="article-related-body">
+                <span className="article-related-meta">
+                  <span
+                    className="article-related-pill"
+                    data-content-type={item.type}
+                  >
+                    {TYPE_LABEL[item.type]}
                   </span>
-                  <span className="article-related-title">{item.title}</span>
-                  {item.excerpt && (
-                    <span className="article-related-excerpt">
-                      {item.excerpt}
-                    </span>
-                  )}
                 </span>
-              </Link>
-            </li>
-          )
-        })}
+                <span className="article-related-title">{item.title}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
       </ul>
     </section>
   )

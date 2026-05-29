@@ -23,7 +23,13 @@
  * gedaan) — die worden overgeslagen, geen error.
  */
 
-import type { Article, ArticleListItem } from '@/types/article'
+import type {
+  Article,
+  ArticleListItem,
+  RelatedContentType,
+  RelatedItem,
+  TaxonomyTerm,
+} from '@/types/article'
 import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event, EventListItem } from '@/types/event'
 import type { Material, MaterialListItem, MaterialPublication } from '@/types/material'
@@ -44,9 +50,9 @@ import {
   type MaterialFacetName,
 } from '@/types/facetwp'
 
-import { toStoryType } from '@/lib/config/story-types'
 import { parseMaterialProperties } from '@/lib/utils/material-properties'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
+import { toStoryType } from '@/lib/config/story-types'
 
 import type {
   WPArticleRawResponse,
@@ -54,13 +60,10 @@ import type {
   WPEventRawResponse,
   WPMaterialRawResponse,
   WPMediaResponse,
+  WPMetaTermRaw,
+  WPRelatedItemRaw,
   WPTalkRawResponse,
 } from './wordpress'
-
-/** WP REST may omit `excerpt` when the post type does not support it (e.g. brand). */
-function wpRenderedHtml(field?: { rendered?: string } | null): string {
-  return field?.rendered ?? ''
-}
 
 // --------------------------------------------------------------------
 // Media
@@ -293,7 +296,7 @@ export function mapBrandListItem(
     slug: raw.slug,
     link: raw.link,
     name: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: wpRenderedHtml(raw.excerpt),
+    excerptHtml: raw.excerpt.rendered,
     logo: logo ?? null,
     country: m.country_detail?.label ?? stringOrNull(m._brand_country),
     city: stringOrNull(m.city),
@@ -310,8 +313,8 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
     slug: raw.slug,
     link: raw.link,
     name: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: wpRenderedHtml(raw.content),
-    excerptHtml: wpRenderedHtml(raw.excerpt),
+    contentHtml: raw.content.rendered,
+    excerptHtml: raw.excerpt.rendered,
 
     gallery,
 
@@ -346,6 +349,16 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
 // Article
 // --------------------------------------------------------------------
 
+/**
+ * D3 — resolve channel-tags uit `meta.channels` (`{id,slug,label}[]`).
+ * Faalbestendig: ontbrekend veld of niet-array → lege lijst (geen pills).
+ * Gedeeld door beide article-mappers (DRY).
+ */
+function mapChannels(raw: WPMetaTermRaw[] | undefined): TaxonomyTerm[] {
+  if (!Array.isArray(raw)) return []
+  return raw.map((t) => ({ id: t.id, slug: t.slug, label: t.label }))
+}
+
 export function mapArticleListItem(
   raw: WPArticleRawResponse,
   hero?: MediaImage | null,
@@ -356,14 +369,20 @@ export function mapArticleListItem(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: wpRenderedHtml(raw.excerpt),
+    excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
     authorId: raw.author,
     categoryIds: raw.categories ?? [],
     tagIds: raw.tags ?? [],
     featured: Boolean(m._featured),
-    type: toStoryType(m._story_type ?? m.type),
+    // D1: story-type uit WP-taxonomy `story_type`. Leest de platte canonieke
+    // slug `meta._story_type`, met fallback op de eerste term in
+    // `meta.story_type[]`. `toStoryType` valt terug op 'news' bij onbekend.
+    type: toStoryType(m._story_type ?? m.story_type?.[0]?.slug),
+    // D2: Insider-only gating. `meta.insider_only` met underscore-alias.
     insiderOnly: Boolean(m._insider_only ?? m.insider_only),
+    // D3: channel-tags voor de witte pills op de cards.
+    channels: mapChannels(m.channels),
     date: raw.date,
   }
 }
@@ -379,18 +398,47 @@ export function mapArticle(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: wpRenderedHtml(raw.content),
-    excerptHtml: wpRenderedHtml(raw.excerpt),
+    contentHtml: raw.content.rendered,
+    excerptHtml: raw.excerpt.rendered,
     hero: hero ?? null,
     authorId: raw.author,
     authorName: authorName ?? null,
     categoryIds: raw.categories ?? [],
     tagIds: raw.tags ?? [],
     featured: Boolean(m._featured),
-    type: toStoryType(m._story_type ?? m.type),
+    // D1: story-type uit WP-taxonomy `story_type`. Leest de platte canonieke
+    // slug `meta._story_type`, met fallback op de eerste term in
+    // `meta.story_type[]`. `toStoryType` valt terug op 'news' bij onbekend.
+    type: toStoryType(m._story_type ?? m.story_type?.[0]?.slug),
+    // D2: Insider-only gating. `meta.insider_only` met underscore-alias.
     insiderOnly: Boolean(m._insider_only ?? m.insider_only),
+    // D3: channel-tags voor de witte pills op de cards.
+    channels: mapChannels(m.channels),
     date: raw.date,
     modified: raw.modified,
+  }
+}
+
+/**
+ * D5 — raw related-item → domain `RelatedItem`. Narrowt het `type`-veld
+ * naar de drie bekende content-types; onbekende types geven `null` (worden
+ * door de caller weggefilterd). Lege thumbnail → `null`.
+ */
+const RELATED_TYPES: readonly RelatedContentType[] = ['article', 'material', 'talk']
+
+function isRelatedType(value: unknown): value is RelatedContentType {
+  return typeof value === 'string' && (RELATED_TYPES as readonly string[]).includes(value)
+}
+
+export function mapRelatedItem(raw: WPRelatedItemRaw): RelatedItem | null {
+  if (!isRelatedType(raw.type)) return null
+  return {
+    type: raw.type,
+    id: raw.id,
+    slug: raw.slug,
+    title: decodeHtmlEntities(raw.title),
+    thumbnail: raw.thumbnail || null,
+    link: raw.link,
   }
 }
 
