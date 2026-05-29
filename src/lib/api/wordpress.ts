@@ -834,6 +834,11 @@ export interface ListArticlesParams {
   categories?: number[]
   tags?: number[]
   author?: number
+  /**
+   * Canonieke story-type slug(s) voor de `?story_type=`-collectiefilter op
+   * `/wp/v2/article` (komma-gescheiden toegestaan). Server-side tax_query.
+   */
+  storyType?: string
   orderby?: 'date' | 'modified' | 'title' | 'id'
   order?: 'asc' | 'desc'
   noCache?: boolean
@@ -853,6 +858,7 @@ export async function listArticles(
       categories: params.categories,
       tags: params.tags,
       author: params.author,
+      story_type: params.storyType,
       orderby: params.orderby ?? 'date',
       order: params.order ?? 'desc',
     },
