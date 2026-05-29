@@ -65,6 +65,18 @@ import type {
   WPTalkRawResponse,
 } from './wordpress'
 
+/**
+ * Veilige accessor voor WP `{ rendered }`-velden. Het WP REST-schema typeert
+ * `excerpt`/`content` als verplicht, maar bij sommige CPT's (brand, article)
+ * ontbreekt het veld in de praktijk — dan is `field` undefined. Geef dan een
+ * lege string terug i.p.v. te crashen op `.rendered`.
+ */
+function wpRenderedHtml(
+  field: { rendered?: string } | undefined | null,
+): string {
+  return field?.rendered ?? ''
+}
+
 // --------------------------------------------------------------------
 // Media
 // --------------------------------------------------------------------
@@ -199,7 +211,7 @@ export function mapMaterialListItem(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: featuredImage ?? null,
     properties: parseMaterialProperties(raw.class_list),
     brandName: brandName ? decodeHtmlEntities(brandName) : null,
@@ -231,8 +243,8 @@ export function mapMaterial(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
 
     gallery,
     properties: parseMaterialProperties(raw.class_list),
@@ -296,7 +308,7 @@ export function mapBrandListItem(
     slug: raw.slug,
     link: raw.link,
     name: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     logo: logo ?? null,
     country: m.country_detail?.label ?? stringOrNull(m._brand_country),
     city: stringOrNull(m.city),
@@ -313,8 +325,8 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
     slug: raw.slug,
     link: raw.link,
     name: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
 
     gallery,
 
@@ -369,7 +381,7 @@ export function mapArticleListItem(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     authorId: raw.author,
     categoryIds: raw.categories ?? [],
@@ -398,8 +410,8 @@ export function mapArticle(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     authorId: raw.author,
     authorName: authorName ?? null,
@@ -460,7 +472,7 @@ export function mapEventListItem(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     startsAt: combineDateTime(startDate, startTime),
     endsAt: combineDateTime(endDate, endTime),
@@ -479,8 +491,8 @@ export function mapEvent(raw: WPEventRawResponse, hero?: MediaImage | null): Eve
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     startsAt: combineDateTime(startDate, startTime),
     endsAt: combineDateTime(endDate, endTime),
@@ -509,7 +521,7 @@ export function mapTalkListItem(
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    excerptHtml: raw.excerpt.rendered,
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     date: raw.date,
   }
@@ -521,8 +533,8 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     slug: raw.slug,
     link: raw.link,
     title: decodeHtmlEntities(raw.title.rendered),
-    contentHtml: raw.content.rendered,
-    excerptHtml: raw.excerpt.rendered,
+    contentHtml: wpRenderedHtml(raw.content),
+    excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     date: raw.date,
     modified: raw.modified,
