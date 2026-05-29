@@ -53,6 +53,7 @@ const ContentSecurityPolicy = [
   `img-src 'self' data: https://${WP_HOST} https://secure.gravatar.com`,
   "font-src 'self' data:",
   `connect-src ${connectSrc.join(' ')}`,
+  "frame-src 'self' https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
