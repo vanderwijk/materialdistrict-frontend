@@ -5,6 +5,8 @@ import { ClientNewsletterForm } from './ClientNewsletterForm'
 interface FooterLink {
   label: string
   href: string
+  /** Externe link — opent in nieuw tabblad met security-attributen. */
+  external?: boolean
 }
 
 interface FooterProps {
@@ -43,9 +45,18 @@ const MANUFACTURER_LINKS: FooterLink[] = [
 ]
 
 const LEGAL_LINKS: FooterLink[] = [
-  { label: 'Privacy policy', href: '/legal/privacy' },
-  { label: 'Terms of use', href: '/legal/terms' },
-  { label: 'Cookie settings', href: '/legal/cookies' },
+  { label: 'Privacy policy', href: '/privacy-statement' },
+  // Terms of use: directe link naar de versievaste PDF (V20.01) op de aparte
+  // asset-host. Stabieler dan de /terms/-redirect (geen WAF/redirect). Indien
+  // we later een echte terms-content-pagina bouwen, omzetten naar intern.
+  {
+    label: 'Terms of use',
+    href: 'https://materiahost.nl/assets/MaterialDistrict_TermsConditions_V20-01.pdf',
+    external: true,
+  },
+  // Verborgen tot er een cookie-consent-tool is — dit hoort een knop te zijn
+  // die de consent-manager opent, geen route. Zie open issue S11.6.
+  // { label: 'Cookie settings', href: '/legal/cookies' },
 ]
 
 const SOCIAL_LINKS: FooterLink[] = [
@@ -120,11 +131,22 @@ export function Footer({ onNewsletterSubmit, className }: FooterProps) {
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} MaterialDistrict</span>
         <div className="footer-legal-links">
-          {LEGAL_LINKS.map((l) => (
-            <Link key={l.label} href={l.href}>
-              {l.label}
-            </Link>
-          ))}
+          {LEGAL_LINKS.map((l) =>
+            l.external ? (
+              <a
+                key={l.label}
+                href={l.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {l.label}
+              </a>
+            ) : (
+              <Link key={l.label} href={l.href}>
+                {l.label}
+              </Link>
+            ),
+          )}
         </div>
       </div>
     </footer>
