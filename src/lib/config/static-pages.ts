@@ -20,15 +20,15 @@
 /**
  * Route-segment (zoals het in de URL staat) → WordPress `page`-slug.
  *
- * Let op: het route-segment en de WP-slug verschillen waar de oude WP-slug
- * niet de gewenste publieke URL is — bv. `advertise` (WP) → `become-a-partner`
- * (route).
+ * `become-a-partner` is hier bewust NIET meer opgenomen: dat is sinds sessie 11
+ * een eigen ontworpen pagina (`src/app/become-a-partner/page.tsx`) met de
+ * manufacturer-tiers, en vervangt de oude WP-`advertise`-contentpagina. Een
+ * statisch route-segment wint altijd van de generieke [pageSlug]-template.
  */
 export const PAGE_SLUG_MAP: Record<string, string> = {
   about: 'about',
   faq: 'faq',
   jobs: 'jobs',
-  'become-a-partner': 'advertise',
   'privacy-statement': 'privacy-statement',
 }
 
