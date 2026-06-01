@@ -1,19 +1,27 @@
 /**
  * POST /api/get-in-touch
  *
- * Ontvangt een "Get in touch"-request van een ingelogde gebruiker en
- * forward deze naar het brand-emailadres via MaterialDistrict.
+ * Receives a "Get in touch" request from a logged-in user and forwards it
+ * to the brand's email address via MaterialDistrict.
  *
- * Voorlopige implementatie:
- *  - Vereist een geldige auth-cookie (gebruiker moet ingelogd zijn)
- *  - Valideert request body shape
- *  - Forward naar email is een **stub** — Johan moet nog leveren:
- *    (a) brand-email per material (via brand_id)
- *    (b) een mail-transport (SMTP/SendGrid/Postmark/SES)
- *  - Voor nu: log de request en return success. Zodra de mail-transport
- *    bestaat, hier de daadwerkelijke email-call invoegen.
+ * Auth (session 12 — cookie-rename fix):
+ *  - Reads the JWT from the HttpOnly `md_auth_token` cookie and validates
+ *    it against WordPress via `getCurrentUser()`. This is the same live
+ *    path that `/api/auth/me` and the SSR layout hydration use.
+ *  - Replaces the previous `@/lib/auth/server` helper, which read the
+ *    now-retired `md_session` cookie that the app never set — so an
+ *    authenticated user was read as logged out.
  *
- * Body shape (precies één van materialId / brandId is verplicht):
+ * Provisional implementation:
+ *  - Requires a logged-in user
+ *  - Validates request body shape
+ *  - Forwarding to email is a **stub** — Johan still needs to deliver:
+ *    (a) brand email per material (via brand_id)
+ *    (b) a mail transport (SMTP/SendGrid/Postmark/SES)
+ *  - For now: log the request and return success. Once the mail transport
+ *    exists, insert the actual email call here.
+ *
+ * Body shape (exactly one of materialId / brandId is required):
  *   {
  *     materialId?: number
  *     brandId?: number
@@ -23,7 +31,9 @@
  */
 
 import { NextResponse, type NextRequest } from 'next/server'
-import { getCurrentUser } from '@/lib/auth/server'
+import { getCurrentUser, WordPressAuthError } from '@/lib/api/wordpress'
+import { clearAuthCookie, getAuthCookie } from '@/lib/auth/cookies'
+import type { User } from '@/types/shared'
 
 export const dynamic = 'force-dynamic'
 
@@ -63,12 +73,37 @@ function isValidBody(input: unknown): input is GetInTouchBody {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  // Auth-check: alleen ingelogde users mogen requests sturen.
-  const user = await getCurrentUser()
-  if (!user) {
+  // Auth-check: alleen ingelogde users mogen requests sturen. Lees de JWT
+  // uit de HttpOnly-cookie en valideer hem server-side tegen WordPress.
+  const token = await getAuthCookie()
+  if (!token) {
     return NextResponse.json(
       { code: 'md_unauthorized', message: 'Please sign in to send a request.' },
       { status: 401 },
+    )
+  }
+
+  let user: User
+  try {
+    const auth = await getCurrentUser(token)
+    user = auth.user
+  } catch (err) {
+    if (err instanceof WordPressAuthError) {
+      // Cookie aanwezig maar afgekeurd (verlopen/ingetrokken). Wis de cookie
+      // zodat de volgende request een schone uitgelogde staat is, en signaleer 401.
+      await clearAuthCookie()
+      return NextResponse.json(
+        { code: 'md_unauthorized', message: 'Please sign in to send a request.' },
+        { status: 401 },
+      )
+    }
+    console.error('[api/get-in-touch] auth check failed', err)
+    return NextResponse.json(
+      {
+        code: 'md_internal_error',
+        message: 'Something went wrong. Please try again.',
+      },
+      { status: 500 },
     )
   }
 

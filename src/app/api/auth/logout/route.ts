@@ -1,10 +1,18 @@
 /**
  * POST /api/auth/logout
  *
- * Clears the auth cookie. Always succeeds — even if there was no cookie
- * to begin with, the response is the same. Idempotent.
+ * Clears the auth cookie (`md_auth_token`) and returns 204 No Content.
  *
- * Returns 204 No Content on success.
+ * Idempotent: clearing an absent cookie is a no-op, so calling logout when
+ * already logged out is safe — `AuthContext.signOut()` relies on this.
+ *
+ * Flow: the client (`AuthContext.signOut`) awaits this request, then drops
+ * local state and calls `router.refresh()`. The next server render hydrates
+ * a clean anonymous state because the cookie is gone (see
+ * `app/layout.tsx` `getInitialUser`).
+ *
+ * Documented in `auth-strategy.md` §3 ("Uitloggen") and session-log r944
+ * (POST → cookie wissen → 204).
  */
 
 import { NextResponse } from 'next/server'
