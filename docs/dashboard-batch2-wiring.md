@@ -16,7 +16,9 @@ endpoints. Handoffs: `dashboard-handoff-batch2-jeroen.md` + `batch3`.
 | **2** | portal, requests, interactions (+ PATCH status), lead-routing, statistics |
 | **3** | bookmarks, boards, saved-searches, insider-insights, user invoices, material form CRUD |
 
-**Nog niet live (batch 4+):** featured, brand invoices, delete brand, brand-candidates / claim / request-new, bookmark POST (public site).
+**Nog niet live (batch 4+):** bookmark POST (public site).
+
+**Batch 4** (featured, brand invoices, delete brand, brand-candidates / claim / request-new): deploy volgt — zie `dashboard-handoff-batch4-jeroen.md`.
 
 ## Vaste aanpak (zelfde als batch 1)
 
@@ -115,22 +117,20 @@ Zie ook `dashboard-datacontract.md` § Material form + `dashboard-handoff-batch3
 
 **Boeken:** later via **WooCommerce / upsell-shop** — **geen** dashboard POST-endpoint voor booking.
 
-**Lezen:** `GET /md/v2/dashboard/brands/{brandId}/featured` → `FeaturedPlacement[]` komt in **batch 4** (nog niet live). `FeaturedPanel` read-only houden; “Book”-CTA blijft upsell-track.
+**Lezen:** `GET /md/v2/dashboard/brands/{brandId}/featured` → **batch 4 live na deploy**. Partner tier vereist (403 anders). `FeaturedPanel` read-only; “Book”-CTA blijft upsell-track.
 
 Catalogus van slots = frontend config/regel; per-brand status = WP data (later).
 
 ### 3. Add brand — claim / request-new
 
-**Nog niet geïmplementeerd** (batch 4). Geplande shapes (datacontract):
+**Live in batch 4** (zie `dashboard-handoff-batch4-jeroen.md`):
 
-| Endpoint | Request (snake_case API) | Response |
+| Endpoint | Request | Response |
 |---|---|---|
 | `POST /md/v2/dashboard/brands/claim` | `{ "brand_id": 3576 }` | `{ "status": "ok" }` |
-| `POST /md/v2/dashboard/brands/request-new` | `{ "name": "…", "website": "…", … }` (velden TBD bij implementatie) | `{ "status": "ok" }` |
+| `POST /md/v2/dashboard/brands/request-new` | `{ "name": "…", "website": "…", "email": "…", "message": "…" }` | `{ "status": "ok" }` |
 
-`GET /md/v2/dashboard/brand-candidates?q=…` → `BrandCandidate[]` (zelfde shape als mock/types).
-
-Tot batch 4 live is: **`AddBrandPanel` mock laten**.
+`GET /md/v2/dashboard/brand-candidates?q=…` → `BrandCandidate[]` (domain match op user e-mail).
 
 ### 4. Membership portal
 
@@ -161,6 +161,6 @@ Alles batch 2+3 hieronder is **al live** — volgorde is voor jouw planning, nie
 | 7 | **Bookmarks / boards / saved searches / insider insights** | Batch 3; boards/searches/insights vereisen Insider |
 | 8 | **Material form** | Meest complex (media upload + PATCH dispatch); batch 3 live |
 
-**Wachten tot batch 4:** featured, brand invoices, delete brand, add brand.
+**Wachten tot batch 4 deploy:** featured (Partner+), brand invoices, delete brand, add brand.
 
 **Foutcodes batch 3 extra:** `md_dashboard_insider_required` (403) voor boards, saved-searches, insider-insights.
