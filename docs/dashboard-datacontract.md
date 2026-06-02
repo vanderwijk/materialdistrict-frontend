@@ -30,9 +30,108 @@ componenten veranderen.
 
 ## Naamgeving & basis-URL
 
-Voorstel basis: `/wp-json/md/v2/dashboard/…`. Brand-endpoints gebruiken het
-**numerieke brand-id** in de URL (`/brands/{brandId}/…`), terwijl de frontend-
-routes op **slug** draaien — de resolver (`getBrandProfile`) mapt slug → id.
+**Bevestigd (02-06-2026):**
+
+- Basis: `/wp-json/md/v2/dashboard/…`
+- Brand-endpoints: **numeriek `{brandId}`** in de URL (`/brands/{brandId}/…`)
+- Frontend-routes: **slug** (`/dashboard/brands/{slug}/…`) — resolver mapt slug → id via `user.brands[]`
+- Auth: **`Authorization: Bearer <JWT>`** (zelfde als `/auth/me`)
+- Response-vorm: **kale JSON-body** (object of array), **geen** `{ data: … }`-wrapper
+- Schrijven vanuit de frontend: server-side route-handlers onder `/api/dashboard/*` lezen de HttpOnly auth-cookie en forwarden Bearer naar WP (zelfde patroon als `/api/auth/*`)
+
+---
+
+## Transport & fouten
+
+### Succes-responses
+
+| Methode | Body |
+|---|---|
+| `GET` (enkel object) | Het object (bv. `UserProfile`, `BrandProfile`, `MaterialFormData`) |
+| `GET` (lijst) | JSON-array |
+| `POST` / `PATCH` | **Volledig bijgewerkt object** (zelfde shape als GET) — geen extra GET nodig na save |
+| `DELETE` | **204** No Content, lege body |
+| `POST …/claim` / `…/request-new` | `{ "status": "ok" }` (of vergelijkbaar kort ack) |
+
+Material **create:** `POST …/materials` retourneert `MaterialFormData` met **`id` gezet** (`mode: 'edit'`).
+
+### Fout-envelope
+
+Zelfde patroon als auth/checkout:
+
+```json
+{
+  "code": "md_dashboard_brand_not_found",
+  "message": "Human-readable message.",
+  "data": { "status": 404 }
+}
+```
+
+| Situatie | HTTP | `code` |
+|---|---|---|
+| Geen / ongeldige JWT | 401 | `md_auth_unauthenticated` |
+| Brand onbekend of niet beheerd door user | **404** | `md_dashboard_brand_not_found` |
+| Tier te laag (Plus/Partner/Basis-gated endpoint) | 403 | `md_dashboard_forbidden` |
+| Insider-only zonder actief Insider-lidmaatschap | 403 | `md_dashboard_insider_required` |
+| Validatie / ontbrekend veld | 400 | `md_dashboard_invalid_request` |
+| Publicatie-quota vol (online zetten / create) | 409 | `md_dashboard_quota_exceeded` |
+| Stripe portal niet beschikbaar | 503 | `md_dashboard_unavailable` |
+| Onverwachte serverfout | 500 | `md_internal_error` |
+
+**404 i.p.v. 403 voor vreemde brand:** frontend gebruikt `notFound()` — geen lek dat de brand bestaat.
+
+---
+
+## Veldnamen (snake_case ↔ camelCase)
+
+WordPress levert **snake_case**; frontend-mapper vertaalt naar `src/types/dashboard.ts`.
+
+| Frontend | WordPress |
+|---|---|
+| `firstName` | `first_name` |
+| `lastName` | `last_name` |
+| `avatarUrl` | `avatar_url` |
+| `brandName` | `brand_name` |
+| `vatNumber` | `vat_number` |
+| `chamberNumber` | `chamber_number` |
+| `logoUrl` / `logoName` | `logo_url` / `logo_name` |
+| `savedAt` | `saved_at` |
+| `imageUrl` | `image_url` |
+| `materialCount` / `articleCount` | `material_count` / `article_count` |
+| `coverGradient` | `cover_gradient` |
+| `alertsEnabled` | `alerts_enabled` |
+| `resultCount` | `result_count` |
+| `brandName` (requests) | `brand_name` |
+| `updatedAt` | `updated_at` |
+| `countsAgainstQuota` | `counts_against_quota` |
+| `timeAgo` | `time_ago` |
+| `requestOptions` | `request_options` |
+| `materialId` | `material_id` |
+| `publicationQuota` | `publication_quota` |
+| `publicationsUsed` | `publications_used` |
+| `cancelAtPeriodEnd` | `cancel_at_period_end` |
+| `validUntil` | `valid_until` |
+| `startsAt` / `endsAt` | `starts_at` / `ends_at` |
+| `pdfUrl` | `pdf_url` |
+| `featuredImage` | `featured_image` (object `{ id, name, url }`) |
+
+**Computed door WP (frontend herberekent niet):** `counts_against_quota`, `time_ago`, saved-search `summary`, brand-level `publication_quota` / `publications_used`, board counts, statistiek-totalen.
+
+**`counts_against_quota`:** `true` bij `publication_status = member`; `false` bij standalone/legacy/former_*.
+
+---
+
+## Databron per paneel (hergebruik vs apart endpoint)
+
+| Paneel | Bron |
+|---|---|
+| Reader Insider membership | **`GET /auth/me` → `user.membership`** — geen dashboard-GET |
+| Brand membership (tier/quota) | **`GET /auth/me` → `user.brands[]`** — geen dashboard-GET |
+| My profile (form) | **`GET/POST /dashboard/profile`** — `/auth/me` mist o.a. `country` |
+| Brand profile (form) | **`GET/POST …/brands/{brandId}/profile`** |
+| Overige panelen | Eigen dashboard-endpoint (zie hieronder) |
+
+Na profile-save: frontend doet `router.refresh()` zodat sidebar/`/auth/me` syncen.
 
 ---
 
@@ -138,11 +237,15 @@ interface MyRequest {
 ```
 
 ### Insider membership (reader-billing)
-Leest uit het bestaande `user.membership` (`Membership` in `shared.ts`).
-Prijzen komen uit `INSIDER_PRICING` (`membership.ts`) — niet uit een endpoint.
-Voor het beheren van de subscription is later een billing-portal nodig:
-- `POST /md/v2/dashboard/membership/cancel` → `Membership`
-- `GET /md/v2/dashboard/membership/portal` → `{ url }` _(Stripe billing portal)_
+Leest uit het bestaande `user.membership` (`Membership` in `shared.ts`) via **`/auth/me`** —
+geen apart dashboard-GET voor lezen. Prijzen komen uit `INSIDER_PRICING` (`membership.ts`).
+
+**Billing portal (v1):**
+- `GET /md/v2/dashboard/membership/portal` → `{ url: string }`
+- Stripe Customer Portal session; customer-id uit usermeta **`stripe_customer_id`**
+- **Geen** `POST …/membership/cancel` in v1 — cancel/update via portal; webhooks zijn bron van waarheid
+
+Brand-tier portal (later): `_brand_stripe_customer_id` op brand-post; apart endpoint of `?scope=brand&brandId=` — buiten v1-scope.
 
 ### Invoices (persoonlijk)
 - `GET /md/v2/dashboard/invoices?scope=user` → `Invoice[]`
@@ -237,8 +340,31 @@ interface MaterialFormData {
   keywords: string[]            // Plus+
 }
 ```
-> Uploads (featured/gallery/downloads) lopen vermoedelijk via de bestaande
-> WP-media-endpoints; dit form levert dan asset-id's terug i.p.v. files.
+> **Uploads (bevestigd 02-06-2026):** assets via **`POST /wp/v2/media`** (JWT).
+> Het materiaalformulier stuurt **attachment-id's** mee; WP koppelt bij save en
+> controleert dat de user de brand beheert.
+
+**Request body** (`POST` / `PATCH …/materials`, snake_case):
+
+```json
+{
+  "name": "…",
+  "description": "…",
+  "type": "Wood",
+  "featured_image_id": 12345,
+  "gallery_attachment_ids": [12346, 12347],
+  "download_attachment_ids": [12348],
+  "videos": ["https://…"],
+  "keywords": ["acoustic"],
+  "categories": [{ "id": "…", "l1": "…", "l2": "…", "l3": "…" }],
+  "channels": ["Biobased"]
+}
+```
+
+**Response:** `MaterialFormData` met `featured_image`, `gallery`, `downloads` als
+`{ id, name, url }` (url ingevuld waar beschikbaar).
+
+Status-toggle (lijst): `PATCH …/materials/{id}` body `{ "status": "online" | "offline" | "draft" }` → retourneert `MaterialListRow`.
 
 ### Interactions (inkomende leads)
 - `GET /md/v2/dashboard/brands/{brandId}/interactions` → `Interaction[]`
@@ -344,10 +470,41 @@ interface BrandCandidate {
 
 ---
 
-## Open punten voor Johan
+## Implementatiestatus (WP plugin, 02-06-2026)
 
-1. Bevestig basis-URL en of brand-routes op id of slug moeten.
-2. Upload-flow voor material-assets (eigen endpoint vs WP-media).
-3. Billing-portal: Stripe customer portal-URL via WP, of eigen cancel-endpoint?
-4. `timeAgo` en `summary` (saved search) server-side formatteren — akkoord?
-5. Levert WP `countsAgainstQuota` per materiaal mee (losse publicaties)?
+**Geen** `/md/v2/dashboard/*`-route staat nog op test/productie. Frontend draait op mock tot Johan endpoints levert in batches.
+
+| Endpoint(s) | WP | Frontend `data.ts` |
+|---|---|---|
+| `/auth/me` (membership-panelen) | ✅ live | ✅ (layout/auth) |
+| `/dashboard/profile` | 🔜 | mock |
+| `/dashboard/bookmarks` | 🔜 | mock |
+| `/dashboard/boards` | 🔜 | mock |
+| `/dashboard/saved-searches` | 🔜 | mock |
+| `/dashboard/insider-insights` | 🔜 | mock |
+| `/dashboard/requests` | 🔜 | mock |
+| `/dashboard/membership/portal` | 🔜 | — |
+| `/dashboard/invoices` | 🔜 | mock |
+| `/dashboard/brands/{id}/profile` | 🔜 | mock |
+| `/dashboard/brands/{id}/materials` | 🔜 | mock |
+| `/dashboard/brands/{id}/interactions` | 🔜 | mock |
+| `/dashboard/brands/{id}/statistics` | 🔜 | mock |
+| `/dashboard/brands/{id}/lead-routing` | 🔜 | mock |
+| `/dashboard/brands/{id}/featured` | 🔜 | mock |
+| `/dashboard/brands/{id}/invoices` | 🔜 | mock |
+| `/dashboard/brands/{id}` DELETE | 🔜 | mock stub |
+| `/dashboard/brand-candidates`, claim, request-new | 🔜 | mock |
+
+Gerelateerd **wel** live (geen dashboard-namespace): `POST /checkout/insider`, `POST /auth/register` (manufacturer + brand).
+
+---
+
+## Beslissingen (afgesloten 02-06-2026)
+
+Eerdere open punten — bevestigd voor implementatie:
+
+1. **Basis-URL + brand-routes:** API op **numeriek `brandId`**, frontend op **slug**.
+2. **Upload-flow:** **WP Media REST** + attachment-id's in materiaal-POST/PATCH (geen apart dashboard-upload-endpoint).
+3. **Billing-portal:** **Stripe Customer Portal via WP** (`GET …/membership/portal`); geen custom cancel-endpoint v1.
+4. **`timeAgo` + saved-search `summary`:** **server-side** door WP — frontend toont alleen.
+5. **`countsAgainstQuota`:** **ja**, computed veld per materiaal (afgeleid van `publication_status`).
