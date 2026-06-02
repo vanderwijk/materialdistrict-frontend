@@ -7,20 +7,41 @@ import { IconDelete } from '@/components/ui/icons'
 
 /**
  * Delete-brand confirmation. Requires typing the exact brand name to enable
- * the destructive action — guards against accidental deletion. Stubs the
- * delete endpoint and returns to the personal profile afterwards.
+ * the destructive action — guards against accidental deletion. Calls the
+ * delete proxy and returns to the personal profile afterwards.
  */
-export function DeleteBrandPanel({ brandName }: { brandName: string }) {
+export function DeleteBrandPanel({
+  brandId,
+  brandName,
+}: {
+  brandId: number
+  brandName: string
+}) {
   const router = useRouter()
   const [confirm, setConfirm] = useState('')
   const [deleting, setDeleting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const matches = confirm.trim() === brandName
 
   async function handleDelete() {
     if (!matches) return
     setDeleting(true)
-    await new Promise((r) => setTimeout(r, 500))
-    router.push('/dashboard/profile')
+    setError(null)
+    try {
+      const res = await fetch(`/api/dashboard/brands/${brandId}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setError(err?.message ?? 'Could not delete the brand. Please try again.')
+        setDeleting(false)
+        return
+      }
+      // Brand gone → refresh so the sidebar/auth drop it, then leave the scope.
+      router.push('/dashboard/profile')
+      router.refresh()
+    } catch {
+      setError('Could not delete the brand. Please try again.')
+      setDeleting(false)
+    }
   }
 
   return (
@@ -30,6 +51,7 @@ export function DeleteBrandPanel({ brandName }: { brandName: string }) {
         This permanently removes <strong>{brandName}</strong>, its materials and its statistics.
         This cannot be undone.
       </p>
+      {error && <p className="form-error" role="alert">{error}</p>}
       <Input
         label={`Type "${brandName}" to confirm`}
         value={confirm}

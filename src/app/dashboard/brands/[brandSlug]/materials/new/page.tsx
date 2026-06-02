@@ -22,7 +22,7 @@ export default async function NewMaterialPage({
           { label: 'Add material' },
         ]}
       />
-      <MaterialForm slug={brandSlug} initial={form} tier={brand.tier} />
+      <MaterialForm slug={brandSlug} brandId={brand.id} initial={form} tier={brand.tier} />
     </>
   )
 }

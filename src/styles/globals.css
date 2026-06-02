@@ -11353,3 +11353,9 @@ mark.search-mark {
 .sb-signout:hover{color:var(--red)}
 .dash-mob-signout{gap:6px}
 .dash-mob-signout:hover{color:var(--red)}
+/* --- Form error banner (save failures) --- */
+.form-error{margin:0 0 14px;padding:10px 14px;border-radius:var(--radius);background:var(--red-pale,#fdecea);color:var(--red,#c0392b);font-size:13px;border:1px solid var(--red,#c0392b)}
+
+/* --- Sidebar: brand pending setup (empty slug) --- */
+.sb-scope-btn.is-disabled{display:flex;align-items:center;justify-content:space-between;width:100%;cursor:default;opacity:.6}
+.sb-scope-pending-tag{font-size:11px;color:var(--text-muted);font-style:italic;white-space:nowrap}

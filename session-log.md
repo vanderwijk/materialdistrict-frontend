@@ -1843,60 +1843,144 @@ upload-flow, billing-portal, server-side `timeAgo`/`summary`,
   is geeft de link een 404 (zelfde vooruit-lopende patroon als de bestaande
   membership-CTA).
 
----
+### Patch — Batch 1 live bedrading (02-06-2026)
 
-## ↳ Membership-track frontend: register account_type (P1) + Insider-checkout (P2) (02-06-2026)
+Johan's Batch 1 dashboard-endpoints staan live op productie (profile, brand
+profile, materials list + status-toggle). Frontend hierop aangesloten; overige
+panelen blijven mock tot batch 2.
 
-Vervolg op de membership-pagina's (`/membership`, `/become-a-partner`) en de handoff
-`handoff-membership-s12-jeroen.md` (S12). Twee frontend-gaten uit §3 van die handoff dichtgezet.
+**Nieuw:**
+- `src/lib/api/dashboard.ts` — `wpDashboardFetch` (Bearer + GET/POST/PATCH +
+  `md_dashboard_*`-error-envelope via `DashboardApiError`). Hergebruikt alleen
+  het geëxporteerde `WP_API_URL`; raakt de gedeelde `wordpress.ts` niet.
+- `src/lib/dashboard/mappers.ts` — snake↔camel: `mapUserProfile`,
+  `mapBrandProfile`, `mapMaterialListRow(s)` + reverse `toWpUserProfile`/
+  `toWpBrandProfile`.
+- `/api/dashboard/profile` (POST), `/api/dashboard/brands/[brandId]/profile`
+  (POST), `/api/dashboard/brands/[brandId]/materials/[materialId]` (PATCH) —
+  cookie→Bearer proxy's (patroon van `/api/auth/me`). JWT is HttpOnly, dus
+  schrijven loopt server-side via deze routes.
 
-**Bestanden gewijzigd (P1 — account_type doorgeven):**
-- `src/app/register/page.tsx` — leest `?type` + leidt account-type af (`type=show|brand|partner` of `next=/become-a-partner` -> manufacturer; anders specifier); subheading past mee.
-- `src/app/register/RegisterForm.tsx` — `accountType`-prop + meegestuurd in de POST-body.
-- `src/app/api/auth/register/route.ts` — `accountType` geparsed/geforward (default specifier); stale "endpoint nog niet gebouwd"-noot bijgewerkt.
-- `src/lib/api/wordpress.ts` — `registerUser` stuurt `account_type` mee.
+**Gewijzigd:**
+- `data.ts` — `getProfile`, `getBrandProfile`, `getBrandMaterials` nu live
+  (server-side `wpDashboardFetch` + mapper; slug→id via `findBrandMembership`;
+  404 → null). Rest nog mock.
+- `ProfileForm` / `BrandProfileForm` — `handleSave` POST't naar de proxy +
+  `router.refresh()`; foutmelding bij falen (incl. `md_dashboard_forbidden`
+  → keywords-tier-melding).
+- `MaterialsPanel` — `toggleStatus` doet optimistische PATCH met revert +
+  `409 md_dashboard_quota_exceeded`-melding; nieuwe prop `brandId` (numeriek)
+  doorgegeven vanuit de materials-page.
+- `globals.css` — `.form-error` banner.
 
-**Bestanden aangemaakt (P2 — Insider-checkout-route):**
-- `src/app/checkout/page.tsx` — server-component; leest `?plan=insider&interval=`, leest de auth-cookie, roept WP `POST /md/v2/checkout/insider` aan (Bearer JWT, server-side) en redirect naar `checkout_url`. Foutafhandeling: niet-ingelogd/401 -> `/sign-in`, 409 -> `/membership?checkout=already`, 503 -> `/membership?checkout=unavailable`, overig -> `?checkout=error`.
+**Aandachtspunten:** material-toggle is PATCH (niet POST); brand-API op
+numeriek `brandId` (slug→id via `user.brands[]`); brand-auth-fouten komen als
+404 (geen lek), afgevangen → `notFound()`.
 
-**Bestanden gewijzigd (P2):**
-- `src/lib/api/wordpress.ts` — helper `createInsiderCheckout(token, interval)` + type `InsiderCheckoutSession` (additief; gebaseerd op de P1-versie zodat P1 niet wordt teruggedraaid).
-- `src/app/membership/_components/MembershipCta.tsx` — comment bijgewerkt (checkout-route bestaat nu).
+### Patch — Batch 3 bedrading (tegen bevestigde spec, ⏳ deploy)
 
-**Beslissingen:**
-1. `account_type` wordt frontend-side gecanonicaliseerd naar `specifier|manufacturer` (WP-aliassen show/brand/partner blijven fallback).
-2. Checkout-initiatie via server-page `src/app/checkout/page.tsx` (geen aparte API-route), redirect-flow; Stripe-secret nooit client-side.
-3. Foutmapping op HTTP-status (401/409/503), niet op error-code — robuust, want `wpAuthFetch` surfacet alleen `md_auth_*` als `WordPressAuthError`; `md_checkout_*` komt als generieke `WordPressError` (heeft `.status`).
-4. `redirect()` bewust buiten de try (de interne throw zou anders door de eigen catch worden opgeslokt).
+Johan's batch-3 handoff geeft de exacte shapes (snake_case, methodes, bodies,
+foutcodes, PATCH-dispatch, tier-gates). Hierop bedraad; testbaar zodra batch 3
+gedeployd is op productie.
 
-**API-structuren (uit handoff S12 §4):**
-- `POST /md/v2/checkout/insider` (Bearer) -> `{ checkout_url, session_id }`. Errors: 401 md_auth_unauthenticated / 409 md_checkout_already_subscribed / 503 md_checkout_unavailable.
-- Register accepteert `account_type: specifier|manufacturer`; manufacturer-registratie maakt een connected brand (tier free).
+**Reads live (`data.ts`):** `getBookmarks`, `getBoards`, `getSavedSearches`,
+`getInsiderInsights`, `getUserInvoices`, en `getMaterialForm` (edit-GET; create
+blijft lokaal blanco). Mock-imports opgeschoond.
 
-**Openstaand / vervolg:**
-- P3 nog te bouwen: `checkout=success|cancel`-afhandeling op `/membership` (bevestiging + `router.refresh()`). Leunt op Johan's Stripe-redirect.
-- Werkt pas écht na Johan's Stripe-config + plugin-deploy (commit 4b5b278), zie handoff §2 / mail aan Johan.
-- `/dashboard` (PartnerCta linkt ernaar) loopt in een aparte sessie.
+**Mappers (`mappers.ts`):** + `mapBookmark(s)`, `mapBoard(s)`,
+`mapSavedSearch(es)`, `mapInsight(s)`, `mapInvoice(s)`, `mapMaterialFormData`,
+en write-mappers `toWpBoard` / `toWpSavedSearch` / `toWpMaterialForm`.
 
----
+**Fetch-helper (`api/dashboard.ts`):** `wpDashboardFetch` ondersteunt nu ook
+**DELETE** en handelt **204/lege body** af (anders crasht `res.json()`).
 
-## ↳ Header: Sign out in topmenu (02-06-2026)
+**Proxy-routes (nieuw):**
+- `DELETE /api/dashboard/bookmarks/[id]`
+- `POST /api/dashboard/boards`, `PATCH`/`DELETE /api/dashboard/boards/[id]`
+- `POST /api/dashboard/saved-searches`, `PATCH`/`DELETE …/[id]`
+- `POST /api/dashboard/brands/[brandId]/materials` (create)
+- `PATCH`/`DELETE …/materials/[materialId]` — PATCH **dispatcht**: body met
+  formvelden → form-save (retour MaterialFormData); body met alleen `{status}`
+  → toggle (retour MaterialListRow), conform WP.
+- `POST /api/dashboard/media` — bestand → WP media library (cookie→Bearer,
+  multipart) → `{ id, name, url }`.
+- Gedeelde `api/dashboard-proxy.ts` helpers (`getTokenOr401`, `dashboardError`).
 
-In het topmenu (de globale header) ontbrak een uitlog-mogelijkheid; die zat tot nu
-toe alleen in de dashboard-zijbalk + dashboard-mobile-nav (andere sessie, blijft).
-Toegevoegd in de hoofd-header — desktop-rij én mobile-drawer — conform de demo.
+**UI aangesloten:** BookmarksPanel (delete), BoardsPanel (create/delete),
+SavedSearchesPanel (alerts-PATCH + delete), MaterialForm (create/edit/delete +
+**echte uploads** via media-proxy met file-inputs; `brandId`-prop doorgegeven
+vanuit new/edit-pages). Alles optimistisch met revert + `.form-error`.
 
-**Bestanden gewijzigd:**
-- `src/components/layout/HeaderShell.tsx` — `signOut` uit `useAuth`; `handleSignOut()` (`await signOut()` -> `router.push('/')`); `onSignOut={handleSignOut}` doorgegeven aan `<Header>`.
-- `src/components/layout/Header.tsx` — prop `onSignOut`; import `IconLogout`; "Sign out"-outline-knop in de desktop-rij (bij `isLoggedIn`, vóór Dashboard) en onderaan de mobile-drawer auth-sectie (na Dashboard/Insider).
+**Bekende gap (follow-up):** de categorie-picker in MaterialForm gebruikt nog
+een hardcoded TAXONOMY zonder echte term-id's. `toWpMaterialForm` stuurt alleen
+categorieën mee met een geldig numeriek term-id → **bestaande** categorieën
+(uit de GET-form) blijven behouden, maar **nieuw** toegevoegde categorieën
+krijgen geen geldig id en worden bij opslaan genegeerd. Een echte taxonomy-picker
+(term-id's uit WP) is nodig om nieuwe categorieën te kunnen toewijzen.
 
-**Beslissingen:**
-1. Hergebruik van het bestaande sign-out-patroon (`await signOut(); router.push('/')`) + `IconLogout` uit de icon-registry — consistent met de dashboard-sign-outs.
-2. Geen nieuwe CSS: `btn btn-outline` + bestaande icon-styling.
-3. Login/register/Insider/theme-toggle ongemoeid; dashboard niet aangeraakt.
-4. Control verschijnt alleen bij `isLoggedIn`.
+### Patch — Batch 2 start (membership portal) + brandmenu-404 hardening
 
-**Geen export-wijzigingen** (`HeaderProps` is intern; `index.ts` ongewijzigd).
+- **Membership portal (live):** nieuwe server-route
+  `/dashboard/membership/manage` haalt de Stripe-portal-URL op
+  (`GET /md/v2/dashboard/membership/portal → { url }`) en redirect erheen;
+  bij 503 (geen Stripe-customer) terug naar `/dashboard/membership?billing=unavailable`.
+  De bestaande "Manage billing"-link wees hier al heen — geen client-component nodig.
+- **Brandmenu-404:** een brand met lege slug (draft/nieuw, conform Johans
+  batch-1-randgeval) produceerde een link `/dashboard/brands/` → 404. Sidebar
+  toont zo'n brand nu als niet-klikbare "Pending setup" i.p.v. een dode link.
+  NB: als de 404 op een brand mét slug optreedt, ligt het aan de profile-read
+  (brandId/endpoint) — apart te bevestigen.
+- **Batch 2 data-panelen** (requests, interactions, statistics, lead-routing):
+  nog niet bedraad — wachten op `dashboard-handoff-batch2-jeroen.md` voor de
+  exacte snake_case-shapes (o.a. `time_ago`, geneste StatMetric/MaterialStatRow/
+  LeadRoute). Niet gokken (batch-1-les).
 
-**Openstaand:** geen — frontend-only, geen backend-afhankelijkheid (`signOut` gebruikt de bestaande `/api/auth/logout`-route).
+### Patch — Batch 4 bedrading (featured, brand invoices, delete brand, add brand)
 
+Tegen Johans bevestigde batch-4 handoff-shapes.
+
+**Mappers:** + `mapFeaturedPlacement(s)`, `mapBrandCandidate(s)` (brand-invoices
+hergebruiken `mapInvoices`).
+
+**Reads live (`data.ts`):** `getFeaturedPlacements` (Partner+; 403/404 → []),
+`getBrandInvoices` (404 → []), `getBrandCandidates(q)`.
+
+**Proxy-routes (nieuw):**
+- `DELETE /api/dashboard/brands/[brandId]` — trash brand.
+- `POST /api/dashboard/brands/claim` — body `{ brandId }` → WP `{ brand_id }`.
+- `POST /api/dashboard/brands/request-new` — `{ name, website?, email?, message? }`.
+(Static `claim`/`request-new` gaan vóór dynamische `[brandId]` in Next routing.)
+
+**UI:** `DeleteBrandPanel` (echte DELETE + `brandId`-prop + refresh),
+`AddBrandPanel` (claim → POST + refresh zodat sidebar de brand oppikt; nieuw
+request-formulier → POST request-new met bevestiging). `FeaturedPanel` en de
+brand-`InvoicesTable` zijn read-only → alleen `data.ts`.
+
+**Nog open (enige resterende gap):** batch-2 data-panelen (requests,
+interactions, statistics, lead-routing) — wachten op
+`dashboard-handoff-batch2-jeroen.md` voor de exacte snake_case (o.a. `time_ago`,
+geneste StatMetric/MaterialStatRow/LeadRoute). Membership portal (batch 2) is al wel live bedraad.
+
+### Patch — Batch 2 data-panelen bedraad (laatste gap gedicht)
+
+De batch-2 handoff met snake_case-shapes was niet beschikbaar; velden daarom
+afgeleid uit de contract-types (Johans conventie is consequent puur snake_case —
+batch 1 bevestigde dat élk veld een directe conversie was). Geneste velden
+gemarkeerd in `mappers.ts`; afwijking = één-regel fix.
+
+**Mappers:** + `mapMyRequest(s)`, `mapInteraction(s)` (incl. `time_ago`,
+`request_options`), `mapBrandStatistics` (+ StatMetric/MaterialStatRow),
+`mapLeadRoutingConfig` (+ LeadRoute) + `toWpLeadRouting`.
+
+**Reads live (`data.ts`):** `getMyRequests`, `getInteractions`,
+`getBrandStatistics` (403 free tier → leeg), `getLeadRouting` (403 → leeg).
+
+**Write:** `POST /api/dashboard/brands/[brandId]/lead-routing`;
+`LeadRoutingPanel.handleSave` aangesloten (+ `brandId`-prop, 403-melding,
+re-sync van door WP toegekende route-ids). Requests/Interactions/Statistics zijn
+read-only → alleen `data.ts`.
+
+**Status:** het volledige dashboard-datacontract is nu frontend-zijdig
+aangesloten (batch 1–4 + portal). Resterend buiten scope: bookmark POST
+(publieke site) en board-items toevoegen (latere batch). `data.ts` gebruikt
+nergens nog mock behalve de blanco-create-fallback van het materiaalformulier.

@@ -75,6 +75,22 @@ export function DashboardSidebar({
         <div className="sb-section-hd sb-section-hd--brands">Brands</div>
         {user.brands.map((brand) => {
           const isOpen = scope.kind === 'brand' && scope.slug === brand.slug
+          // A draft/new brand can have an empty slug — its pages don't exist
+          // yet, so linking would 404. Show it as a non-clickable placeholder
+          // until WordPress assigns a slug.
+          if (!brand.slug) {
+            return (
+              <div key={brand.id} className="sb-scope sb-scope--pending">
+                <span className="sb-scope-btn is-disabled" aria-disabled="true">
+                  <span className="sb-scope-id">
+                    <span className="sb-avatar is-brand">{initialsFrom(brand.name)}</span>
+                    <span className="sb-scope-name">{brand.name}</span>
+                  </span>
+                  <span className="sb-scope-pending-tag">Pending setup</span>
+                </span>
+              </div>
+            )
+          }
           return (
             <div key={brand.id} className={`sb-scope ${isOpen ? 'active' : ''}`}>
               <Link href={brandPanelHref(brand.slug, '')} className="sb-scope-btn">

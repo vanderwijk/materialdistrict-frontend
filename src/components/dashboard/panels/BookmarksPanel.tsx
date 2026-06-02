@@ -42,8 +42,15 @@ export function BookmarksPanel({ initial }: { initial: BookmarkItem[] }) {
 
   const visible = tab === 'all' ? items : items.filter((i) => i.type === tab)
 
-  function remove(id: string) {
-    setItems((list) => list.filter((i) => i.id !== id))
+  async function remove(id: string) {
+    const prev = items
+    setItems((list) => list.filter((i) => i.id !== id)) // optimistic
+    try {
+      const res = await fetch(`/api/dashboard/bookmarks/${id}`, { method: 'DELETE' })
+      if (!res.ok) setItems(prev) // revert
+    } catch {
+      setItems(prev)
+    }
   }
 
   if (items.length === 0) {

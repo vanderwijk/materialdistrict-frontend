@@ -14,14 +14,40 @@ import type { SavedSearch } from '@/types/dashboard'
 export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
   const [searches, setSearches] = useState(initial)
 
-  function toggleAlert(id: string) {
+  async function toggleAlert(id: string) {
+    const target = searches.find((s) => s.id === id)
+    if (!target) return
+    const next = !target.alertsEnabled
     setSearches((list) =>
-      list.map((s) => (s.id === id ? { ...s, alertsEnabled: !s.alertsEnabled } : s)),
-    )
+      list.map((s) => (s.id === id ? { ...s, alertsEnabled: next } : s)),
+    ) // optimistic
+    try {
+      const res = await fetch(`/api/dashboard/saved-searches/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ alertsEnabled: next }),
+      })
+      if (!res.ok) {
+        setSearches((list) =>
+          list.map((s) => (s.id === id ? { ...s, alertsEnabled: !next } : s)),
+        ) // revert
+      }
+    } catch {
+      setSearches((list) =>
+        list.map((s) => (s.id === id ? { ...s, alertsEnabled: !next } : s)),
+      )
+    }
   }
 
-  function remove(id: string) {
-    setSearches((list) => list.filter((s) => s.id !== id))
+  async function remove(id: string) {
+    const prev = searches
+    setSearches((list) => list.filter((s) => s.id !== id)) // optimistic
+    try {
+      const res = await fetch(`/api/dashboard/saved-searches/${id}`, { method: 'DELETE' })
+      if (!res.ok) setSearches(prev)
+    } catch {
+      setSearches(prev)
+    }
   }
 
   if (searches.length === 0) {

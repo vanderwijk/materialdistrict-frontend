@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
@@ -40,6 +41,8 @@ export function BrandProfileForm({
   const [form, setForm] = useState<BrandProfile>(initial)
   const [keywordDraft, setKeywordDraft] = useState('')
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const router = useRouter()
 
   const canKeywords = tierMeets(tier, 'plus')
 
@@ -72,14 +75,35 @@ export function BrandProfileForm({
 
   async function handleSave() {
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 400))
-    setSaving(false)
+    setSaveError(null)
+    try {
+      const res = await fetch(`/api/dashboard/brands/${initial.brandId}/profile`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setSaveError(
+          err?.code === 'md_dashboard_forbidden'
+            ? 'Keywords require a Plus or Partner membership.'
+            : err?.message ?? 'Could not save the brand profile. Please try again.',
+        )
+        return
+      }
+      router.refresh()
+    } catch {
+      setSaveError('Could not save the brand profile. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
     <>
       <div className="dash-panel">
         <h2 className="panel-section-title">Brand details</h2>
+        {saveError && <p className="form-error" role="alert">{saveError}</p>}
         <Input label="Brand name" value={form.brandName} onChange={(e) => set('brandName', e.target.value)} />
         <Textarea label="Description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
         <div className="g2">

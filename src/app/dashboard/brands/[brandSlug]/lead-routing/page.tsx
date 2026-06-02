@@ -36,7 +36,7 @@ export default async function BrandLeadRoutingPage({
   return (
     <>
       {header}
-      <LeadRoutingPanel initial={config} />
+      <LeadRoutingPanel brandId={brand.id} initial={config} />
     </>
   )
 }

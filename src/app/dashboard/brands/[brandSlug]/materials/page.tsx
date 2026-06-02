@@ -20,6 +20,7 @@ export default async function BrandMaterialsPage({
       />
       <MaterialsPanel
         slug={brandSlug}
+        brandId={brand.id}
         materials={materials}
         quota={brand.publicationQuota}
         used={brand.publicationsUsed}

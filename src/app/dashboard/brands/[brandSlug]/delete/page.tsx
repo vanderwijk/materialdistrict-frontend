@@ -16,7 +16,7 @@ export default async function DeleteBrandPage({
         title="Delete brand"
         crumbs={[{ label: brand.name }, { label: 'Delete brand' }]}
       />
-      <DeleteBrandPanel brandName={brand.name} />
+      <DeleteBrandPanel brandId={brand.id} brandName={brand.name} />
     </>
   )
 }

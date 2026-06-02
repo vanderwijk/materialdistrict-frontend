@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input, Select } from '@/components/ui/form'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { initialsFrom } from '@/lib/dashboard/nav'
@@ -20,6 +21,8 @@ const COUNTRIES = [
 export function ProfileForm({ initial }: { initial: UserProfile }) {
   const [form, setForm] = useState<UserProfile>(initial)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const router = useRouter()
 
   const set = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) =>
     setForm((f) => ({ ...f, [key]: value }))
@@ -32,9 +35,25 @@ export function ProfileForm({ initial }: { initial: UserProfile }) {
 
   async function handleSave() {
     setSaving(true)
-    // TODO: POST /md/v2/dashboard/profile (Johan). Mock: brief delay.
-    await new Promise((r) => setTimeout(r, 400))
-    setSaving(false)
+    setSaveError(null)
+    try {
+      const res = await fetch('/api/dashboard/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setSaveError(err?.message ?? 'Could not save your profile. Please try again.')
+        return
+      }
+      // Re-run Server Components so the sidebar + /auth/me reflect the change.
+      router.refresh()
+    } catch {
+      setSaveError('Could not save your profile. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const fullName = `${form.firstName} ${form.lastName}`.trim()
@@ -43,6 +62,8 @@ export function ProfileForm({ initial }: { initial: UserProfile }) {
     <>
       <div className="dash-panel">
         <h2 className="panel-section-title">Account details</h2>
+
+        {saveError && <p className="form-error" role="alert">{saveError}</p>}
 
         <div className="profile-avatar-row">
           <span className="sb-avatar profile-avatar-lg">

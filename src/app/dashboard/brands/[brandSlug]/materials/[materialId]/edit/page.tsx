@@ -27,7 +27,7 @@ export default async function EditMaterialPage({
           { label: form.name || 'Edit material' },
         ]}
       />
-      <MaterialForm slug={brandSlug} initial={form} tier={brand.tier} />
+      <MaterialForm slug={brandSlug} brandId={brand.id} initial={form} tier={brand.tier} />
     </>
   )
 }

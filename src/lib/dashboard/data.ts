@@ -1,14 +1,17 @@
 /**
  * Dashboard data layer.
  *
- * The single seam between the dashboard UI and its data source. Today every
- * function returns a typed fixture from `mock.ts`; when Johan ships the
- * endpoints listed in `dashboard-datacontract.md`, only this file changes —
- * each function swaps its `return MOCK_*` for a `wpFetch(...)` + mapper call.
- * Components and pages never import `mock.ts` directly.
+ * The single seam between the dashboard UI and its data source. Each function
+ * either calls WordPress (batch 1 — live) or still returns a typed fixture
+ * from `mock.ts` (batch 2 — pending endpoints). Components and pages never
+ * import `mock.ts` directly; flipping a panel to live is a change here only.
  *
- * All functions are async so the call sites are already written against the
- * real (network) shape. Server Components await them directly.
+ * Batch 1 live (real WP): getProfile, getBrandProfile, getBrandMaterials.
+ * Everything else is still mock until its endpoint ships.
+ *
+ * Reads run server-side with the JWT from the HttpOnly cookie (same auth path
+ * as the rest of the app). All functions are async so call sites are already
+ * written against the network shape.
  */
 
 import type {
@@ -28,62 +31,115 @@ import type {
   FeaturedPlacement,
   BrandCandidate,
 } from '@/types/dashboard'
+import { getAuthCookie } from '@/lib/auth/cookies'
+import { getInitialUser } from '@/lib/auth/get-current-user'
+import { findBrandMembership } from '@/lib/auth/user-helpers'
+import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import {
-  MOCK_PROFILE,
-  MOCK_BOOKMARKS,
-  MOCK_BOARDS,
-  MOCK_SAVED_SEARCHES,
-  MOCK_INSIGHTS,
-  MOCK_MY_REQUESTS,
-  MOCK_USER_INVOICES,
-  MOCK_BRAND_PROFILES,
-  MOCK_BRAND_MATERIALS,
-  MOCK_MATERIAL_FORM,
-  MOCK_INTERACTIONS,
-  MOCK_BRAND_STATS,
-  MOCK_LEAD_ROUTING,
-  MOCK_FEATURED,
-  MOCK_BRAND_INVOICES,
-  MOCK_BRAND_CANDIDATES,
-} from './mock'
+  mapUserProfile,
+  mapBrandProfile,
+  mapMaterialListRows,
+  mapBookmarks,
+  mapBoards,
+  mapSavedSearches,
+  mapInsights,
+  mapInvoices,
+  mapMaterialFormData,
+  mapFeaturedPlacements,
+  mapBrandCandidates,
+  mapMyRequests,
+  mapInteractions,
+  mapBrandStatistics,
+  mapLeadRoutingConfig,
+} from './mappers'
+import { MOCK_MATERIAL_FORM } from './mock'
+
+/**
+ * Resolve a brand slug to its numeric WP id via the current user's brands.
+ * Returns null when the user does not manage a brand with that slug — callers
+ * map that to `notFound()` (the page-level `requireManagedBrand` does too).
+ */
+async function resolveBrandId(slug: string): Promise<number | null> {
+  const user = await getInitialUser()
+  if (!user) return null
+  const brand = findBrandMembership(user, { slug })
+  return brand ? brand.id : null
+}
+
+/** Read the JWT from the cookie or throw a clean 401 (caller is gated). */
+async function requireToken(): Promise<string> {
+  const token = await getAuthCookie()
+  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
+  return token
+}
 
 // ------------------------------------------------------------
 // Personal account
 // ------------------------------------------------------------
 
-/** GET /md/v2/dashboard/profile */
+/** GET /md/v2/dashboard/profile (batch 1 — live) */
 export async function getProfile(): Promise<UserProfile> {
-  return MOCK_PROFILE
+  const token = await getAuthCookie()
+  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
+  const raw = await wpDashboardFetch<Parameters<typeof mapUserProfile>[0]>(
+    '/md/v2/dashboard/profile',
+    { method: 'GET', bearer: token },
+  )
+  return mapUserProfile(raw)
 }
 
-/** GET /md/v2/dashboard/bookmarks */
+/** GET /md/v2/dashboard/bookmarks (batch 3 — live) */
 export async function getBookmarks(): Promise<BookmarkItem[]> {
-  return MOCK_BOOKMARKS
+  const raw = await wpDashboardFetch<Parameters<typeof mapBookmarks>[0]>(
+    '/md/v2/dashboard/bookmarks',
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapBookmarks(raw)
 }
 
-/** GET /md/v2/dashboard/boards (Insider) */
+/** GET /md/v2/dashboard/boards (batch 3 — live, Insider) */
 export async function getBoards(): Promise<Board[]> {
-  return MOCK_BOARDS
+  const raw = await wpDashboardFetch<Parameters<typeof mapBoards>[0]>(
+    '/md/v2/dashboard/boards',
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapBoards(raw)
 }
 
-/** GET /md/v2/dashboard/saved-searches (Insider) */
+/** GET /md/v2/dashboard/saved-searches (batch 3 — live, Insider) */
 export async function getSavedSearches(): Promise<SavedSearch[]> {
-  return MOCK_SAVED_SEARCHES
+  const raw = await wpDashboardFetch<Parameters<typeof mapSavedSearches>[0]>(
+    '/md/v2/dashboard/saved-searches',
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapSavedSearches(raw)
 }
 
-/** GET /md/v2/dashboard/insider-insights (Insider) */
+/** GET /md/v2/dashboard/insider-insights (batch 3 — live, Insider) */
 export async function getInsiderInsights(): Promise<InsightReport[]> {
-  return MOCK_INSIGHTS
+  const raw = await wpDashboardFetch<Parameters<typeof mapInsights>[0]>(
+    '/md/v2/dashboard/insider-insights',
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapInsights(raw)
 }
 
 /** GET /md/v2/dashboard/requests */
 export async function getMyRequests(): Promise<MyRequest[]> {
-  return MOCK_MY_REQUESTS
+  const raw = await wpDashboardFetch<Parameters<typeof mapMyRequests>[0]>(
+    '/md/v2/dashboard/requests',
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapMyRequests(raw)
 }
 
-/** GET /md/v2/dashboard/invoices?scope=user */
+/** GET /md/v2/dashboard/invoices?scope=user (batch 3 — live) */
 export async function getUserInvoices(): Promise<Invoice[]> {
-  return MOCK_USER_INVOICES
+  const raw = await wpDashboardFetch<Parameters<typeof mapInvoices>[0]>(
+    '/md/v2/dashboard/invoices?scope=user',
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapInvoices(raw)
 }
 
 // ------------------------------------------------------------
@@ -91,18 +147,37 @@ export async function getUserInvoices(): Promise<Invoice[]> {
 // ------------------------------------------------------------
 
 /**
- * GET /md/v2/dashboard/brands/{brandId}/profile
- * Returns `null` when the slug is unknown → the page calls `notFound()`.
- * NOTE: authorization (does this user manage this brand?) is enforced at the
- * page level via `findBrandMembership(user, { slug })`, not here.
+ * GET /md/v2/dashboard/brands/{brandId}/profile (batch 1 — live)
+ * Returns `null` when the slug is unknown/unmanaged → page calls `notFound()`.
  */
 export async function getBrandProfile(slug: string): Promise<BrandProfile | null> {
-  return MOCK_BRAND_PROFILES[slug] ?? null
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return null
+  const token = await getAuthCookie()
+  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapBrandProfile>[0]>(
+      `/md/v2/dashboard/brands/${brandId}/profile`,
+      { method: 'GET', bearer: token },
+    )
+    return mapBrandProfile(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && err.status === 404) return null
+    throw err
+  }
 }
 
-/** GET /md/v2/dashboard/brands/{brandId}/materials */
+/** GET /md/v2/dashboard/brands/{brandId}/materials (batch 1 — live) */
 export async function getBrandMaterials(slug: string): Promise<MaterialListRow[]> {
-  return MOCK_BRAND_MATERIALS[slug] ?? []
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return []
+  const token = await getAuthCookie()
+  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
+  const raw = await wpDashboardFetch<Parameters<typeof mapMaterialListRows>[0]>(
+    `/md/v2/dashboard/brands/${brandId}/materials`,
+    { method: 'GET', bearer: token },
+  )
+  return mapMaterialListRows(raw)
 }
 
 /** GET /md/v2/dashboard/brands/{brandId}/materials/{id} (or blank for create) */
@@ -126,40 +201,100 @@ export async function getMaterialForm(
       keywords: [],
     }
   }
-  // Mock: a single editable material regardless of id.
-  return { ...MOCK_MATERIAL_FORM, id: materialId }
-}
-
-/** GET /md/v2/dashboard/brands/{brandId}/interactions */
-export async function getInteractions(slug: string): Promise<Interaction[]> {
-  return MOCK_INTERACTIONS[slug] ?? []
-}
-
-/** GET /md/v2/dashboard/brands/{brandId}/statistics */
-export async function getBrandStatistics(slug: string): Promise<BrandStatistics> {
-  return MOCK_BRAND_STATS[slug] ?? { metrics: [], materials: [] }
-}
-
-/** GET /md/v2/dashboard/brands/{brandId}/lead-routing */
-export async function getLeadRouting(slug: string): Promise<LeadRoutingConfig> {
-  return MOCK_LEAD_ROUTING[slug] ?? { defaultName: '', defaultEmail: '', routes: [] }
-}
-
-/** GET /md/v2/dashboard/brands/{brandId}/featured */
-export async function getFeaturedPlacements(slug: string): Promise<FeaturedPlacement[]> {
-  return MOCK_FEATURED[slug] ?? []
-}
-
-/** GET /md/v2/dashboard/brands/{brandId}/invoices */
-export async function getBrandInvoices(slug: string): Promise<Invoice[]> {
-  return MOCK_BRAND_INVOICES[slug] ?? []
-}
-
-/** GET /md/v2/dashboard/brand-candidates?q=... */
-export async function getBrandCandidates(query: string): Promise<BrandCandidate[]> {
-  if (!query.trim()) return MOCK_BRAND_CANDIDATES
-  const q = query.toLowerCase()
-  return MOCK_BRAND_CANDIDATES.filter(
-    (c) => c.name.toLowerCase().includes(q) || c.domain.toLowerCase().includes(q),
+  // Edit: fetch the form from WP (batch 3 — live).
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return { ...MOCK_MATERIAL_FORM, id: materialId }
+  const raw = await wpDashboardFetch<Parameters<typeof mapMaterialFormData>[0]>(
+    `/md/v2/dashboard/brands/${brandId}/materials/${materialId}`,
+    { method: 'GET', bearer: await requireToken() },
   )
+  return mapMaterialFormData(raw)
+}
+
+/** GET /md/v2/dashboard/brands/{brandId}/interactions (batch 2 — live) */
+export async function getInteractions(slug: string): Promise<Interaction[]> {
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return []
+  const raw = await wpDashboardFetch<Parameters<typeof mapInteractions>[0]>(
+    `/md/v2/dashboard/brands/${brandId}/interactions`,
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapInteractions(raw)
+}
+
+/** GET /md/v2/dashboard/brands/{brandId}/statistics (batch 2 — live; 403 free tier) */
+export async function getBrandStatistics(slug: string): Promise<BrandStatistics> {
+  const empty: BrandStatistics = { metrics: [], materials: [] }
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return empty
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapBrandStatistics>[0]>(
+      `/md/v2/dashboard/brands/${brandId}/statistics`,
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapBrandStatistics(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) return empty
+    throw err
+  }
+}
+
+/** GET /md/v2/dashboard/brands/{brandId}/lead-routing (batch 2 — live; 403 free tier) */
+export async function getLeadRouting(slug: string): Promise<LeadRoutingConfig> {
+  const empty: LeadRoutingConfig = { defaultName: '', defaultEmail: '', routes: [] }
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return empty
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapLeadRoutingConfig>[0]>(
+      `/md/v2/dashboard/brands/${brandId}/lead-routing`,
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapLeadRoutingConfig(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) return empty
+    throw err
+  }
+}
+
+/** GET /md/v2/dashboard/brands/{brandId}/featured (batch 4 — live, Partner+) */
+export async function getFeaturedPlacements(slug: string): Promise<FeaturedPlacement[]> {
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return []
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapFeaturedPlacements>[0]>(
+      `/md/v2/dashboard/brands/${brandId}/featured`,
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapFeaturedPlacements(raw)
+  } catch (err) {
+    // Below Partner → 403; unknown brand → 404. Panel gates separately.
+    if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) return []
+    throw err
+  }
+}
+
+/** GET /md/v2/dashboard/brands/{brandId}/invoices (batch 4 — live) */
+export async function getBrandInvoices(slug: string): Promise<Invoice[]> {
+  const brandId = await resolveBrandId(slug)
+  if (brandId === null) return []
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapInvoices>[0]>(
+      `/md/v2/dashboard/brands/${brandId}/invoices`,
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapInvoices(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && err.status === 404) return []
+    throw err
+  }
+}
+
+/** GET /md/v2/dashboard/brand-candidates?q=... (batch 4 — live) */
+export async function getBrandCandidates(query: string): Promise<BrandCandidate[]> {
+  const qs = query.trim() ? `?q=${encodeURIComponent(query.trim())}` : ''
+  const raw = await wpDashboardFetch<Parameters<typeof mapBrandCandidates>[0]>(
+    `/md/v2/dashboard/brand-candidates${qs}`,
+    { method: 'GET', bearer: await requireToken() },
+  )
+  return mapBrandCandidates(raw)
 }

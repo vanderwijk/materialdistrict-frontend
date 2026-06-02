@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input, Select } from '@/components/ui/form'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { IconAdd, IconDelete } from '@/components/ui/icons'
@@ -13,12 +14,19 @@ const COUNTRIES = [
 
 /**
  * Geo-based lead routing (Plus+). A default contact plus per-country overrides
- * deciding who receives requests. Mutations are local until the lead-routing
- * endpoints land.
+ * deciding who receives requests. Saves via `POST .../lead-routing`.
  */
-export function LeadRoutingPanel({ initial }: { initial: LeadRoutingConfig }) {
+export function LeadRoutingPanel({
+  brandId,
+  initial,
+}: {
+  brandId: number
+  initial: LeadRoutingConfig
+}) {
+  const router = useRouter()
   const [config, setConfig] = useState<LeadRoutingConfig>(initial)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   function addRoute() {
     const route: LeadRoute = { id: Date.now(), country: '', name: '', email: '' }
@@ -38,8 +46,31 @@ export function LeadRoutingPanel({ initial }: { initial: LeadRoutingConfig }) {
 
   async function handleSave() {
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 400))
-    setSaving(false)
+    setSaveError(null)
+    try {
+      const res = await fetch(`/api/dashboard/brands/${brandId}/lead-routing`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setSaveError(
+          err?.code === 'md_dashboard_forbidden'
+            ? 'Lead routing requires a Plus or Partner membership.'
+            : err?.message ?? 'Could not save lead routing. Please try again.',
+        )
+        return
+      }
+      // WP reassigns route ids — re-read so the UI has the canonical config.
+      const saved = (await res.json()) as LeadRoutingConfig
+      setConfig(saved)
+      router.refresh()
+    } catch {
+      setSaveError('Could not save lead routing. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -47,6 +78,7 @@ export function LeadRoutingPanel({ initial }: { initial: LeadRoutingConfig }) {
       <div className="dash-panel">
         <h2 className="panel-section-title">Default contact</h2>
         <p className="panel-section-desc">Receives all requests unless a country rule below matches.</p>
+        {saveError && <p className="form-error" role="alert">{saveError}</p>}
         <div className="g2">
           <Input
             label="Name"

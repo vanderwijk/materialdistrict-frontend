@@ -24,29 +24,52 @@ const TAXONOMY: Record<string, Record<string, string[]>> = {
   Furniture: { Surfaces: ['Worktop', 'Tabletop'] },
 }
 
-function newAsset(name: string): MaterialAsset {
-  return { id: `local-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, name, url: null }
-}
-
 /**
  * Material create/edit form. Controlled state seeded from the data layer.
- * Downloads (PDF & EPD) require Basis+, keywords require Plus+ — gated inline
- * with BrandTierGate. Save/Delete stub the material endpoints.
+ * Assets upload to the WP media library via `/api/dashboard/media`. Downloads
+ * require Basis+, keywords require Plus+ (gated inline and enforced by WP).
+ * Save = POST (create) / PATCH (edit); Delete = DELETE.
  */
 export function MaterialForm({
   slug,
+  brandId,
   initial,
   tier,
 }: {
   slug: string
+  brandId: number
   initial: MaterialFormData
   tier: ManufacturerTier
 }) {
   const router = useRouter()
   const [form, setForm] = useState<MaterialFormData>(initial)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
   const [keywordDraft, setKeywordDraft] = useState('')
   const [videoDraft, setVideoDraft] = useState('')
+
+  /** Upload one file to the WP media library via the proxy → MaterialAsset. */
+  async function uploadFile(file: File): Promise<MaterialAsset | null> {
+    setSaveError(null)
+    setUploading(true)
+    try {
+      const data = new FormData()
+      data.append('file', file)
+      const res = await fetch('/api/dashboard/media', { method: 'POST', body: data })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setSaveError(err?.message ?? 'Upload failed. Please try again.')
+        return null
+      }
+      return (await res.json()) as MaterialAsset
+    } catch {
+      setSaveError('Upload failed. Please try again.')
+      return null
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const canDownloads = tierMeets(tier, 'basis')
   const canKeywords = tierMeets(tier, 'plus')
@@ -101,14 +124,52 @@ export function MaterialForm({
 
   async function handleSave() {
     setSaving(true)
-    await new Promise((r) => setTimeout(r, 400))
-    setSaving(false)
-    router.push(`/dashboard/brands/${slug}/materials`)
+    setSaveError(null)
+    try {
+      const isCreate = form.mode === 'create' || form.id === null
+      const url = isCreate
+        ? `/api/dashboard/brands/${brandId}/materials`
+        : `/api/dashboard/brands/${brandId}/materials/${form.id}`
+      const res = await fetch(url, {
+        method: isCreate ? 'POST' : 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setSaveError(
+          err?.code === 'md_dashboard_forbidden'
+            ? 'Your membership tier does not allow one of these fields (videos/downloads need Basis+, keywords need Plus+).'
+            : err?.message ?? 'Could not save the material. Please try again.',
+        )
+        return
+      }
+      router.push(`/dashboard/brands/${slug}/materials`)
+      router.refresh()
+    } catch {
+      setSaveError('Could not save the material. Please try again.')
+    } finally {
+      setSaving(false)
+    }
   }
 
-  function handleDelete() {
+  async function handleDelete() {
+    if (form.id === null) return
     if (!window.confirm('Delete this material? This cannot be undone.')) return
-    router.push(`/dashboard/brands/${slug}/materials`)
+    try {
+      const res = await fetch(`/api/dashboard/brands/${brandId}/materials/${form.id}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setSaveError(err?.message ?? 'Could not delete the material. Please try again.')
+        return
+      }
+      router.push(`/dashboard/brands/${slug}/materials`)
+      router.refresh()
+    } catch {
+      setSaveError('Could not delete the material. Please try again.')
+    }
   }
 
   return (
@@ -128,18 +189,27 @@ export function MaterialForm({
 
       <div className="dash-panel">
         <h2 className="panel-section-title">Featured image</h2>
+        {saveError && <p className="form-error" role="alert">{saveError}</p>}
         <div className="upload-box">
           <IconUpload size={22} />
           <span className="upload-name">
             {form.featuredImage ? form.featuredImage.name : 'Upload a featured image (JPG/PNG)'}
           </span>
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            onClick={() => set('featuredImage', newAsset(`featured-${form.name || 'image'}.jpg`))}
-          >
-            Choose file
-          </button>
+          <label className="btn btn-outline btn-sm">
+            {uploading ? 'Uploading…' : 'Choose file'}
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                e.target.value = ''
+                if (!file) return
+                const asset = await uploadFile(file)
+                if (asset) set('featuredImage', asset)
+              }}
+            />
+          </label>
         </div>
       </div>
 
@@ -210,16 +280,21 @@ export function MaterialForm({
       <div className="dash-panel">
         <div className="panel-head-row">
           <h2 className="panel-section-title">Gallery</h2>
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            onClick={() => {
-              const name = window.prompt('Image file name')?.trim()
-              if (name) set('gallery', [...form.gallery, newAsset(name)])
-            }}
-          >
-            <IconAdd size={16} /> Add image
-          </button>
+          <label className="btn btn-outline btn-sm">
+            <IconAdd size={16} /> {uploading ? 'Uploading…' : 'Add image'}
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={async (e) => {
+                const file = e.target.files?.[0]
+                e.target.value = ''
+                if (!file) return
+                const asset = await uploadFile(file)
+                if (asset) set('gallery', [...form.gallery, asset])
+              }}
+            />
+          </label>
         </div>
         {form.gallery.length === 0 ? (
           <p className="field-helper">No gallery images yet.</p>
@@ -285,16 +360,20 @@ export function MaterialForm({
           <>
             <div className="panel-head-row">
               <p className="field-helper">Datasheets, brochures, EPDs.</p>
-              <button
-                type="button"
-                className="btn btn-outline btn-sm"
-                onClick={() => {
-                  const name = window.prompt('Document file name')?.trim()
-                  if (name) set('downloads', [...form.downloads, newAsset(name)])
-                }}
-              >
-                <IconAdd size={16} /> Add file
-              </button>
+              <label className="btn btn-outline btn-sm">
+                <IconAdd size={16} /> {uploading ? 'Uploading…' : 'Add file'}
+                <input
+                  type="file"
+                  hidden
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    e.target.value = ''
+                    if (!file) return
+                    const asset = await uploadFile(file)
+                    if (asset) set('downloads', [...form.downloads, asset])
+                  }}
+                />
+              </label>
             </div>
             {form.downloads.length === 0 ? (
               <p className="field-helper">No documents yet.</p>

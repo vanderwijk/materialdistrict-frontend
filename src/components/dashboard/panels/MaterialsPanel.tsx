@@ -19,22 +19,25 @@ function fmtDate(iso: string): string {
  */
 export function MaterialsPanel({
   slug,
+  brandId,
   materials: initial,
   quota,
   used,
 }: {
   slug: string
+  brandId: number
   materials: MaterialListRow[]
   quota: number
   used: number
 }) {
   const [materials, setMaterials] = useState(initial)
+  const [error, setError] = useState<string | null>(null)
   const unlimited = quota === UNLIMITED_PUBLICATIONS
   const atLimit = !unlimited && used >= quota
   const pct = unlimited || quota <= 0 ? 0 : Math.min(100, Math.round((used / quota) * 100))
   const fill = { '--progress': `${pct}%` } as CSSProperties
 
-  function toggleStatus(id: number) {
+  function flip(id: number) {
     setMaterials((list) =>
       list.map((m) =>
         m.id === id
@@ -42,6 +45,34 @@ export function MaterialsPanel({
           : m,
       ),
     )
+  }
+
+  async function toggleStatus(id: number) {
+    const current = materials.find((m) => m.id === id)
+    if (!current) return
+    const next: MaterialPublicationStatus = current.status === 'online' ? 'offline' : 'online'
+
+    setError(null)
+    flip(id) // optimistic
+    try {
+      const res = await fetch(`/api/dashboard/brands/${brandId}/materials/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: next }),
+      })
+      if (!res.ok) {
+        flip(id) // revert
+        const err = await res.json().catch(() => null)
+        setError(
+          err?.code === 'md_dashboard_quota_exceeded'
+            ? 'Publication quota reached — upgrade your plan or take another material offline first.'
+            : err?.message ?? 'Could not update the material. Please try again.',
+        )
+      }
+    } catch {
+      flip(id) // revert
+      setError('Could not update the material. Please try again.')
+    }
   }
 
   return (
@@ -61,6 +92,8 @@ export function MaterialsPanel({
           <IconAdd size={16} /> Add material
         </Link>
       </div>
+
+      {error && <p className="form-error" role="alert">{error}</p>}
 
       {!unlimited && quota > 0 && (
         <div className="progress-track memb-quota">
