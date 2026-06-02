@@ -1,7 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { User } from '@/types/shared'
+import { useAuth } from '@/components/providers'
 import {
   USER_NAV,
   BRAND_NAV,
@@ -9,7 +11,7 @@ import {
   initialsFrom,
   type DashboardScope,
 } from '@/lib/dashboard/nav'
-import { IconChevronDown, IconChevronRight, IconArrowRight, IconAdd } from '@/components/ui/icons'
+import { IconChevronDown, IconChevronRight, IconArrowRight, IconAdd, IconLogout } from '@/components/ui/icons'
 
 /**
  * Adaptive dashboard sidebar.
@@ -28,6 +30,13 @@ export function DashboardSidebar({
   scope: DashboardScope
 }) {
   const isUserScope = scope.kind === 'user'
+  const { signOut } = useAuth()
+  const router = useRouter()
+
+  async function handleSignOut() {
+    await signOut()
+    router.push('/')
+  }
 
   return (
     <div className="dash-sidebar-wrap">
@@ -99,9 +108,14 @@ export function DashboardSidebar({
         </Link>
       </div>
 
-      <Link href="/" className="btn btn-outline sb-back-btn">
-        ← Back to homepage
-      </Link>
+      <div className="sb-footer">
+        <Link href="/" className="btn btn-outline sb-back-btn">
+          ← Back to homepage
+        </Link>
+        <button type="button" className="sb-signout" onClick={handleSignOut}>
+          <IconLogout size={16} /> Sign out
+        </button>
+      </div>
     </div>
   )
 }

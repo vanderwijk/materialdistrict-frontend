@@ -86,13 +86,13 @@ export function ReaderMembershipPanel({ membership }: { membership: Membership }
           <span className="plan-name">Annual</span>
           <span className="plan-price">{fmtPrice(annual.amount, annual.currency)}<small>/year</small></span>
           <span className="plan-note">Best value</span>
-          <Link href="/membership?plan=annual" className="btn btn-insider">Choose annual</Link>
+          <Link href="/checkout?plan=insider&interval=annual" className="btn btn-insider">Choose annual</Link>
         </div>
         <div className="plan-option">
           <span className="plan-name">Monthly</span>
           <span className="plan-price">{fmtPrice(monthly.amount, monthly.currency)}<small>/month</small></span>
           <span className="plan-note">Cancel anytime</span>
-          <Link href="/membership?plan=monthly" className="btn btn-outline">Choose monthly</Link>
+          <Link href="/checkout?plan=insider&interval=monthly" className="btn btn-outline">Choose monthly</Link>
         </div>
       </div>
     </div>

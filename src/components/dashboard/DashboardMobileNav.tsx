@@ -1,7 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { User } from '@/types/shared'
+import { useAuth } from '@/components/providers'
+import { IconLogout } from '@/components/ui/icons'
 import {
   USER_NAV,
   BRAND_NAV,
@@ -34,6 +37,14 @@ export function DashboardMobileNav({
         }))
       : USER_NAV.map((n) => ({ key: n.key, label: n.label, href: n.href }))
 
+  const { signOut } = useAuth()
+  const router = useRouter()
+
+  async function handleSignOut() {
+    await signOut()
+    router.push('/')
+  }
+
   return (
     <nav className="dash-mob-nav" aria-label="Dashboard navigation">
       {items.map((item) => (
@@ -49,6 +60,9 @@ export function DashboardMobileNav({
       <Link href="/" className="dash-mob-nav-btn is-home">
         ← Home
       </Link>
+      <button type="button" className="dash-mob-nav-btn dash-mob-signout" onClick={handleSignOut}>
+        <IconLogout size={14} /> Sign out
+      </button>
     </nav>
   )
 }

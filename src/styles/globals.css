@@ -11346,3 +11346,10 @@ mark.search-mark {
   .cat-remove,.route-remove{grid-column:span 2;justify-self:start}
   .featured-row{flex-direction:column;align-items:flex-start}
 }
+
+/* --- Sidebar footer + sign-out --- */
+.sb-footer{display:flex;flex-direction:column;gap:8px}
+.sb-signout{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px;font-size:13px;font-weight:500;color:var(--text-muted);background:none;border:none;cursor:pointer;transition:color 0.15s;font-family:var(--font-body)}
+.sb-signout:hover{color:var(--red)}
+.dash-mob-signout{gap:6px}
+.dash-mob-signout:hover{color:var(--red)}

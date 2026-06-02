@@ -1828,3 +1828,17 @@ upload-flow, billing-portal, server-side `timeAgo`/`summary`,
   brandId-API/slug-routes; WP Media REST voor assets; Stripe Customer Portal
   via `/membership/portal`, geen apart cancel-endpoint v1; `timeAgo` +
   saved-search-`summary` server-side; `countsAgainstQuota` als computed veld).
+
+### Patch — sign-out + checkout-CTA (01-06-2026)
+
+- **Sign-out toegevoegd:** er was nog geen uitlog-mogelijkheid. Knop nu in
+  `DashboardSidebar` (footer, naast "Back to homepage") én in
+  `DashboardMobileNav` (zijbalk is op mobiel verborgen). Beide roepen
+  `useAuth().signOut()` aan en navigeren daarna naar `/`. Nieuwe klassen:
+  `.sb-footer`, `.sb-signout`, `.dash-mob-signout`.
+- **Reader-Insider-CTA's** in `ReaderMembershipPanel` wijzen nu naar
+  `/checkout?plan=insider&interval=annual|monthly` (was `/membership?plan=…`),
+  consistent met de bestaande `/membership`-CTA. NB: de `/checkout`-route zelf
+  hoort bij de membership-track (S11.1) en is daar nog te bouwen — tot die er
+  is geeft de link een 404 (zelfde vooruit-lopende patroon als de bestaande
+  membership-CTA).
