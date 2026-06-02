@@ -43,7 +43,7 @@ export function HeaderShell() {
   const router = useRouter()
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
-  const { isLoggedIn, isMember } = useAuth()
+  const { isLoggedIn, isMember, signOut } = useAuth()
 
   function handleLoginClick() {
     // Capture the current page as ?next= so the user lands back where
@@ -56,6 +56,11 @@ export function HeaderShell() {
     }
   }
 
+  async function handleSignOut() {
+    await signOut()
+    router.push('/')
+  }
+
   return (
     <Header
       currentSection={getCurrentSection(pathname)}
@@ -65,6 +70,7 @@ export function HeaderShell() {
       onThemeToggle={toggleTheme}
       onLoginClick={handleLoginClick}
       onDashboardClick={() => router.push('/dashboard')}
+      onSignOut={handleSignOut}
       onInsiderClick={() => router.push('/membership')}
       onSearch={(q) => {
         if (q.trim()) {

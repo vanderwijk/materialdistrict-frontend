@@ -1877,3 +1877,26 @@ Vervolg op de membership-pagina's (`/membership`, `/become-a-partner`) en de han
 - P3 nog te bouwen: `checkout=success|cancel`-afhandeling op `/membership` (bevestiging + `router.refresh()`). Leunt op Johan's Stripe-redirect.
 - Werkt pas écht na Johan's Stripe-config + plugin-deploy (commit 4b5b278), zie handoff §2 / mail aan Johan.
 - `/dashboard` (PartnerCta linkt ernaar) loopt in een aparte sessie.
+
+---
+
+## ↳ Header: Sign out in topmenu (02-06-2026)
+
+In het topmenu (de globale header) ontbrak een uitlog-mogelijkheid; die zat tot nu
+toe alleen in de dashboard-zijbalk + dashboard-mobile-nav (andere sessie, blijft).
+Toegevoegd in de hoofd-header — desktop-rij én mobile-drawer — conform de demo.
+
+**Bestanden gewijzigd:**
+- `src/components/layout/HeaderShell.tsx` — `signOut` uit `useAuth`; `handleSignOut()` (`await signOut()` -> `router.push('/')`); `onSignOut={handleSignOut}` doorgegeven aan `<Header>`.
+- `src/components/layout/Header.tsx` — prop `onSignOut`; import `IconLogout`; "Sign out"-outline-knop in de desktop-rij (bij `isLoggedIn`, vóór Dashboard) en onderaan de mobile-drawer auth-sectie (na Dashboard/Insider).
+
+**Beslissingen:**
+1. Hergebruik van het bestaande sign-out-patroon (`await signOut(); router.push('/')`) + `IconLogout` uit de icon-registry — consistent met de dashboard-sign-outs.
+2. Geen nieuwe CSS: `btn btn-outline` + bestaande icon-styling.
+3. Login/register/Insider/theme-toggle ongemoeid; dashboard niet aangeraakt.
+4. Control verschijnt alleen bij `isLoggedIn`.
+
+**Geen export-wijzigingen** (`HeaderProps` is intern; `index.ts` ongewijzigd).
+
+**Openstaand:** geen — frontend-only, geen backend-afhankelijkheid (`signOut` gebruikt de bestaande `/api/auth/logout`-route).
+

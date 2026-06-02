@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
 import { InsiderIcon } from '@/components/ui/icons/InsiderIcon'
+import { IconLogout } from '@/components/ui/icons'
 import { Logo } from './Logo'
 
 // ============================================================
@@ -48,6 +49,8 @@ interface HeaderProps {
   onLoginClick?: () => void
   /** Callback bij klik op dashboard (als isLoggedIn). */
   onDashboardClick?: () => void
+  /** Callback bij klik op sign-out (als isLoggedIn). */
+  onSignOut?: () => void
   /** Callback bij klik op Insider-knop (als isMember). */
   onInsiderClick?: () => void
   /** Callback bij submit van header-search. */
@@ -100,6 +103,7 @@ export function Header({
   cartCount = 0,
   onLoginClick,
   onDashboardClick,
+  onSignOut,
   onInsiderClick,
   onSearch,
   onThemeToggle,
@@ -262,13 +266,24 @@ export function Header({
 
           {/* Login of Dashboard knop */}
           {isLoggedIn ? (
-            <button
-              type="button"
-              className="btn btn-primary btn-sm hide-mobile"
-              onClick={onDashboardClick}
-            >
-              Dashboard
-            </button>
+            <>
+              <button
+                type="button"
+                className="btn btn-outline btn-sm hide-mobile"
+                onClick={onSignOut}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              >
+                <IconLogout size={16} />
+                Sign out
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm hide-mobile"
+                onClick={onDashboardClick}
+              >
+                Dashboard
+              </button>
+            </>
           ) : (
             <button
               type="button"
@@ -487,6 +502,24 @@ export function Header({
                       Insider
                     </button>
                   )}
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={() => {
+                      setMobileOpen(false)
+                      onSignOut?.()
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'inline-flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <IconLogout size={16} />
+                    Sign out
+                  </button>
                 </div>
               )}
             </div>
