@@ -1816,3 +1816,15 @@ upload-flow, billing-portal, server-side `timeAgo`/`summary`,
 
 **Bestanden aangemaakt:** 53 (zie zip `materialdistrict-dashboard-fase2.zip`).
 **Bestanden gewijzigd:** `src/styles/globals.css`.
+
+### Patch — build-fix (01-06-2026, na QA Johan)
+
+- `ReaderMembershipPanel.tsx`: `billingInterval === 'month'` → `'monthly'`.
+  `BillingInterval` in `shared.ts` is `'monthly' | 'annual' | null`. De
+  pricing-metadata `INSIDER_PRICING.monthly.interval: 'month'` is iets anders
+  (Stripe-achtig) en bleef ongemoeid. Enige plek in de dashboard-code met deze
+  vergelijking; `npm run build` blokkeerde hierop.
+- Datacontract-vragen 1–5 door Johan beantwoord en bevestigd (basis-URL +
+  brandId-API/slug-routes; WP Media REST voor assets; Stripe Customer Portal
+  via `/membership/portal`, geen apart cancel-endpoint v1; `timeAgo` +
+  saved-search-`summary` server-side; `countsAgainstQuota` als computed veld).
