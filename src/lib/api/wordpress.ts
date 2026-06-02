@@ -1627,3 +1627,47 @@ export async function registerUser(args: {
   })
   return mapAuthMeResponse(raw)
 }
+
+/**
+ * Rauwe WP-respons van POST /md/v2/checkout/insider.
+ */
+interface WPInsiderCheckoutResponse {
+  checkout_url: string
+  session_id: string
+}
+
+/** Resultaat van een gestarte Insider-checkout-sessie. */
+export interface InsiderCheckoutSession {
+  checkoutUrl: string
+  sessionId: string
+}
+
+/**
+ * Start een Stripe-checkout voor het Insider-abonnement (P2, handoff S12 §3).
+ *
+ * Server-side aan te roepen met de JWT uit de auth-cookie; de Stripe-secret
+ * blijft volledig aan de WP-kant. De frontend krijgt alleen een `checkoutUrl`
+ * terug om naartoe te redirecten.
+ *
+ * @throws WordPressAuthError / WordPressError (beide met `.status`):
+ *   - 401 → niet/ongeldig geauthenticeerd
+ *   - 409 md_checkout_already_subscribed → al Insider
+ *   - 503 md_checkout_unavailable → Stripe nog niet geconfigureerd
+ */
+export async function createInsiderCheckout(
+  token: string,
+  interval: 'monthly' | 'annual',
+): Promise<InsiderCheckoutSession> {
+  const raw = await wpAuthFetch<WPInsiderCheckoutResponse>(
+    '/md/v2/checkout/insider',
+    {
+      method: 'POST',
+      bearer: token,
+      body: { interval },
+    },
+  )
+  return {
+    checkoutUrl: raw.checkout_url,
+    sessionId: raw.session_id,
+  }
+}

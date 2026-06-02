@@ -10,10 +10,9 @@
  *  2. Ingelogd, gratis      → "Become an Insider" → checkout-route.
  *  3. Al Insider            → geen upsell, bevestigende state.
  *
- * VOORUIT-LOPEND: de checkout-route (`INSIDER_CHECKOUT_HREF`) bestaat nog niet
- * in de live-build — de subscribe-/checkout-sessie levert 'm later. Bewust als
- * één constante zodat het pad op één plek aangepast wordt zodra die landt
- * (zelfde aanpak als de vooruit-lopende footer-links, S11.7).
+ * De checkout-route (`INSIDER_CHECKOUT_HREF`) is gebouwd in P2 (handoff S12 §3):
+ * `/checkout` start de Stripe-subscribe server-side. Als één constante zodat het
+ * pad op één plek aanpasbaar blijft.
  *
  * Prijs/periode komen uit `membership.ts` (INSIDER_PRICING) — nooit hardcoded.
  */
@@ -22,7 +21,7 @@ import { Button } from '@/components/ui'
 import { useAuth } from '@/components/providers/AuthContext'
 import { INSIDER_PRICING } from '@/lib/config/membership'
 
-/** Vooruit-lopende checkout-route — landt in de subscribe-sessie. */
+/** Checkout-route — start de Insider-subscribe (zie src/app/checkout/page.tsx). */
 const INSIDER_CHECKOUT_HREF = '/checkout?plan=insider'
 const REGISTER_HREF = '/register?next=/membership'
 

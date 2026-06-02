@@ -1842,3 +1842,38 @@ upload-flow, billing-portal, server-side `timeAgo`/`summary`,
   hoort bij de membership-track (S11.1) en is daar nog te bouwen — tot die er
   is geeft de link een 404 (zelfde vooruit-lopende patroon als de bestaande
   membership-CTA).
+
+---
+
+## ↳ Membership-track frontend: register account_type (P1) + Insider-checkout (P2) (02-06-2026)
+
+Vervolg op de membership-pagina's (`/membership`, `/become-a-partner`) en de handoff
+`handoff-membership-s12-jeroen.md` (S12). Twee frontend-gaten uit §3 van die handoff dichtgezet.
+
+**Bestanden gewijzigd (P1 — account_type doorgeven):**
+- `src/app/register/page.tsx` — leest `?type` + leidt account-type af (`type=show|brand|partner` of `next=/become-a-partner` -> manufacturer; anders specifier); subheading past mee.
+- `src/app/register/RegisterForm.tsx` — `accountType`-prop + meegestuurd in de POST-body.
+- `src/app/api/auth/register/route.ts` — `accountType` geparsed/geforward (default specifier); stale "endpoint nog niet gebouwd"-noot bijgewerkt.
+- `src/lib/api/wordpress.ts` — `registerUser` stuurt `account_type` mee.
+
+**Bestanden aangemaakt (P2 — Insider-checkout-route):**
+- `src/app/checkout/page.tsx` — server-component; leest `?plan=insider&interval=`, leest de auth-cookie, roept WP `POST /md/v2/checkout/insider` aan (Bearer JWT, server-side) en redirect naar `checkout_url`. Foutafhandeling: niet-ingelogd/401 -> `/sign-in`, 409 -> `/membership?checkout=already`, 503 -> `/membership?checkout=unavailable`, overig -> `?checkout=error`.
+
+**Bestanden gewijzigd (P2):**
+- `src/lib/api/wordpress.ts` — helper `createInsiderCheckout(token, interval)` + type `InsiderCheckoutSession` (additief; gebaseerd op de P1-versie zodat P1 niet wordt teruggedraaid).
+- `src/app/membership/_components/MembershipCta.tsx` — comment bijgewerkt (checkout-route bestaat nu).
+
+**Beslissingen:**
+1. `account_type` wordt frontend-side gecanonicaliseerd naar `specifier|manufacturer` (WP-aliassen show/brand/partner blijven fallback).
+2. Checkout-initiatie via server-page `src/app/checkout/page.tsx` (geen aparte API-route), redirect-flow; Stripe-secret nooit client-side.
+3. Foutmapping op HTTP-status (401/409/503), niet op error-code — robuust, want `wpAuthFetch` surfacet alleen `md_auth_*` als `WordPressAuthError`; `md_checkout_*` komt als generieke `WordPressError` (heeft `.status`).
+4. `redirect()` bewust buiten de try (de interne throw zou anders door de eigen catch worden opgeslokt).
+
+**API-structuren (uit handoff S12 §4):**
+- `POST /md/v2/checkout/insider` (Bearer) -> `{ checkout_url, session_id }`. Errors: 401 md_auth_unauthenticated / 409 md_checkout_already_subscribed / 503 md_checkout_unavailable.
+- Register accepteert `account_type: specifier|manufacturer`; manufacturer-registratie maakt een connected brand (tier free).
+
+**Openstaand / vervolg:**
+- P3 nog te bouwen: `checkout=success|cancel`-afhandeling op `/membership` (bevestiging + `router.refresh()`). Leunt op Johan's Stripe-redirect.
+- Werkt pas écht na Johan's Stripe-config + plugin-deploy (commit 4b5b278), zie handoff §2 / mail aan Johan.
+- `/dashboard` (PartnerCta linkt ernaar) loopt in een aparte sessie.
