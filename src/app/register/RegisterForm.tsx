@@ -31,6 +31,7 @@ import { parseAuthErrorResponse, focusFieldForCode } from '@/app/_auth-component
 
 interface RegisterFormProps {
   next: string
+  accountType: 'specifier' | 'manufacturer'
 }
 
 type SubmitState =
@@ -40,7 +41,7 @@ type SubmitState =
 
 const MIN_PASSWORD_LENGTH = 10
 
-export function RegisterForm({ next }: RegisterFormProps) {
+export function RegisterForm({ next, accountType }: RegisterFormProps) {
   const router = useRouter()
   const { signIn } = useAuth()
   const [state, setState] = useState<SubmitState>({ kind: 'idle' })
@@ -84,7 +85,7 @@ export function RegisterForm({ next }: RegisterFormProps) {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password }),
+        body: JSON.stringify({ firstName, lastName, email, password, accountType }),
       })
 
       if (!res.ok) {

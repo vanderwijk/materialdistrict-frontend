@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 }
 
 interface RegisterPageProps {
-  searchParams: Promise<{ next?: string }>
+  searchParams: Promise<{ next?: string; type?: string }>
 }
 
 /**
@@ -22,8 +22,9 @@ interface RegisterPageProps {
  * that follows successful registration.
  */
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
-  const { next } = await searchParams
+  const { next, type } = await searchParams
   const safeNext = sanitizeNext(next)
+  const accountType = resolveAccountType(type, safeNext)
 
   const token = await getAuthCookie()
   if (token) {
@@ -40,7 +41,11 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   return (
     <AuthPageLayout
       heading="Create your account"
-      subheading="Free account — discover materials, save favourites, and request samples."
+      subheading={
+        accountType === 'manufacturer'
+          ? 'Free brand account — list your materials and reach specifiers.'
+          : 'Free account — discover materials, save favourites, and request samples.'
+      }
       footer={
         <>
           <span className="auth-card-footer-text">Already have an account?</span>{' '}
@@ -53,7 +58,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         </>
       }
     >
-      <RegisterForm next={safeNext} />
+      <RegisterForm next={safeNext} accountType={accountType} />
     </AuthPageLayout>
   )
 }
@@ -64,4 +69,21 @@ function sanitizeNext(next: string | undefined): string {
   if (next[0] !== '/') return fallback
   if (next.length > 1 && (next[1] === '/' || next[1] === '\\')) return fallback
   return next
+}
+
+/**
+ * Leid het account-type af uit de query-params (P1, handoff S12 §3).
+ *  - ?type=show|brand|partner|manufacturer → manufacturer
+ *  - ?next=/become-a-partner               → manufacturer
+ *  - anders                                → specifier
+ * WP accepteert de aliassen ook, maar we sturen bewust de canonieke waarde mee.
+ */
+function resolveAccountType(
+  type: string | undefined,
+  safeNext: string,
+): 'specifier' | 'manufacturer' {
+  const manufacturerTypes = ['show', 'brand', 'partner', 'manufacturer']
+  if (type && manufacturerTypes.includes(type.toLowerCase())) return 'manufacturer'
+  if (safeNext.startsWith('/become-a-partner')) return 'manufacturer'
+  return 'specifier'
 }

@@ -1,7 +1,7 @@
 /**
  * POST /api/auth/register
  *
- * Body: { email: string, password: string, firstName: string, lastName: string }
+ * Body: { email, password, firstName, lastName, accountType? }
  *
  * On success:
  *   - sets the HttpOnly auth cookie (persistent — a freshly created
@@ -16,12 +16,9 @@
  *     md_auth_weak_password)
  *   - 500 md_internal_error      — unexpected backend failure
  *
- * Note: the WordPress register endpoint is not yet implemented at the
- * time this route was written (session 6A). See
- * `wordpress-instructions-register.md` for the contract Johan is to
- * implement. Until Johan ships, this route will fail with a generic
- * WordPressError → 500 to the user. That is expected and intentional —
- * the contract is fixed; only the WP side is pending.
+ * The WordPress register endpoint is live (handoff S12) and accepts an
+ * optional `account_type` (specifier | manufacturer). A manufacturer
+ * registration creates a connected brand (tier: free) in the response.
  */
 
 import { NextResponse, type NextRequest } from 'next/server'
@@ -33,6 +30,7 @@ interface RegisterBody {
   password: string
   firstName: string
   lastName: string
+  accountType: 'specifier' | 'manufacturer'
 }
 
 function parseRegisterBody(raw: unknown): RegisterBody | null {
@@ -42,11 +40,14 @@ function parseRegisterBody(raw: unknown): RegisterBody | null {
   if (typeof b.password !== 'string' || b.password.length === 0) return null
   if (typeof b.firstName !== 'string' || b.firstName.length === 0) return null
   if (typeof b.lastName !== 'string' || b.lastName.length === 0) return null
+  const accountType =
+    b.accountType === 'manufacturer' ? 'manufacturer' : 'specifier'
   return {
     email: b.email,
     password: b.password,
     firstName: b.firstName,
     lastName: b.lastName,
+    accountType,
   }
 }
 

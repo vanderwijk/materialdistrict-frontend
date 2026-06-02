@@ -1613,6 +1613,7 @@ export async function registerUser(args: {
   password: string
   firstName: string
   lastName: string
+  accountType?: 'specifier' | 'manufacturer'
 }): Promise<AuthMeResponse> {
   const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/register', {
     method: 'POST',
@@ -1621,6 +1622,7 @@ export async function registerUser(args: {
       password: args.password,
       first_name: args.firstName,
       last_name: args.lastName,
+      account_type: args.accountType ?? 'specifier',
     },
   })
   return mapAuthMeResponse(raw)
