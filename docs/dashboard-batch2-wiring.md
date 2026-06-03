@@ -5,21 +5,6 @@ endpoint oplevert. Bedoeld om incrementeel te werken (zoals Johans handoff
 voorschrijft): per endpoint alleen `data.ts` aanpassen + eventueel één
 proxy-route + de UI-stub aansluiten. Volg het bewezen **batch-1-patroon**.
 
-## WP-status (Johan, 02-06-2026)
-
-**Batch 2 én batch 3 staan live op productie** (`materialdistrict.com/wp-json`).
-Je kunt direct bedraden — geen wachten op nieuwe plugin-deploy voor onderstaande
-endpoints. Handoffs: `dashboard-handoff-batch2-jeroen.md` + `batch3`.
-
-| Batch | Live op productie |
-|---|---|
-| **2** | portal, requests, interactions (+ PATCH status), lead-routing, statistics |
-| **3** | bookmarks, boards, saved-searches, insider-insights, user invoices, material form CRUD |
-
-**Nog niet live (batch 4+):** bookmark POST (public site).
-
-**Batch 4** (featured, brand invoices, delete brand, brand-candidates / claim / request-new): deploy volgt — zie `dashboard-handoff-batch4-jeroen.md`.
-
 ## Vaste aanpak (zelfde als batch 1)
 
 1. **Mapper** toevoegen in `src/lib/dashboard/mappers.ts` (snake → camel; en
@@ -78,89 +63,15 @@ Insider-gating (boards / saved-searches / insights) blijft client-side via
 | Create | `POST …/brands/{id}/materials` | retour: nieuwe `id` |
 | Edit | `PATCH …/brands/{id}/materials/{matId}` | |
 | Delete | `DELETE …/brands/{id}/materials/{matId}` | |
-| **Uploads** | `POST /wp/v2/media` (los van dashboard) | Zie **Bevestigingen Johan** hieronder — geen enkele `attachment_ids`-array |
+| **Uploads** | `POST /wp/v2/media` (los van dashboard) | form stuurt `attachment_ids` mee; WP checkt brand-ownership. **Eerst bij Johan bevestigen**: veldnaam + flow |
 
 UI: `MaterialForm.handleSave` / `handleDelete` (stubs staan klaar). Downloads
 zijn Basis+, keywords Plus+ (gating al client-side; server dwingt af).
 
-## Bevestigingen Johan (02-06-2026)
+## Eerst bij Johan bevestigen (voordat bedraden zin heeft)
 
-Antwoorden op de vier open punten — bedraden kan nu starten.
-
-### 1. Materiaal-uploads
-
-**Geen** generieke `attachment_ids`-array. Flow:
-
-1. Client uploadt via **`POST /wp/v2/media`** (JWT in `Authorization` header).
-2. Response levert attachment-**id** (numeriek).
-3. Material **POST/PATCH** stuurt id's in **aparte velden** (snake_case body):
-
-```json
-{
-  "featured_image_id": 12345,
-  "gallery_attachment_ids": [12346, 12347],
-  "download_attachment_ids": [12348]
-}
-```
-
-**Validatie WP bij save:**
-
-- User moet de brand **beheren** (`md_dashboard_require_managed_brand`).
-- Material moet bij die brand horen (create zet `_material_brand`).
-- Per attachment: post type `attachment` + **`post_author` = ingelogde user** (of user heeft `edit_others_posts`). Geen aparte “brand owns this media”-check — upload gebeurt onder jouw JWT, koppeling bij material save.
-
-Tier gates: `download_attachment_ids` / `videos` → Basis+; niet-lege `keywords` → Plus+.
-
-Zie ook `dashboard-datacontract.md` § Material form + `dashboard-handoff-batch3-jeroen.md`.
-
-### 2. Featured “Book slot”
-
-**Boeken:** later via **WooCommerce / upsell-shop** — **geen** dashboard POST-endpoint voor booking.
-
-**Lezen:** `GET /md/v2/dashboard/brands/{brandId}/featured` → **batch 4 live na deploy**. Partner tier vereist (403 anders). `FeaturedPanel` read-only; “Book”-CTA blijft upsell-track.
-
-Catalogus van slots = frontend config/regel; per-brand status = WP data (later).
-
-### 3. Add brand — claim / request-new
-
-**Live in batch 4** (zie `dashboard-handoff-batch4-jeroen.md`):
-
-| Endpoint | Request | Response |
-|---|---|---|
-| `POST /md/v2/dashboard/brands/claim` | `{ "brand_id": 3576 }` | `{ "status": "ok" }` |
-| `POST /md/v2/dashboard/brands/request-new` | `{ "name": "…", "website": "…", "email": "…", "message": "…" }` | `{ "status": "ok" }` |
-
-`GET /md/v2/dashboard/brand-candidates?q=…` → `BrandCandidate[]` (domain match op user e-mail).
-
-### 4. Membership portal
-
-**Bevestigd en live:**
-
-`GET /md/v2/dashboard/membership/portal` → `{ "url": "https://billing.stripe.com/…" }`
-
-- Vereist `stripe_customer_id` op user (Insider); anders **503** `md_dashboard_unavailable`.
-- `return_url` → `{frontend}/dashboard/membership`.
-- Geen POST cancel in v1 — alles via Stripe portal + webhooks.
-
-**Frontend:** `ReaderMembershipPanel` → proxy `GET /api/dashboard/membership/portal` → `window.location.href = data.url` (vervang `/dashboard/membership/manage`).
-
----
-
-## Aanbevolen bedraad-volgorde (Johan)
-
-Alles batch 2+3 hieronder is **al live** — volgorde is voor jouw planning, niet voor deploy-wachten.
-
-| # | Paneel | Waarom eerst |
-|---|---|---|
-| 1 | **Membership portal** | Snelle winst, één GET + redirect |
-| 2 | **My requests** | Read-only, plat |
-| 3 | **Interactions** | Read-only; PATCH status optioneel later |
-| 4 | **Statistics** | Read-only; **403 op free-tier brands** (test met Basis+ brand of verwacht 403) |
-| 5 | **Lead routing** | GET + POST; **403 op free tier** |
-| 6 | **User invoices** | Read-only (batch 3) |
-| 7 | **Bookmarks / boards / saved searches / insider insights** | Batch 3; boards/searches/insights vereisen Insider |
-| 8 | **Material form** | Meest complex (media upload + PATCH dispatch); batch 3 live |
-
-**Wachten tot batch 4 deploy:** featured (Partner+), brand invoices, delete brand, add brand.
-
-**Foutcodes batch 3 extra:** `md_dashboard_insider_required` (403) voor boards, saved-searches, insider-insights.
+- Materiaal-uploads: exacte koppeling media → materiaal (`attachment_ids`?).
+- Featured "Book slot": loopt dit via WooCommerce/upsell of een dashboard-endpoint?
+- Add brand: response-shapes van `claim` / `request-new`.
+- Membership portal: `GET /dashboard/membership/portal → { url }` bevestigen
+  (dan wijst de "Manage billing"-knop in `ReaderMembershipPanel` daarheen).

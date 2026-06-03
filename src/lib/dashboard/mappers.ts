@@ -349,6 +349,11 @@ function mapCategory(raw: RawMaterialCategory): MaterialCategoryPath {
   return { id: String(raw.id), l1: raw.l1 ?? '', l2: raw.l2 ?? '', l3: raw.l3 ?? '' }
 }
 
+/** Full assignable-category catalogue from the material-categories endpoint. */
+export function mapMaterialCategoryOptions(raw: RawMaterialCategory[]): MaterialCategoryPath[] {
+  return Array.isArray(raw) ? raw.map(mapCategory) : []
+}
+
 export function mapMaterialFormData(raw: RawMaterialFormData): MaterialFormData {
   return {
     mode: raw.mode ?? 'edit',

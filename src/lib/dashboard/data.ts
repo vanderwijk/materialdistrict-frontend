@@ -25,6 +25,7 @@ import type {
   BrandProfile,
   MaterialListRow,
   MaterialFormData,
+  MaterialCategoryPath,
   Interaction,
   BrandStatistics,
   LeadRoutingConfig,
@@ -51,6 +52,7 @@ import {
   mapInteractions,
   mapBrandStatistics,
   mapLeadRoutingConfig,
+  mapMaterialCategoryOptions,
 } from './mappers'
 import { MOCK_MATERIAL_FORM } from './mock'
 
@@ -226,6 +228,24 @@ export async function getMaterialForm(
     { method: 'GET', bearer: await requireToken() },
   )
   return mapMaterialFormData(raw)
+}
+
+/**
+ * GET /md/v2/dashboard/material-categories — assignable category catalogue with
+ * real WP term ids. Until the endpoint is live it 404s → empty catalogue, and
+ * the picker shows a "not available yet" hint (the form still works).
+ */
+export async function getMaterialCategories(): Promise<MaterialCategoryPath[]> {
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapMaterialCategoryOptions>[0]>(
+      '/md/v2/dashboard/material-categories',
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapMaterialCategoryOptions(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError) return []
+    throw err
+  }
 }
 
 /** GET /md/v2/dashboard/brands/{brandId}/interactions (batch 2 — live) */

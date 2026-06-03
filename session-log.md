@@ -1994,3 +1994,29 @@ onvoorwaardelijk (rendert `locked` voor niet-Insiders), dus een
 `403 md_dashboard_insider_required` zou de pagina laten crashen. `getBoards`,
 `getSavedSearches` en `getInsiderInsights` vangen 403 nu af → `[]` (boards/
 saved-searches gaten al client-side vóór de fetch; dit is belt-and-suspenders).
+
+### Patch — Dashboard robuustheid-vangnet (C)
+
+Nu de panelen echte netwerk-reads doen:
+- `src/app/dashboard/error.tsx` — segment-brede error boundary (rendert binnen
+  de shell): vriendelijke melding + "Try again" (reset) + terug-link. `notFound()`
+  en auth-redirects blijven ongemoeid (geen errors).
+- `src/app/dashboard/loading.tsx` — skeleton-laadstaat (header + paneel) tijdens
+  server-side reads. Nieuwe klasse `.dash-loading`.
+
+### Patch — Categorie-picker (B): echte taxonomy i.p.v. hardcoded
+
+`MaterialForm` had een hardcoded TAXONOMY zonder echte term-id's → nieuw gekozen
+categorieën gingen bij opslaan verloren. Vervangen door een picker gevoed door
+de catalogus uit WP:
+- `mappers.ts`: + `mapMaterialCategoryOptions` (hergebruikt `mapCategory`).
+- `data.ts`: + `getMaterialCategories()` → `GET /md/v2/dashboard/material-categories`.
+  Endpoint bestaat nog niet → 404 wordt afgevangen → lege catalogus (picker toont
+  "nog niet beschikbaar", formulier blijft werken). Klikt in zodra Johan 'm levert.
+- `MaterialForm`: hardcoded TAXONOMY + addCategory/updateCategory weg; nu een
+  `categoryOptions`-prop, een Select uit de catalogus (label "l1 › l2 › l3",
+  value = term-id) + geselecteerde categorieën als chips (`.chip-group`/`.chip-x`,
+  hergebruikt). Save stuurt nu echte term-id's mee (`categories: [{ id }]`).
+- new- + edit-page: halen de catalogus parallel op en geven `categoryOptions` door.
+
+Contract-spec voor het endpoint staat in `docs/wordpress-instructions-material-categories.md`.

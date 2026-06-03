@@ -1,0 +1,64 @@
+Onderwerp: Dashboard — status update WP API + testaccounts
+
+Hoi Jeroen,
+
+Even een update over waar we staan met het dashboard.
+
+WORDPRESS API (PRODUCTIE)
+
+Alle dashboard-endpoints staan live op materialdistrict.com (batches 1 t/m 4):
+
+- Batch 1: profile, brand profile, materials list + status toggle
+- Batch 2: portal, requests, interactions, lead-routing, statistics
+- Batch 3: bookmarks, boards, saved searches, insider insights, user invoices, material form CRUD
+- Batch 3+: GET /md/v2/dashboard/material-categories (alleen leaf terms, shape { id, l1, l2, l3 })
+- Batch 4: featured (Partner+), brand invoices, brand delete, brand-candidates / claim / request-new
+
+Auth blijft hetzelfde: Authorization: Bearer <JWT> via /md/v2/auth/login. Brand-routes gebruiken numeriek brandId; in de UI map je via user.brands[] (slug ↔ id).
+
+FRONTEND
+
+Jouw wiring staat erin (data.ts, mappers, /api/dashboard/* proxies, panel saves). Insider-panels geven nu netjes een lege array terug bij 403 i.p.v. een harde error.
+
+Handoff-docs staan in de repo onder docs/:
+- dashboard-handoff-batch1-jeroen.md t/m batch4
+- dashboard-batch2-wiring.md
+- wordpress-instructions-material-categories.md
+- e2e-test-accounts.md (nieuw)
+
+TESTACCOUNTS (PRODUCTIE)
+
+Ik heb 6 E2E-accounts aangemaakt zodat je tier gates en edge cases kunt testen.
+
+Wachtwoord voor alle accounts: E2eDashboard2026!
+
+Free          e2e-dashboard-free@materialdistrict.com          free brand (slug: e2e-free-brand, brand id 137153)
+Basis         e2e-dashboard-basis@materialdistrict.com         basis, active (slug: e2e-basis-brand, brand id 137155)
+Plus          e2e-dashboard-plus@materialdistrict.com         plus, active (slug: e2e-plus-brand, brand id 137157)
+Partner       e2e-dashboard-partner@materialdistrict.com       partner, active (slug: e2e-partner-brand, brand id 137159)
+Insider       e2e-dashboard-insider@materialdistrict.com       free brand + actieve Insider (slug: e2e-insider-brand, brand id 137161)
+Pending setup e2e-dashboard-pending@materialdistrict.com      brand met lege slug (brand id 137163)
+
+Verwacht gedrag bij tier gates:
+- Statistics / lead-routing → 403 op free
+- Featured → 403 onder Partner
+- Boards / saved searches / insider insights → 403 zonder actieve Insider
+
+Volledige details staan in docs/e2e-test-accounts.md.
+
+NOG OPEN / LATER
+
+- Bookmark aanmaken (POST) — panel kan leeg blijven; komt vanaf de publieke site
+- Items toevoegen aan boards — latere batch
+- dashboard-datacontract.md implementatiestatus is verouderd; de handoff-docs zijn leidend
+
+ANTWOORDEN OP JE EERDERE VRAGEN
+
+- Batch-2 field names kloppen in de mappers (brand_name, time_ago, request_options, statistics/lead-routing shapes) — geen mapper-wijzigingen nodig
+- Brand menu 404: connected_brands[].id is het WP brand post ID; lege slug → frontend toont "Pending setup" (correct)
+- Material categories: alleen leaf terms; shape bevestigd
+
+Laat maar weten als je ergens tegenaan loopt of iets anders verwacht in de API-responses. Dan kunnen we dat gericht fixen.
+
+Groet,
+Johan

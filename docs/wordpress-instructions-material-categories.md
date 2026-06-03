@@ -43,10 +43,8 @@ zonder nieuw contract om te onthouden — alleen nu de volledige catalogus:
 - `l1` / `l2` / `l3` = het pad (zelfde betekenis als in de form-GET). Lege
   string waar een niveau niet van toepassing is.
 - Geef de **toewijsbare** categorieën terug (de niveaus die een manufacturer
-  mag kiezen). **Conventie (Johan): alleen leaf-terms** — terms zonder
-  child-terms in `material_category`. Parent/grouping-nodes komen niet in de
-  lijst. Pad (`l1`/`l2`/`l3`) loopt altijd omhoog via parents; lege string
-  waar een niveau niet van toepassing is.
+  mag kiezen). Als alleen de diepste niveaus (l3, of l2 waar geen l3 bestaat)
+  toewijsbaar zijn, volstaat die set — laat me weten welke conventie je aanhoudt.
 
 ### Foutcodes
 

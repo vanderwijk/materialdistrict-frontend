@@ -17,11 +17,9 @@ import type {
 const MATERIAL_TYPES = ['Wood', 'Composite', 'Textile', 'Metal', 'Glass', 'Stone', 'Plastic', 'Other naturals']
 const ALL_CHANNELS = ['Biobased', 'Sustainable', 'Acoustic', 'Circular', 'Recycled']
 
-// Small taxonomy for the 3-level category picker (the real tree comes from WP).
-const TAXONOMY: Record<string, Record<string, string[]>> = {
-  Interior: { Walls: ['Wall panel', 'Wallpaper'], Floors: ['Flooring', 'Carpet'] },
-  Building: { Insulation: ['Acoustic insulation', 'Thermal insulation'], Facade: ['Cladding', 'Curtain wall'] },
-  Furniture: { Surfaces: ['Worktop', 'Tabletop'] },
+/** "Interior › Walls › Wall panel" label for a category path. */
+function categoryLabel(c: MaterialCategoryPath): string {
+  return [c.l1, c.l2, c.l3].filter(Boolean).join(' › ')
 }
 
 /**
@@ -35,11 +33,14 @@ export function MaterialForm({
   brandId,
   initial,
   tier,
+  categoryOptions,
 }: {
   slug: string
   brandId: number
   initial: MaterialFormData
   tier: ManufacturerTier
+  /** Assignable categories (with real WP term ids) from the taxonomy endpoint. */
+  categoryOptions: MaterialCategoryPath[]
 }) {
   const router = useRouter()
   const [form, setForm] = useState<MaterialFormData>(initial)
@@ -86,21 +87,15 @@ export function MaterialForm({
         : [...f.channels, channel],
     }))
 
-  function addCategory() {
-    const path: MaterialCategoryPath = { id: `cat-${Date.now()}`, l1: '', l2: '', l3: '' }
-    set('categories', [...form.categories, path])
+  function addCategoryById(id: string) {
+    if (!id) return
+    if (form.categories.some((c) => c.id === id)) return // already selected
+    const option = categoryOptions.find((o) => o.id === id)
+    if (option) set('categories', [...form.categories, option])
   }
 
-  function updateCategory(id: string, level: 'l1' | 'l2' | 'l3', value: string) {
-    set(
-      'categories',
-      form.categories.map((c) => {
-        if (c.id !== id) return c
-        if (level === 'l1') return { ...c, l1: value, l2: '', l3: '' }
-        if (level === 'l2') return { ...c, l2: value, l3: '' }
-        return { ...c, l3: value }
-      }),
-    )
+  function removeCategory(id: string) {
+    set('categories', form.categories.filter((c) => c.id !== id))
   }
 
   function addKeyword() {
@@ -214,50 +209,46 @@ export function MaterialForm({
       </div>
 
       <div className="dash-panel">
-        <div className="panel-head-row">
-          <h2 className="panel-section-title">Categories</h2>
-          <button type="button" className="btn btn-outline btn-sm" onClick={addCategory}>
-            <IconAdd size={16} /> Add category
-          </button>
-        </div>
-        {form.categories.length === 0 && <p className="field-helper">No categories yet.</p>}
-        {form.categories.map((cat) => {
-          const l2opts = cat.l1 ? Object.keys(TAXONOMY[cat.l1] ?? {}) : []
-          const l3opts = cat.l1 && cat.l2 ? TAXONOMY[cat.l1]?.[cat.l2] ?? [] : []
-          return (
-            <div key={cat.id} className="cat-row">
-              <Select
-                label="Level 1"
-                value={cat.l1}
-                onChange={(e) => updateCategory(cat.id, 'l1', e.target.value)}
-                placeholder="—"
-                options={Object.keys(TAXONOMY).map((v) => ({ value: v, label: v }))}
-              />
-              <Select
-                label="Level 2"
-                value={cat.l2}
-                onChange={(e) => updateCategory(cat.id, 'l2', e.target.value)}
-                placeholder="—"
-                options={l2opts.map((v) => ({ value: v, label: v }))}
-              />
-              <Select
-                label="Level 3"
-                value={cat.l3}
-                onChange={(e) => updateCategory(cat.id, 'l3', e.target.value)}
-                placeholder="—"
-                options={l3opts.map((v) => ({ value: v, label: v }))}
-              />
-              <button
-                type="button"
-                className="icon-btn cat-remove"
-                onClick={() => set('categories', form.categories.filter((c) => c.id !== cat.id))}
-                aria-label="Remove category"
-              >
-                <IconClose size={16} />
-              </button>
-            </div>
-          )
-        })}
+        <h2 className="panel-section-title">Categories</h2>
+        {categoryOptions.length === 0 ? (
+          <p className="field-helper">
+            The category list isn&apos;t available yet. You can save the material and add
+            categories once it loads.
+          </p>
+        ) : (
+          <Select
+            label="Add a category"
+            value=""
+            onChange={(e) => {
+              addCategoryById(e.target.value)
+              e.target.value = ''
+            }}
+            placeholder="Select a category…"
+            options={categoryOptions
+              .filter((o) => !form.categories.some((c) => c.id === o.id))
+              .map((o) => ({ value: o.id, label: categoryLabel(o) }))}
+          />
+        )}
+
+        {form.categories.length === 0 ? (
+          <p className="field-helper">No categories selected yet.</p>
+        ) : (
+          <div className="chip-group">
+            {form.categories.map((cat) => (
+              <span key={cat.id} className="chip is-on">
+                {categoryLabel(cat) || 'Category'}
+                <button
+                  type="button"
+                  className="chip-x"
+                  onClick={() => removeCategory(cat.id)}
+                  aria-label={`Remove ${categoryLabel(cat)}`}
+                >
+                  <IconClose size={14} />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="dash-panel">
