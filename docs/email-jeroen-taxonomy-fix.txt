@@ -1,0 +1,30 @@
+Onderwerp: Re: 1337-build + categories vs material type
+
+Hoi Jeroen,
+
+Je 1337-fix (3-traps cascade terug, leaf term_id bij opslaan) was goed — het probleem zat op WP-kant, niet in jouw picker.
+
+Wat ik heb gedaan (plugin live op productie):
+- material-categories-endpoint gebruikte ten onrechte material_category (~10 vlakke terms: Ceramics, Glass, Wood…) → nu product_category (188 leaf terms, echte L1/L2/L3 zoals Building Elements → Ceilings → Acoustic Ceilings).
+- Material type zat fout in _material_dashboard_type meta + hardcoded lijst. Bestaande materialen in WP gebruiken material_category — dat meta-veld was dus een verkeerde implementatie. Nieuw endpoint: GET /md/v2/dashboard/material-types (material_category, ~10 terms).
+
+Antwoord op je datavraag: nee, overlap is niet bedoeld. Die twee velden horen gescheiden:
+- Material type → material_category (materiaalsoort: Ceramics, Glass, Metals, …)
+- Categories → product_category (toepassing: Building Elements, Furniture, Floor & Wall Coverings, …)
+
+De overlap die je zag kwam doordat WP de verkeerde taxonomy aan categories gaf. Dat is nu opgelost.
+
+Test-build staat al op Vercel (main, nieuwer dan 1337-zip): https://materialdistrict-frontend.vercel.app/dashboard — beide dropdowns werken end-to-end tegen live WP.
+
+Wat jij in de frontend moet aanpassen (volledige spec: docs/frontend-instructions-material-taxonomies.md):
+1. Hardcoded MATERIAL_TYPES verwijderen → getMaterialTypes() op /md/v2/dashboard/material-types.
+2. Material type dropdown: value = term_id (string), label = name.
+3. Save: type_id (integer) meesturen i.p.v. vrije type-string — geen _material_dashboard_type meer.
+4. Categories cascade: ongewijzigd contract (1337-aanpak klopt), gevoed door material-categories — nu met product_category-data.
+
+Form GET levert type als term_id-string; categories[] blijft { id, l1, l2, l3 }.
+
+Laat weten als je ergens tegenaan loopt.
+
+Groet,
+Johan

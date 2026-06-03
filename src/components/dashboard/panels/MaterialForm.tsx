@@ -105,15 +105,21 @@ export function MaterialForm({
   }
 
   function addCategory() {
-    set('categories', [...form.categories, { id: '', l1: '', l2: '', l3: '' }])
+    setForm((f) => ({
+      ...f,
+      categories: [...f.categories, { id: '', l1: '', l2: '', l3: '' }],
+    }))
   }
   function removeCategory(index: number) {
-    set('categories', form.categories.filter((_, i) => i !== index))
+    setForm((f) => ({
+      ...f,
+      categories: f.categories.filter((_, i) => i !== index),
+    }))
   }
   function updateCategory(index: number, level: 'l1' | 'l2' | 'l3', value: string) {
-    set(
-      'categories',
-      form.categories.map((c, i) => {
+    setForm((f) => ({
+      ...f,
+      categories: f.categories.map((c, i) => {
         if (i !== index) return c
         const next =
           level === 'l1'
@@ -124,8 +130,11 @@ export function MaterialForm({
         // Stamp the real term id once the path matches a catalogue leaf.
         return { ...next, id: resolveCategoryId(next.l1, next.l2, next.l3) }
       }),
-    )
+    }))
   }
+
+  /** Only bind Select to a value that exists in the catalogue (avoids controlled-select warnings). */
+  const typeSelectValue = typeOptions.some((t) => t.id === form.type) ? form.type : ''
 
   function addKeyword() {
     const kw = keywordDraft.trim()
@@ -204,7 +213,7 @@ export function MaterialForm({
         <Textarea label="Description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
         <Select
           label="Material type"
-          value={form.type}
+          value={typeSelectValue}
           onChange={(e) => set('type', e.target.value)}
           placeholder={typeOptions.length > 0 ? 'Select a type' : 'Material types not available yet'}
           options={typeOptions.map((t) => ({ value: t.id, label: t.name }))}
@@ -304,7 +313,7 @@ export function MaterialForm({
               key={channel}
               type="button"
               className={`chip ${form.channels.includes(channel) ? 'is-on' : ''}`}
-              aria-pressed={form.channels.includes(channel)}
+              aria-pressed={form.channels.includes(channel) ? 'true' : 'false'}
               onClick={() => toggleChannel(channel)}
             >
               {channel}
