@@ -263,6 +263,12 @@ export interface MaterialCategoryPath {
   l3: string
 }
 
+/** One assignable material type from the `material_category` taxonomy. */
+export interface MaterialTypeOption {
+  id: string
+  name: string
+}
+
 /** A gallery image reference in the material form. */
 export interface MaterialAsset {
   id: string
@@ -283,6 +289,7 @@ export interface MaterialFormData {
   id: number | null
   name: string
   description: string
+  /** material_category term id (stringified). */
   type: string
   featuredImage: MaterialAsset | null
   categories: MaterialCategoryPath[]

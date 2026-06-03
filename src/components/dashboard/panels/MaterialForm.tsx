@@ -11,10 +11,10 @@ import type { ManufacturerTier } from '@/lib/config/membership'
 import type {
   MaterialFormData,
   MaterialCategoryPath,
+  MaterialTypeOption,
   MaterialAsset,
 } from '@/types/dashboard'
 
-const MATERIAL_TYPES = ['Wood', 'Composite', 'Textile', 'Metal', 'Glass', 'Stone', 'Plastic', 'Other naturals']
 const ALL_CHANNELS = ['Biobased', 'Sustainable', 'Acoustic', 'Circular', 'Recycled']
 
 /**
@@ -29,6 +29,7 @@ export function MaterialForm({
   initial,
   tier,
   categoryOptions,
+  typeOptions,
 }: {
   slug: string
   brandId: number
@@ -36,6 +37,8 @@ export function MaterialForm({
   tier: ManufacturerTier
   /** Assignable categories (with real WP term ids) from the taxonomy endpoint. */
   categoryOptions: MaterialCategoryPath[]
+  /** Material types from the material_category taxonomy endpoint. */
+  typeOptions: MaterialTypeOption[]
 }) {
   const router = useRouter()
   const [form, setForm] = useState<MaterialFormData>(initial)
@@ -203,8 +206,8 @@ export function MaterialForm({
           label="Material type"
           value={form.type}
           onChange={(e) => set('type', e.target.value)}
-          placeholder="Select a type"
-          options={MATERIAL_TYPES.map((t) => ({ value: t, label: t }))}
+          placeholder={typeOptions.length > 0 ? 'Select a type' : 'Material types not available yet'}
+          options={typeOptions.map((t) => ({ value: t.id, label: t.name }))}
         />
       </div>
 

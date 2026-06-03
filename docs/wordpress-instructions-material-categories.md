@@ -38,7 +38,7 @@ zonder nieuw contract om te onthouden — alleen nu de volledige catalogus:
 ]
 ```
 
-- `id` = WP `term_id` uit de `material_category`-taxonomy. **Exact** het id dat
+- `id` = WP `term_id` uit de `product_category`-taxonomy. **Exact** het id dat
   het material-save body al verwacht in `categories: [{ "id": <term_id> }]`.
 - `l1` / `l2` / `l3` = het pad (zelfde betekenis als in de form-GET). Lege
   string waar een niveau niet van toepassing is.

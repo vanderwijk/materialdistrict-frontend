@@ -23,6 +23,7 @@ import type {
   InvoiceStatus,
   MaterialFormData,
   MaterialCategoryPath,
+  MaterialTypeOption,
   MaterialAsset,
   FeaturedPlacement,
   FeaturedSlotStatus,
@@ -354,6 +355,20 @@ export function mapMaterialCategoryOptions(raw: RawMaterialCategory[]): Material
   return Array.isArray(raw) ? raw.map(mapCategory) : []
 }
 
+interface RawMaterialType {
+  id: string | number
+  name?: string
+}
+
+/** Full material-type catalogue from the material-types endpoint. */
+export function mapMaterialTypeOptions(raw: RawMaterialType[]): MaterialTypeOption[] {
+  if (!Array.isArray(raw)) return []
+  return raw.map((item) => ({
+    id: String(item.id),
+    name: item.name ?? '',
+  }))
+}
+
 export function mapMaterialFormData(raw: RawMaterialFormData): MaterialFormData {
   return {
     mode: raw.mode ?? 'edit',
@@ -401,7 +416,7 @@ export function toWpMaterialForm(form: MaterialFormData): Record<string, unknown
   return {
     name: form.name,
     description: form.description,
-    type: form.type,
+    type_id: numId(form.type),
     featured_image_id: form.featuredImage ? numId(form.featuredImage.id) : null,
     gallery_attachment_ids: form.gallery.map((a) => numId(a.id)).filter((n): n is number => n !== null),
     download_attachment_ids: form.downloads.map((a) => numId(a.id)).filter((n): n is number => n !== null),

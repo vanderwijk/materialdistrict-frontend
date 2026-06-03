@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { requireManagedBrand } from '@/lib/dashboard/brand-access'
-import { getMaterialForm, getMaterialCategories } from '@/lib/dashboard/data'
+import { getMaterialForm, getMaterialCategories, getMaterialTypes } from '@/lib/dashboard/data'
 import { DashboardPageHeader } from '@/components/dashboard'
 import { MaterialForm } from '@/components/dashboard/panels/MaterialForm'
 
@@ -15,9 +15,10 @@ export default async function EditMaterialPage({
   const id = Number(materialId)
   if (!Number.isFinite(id)) notFound()
 
-  const [form, categoryOptions] = await Promise.all([
+  const [form, categoryOptions, typeOptions] = await Promise.all([
     getMaterialForm(brandSlug, id),
     getMaterialCategories(),
+    getMaterialTypes(),
   ])
 
   return (
@@ -30,7 +31,7 @@ export default async function EditMaterialPage({
           { label: form.name || 'Edit material' },
         ]}
       />
-      <MaterialForm slug={brandSlug} brandId={brand.id} initial={form} tier={brand.tier} categoryOptions={categoryOptions} />
+      <MaterialForm slug={brandSlug} brandId={brand.id} initial={form} tier={brand.tier} categoryOptions={categoryOptions} typeOptions={typeOptions} />
     </>
   )
 }

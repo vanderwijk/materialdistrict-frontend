@@ -26,6 +26,7 @@ import type {
   MaterialListRow,
   MaterialFormData,
   MaterialCategoryPath,
+  MaterialTypeOption,
   Interaction,
   BrandStatistics,
   LeadRoutingConfig,
@@ -53,6 +54,7 @@ import {
   mapBrandStatistics,
   mapLeadRoutingConfig,
   mapMaterialCategoryOptions,
+  mapMaterialTypeOptions,
 } from './mappers'
 import { MOCK_MATERIAL_FORM } from './mock'
 
@@ -242,6 +244,23 @@ export async function getMaterialCategories(): Promise<MaterialCategoryPath[]> {
       { method: 'GET', bearer: await requireToken() },
     )
     return mapMaterialCategoryOptions(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError) return []
+    throw err
+  }
+}
+
+/**
+ * GET /md/v2/dashboard/material-types — material_category taxonomy for the
+ * material type dropdown. Until the endpoint is live it 404s → empty list.
+ */
+export async function getMaterialTypes(): Promise<MaterialTypeOption[]> {
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapMaterialTypeOptions>[0]>(
+      '/md/v2/dashboard/material-types',
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapMaterialTypeOptions(raw)
   } catch (err) {
     if (err instanceof DashboardApiError) return []
     throw err
