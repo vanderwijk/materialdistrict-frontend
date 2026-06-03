@@ -1,0 +1,29 @@
+Onderwerp: Re: dashboard build 1337 + categorieën vs material type
+
+Hoi Jeroen,
+
+Dank voor de fix — zodra materialdistrict-dashboard-fase2-20260603-1337.zip bij me staat zet ik 'm op test (Vercel, i.p.v. 1227).
+
+Antwoord op je datavraag (categories vs material type):
+
+Ze horen GESCHEIDEN te zijn — het zijn twee verschillende velden:
+
+1. Material type (formulier)
+   - Frontend hardcoded lijst: Wood, Composite, Textile, Metal, Glass, Stone, Plastic, Other naturals
+   - Opslag WP: post meta _material_dashboard_type (fallback: product_category-term)
+
+2. Categories (cascade picker)
+   - Taxonomie: material_category (hiërarchisch bedoeld: toepassing/context, bv. Interior > Walls > Wall panel)
+   - Opslag: material_category term-id's via categories: [{ id }]
+
+Wat je nu ziet (overlap Wood/Glass/Metals) komt door de huidige productiedata, niet door bewust ontwerp:
+- material_category staat op productie vlak — alle ~10 terms hangen direct onder root (parent 0)
+- Namen zijn vooral materiaalsoort-achtig: Ceramics, Glass, Metals, Plastics, Wood, …
+- Ons endpoint zet bij vlakke terms alles in l3 (l1/l2 leeg), waardoor de cascade visueel op material type lijkt
+
+Conclusie: geen frontend-fix nodig; wel WP/redactie — material_category opnieuw inrichten met echte L1/L2/L3 (Interior / Building / Furniture of jullie actuele hiërarchie), los van material type. Het endpoint volgt automatisch de taxonomy-structuur zodra die klopt.
+
+Laat weten als je wilt dat ik een voorstel hiërarchie uitschrijf of de terms in admin mee help structureren.
+
+Groet,
+Johan

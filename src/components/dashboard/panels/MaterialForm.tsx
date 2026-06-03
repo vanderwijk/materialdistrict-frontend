@@ -17,11 +17,6 @@ import type {
 const MATERIAL_TYPES = ['Wood', 'Composite', 'Textile', 'Metal', 'Glass', 'Stone', 'Plastic', 'Other naturals']
 const ALL_CHANNELS = ['Biobased', 'Sustainable', 'Acoustic', 'Circular', 'Recycled']
 
-/** "Interior › Walls › Wall panel" label for a category path. */
-function categoryLabel(c: MaterialCategoryPath): string {
-  return [c.l1, c.l2, c.l3].filter(Boolean).join(' › ')
-}
-
 /**
  * Material create/edit form. Controlled state seeded from the data layer.
  * Assets upload to the WP media library via `/api/dashboard/media`. Downloads
@@ -87,15 +82,46 @@ export function MaterialForm({
         : [...f.channels, channel],
     }))
 
-  function addCategoryById(id: string) {
-    if (!id) return
-    if (form.categories.some((c) => c.id === id)) return // already selected
-    const option = categoryOptions.find((o) => o.id === id)
-    if (option) set('categories', [...form.categories, option])
+  // Cascading l1/l2/l3 option lists derived from the leaf-only catalogue.
+  const l1Options = useMemo(
+    () => Array.from(new Set(categoryOptions.map((o) => o.l1).filter(Boolean))),
+    [categoryOptions],
+  )
+  function l2OptionsFor(l1: string) {
+    return Array.from(new Set(categoryOptions.filter((o) => o.l1 === l1 && o.l2).map((o) => o.l2)))
+  }
+  function l3OptionsFor(l1: string, l2: string) {
+    return Array.from(
+      new Set(categoryOptions.filter((o) => o.l1 === l1 && o.l2 === l2 && o.l3).map((o) => o.l3)),
+    )
+  }
+  /** Resolve the real WP leaf term id for an exact (l1,l2,l3) selection, else ''. */
+  function resolveCategoryId(l1: string, l2: string, l3: string): string {
+    const match = categoryOptions.find((o) => o.l1 === l1 && o.l2 === l2 && o.l3 === l3)
+    return match ? match.id : ''
   }
 
-  function removeCategory(id: string) {
-    set('categories', form.categories.filter((c) => c.id !== id))
+  function addCategory() {
+    set('categories', [...form.categories, { id: '', l1: '', l2: '', l3: '' }])
+  }
+  function removeCategory(index: number) {
+    set('categories', form.categories.filter((_, i) => i !== index))
+  }
+  function updateCategory(index: number, level: 'l1' | 'l2' | 'l3', value: string) {
+    set(
+      'categories',
+      form.categories.map((c, i) => {
+        if (i !== index) return c
+        const next =
+          level === 'l1'
+            ? { l1: value, l2: '', l3: '' }
+            : level === 'l2'
+              ? { l1: c.l1, l2: value, l3: '' }
+              : { l1: c.l1, l2: c.l2, l3: value }
+        // Stamp the real term id once the path matches a catalogue leaf.
+        return { ...next, id: resolveCategoryId(next.l1, next.l2, next.l3) }
+      }),
+    )
   }
 
   function addKeyword() {
@@ -209,46 +235,62 @@ export function MaterialForm({
       </div>
 
       <div className="dash-panel">
-        <h2 className="panel-section-title">Categories</h2>
-        {categoryOptions.length === 0 ? (
-          <p className="field-helper">
-            The category list isn&apos;t available yet. You can save the material and add
-            categories once it loads.
-          </p>
-        ) : (
-          <Select
-            label="Add a category"
-            value=""
-            onChange={(e) => {
-              addCategoryById(e.target.value)
-              e.target.value = ''
-            }}
-            placeholder="Select a category…"
-            options={categoryOptions
-              .filter((o) => !form.categories.some((c) => c.id === o.id))
-              .map((o) => ({ value: o.id, label: categoryLabel(o) }))}
-          />
+        <div className="panel-head-row">
+          <h2 className="panel-section-title">Categories</h2>
+          <button
+            type="button"
+            className="btn btn-outline btn-sm"
+            onClick={addCategory}
+            disabled={categoryOptions.length === 0}
+          >
+            <IconAdd size={16} /> Add category
+          </button>
+        </div>
+        {categoryOptions.length === 0 && (
+          <p className="field-helper">The category list isn&apos;t available right now.</p>
         )}
-
-        {form.categories.length === 0 ? (
-          <p className="field-helper">No categories selected yet.</p>
-        ) : (
-          <div className="chip-group">
-            {form.categories.map((cat) => (
-              <span key={cat.id} className="chip is-on">
-                {categoryLabel(cat) || 'Category'}
-                <button
-                  type="button"
-                  className="chip-x"
-                  onClick={() => removeCategory(cat.id)}
-                  aria-label={`Remove ${categoryLabel(cat)}`}
-                >
-                  <IconClose size={14} />
-                </button>
-              </span>
-            ))}
-          </div>
+        {categoryOptions.length > 0 && form.categories.length === 0 && (
+          <p className="field-helper">No categories yet.</p>
         )}
+        {form.categories.map((cat, i) => {
+          const l2opts = cat.l1 ? l2OptionsFor(cat.l1) : []
+          const l3opts = cat.l1 && cat.l2 ? l3OptionsFor(cat.l1, cat.l2) : []
+          return (
+            <div key={i} className="cat-row">
+              <Select
+                label="Level 1"
+                value={cat.l1}
+                onChange={(e) => updateCategory(i, 'l1', e.target.value)}
+                placeholder="—"
+                options={l1Options.map((v) => ({ value: v, label: v }))}
+              />
+              <Select
+                label="Level 2"
+                value={cat.l2}
+                onChange={(e) => updateCategory(i, 'l2', e.target.value)}
+                placeholder="—"
+                options={l2opts.map((v) => ({ value: v, label: v }))}
+                disabled={l2opts.length === 0}
+              />
+              <Select
+                label="Level 3"
+                value={cat.l3}
+                onChange={(e) => updateCategory(i, 'l3', e.target.value)}
+                placeholder="—"
+                options={l3opts.map((v) => ({ value: v, label: v }))}
+                disabled={l3opts.length === 0}
+              />
+              <button
+                type="button"
+                className="icon-btn cat-remove"
+                onClick={() => removeCategory(i)}
+                aria-label="Remove category"
+              >
+                <IconClose size={16} />
+              </button>
+            </div>
+          )
+        })}
       </div>
 
       <div className="dash-panel">
