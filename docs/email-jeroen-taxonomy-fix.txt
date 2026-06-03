@@ -21,6 +21,7 @@ Wat jij in de frontend moet aanpassen (volledige spec: docs/frontend-instruction
 2. Material type dropdown: value = term_id (string), label = name.
 3. Save: type_id (integer) meesturen i.p.v. vrije type-string — geen _material_dashboard_type meer.
 4. Categories cascade: ongewijzigd contract (1337-aanpak klopt), gevoed door material-categories — nu met product_category-data.
+5. MaterialForm extra fixes (zie docs/frontend-instructions-material-taxonomies.md §4.5): typeSelectValue guard, functionele category state, aria-pressed als statische strings op channel chips.
 
 Form GET levert type als term_id-string; categories[] blijft { id, l1, l2, l3 }.
 

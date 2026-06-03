@@ -308,17 +308,20 @@ export function MaterialForm({
       <div className="dash-panel">
         <h2 className="panel-section-title">Channels</h2>
         <div className="chip-group">
-          {ALL_CHANNELS.map((channel) => (
-            <button
-              key={channel}
-              type="button"
-              className={`chip ${form.channels.includes(channel) ? 'is-on' : ''}`}
-              aria-pressed={form.channels.includes(channel) ? 'true' : 'false'}
-              onClick={() => toggleChannel(channel)}
-            >
-              {channel}
-            </button>
-          ))}
+          {ALL_CHANNELS.map((channel) => {
+            const selected = form.channels.includes(channel)
+            const chipProps = {
+              type: 'button' as const,
+              className: `chip ${selected ? 'is-on' : ''}`,
+              onClick: () => toggleChannel(channel),
+              children: channel,
+            }
+            return selected ? (
+              <button key={channel} {...chipProps} aria-pressed="true" />
+            ) : (
+              <button key={channel} {...chipProps} aria-pressed="false" />
+            )
+          })}
         </div>
       </div>
 

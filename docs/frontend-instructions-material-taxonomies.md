@@ -161,13 +161,49 @@ export interface MaterialFormData {
 
 - Verwijder hardcoded `MATERIAL_TYPES` array.
 - Prop `typeOptions: MaterialTypeOption[]` vanuit server page (`Promise.all` met form + categories + types).
-- Material type `<Select>`: `value={form.type}`, options `{ value: t.id, label: t.name }`.
+- Material type `<Select>`: `value={typeSelectValue}`, options `{ value: t.id, label: t.name }` (zie 4.5).
 - Categories cascade: ongewijzigd contract, gevoed door `categoryOptions` uit `product_category`.
 
 Pages aanpassen:
 
 - `src/app/dashboard/brands/[brandSlug]/materials/new/page.tsx`
 - `src/app/dashboard/brands/[brandSlug]/materials/[materialId]/edit/page.tsx`
+
+### 4.5 MaterialForm — extra fixes (verplicht meenemen)
+
+Naast de taxonomy-wiring staan er drie gerelateerde fixes in `MaterialForm.tsx` die je **ook** moet doorvoeren:
+
+**1. Material type Select — legacy-waarden**
+
+`form.type` kan een oude vrije tekst bevatten (bijv. `"Wood"` uit `_material_dashboard_type`) die niet in `typeOptions` staat. Bind de Select alleen aan een geldig catalogue-id:
+
+```tsx
+const typeSelectValue = typeOptions.some((t) => t.id === form.type) ? form.type : ''
+// …
+<Select value={typeSelectValue} … />
+```
+
+**2. Category state — functionele updates**
+
+`addCategory`, `removeCategory` en `updateCategory` moeten `setForm(f => …)` gebruiken, niet `set('categories', form.categories.map(…))` met stale closure.
+
+**3. Channel chips — `aria-pressed` (Edge Tools / a11y linter)**
+
+Geen JSX-expressie op `aria-pressed` (`{selected ? 'true' : 'false'}` faalt de linter). Render twee takken met **statische** string-attributen:
+
+```tsx
+{ALL_CHANNELS.map((channel) => {
+  const selected = form.channels.includes(channel)
+  const chipProps = { type: 'button' as const, className: `chip ${selected ? 'is-on' : ''}`, onClick: () => toggleChannel(channel), children: channel }
+  return selected ? (
+    <button key={channel} {...chipProps} aria-pressed="true" />
+  ) : (
+    <button key={channel} {...chipProps} aria-pressed="false" />
+  )
+})}
+```
+
+Zelfde patroon toepassen op channel-chips in `BrandProfileForm.tsx` als die linter daar ook klaagt.
 
 ---
 
