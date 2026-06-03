@@ -1,0 +1,24 @@
+Onderwerp: Featured & channels — voorbereiding gesprek morgen
+
+Hoi Jeroen,
+
+Dank voor je mail en wordpress-instructions-featured.md — helder. Hieronder kort waar ik morgen op terug wil komen, zodat we efficiënt kunnen schakelen.
+
+FEATURED (inschatting)
+
+Ik kan het boolean-deel snel oppakken: event staat al in de REST-response; article en brand ook (featured). Nog te doen: talk (+ eventueel _featured-alias op article). Book: ik zie nog geen book-CPT in WP — wil je dat ik die boolean alvast voorbereid zodra dat type er is, of parkeren we book even?
+
+Het material-slotwerk (4 slots/jaar, per kalenderweek, reset op period_end_date, is_featured_now op material) is de grote hap. De huidige dashboard-batch-4 featured-implementatie volgt een ander model (vaste slot-catalogus) — die vervang ik door jouw weekly-mechaniek. Eén open punt uit WF-2: ongebruikte slots vervallen bij verlenging — klopt dat nog als aanname?
+
+CHANNELS (jouw drie vragen — mijn voorlopige antwoorden)
+
+1. Eén taxonomie: ja. In WP is het één geregistreerde theme-taxonomie, gekoppeld aan material, article, talk, event én brand.
+
+2. REST gelijktrekken: hier zit het meeste werk. Nu is het inconsistent — o.a. meta.channels wijst in de code naar sector, terwijl meta.themes (alleen talk/event) wél theme is. Jullie frontend material-channels.ts verwacht theme-slugs. Voorstel morgen: overal meta.channels = theme-termen, shape { id, slug, label }[], inclusief brands. Beslissing nodig: wat doen we met sector in REST (hernoemen, apart veld, of deprecated)?
+
+3. Partner channel-coupling (max 3 theme-termen op brand): klopt — dat is een frontend-regel; WP hoeft de taxonomie niet te limiteren.
+
+Los: featured-checkbox op theme-termen zelf = featured channels (WF-6) — parkeren we, zoals jij voorstelde.
+
+Tot morgen,
+Johan

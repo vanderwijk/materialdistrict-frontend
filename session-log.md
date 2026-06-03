@@ -1843,180 +1843,109 @@ upload-flow, billing-portal, server-side `timeAgo`/`summary`,
   is geeft de link een 404 (zelfde vooruit-lopende patroon als de bestaande
   membership-CTA).
 
-### Patch — Batch 1 live bedrading (02-06-2026)
+---
 
-Johan's Batch 1 dashboard-endpoints staan live op productie (profile, brand
-profile, materials list + status-toggle). Frontend hierop aangesloten; overige
-panelen blijven mock tot batch 2.
+## ↳ Membership-track frontend: register account_type (P1) + Insider-checkout (P2) (02-06-2026)
 
-**Nieuw:**
-- `src/lib/api/dashboard.ts` — `wpDashboardFetch` (Bearer + GET/POST/PATCH +
-  `md_dashboard_*`-error-envelope via `DashboardApiError`). Hergebruikt alleen
-  het geëxporteerde `WP_API_URL`; raakt de gedeelde `wordpress.ts` niet.
-- `src/lib/dashboard/mappers.ts` — snake↔camel: `mapUserProfile`,
-  `mapBrandProfile`, `mapMaterialListRow(s)` + reverse `toWpUserProfile`/
-  `toWpBrandProfile`.
-- `/api/dashboard/profile` (POST), `/api/dashboard/brands/[brandId]/profile`
-  (POST), `/api/dashboard/brands/[brandId]/materials/[materialId]` (PATCH) —
-  cookie→Bearer proxy's (patroon van `/api/auth/me`). JWT is HttpOnly, dus
-  schrijven loopt server-side via deze routes.
+Vervolg op de membership-pagina's (`/membership`, `/become-a-partner`) en de handoff
+`handoff-membership-s12-jeroen.md` (S12). Twee frontend-gaten uit §3 van die handoff dichtgezet.
 
-**Gewijzigd:**
-- `data.ts` — `getProfile`, `getBrandProfile`, `getBrandMaterials` nu live
-  (server-side `wpDashboardFetch` + mapper; slug→id via `findBrandMembership`;
-  404 → null). Rest nog mock.
-- `ProfileForm` / `BrandProfileForm` — `handleSave` POST't naar de proxy +
-  `router.refresh()`; foutmelding bij falen (incl. `md_dashboard_forbidden`
-  → keywords-tier-melding).
-- `MaterialsPanel` — `toggleStatus` doet optimistische PATCH met revert +
-  `409 md_dashboard_quota_exceeded`-melding; nieuwe prop `brandId` (numeriek)
-  doorgegeven vanuit de materials-page.
-- `globals.css` — `.form-error` banner.
+**Bestanden gewijzigd (P1 — account_type doorgeven):**
+- `src/app/register/page.tsx` — leest `?type` + leidt account-type af (`type=show|brand|partner` of `next=/become-a-partner` -> manufacturer; anders specifier); subheading past mee.
+- `src/app/register/RegisterForm.tsx` — `accountType`-prop + meegestuurd in de POST-body.
+- `src/app/api/auth/register/route.ts` — `accountType` geparsed/geforward (default specifier); stale "endpoint nog niet gebouwd"-noot bijgewerkt.
+- `src/lib/api/wordpress.ts` — `registerUser` stuurt `account_type` mee.
 
-**Aandachtspunten:** material-toggle is PATCH (niet POST); brand-API op
-numeriek `brandId` (slug→id via `user.brands[]`); brand-auth-fouten komen als
-404 (geen lek), afgevangen → `notFound()`.
+**Bestanden aangemaakt (P2 — Insider-checkout-route):**
+- `src/app/checkout/page.tsx` — server-component; leest `?plan=insider&interval=`, leest de auth-cookie, roept WP `POST /md/v2/checkout/insider` aan (Bearer JWT, server-side) en redirect naar `checkout_url`. Foutafhandeling: niet-ingelogd/401 -> `/sign-in`, 409 -> `/membership?checkout=already`, 503 -> `/membership?checkout=unavailable`, overig -> `?checkout=error`.
 
-### Patch — Batch 3 bedrading (tegen bevestigde spec, ⏳ deploy)
+**Bestanden gewijzigd (P2):**
+- `src/lib/api/wordpress.ts` — helper `createInsiderCheckout(token, interval)` + type `InsiderCheckoutSession` (additief; gebaseerd op de P1-versie zodat P1 niet wordt teruggedraaid).
+- `src/app/membership/_components/MembershipCta.tsx` — comment bijgewerkt (checkout-route bestaat nu).
 
-Johan's batch-3 handoff geeft de exacte shapes (snake_case, methodes, bodies,
-foutcodes, PATCH-dispatch, tier-gates). Hierop bedraad; testbaar zodra batch 3
-gedeployd is op productie.
+**Beslissingen:**
+1. `account_type` wordt frontend-side gecanonicaliseerd naar `specifier|manufacturer` (WP-aliassen show/brand/partner blijven fallback).
+2. Checkout-initiatie via server-page `src/app/checkout/page.tsx` (geen aparte API-route), redirect-flow; Stripe-secret nooit client-side.
+3. Foutmapping op HTTP-status (401/409/503), niet op error-code — robuust, want `wpAuthFetch` surfacet alleen `md_auth_*` als `WordPressAuthError`; `md_checkout_*` komt als generieke `WordPressError` (heeft `.status`).
+4. `redirect()` bewust buiten de try (de interne throw zou anders door de eigen catch worden opgeslokt).
 
-**Reads live (`data.ts`):** `getBookmarks`, `getBoards`, `getSavedSearches`,
-`getInsiderInsights`, `getUserInvoices`, en `getMaterialForm` (edit-GET; create
-blijft lokaal blanco). Mock-imports opgeschoond.
+**API-structuren (uit handoff S12 §4):**
+- `POST /md/v2/checkout/insider` (Bearer) -> `{ checkout_url, session_id }`. Errors: 401 md_auth_unauthenticated / 409 md_checkout_already_subscribed / 503 md_checkout_unavailable.
+- Register accepteert `account_type: specifier|manufacturer`; manufacturer-registratie maakt een connected brand (tier free).
 
-**Mappers (`mappers.ts`):** + `mapBookmark(s)`, `mapBoard(s)`,
-`mapSavedSearch(es)`, `mapInsight(s)`, `mapInvoice(s)`, `mapMaterialFormData`,
-en write-mappers `toWpBoard` / `toWpSavedSearch` / `toWpMaterialForm`.
+**Openstaand / vervolg:**
+- P3 nog te bouwen: `checkout=success|cancel`-afhandeling op `/membership` (bevestiging + `router.refresh()`). Leunt op Johan's Stripe-redirect.
+- Werkt pas écht na Johan's Stripe-config + plugin-deploy (commit 4b5b278), zie handoff §2 / mail aan Johan.
+- `/dashboard` (PartnerCta linkt ernaar) loopt in een aparte sessie.
 
-**Fetch-helper (`api/dashboard.ts`):** `wpDashboardFetch` ondersteunt nu ook
-**DELETE** en handelt **204/lege body** af (anders crasht `res.json()`).
+---
 
-**Proxy-routes (nieuw):**
-- `DELETE /api/dashboard/bookmarks/[id]`
-- `POST /api/dashboard/boards`, `PATCH`/`DELETE /api/dashboard/boards/[id]`
-- `POST /api/dashboard/saved-searches`, `PATCH`/`DELETE …/[id]`
-- `POST /api/dashboard/brands/[brandId]/materials` (create)
-- `PATCH`/`DELETE …/materials/[materialId]` — PATCH **dispatcht**: body met
-  formvelden → form-save (retour MaterialFormData); body met alleen `{status}`
-  → toggle (retour MaterialListRow), conform WP.
-- `POST /api/dashboard/media` — bestand → WP media library (cookie→Bearer,
-  multipart) → `{ id, name, url }`.
-- Gedeelde `api/dashboard-proxy.ts` helpers (`getTokenOr401`, `dashboardError`).
+## ↳ Featured & Channels — planningsessie (03-06-2026)
 
-**UI aangesloten:** BookmarksPanel (delete), BoardsPanel (create/delete),
-SavedSearchesPanel (alerts-PATCH + delete), MaterialForm (create/edit/delete +
-**echte uploads** via media-proxy met file-inputs; `brandId`-prop doorgegeven
-vanuit new/edit-pages). Alles optimistisch met revert + `.form-error`.
+Strategiesessie met Jeroen: de featured-functionaliteit uitgekristalliseerd over
+alle content-types, plus de channels-vraag scherpgesteld als agendapunt voor het
+Johan-gesprek. Geen code; output = beslissingen + een Johan-instructie
+(`wordpress-instructions-featured.md`) en open-issues-updates.
 
-**Bekende gap (follow-up):** de categorie-picker in MaterialForm gebruikt nog
-een hardcoded TAXONOMY zonder echte term-id's. `toWpMaterialForm` stuurt alleen
-categorieën mee met een geldig numeriek term-id → **bestaande** categorieën
-(uit de GET-form) blijven behouden, maar **nieuw** toegevoegde categorieën
-krijgen geen geldig id en worden bij opslaan genegeerd. Een echte taxonomy-picker
-(term-id's uit WP) is nodig om nieuwe categorieën te kunnen toewijzen.
+### Vertrekpunt
+Jeroen bracht "featured" en "channels" samen onder de noemer *content oormerken*.
+Mechanisch twee verschillende dingen: featured = tijdelijke promotie/curatie;
+channels = thematische classificatie (de bestaande `theme`-taxonomie). Beide raken
+membership (featured = Partner-perk; channel-coupling = Partner-feature).
 
-### Patch — Batch 2 start (membership portal) + brandmenu-404 hardening
+### Beslissingen (genummerd)
 
-- **Membership portal (live):** nieuwe server-route
-  `/dashboard/membership/manage` haalt de Stripe-portal-URL op
-  (`GET /md/v2/dashboard/membership/portal → { url }`) en redirect erheen;
-  bij 503 (geen Stripe-customer) terug naar `/dashboard/membership?billing=unavailable`.
-  De bestaande "Manage billing"-link wees hier al heen — geen client-component nodig.
-- **Brandmenu-404:** een brand met lege slug (draft/nieuw, conform Johans
-  batch-1-randgeval) produceerde een link `/dashboard/brands/` → 404. Sidebar
-  toont zo'n brand nu als niet-klikbare "Pending setup" i.p.v. een dode link.
-  NB: als de 404 op een brand mét slug optreedt, ligt het aan de profile-read
-  (brandId/endpoint) — apart te bevestigen.
-- **Batch 2 data-panelen** (requests, interactions, statistics, lead-routing):
-  nog niet bedraad — wachten op `dashboard-handoff-batch2-jeroen.md` voor de
-  exacte snake_case-shapes (o.a. `time_ago`, geneste StatMetric/MaterialStatRow/
-  LeadRoute). Niet gokken (batch-1-les).
+1. **Featured-materiaal blijft de bestaande slot-mechaniek** (mockup +
+   `FeaturedPanel`): Partner zet zelf max 4 slots/jaar, per kalenderweek (ma–zo),
+   min. 7 dagen vooruit. Geen herontwerp — alleen bouwen WP-zijde.
+2. **Homepage-materialenslider: nieuwste eerst, max 3.** Lopen er in een week >3
+   featured-materialen, dan toont de homepage de 3 nieuwste; de rest rouleert.
+   Pinning bovenaan de eigen materiaaltype-categorie blijft ongemoeid.
+3. **Featured-reset op verlengdatum, NIET op 1 januari** (correctie t.o.v. mockup).
+   De teller van 4 reset op het einde van de lopende membership-jaarperiode
+   (`period_end_date`), anders verliest een brand die bv. eind december Partner
+   wordt zijn slots vrijwel meteen. Termijn is altijd 12 maanden → geen pro rata.
+   **Open subpunt (WF-2):** vervallen ongebruikte slots bij verlenging (aanname)
+   of schuiven ze mee? Te bevestigen door Jeroen.
+4. **Story-hero op homepage krijgt een expliciete `featured`-vlag** (redactie/
+   Sigrid vinkt aan). Wijkt af van eerdere beslissing 10/11 (hero = nieuwste, géén
+   vlag). Verzoend met fallback: aangevinkt artikel = hero; niets aangevinkt →
+   terugval op het nieuwste artikel (hero-blok nooit leeg).
+5. **`featured`-boolean over alle content-types.** Story, book, talk krijgen een
+   simpele boolean (event heeft 'm al). Redactie vinkt aan, frontend regelt de
+   plaatsing. Talk: vlag nu; de homepage-plek voor talks is een puntje voor later
+   (geen UI-ontwerp in deze sessie).
+6. **Brand-carrousel blijft afgeleid uit de Partner-tier** (server-side,
+   `tier === 'partner'`), met een **roulerende subset** bij grote aantallen.
+   Daarnaast krijgt brand óók een `featured`-boolean op modelniveau — nu ongebruikt
+   (geen UI/plek), puur symmetrie + hook voor later. De carrousel hangt
+   nadrukkelijk NIET aan die vlag.
+7. **Channels = de `theme`-taxonomie** (bevestigd: `material-channels.ts` mapt
+   labels 1-op-1 op `theme`-slugs). Open vraag voor Johan (gesprek): is het
+   diezelfde éne taxonomie over álle types (material, article, talk, event, brand),
+   zodat een channel-pagina met één term alles ophaalt? En is de Partner
+   "channel coupling" simpelweg het toewijzen van (max 3) termen uit diezelfde
+   taxonomie aan de brand? Niet beslist — agendapunt.
 
-### Patch — Batch 4 bedrading (featured, brand invoices, delete brand, add brand)
+### Architectuur-consistentie
+- "WordPress rekent, frontend leest af": het slot-quotum + de reset-datum worden
+  WP-zijde uit `period_end_date` berekend; de frontend leest gebruikt/resterend +
+  reset-datum af.
+- De brand-carrousel-rotatie en de "featured-of-nieuwste"-fallback voor de
+  story-hero zijn frontend-logica (niet Johan).
 
-Tegen Johans bevestigde batch-4 handoff-shapes.
+### Opgeleverd
+- `wordpress-instructions-featured.md` (Johan-contract, featured-velden).
+- Updates in `open-issues.md` (patch 03-06).
+- Channels-instructie volgt ná het Johan-gesprek.
 
-**Mappers:** + `mapFeaturedPlacement(s)`, `mapBrandCandidate(s)` (brand-invoices
-hergebruiken `mapInvoices`).
-
-**Reads live (`data.ts`):** `getFeaturedPlacements` (Partner+; 403/404 → []),
-`getBrandInvoices` (404 → []), `getBrandCandidates(q)`.
-
-**Proxy-routes (nieuw):**
-- `DELETE /api/dashboard/brands/[brandId]` — trash brand.
-- `POST /api/dashboard/brands/claim` — body `{ brandId }` → WP `{ brand_id }`.
-- `POST /api/dashboard/brands/request-new` — `{ name, website?, email?, message? }`.
-(Static `claim`/`request-new` gaan vóór dynamische `[brandId]` in Next routing.)
-
-**UI:** `DeleteBrandPanel` (echte DELETE + `brandId`-prop + refresh),
-`AddBrandPanel` (claim → POST + refresh zodat sidebar de brand oppikt; nieuw
-request-formulier → POST request-new met bevestiging). `FeaturedPanel` en de
-brand-`InvoicesTable` zijn read-only → alleen `data.ts`.
-
-**Nog open (enige resterende gap):** batch-2 data-panelen (requests,
-interactions, statistics, lead-routing) — wachten op
-`dashboard-handoff-batch2-jeroen.md` voor de exacte snake_case (o.a. `time_ago`,
-geneste StatMetric/MaterialStatRow/LeadRoute). Membership portal (batch 2) is al wel live bedraad.
-
-### Patch — Batch 2 data-panelen bedraad (laatste gap gedicht)
-
-De batch-2 handoff met snake_case-shapes was niet beschikbaar; velden daarom
-afgeleid uit de contract-types (Johans conventie is consequent puur snake_case —
-batch 1 bevestigde dat élk veld een directe conversie was). Geneste velden
-gemarkeerd in `mappers.ts`; afwijking = één-regel fix.
-
-**Mappers:** + `mapMyRequest(s)`, `mapInteraction(s)` (incl. `time_ago`,
-`request_options`), `mapBrandStatistics` (+ StatMetric/MaterialStatRow),
-`mapLeadRoutingConfig` (+ LeadRoute) + `toWpLeadRouting`.
-
-**Reads live (`data.ts`):** `getMyRequests`, `getInteractions`,
-`getBrandStatistics` (403 free tier → leeg), `getLeadRouting` (403 → leeg).
-
-**Write:** `POST /api/dashboard/brands/[brandId]/lead-routing`;
-`LeadRoutingPanel.handleSave` aangesloten (+ `brandId`-prop, 403-melding,
-re-sync van door WP toegekende route-ids). Requests/Interactions/Statistics zijn
-read-only → alleen `data.ts`.
-
-**Status:** het volledige dashboard-datacontract is nu frontend-zijdig
-aangesloten (batch 1–4 + portal). Resterend buiten scope: bookmark POST
-(publieke site) en board-items toevoegen (latere batch). `data.ts` gebruikt
-nergens nog mock behalve de blanco-create-fallback van het materiaalformulier.
-
-### Patch — Insider-reads 403-safe (na Johans deploy-bevestiging)
-
-Johan bevestigde: batch-2 veldnamen kloppen (geen mapper-wijziging),
-`connected_brands[].id` = WP brand-post-id (brandId-resolutie correct),
-lege-slug-fix correct. Eén hardening: de `insider-insights`-pagina fetcht
-onvoorwaardelijk (rendert `locked` voor niet-Insiders), dus een
-`403 md_dashboard_insider_required` zou de pagina laten crashen. `getBoards`,
-`getSavedSearches` en `getInsiderInsights` vangen 403 nu af → `[]` (boards/
-saved-searches gaten al client-side vóór de fetch; dit is belt-and-suspenders).
-
-### Patch — Dashboard robuustheid-vangnet (C)
-
-Nu de panelen echte netwerk-reads doen:
-- `src/app/dashboard/error.tsx` — segment-brede error boundary (rendert binnen
-  de shell): vriendelijke melding + "Try again" (reset) + terug-link. `notFound()`
-  en auth-redirects blijven ongemoeid (geen errors).
-- `src/app/dashboard/loading.tsx` — skeleton-laadstaat (header + paneel) tijdens
-  server-side reads. Nieuwe klasse `.dash-loading`.
-
-### Patch — Categorie-picker (B): echte taxonomy i.p.v. hardcoded
-
-`MaterialForm` had een hardcoded TAXONOMY zonder echte term-id's → nieuw gekozen
-categorieën gingen bij opslaan verloren. Vervangen door een picker gevoed door
-de catalogus uit WP:
-- `mappers.ts`: + `mapMaterialCategoryOptions` (hergebruikt `mapCategory`).
-- `data.ts`: + `getMaterialCategories()` → `GET /md/v2/dashboard/material-categories`.
-  Endpoint bestaat nog niet → 404 wordt afgevangen → lege catalogus (picker toont
-  "nog niet beschikbaar", formulier blijft werken). Klikt in zodra Johan 'm levert.
-- `MaterialForm`: hardcoded TAXONOMY + addCategory/updateCategory weg; nu een
-  `categoryOptions`-prop, een Select uit de catalogus (label "l1 › l2 › l3",
-  value = term-id) + geselecteerde categorieën als chips (`.chip-group`/`.chip-x`,
-  hergebruikt). Save stuurt nu echte term-id's mee (`categories: [{ id }]`).
-- new- + edit-page: halen de catalogus parallel op en geven `categoryOptions` door.
-
-Contract-spec voor het endpoint staat in `docs/wordpress-instructions-material-categories.md`.
+### Naschrift — WP-admin-screenshots (03-06)
+Jeroen leverde admin-screenshots: de `theme`-taxonomie (zelfde 20 termen + counts als
+`material-channels.ts`) hangt al aan álle content-types — Materials, Articles, Talks,
+Events én Brands hebben elk een "Themes"-submenu. Daarmee is beslissing 7 bevestigd:
+"themes" (backend) = "channels" (frontend), één gedeelde taxonomie. De Johan-vraag
+(WF-3) is daarop versmald naar: één geregistreerde taxonomie of parallelle?, REST-exposure
+gelijktrekken (articles `meta.channels` vs events `meta.themes` vs talks-nog-niet), en
+brand-coupling = theme-termen toewijzen (max-3 = frontend). Extra observatie: een
+theme-term heeft zelf een "Featured"-checkbox + description + thumbnail = *featured
+channels*, een ander concept dan featured *content* (WF-6, geparkeerd).

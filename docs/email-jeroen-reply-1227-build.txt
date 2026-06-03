@@ -1,0 +1,29 @@
+Onderwerp: Re: dashboard build 1227 + backend klaar
+
+Hoi Jeroen,
+
+Dank voor de update — 1227 staat op test (i.p.v. 0604). Typecheck + build groen; Vercel-deploy is live.
+
+Test-URL: https://materialdistrict-frontend.vercel.app/dashboard
+
+Je twee vragen uit vanochtend staan al klaar op de WP-kant:
+
+1. Material categories endpoint — LIVE op productie
+   GET /wp-json/md/v2/dashboard/material-categories
+   Bearer JWT. Alleen leaf terms, shape { id, l1, l2, l3 }.
+   Spec: docs/wordpress-instructions-material-categories.md
+
+   De categorie-picker in 1227 zou hiermee direct moeten werken op test (frontend praat tegen materialdistrict.com/wp-json). Geen "nog niet beschikbaar" meer verwacht.
+
+2. E2E-testaccounts — staan al klaar (zie mijn eerdere mail van vanmiddag). Geen actie nodig aan jouw kant.
+
+Wat je in 1227 kunt testen:
+- Error boundary + loading skeleton (dashboard-breed vangnet)
+- Categorie-picker op materiaal new/edit (plus/basis/partner account)
+- Tier gates per account (statistics 403 op free, featured op partner, insider panels op insider-account)
+- Pending-setup brand (lege slug in brand menu)
+
+Laat weten als je ergens tegenaan loopt — dan kijk ik gericht mee.
+
+Groet,
+Johan
