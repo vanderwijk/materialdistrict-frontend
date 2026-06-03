@@ -1984,3 +1984,13 @@ read-only → alleen `data.ts`.
 aangesloten (batch 1–4 + portal). Resterend buiten scope: bookmark POST
 (publieke site) en board-items toevoegen (latere batch). `data.ts` gebruikt
 nergens nog mock behalve de blanco-create-fallback van het materiaalformulier.
+
+### Patch — Insider-reads 403-safe (na Johans deploy-bevestiging)
+
+Johan bevestigde: batch-2 veldnamen kloppen (geen mapper-wijziging),
+`connected_brands[].id` = WP brand-post-id (brandId-resolutie correct),
+lege-slug-fix correct. Eén hardening: de `insider-insights`-pagina fetcht
+onvoorwaardelijk (rendert `locked` voor niet-Insiders), dus een
+`403 md_dashboard_insider_required` zou de pagina laten crashen. `getBoards`,
+`getSavedSearches` en `getInsiderInsights` vangen 403 nu af → `[]` (boards/
+saved-searches gaten al client-side vóór de fetch; dit is belt-and-suspenders).

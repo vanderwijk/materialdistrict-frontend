@@ -99,29 +99,46 @@ export async function getBookmarks(): Promise<BookmarkItem[]> {
 
 /** GET /md/v2/dashboard/boards (batch 3 — live, Insider) */
 export async function getBoards(): Promise<Board[]> {
-  const raw = await wpDashboardFetch<Parameters<typeof mapBoards>[0]>(
-    '/md/v2/dashboard/boards',
-    { method: 'GET', bearer: await requireToken() },
-  )
-  return mapBoards(raw)
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapBoards>[0]>(
+      '/md/v2/dashboard/boards',
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapBoards(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && err.status === 403) return []
+    throw err
+  }
 }
 
 /** GET /md/v2/dashboard/saved-searches (batch 3 — live, Insider) */
 export async function getSavedSearches(): Promise<SavedSearch[]> {
-  const raw = await wpDashboardFetch<Parameters<typeof mapSavedSearches>[0]>(
-    '/md/v2/dashboard/saved-searches',
-    { method: 'GET', bearer: await requireToken() },
-  )
-  return mapSavedSearches(raw)
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapSavedSearches>[0]>(
+      '/md/v2/dashboard/saved-searches',
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapSavedSearches(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && err.status === 403) return []
+    throw err
+  }
 }
 
 /** GET /md/v2/dashboard/insider-insights (batch 3 — live, Insider) */
 export async function getInsiderInsights(): Promise<InsightReport[]> {
-  const raw = await wpDashboardFetch<Parameters<typeof mapInsights>[0]>(
-    '/md/v2/dashboard/insider-insights',
-    { method: 'GET', bearer: await requireToken() },
-  )
-  return mapInsights(raw)
+  // The insights page fetches unconditionally and renders a locked state for
+  // non-Insiders, so swallow the insider-required 403 and return [].
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapInsights>[0]>(
+      '/md/v2/dashboard/insider-insights',
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapInsights(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && err.status === 403) return []
+    throw err
+  }
 }
 
 /** GET /md/v2/dashboard/requests */
