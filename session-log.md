@@ -1949,3 +1949,14 @@ gelijktrekken (articles `meta.channels` vs events `meta.themes` vs talks-nog-nie
 brand-coupling = theme-termen toewijzen (max-3 = frontend). Extra observatie: een
 theme-term heeft zelf een "Featured"-checkbox + description + thumbnail = *featured
 channels*, een ander concept dan featured *content* (WF-6, geparkeerd).
+
+### Naschrift — Jeroen follow-up (04-06-2026)
+
+**Featured (boolean):** talk + article `_featured`-alias opgepakt (plugin `c708bc5`).
+Book geparkeerd (WooCommerce featured product later). WF-2 bevestigd: ongebruikte
+material-slots vervallen bij verlenging.
+
+**Channels (WF-3):** Jeroen bevestigt `meta.channels` = `theme` over alle types incl.
+brands. **Correctie:** geen `meta.sectors` — sector blijft admin-only, niet in REST.
+Huidige `meta.channels`→sector mapping en dubbele `meta.themes` (talk/event) worden
+bij de channels-batch verwijderd/vervangen.

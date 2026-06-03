@@ -392,25 +392,28 @@ bevestigen dat-ie in de response zit); (c) `featured`-boolean op brand
 (modelniveau, voorlopig ongebruikt). Volledige specificatie + afvink-checklist
 in de instructie. Sluit aan op / vervangt de "echte bron"-vraag uit S10.3.
 
-### WF-2 — Featured-slot rollover-beslissing 🟡
+### WF-2 — Featured-slot rollover-beslissing ✅
 **Eigenaar:** Jeroen
 Resetten op `period_end_date` is besloten (zie session-log 03-06, beslissing 3).
-Open: vervallen ongebruikte slots bij verlenging (huidige aanname) of schuiven ze
-mee naar de volgende periode? Te bevestigen vóór Johan de teller-logica bouwt.
+**Bevestigd (04-06):** ongebruikte slots vervallen bij verlenging (use-it-or-lose-it).
 
 ### WF-3 — Channels (`theme`-taxonomie): REST-exposure gelijktrekken 🟡
-**Eigenaar:** Johan (bevestiging) + Jeroen/Claude
-**Bron:** planningsessie 03-06 + WP-admin-screenshots — agendapunt Johan-gesprek
+**Eigenaar:** Johan (WP) → Jeroen/Claude (frontend-check na deploy)
+**Bron:** planningsessie 03-06 + follow-up 04-06
 Admin bevestigt: de `theme`-taxonomie (zelfde 20 termen + counts als
 `material-channels.ts`) hangt al aan álle content-types — Materials, Articles,
 Talks, Events én Brands hebben elk een "Themes"-submenu. "Themes" (backend) =
-"channels" (frontend). Resterende vragen voor Johan:
-1. Eén geregistreerde taxonomie over alle post-types, of parallelle met dezelfde termen?
-2. **REST-exposure gelijktrekken** — nu ongelijk: articles `meta.channels`, events
-   `meta.themes`, talks nog niet (W-TALK.3). Eén consistente veldnaam + shape
-   (`{id, slug, label}[]`) over álle types, incl. brands.
-3. Partner channel-coupling = brand krijgt (max 3) theme-termen toegewezen; max-3 is
-   een frontend-regel, geen taxonomie-beperking. Bevestigen.
+"channels" (frontend).
+
+**Beslissingen (04-06, Jeroen):**
+1. **Eén taxonomie** — bevestigd (`theme`, geregistreerd op alle post-types).
+2. **REST:** overal `meta.channels` = `theme`-termen, shape `{ id, slug, label }[]`,
+   incl. brands. Verwijder de huidige sector-mapping op `meta.channels` en drop
+   `meta.themes` waar die dubbel is (talk/event). **Geen `meta.sectors`** — sector
+   wordt niet op de frontend gebruikt en hoeft niet in REST.
+3. **Partner channel-coupling** — brand krijgt (max 3) theme-termen; max-3 is
+   frontend-regel, geen WP-limiet.
+
 Absorbeert S8.4 (themes integraal) en W-TALK.3 (channels-exposure talk). Pas hierna
 volgt een channels-instructie + de channel-pagina's.
 
@@ -447,3 +450,7 @@ de dynamische reset-datum; mockup-copy is op dit punt verouderd.
   S10.3 beslist in richting (tier-afgeleide carrousel + rotatie). S8.4/W-TALK.3
   geabsorbeerd onder WF-3. WF-6 noteert het term-niveau "Featured" op themes.
   `wordpress-instructions-featured.md` nieuw.
+- **v1.x (04-06-2026)** — Jeroen follow-up channels/featured: WF-2 bevestigd
+  (use-it-or-lose-it slots). WF-3: `meta.channels` = theme; **geen** `meta.sectors`
+  (sector niet in REST). Talk featured + article `_featured`-alias live (plugin
+  `c708bc5`).

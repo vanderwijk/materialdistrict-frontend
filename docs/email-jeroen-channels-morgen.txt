@@ -14,7 +14,7 @@ CHANNELS (jouw drie vragen — mijn voorlopige antwoorden)
 
 1. Eén taxonomie: ja. In WP is het één geregistreerde theme-taxonomie, gekoppeld aan material, article, talk, event én brand.
 
-2. REST gelijktrekken: hier zit het meeste werk. Nu is het inconsistent — o.a. meta.channels wijst in de code naar sector, terwijl meta.themes (alleen talk/event) wél theme is. Jullie frontend material-channels.ts verwacht theme-slugs. Voorstel morgen: overal meta.channels = theme-termen, shape { id, slug, label }[], inclusief brands. Beslissing nodig: wat doen we met sector in REST (hernoemen, apart veld, of deprecated)?
+2. REST gelijktrekken: overal meta.channels = theme-termen, shape { id, slug, label }[], inclusief brands. Sector niet in REST (geen meta.sectors) — frontend gebruikt sector niet.
 
 3. Partner channel-coupling (max 3 theme-termen op brand): klopt — dat is een frontend-regel; WP hoeft de taxonomie niet te limiteren.
 
