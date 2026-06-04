@@ -18,6 +18,7 @@ import type {
   UserProfile,
   BookmarkItem,
   Board,
+  BoardDetail,
   SavedSearch,
   InsightReport,
   MyRequest,
@@ -45,6 +46,7 @@ import {
   mapMaterialListRows,
   mapBookmarks,
   mapBoards,
+  mapBoardDetail,
   mapSavedSearches,
   mapInsights,
   mapInvoices,
@@ -112,6 +114,24 @@ export async function getBoards(): Promise<Board[]> {
     return mapBoards(raw)
   } catch (err) {
     if (err instanceof DashboardApiError && err.status === 403) return []
+    throw err
+  }
+}
+
+/**
+ * GET /md/v2/dashboard/boards/{id} (Insider). Returns the board + its items.
+ * `null` → page calls notFound(): unknown board, not owned, or the endpoint
+ * isn't live yet (404/403 all collapse to null).
+ */
+export async function getBoard(id: string): Promise<BoardDetail | null> {
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapBoardDetail>[0]>(
+      `/md/v2/dashboard/boards/${encodeURIComponent(id)}`,
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapBoardDetail(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && (err.status === 404 || err.status === 403)) return null
     throw err
   }
 }

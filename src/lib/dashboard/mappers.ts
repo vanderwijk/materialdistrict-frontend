@@ -17,6 +17,8 @@ import type {
   BookmarkItem,
   BookmarkType,
   Board,
+  BoardDetail,
+  BoardItem,
   SavedSearch,
   InsightReport,
   Invoice,
@@ -242,6 +244,43 @@ export function mapBoard(raw: RawBoard): Board {
 
 export function mapBoards(raw: RawBoard[]): Board[] {
   return Array.isArray(raw) ? raw.map(mapBoard) : []
+}
+
+// ---- Board detail (board + its items) ----
+
+interface RawBoardItem {
+  type?: BookmarkType
+  item_id?: number
+  title?: string
+  label?: string
+  href?: string
+  image_url?: string | null
+  gradient?: string | null
+  saved_at?: string
+}
+
+interface RawBoardDetail extends RawBoard {
+  items?: RawBoardItem[]
+}
+
+export function mapBoardItem(raw: RawBoardItem): BoardItem {
+  return {
+    type: raw.type ?? 'materials',
+    itemId: typeof raw.item_id === 'number' ? raw.item_id : 0,
+    title: raw.title ?? '',
+    label: raw.label ?? '',
+    href: raw.href ?? '#',
+    imageUrl: raw.image_url ?? null,
+    gradient: raw.gradient ?? null,
+    savedAt: raw.saved_at ?? '',
+  }
+}
+
+export function mapBoardDetail(raw: RawBoardDetail): BoardDetail {
+  return {
+    ...mapBoard(raw),
+    items: Array.isArray(raw.items) ? raw.items.map(mapBoardItem) : [],
+  }
 }
 
 // ---- Saved searches ----

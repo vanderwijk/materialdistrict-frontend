@@ -130,6 +130,34 @@ export interface Board {
   coverGradient: string
 }
 
+/**
+ * One item inside a board's detail view. Same display shape as `BookmarkItem`
+ * but without the bookmark record id — boards key items on `type` + `itemId`.
+ *
+ * Endpoint: `GET /md/v2/dashboard/boards/{id}` (the `items[]`).
+ */
+export interface BoardItem {
+  type: BookmarkType
+  /** Underlying WP post id of the saved content. */
+  itemId: number
+  title: string
+  label: string
+  href: string
+  imageUrl: string | null
+  gradient: string | null
+  savedAt: string
+}
+
+/**
+ * A board plus its (published) items. Orphan/unpublished items are filtered
+ * server-side, like bookmarks.
+ *
+ * Endpoint: `GET /md/v2/dashboard/boards/{id}`
+ */
+export interface BoardDetail extends Board {
+  items: BoardItem[]
+}
+
 // ============================================================
 // Personal account — Saved searches (Insider)
 // ============================================================

@@ -1,12 +1,31 @@
 /**
+ * GET    /api/dashboard/boards/[id] — board detail with items (Insider).
  * PATCH  /api/dashboard/boards/[id] — rename a board. Body `{ name }`.
  * DELETE /api/dashboard/boards/[id] — delete a board (204 → `{ ok: true }`).
  */
 
 import { NextResponse } from 'next/server'
 import { wpDashboardFetch } from '@/lib/api/dashboard'
-import { mapBoard, toWpBoard } from '@/lib/dashboard/mappers'
+import { mapBoard, mapBoardDetail, toWpBoard } from '@/lib/dashboard/mappers'
 import { getTokenOr401, dashboardError } from '@/lib/api/dashboard-proxy'
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> },
+): Promise<NextResponse> {
+  const { id } = await params
+  const { token, error } = await getTokenOr401()
+  if (error) return error
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapBoardDetail>[0]>(
+      `/md/v2/dashboard/boards/${encodeURIComponent(id)}`,
+      { method: 'GET', bearer: token },
+    )
+    return NextResponse.json(mapBoardDetail(raw), { status: 200 })
+  } catch (err) {
+    return dashboardError(err, 'boards')
+  }
+}
 
 export async function PATCH(
   request: Request,

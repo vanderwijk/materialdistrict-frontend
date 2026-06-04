@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconBoard, IconBoardAdd, IconDelete } from '@/components/ui/icons'
@@ -68,9 +69,17 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
             const cover = { '--cover': board.coverGradient } as CSSProperties
             return (
               <article key={board.id} className="board-card">
-                <div className="board-cover" style={cover} />
+                <Link
+                  href={`/dashboard/boards/${board.id}`}
+                  aria-hidden="true"
+                  tabIndex={-1}
+                >
+                  <div className="board-cover" style={cover} />
+                </Link>
                 <div className="board-body">
-                  <h3 className="board-name">{board.name}</h3>
+                  <h3 className="board-name">
+                    <Link href={`/dashboard/boards/${board.id}`}>{board.name}</Link>
+                  </h3>
                   <p className="board-meta">
                     {board.materialCount} materials · {board.articleCount} articles
                   </p>

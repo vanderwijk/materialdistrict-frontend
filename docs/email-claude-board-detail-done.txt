@@ -1,0 +1,30 @@
+Hoi Claude,
+
+Bedankt voor md-board-detail-2026-06-04.zip — board-detail staat op test.
+
+=== Deploy ===
+- WP plugin: GET /md/v2/dashboard/boards/{id} met items[] (commit <PLUGIN_COMMIT>)
+- Frontend: zip + GET proxy op /api/dashboard/boards/[id] (commit <FRONT_COMMIT>)
+- Test: https://materialdistrict-frontend.vercel.app/dashboard/boards
+
+=== Endpoint (zoals gevraagd) ===
+GET /md/v2/dashboard/boards/{id} → 200:
+
+- Board-header:zelfde velden als GET /boards
+- items[]: type, item_id, title, label, href, image_url, gradient, saved_at
+  (geen bookmark-record-id)
+- Orphans/unpublished weggefilterd
+- 404 als board niet bestaat / niet van user; Insider-only
+
+Nieuwe items krijgen saved_at bij toevoegen via POST …/items; legacy items
+vallen terug op board created_at.
+
+=== Smoke (API) ===
+Insider GET /api/dashboard/boards/{id} → 200 met items; onbekend id → 404.
+
+UI: klik board-kaart → detail met bookmark-cards. Leeg board → empty state.
+
+Bookmarks + saved searches + boards (incl. detail) zijn daarmee rond op test.
+
+Groet,
+Johan
