@@ -4,7 +4,7 @@ Bedankt voor sessie12-channels-final.zip — staat op Vercel test. Hieronder je
 drie punten + één kleine aanvulling aan onze kant.
 
 === Deploy ===
-- Frontend: commit 47eed1b (zip + fix: `theme_thumbnail`/`featured` uit
+- Frontend: commit 0b0785e (zip + fix: `theme_thumbnail`/`featured` uit
   top-level REST lezen; WP levert meta vaak leeg op terms)
 - Test: https://materialdistrict-frontend.vercel.app/channels en /channels/biobased
 
