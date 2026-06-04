@@ -2038,3 +2038,55 @@ TAXONOMY:
 OPEN VRAAG aan Johan: als de category Level-1-opties dezelfde termen zijn als het
 "Material type"-veld, is dat een data-overlap (top-level van material_category ==
 material type)? Dan afstemmen of die niveaus gescheiden moeten zijn.
+
+### Patch — Featured + offline heads-up (frontend) (04-06)
+
+Johan zette de online-bewuste featured-regel live (plugin `3e9d10f`):
+`is_featured_now` = actieve kalenderweek én materiaal online; offline/draft
+tijdens een geboekte week → uit slider/categorie-pin, week blijft geboekt, heelt
+vanzelf bij weer-online. Geen blokkade op offline/draft/verwijderen; quota
+ongewijzigd (geboekte week telt mee, ook offline). Per materiaalrij op
+`GET /md/v2/dashboard/brands/{brandId}/materials`: `featured_state`
+(`'active'`|`'scheduled'`|`null` = geboekte kalenderweek, niet zichtbaarheid) +
+`featured_week_start` (ISO-maandag|`null`).
+
+Frontend opgeleverd (zip `featured-offline-headsup`): `featured_state`/
+`featured_week_start` → camelCase op `MaterialListRow` (types + dashboard-
+mappers); `MaterialsPanel` toont een zachte, niet-blokkerende heads-up bij het
+offline halen van een featured materiaal (active/scheduled) — "Keep online" /
+"Take offline anyway". Bevestigen zet 'm offline; booking + quota blijven.
+Heads-up zit op de online/offline-toggle in de materialenlijst (primaire pad);
+draft/verwijderen lopen via andere flows (WP-regel dekt die sowieso).
+**Live:** main `070d489`; heads-up geverifieerd op Partner E2E-brand.
+
+### Patch — ChannelBar-rollout afgerond (alle overzichten live) (04-06)
+
+ChannelBar staat op alle overzichten, overal identiek (`?channel=<slug>`, zoeken
+in de bar via `?q=`, behoudt overige params). Eén gedeelde `ChannelBarNav` +
+`getChannelCatalog()`/`resolveChannelId()` (`channels.ts`) gevoed door
+`/md/v2/material-channels` (wrapper `{ channels:[{id,slug,label,count}] }`, 20
+termen).
+
+- **Talks/brands/events:** live + door Johan geverifieerd op test (main
+  `84322bf`). Talks/brands filteren server-side (`?theme=<term_id>`); events
+  client-side op slug (WP kan niet orderby `date_start` over paginatie).
+- **Materials (live):** channel-filter via FacetWP-facet **`theme`** (slug;
+  plugin `facetwp-theme-facet.php` + re-index in WP admin). Frontend main
+  `76dd5c4` (`channelbar-materials`): `theme` in facet-set, `?channel` ↔ `theme`,
+  `ChannelBarNav` op /materials. Geverifieerd: curious 33, biobased 719.
+
+**Gotcha vastgelegd:** FacetWP-taxonomiefacets verwachten term-SLUGS;
+WP-REST-collecties (`?theme=`) verwachten term-ID's. Niet door elkaar halen.
+
+### Beslissing — Channels-hubs (volgende sessie) (04-06)
+
+Richting vastgelegd met Jeroen (zie `openingsprompt-channels-sessie.md`):
+- `/channels`-index meenemen (alle 20, featured channels vooraan).
+- `/channels/[slug]` = gemengde cross-entity hub (niet materials-only — dat zou
+  de bar-filter dubbelen). Hero uit `/wp/v2/theme/{id}` (naam + description) +
+  `theme_thumbnail`. Strips per type in **topmenu-volgorde: Materials → Stories →
+  Brands → Events → Talks** (Books later, tussen Events en Talks), elk met een
+  "bekijk alle … in {channel}"-deeplink naar het in-place gefilterde overzicht.
+- Bar blijft in-place filteren; hubs via de index (+ evt. klein bruggetje).
+- SEO = Claude (canonical/JSON-LD); `?channel=`-overzichten canonical naar het
+  kale overzicht.

@@ -133,6 +133,26 @@ Deliverables:
 
 ---
 
+### Stap 12 — Channel-hubs (`/channels` + `/channels/[slug]`)
+**Doel:** Topic-hubs per channel (`theme`-taxonomie, 20 termen) die dwars door
+alle content-types snijden — los van de in-place ChannelBar-filter.
+
+Deliverables:
+- `/channels` — index van alle channels (thumbnail + naam + description +
+  telling), featured channels vooraan
+- `/channels/[slug]` — gemengde cross-entity hub: hero (naam + description uit
+  `/wp/v2/theme/{id}` + `theme_thumbnail`) + strips per type in topmenu-volgorde
+  (Materials → Stories → Brands → Events → Talks; Books later), elk met een
+  "bekijk alle … in {channel}"-deeplink naar het gefilterde overzicht
+- SEO: unieke metadata + canonical per channel, BreadcrumbList + CollectionPage
+  JSON-LD; `?channel=`-overzichten canonical naar het kale overzicht
+- Hergebruikt `ChannelBar` / `getChannelCatalog` + de bestaande content-cards
+
+Afhankelijkheid: materials-slice per channel via de FacetWP `theme`-facet
+(zelfde als de materials-ChannelBar); overige types via `?theme=<term_id>`.
+
+---
+
 ## Fase 2 — Dashboards (later)
 
 Na afronding van alle publieke pagina's:

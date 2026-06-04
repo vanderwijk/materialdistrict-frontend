@@ -454,3 +454,41 @@ de dynamische reset-datum; mockup-copy is op dit punt verouderd.
   (use-it-or-lose-it slots). WF-3: `meta.channels` = theme; **geen** `meta.sectors`
   (sector niet in REST). Talk featured + article `_featured`-alias live (plugin
   `c708bc5`).
+
+## Sessie — Featured/offline + ChannelBar-rollout + Channels-hub (04-06-2026)
+
+> Append-only. Voortgang op WF-1 (featured) en WF-3 (channels) + de
+> channels-hub-beslissing.
+
+### Featured + offline — WF-1 deels live
+Backend live (plugin `3e9d10f`): `is_featured_now` online-bewust (actieve week én
+online); geen blokkade op offline/draft/verwijderen; quota ongewijzigd. Per rij
+op `…/dashboard/brands/{brandId}/materials`: `featured_state`
+(`'active'`|`'scheduled'`|`null`) + `featured_week_start` (ISO-maandag|`null`).
+Frontend heads-up live op test (main `070d489`); E2E heads-up geverifieerd op
+Partner-brand.
+
+### ChannelBar-rollout
+- **Talks/brands/events** — live + geverifieerd (main `84322bf`).
+- **Materials — live ✅:** FacetWP-facet **`theme`** (plugin `facetwp-theme-facet.php`,
+  bron `theme`-taxonomie, **term-SLUG**); re-index in WP admin. Frontend
+  `channelbar-materials` (main `76dd5c4`); filter geverifieerd (curious 33,
+  biobased 719 via FacetWP fetch).
+
+### Channel-contract (vastgelegd)
+- `GET /wp/v2/theme/{id}` → `name` + `description` (HTML).
+- `theme_thumbnail` term-meta op `/wp/v2/theme` (plugin `b766803`).
+- Collectie-filtering: `?theme=<term_id INTEGER>` voor talk/article/brand/event;
+  materials via de FacetWP `theme`-facet (slug). **Gotcha:** FacetWP = slug,
+  WP-REST = term-id.
+
+### Channels-hubs — beslissing (WF-3-vervolg)
+Gemengde cross-entity hub + `/channels`-index; topmenu-volgorde; bar blijft
+in-place filteren. Details in `openingsprompt-channels-sessie.md`. Dit is de
+volgende sessie (build-order: nieuwe Stap 12).
+
+## Wijzigingen — append onderaan de lijst
+- **v1.x (04-06-2026, 2e patch)** — Featured/offline heads-up live (`070d489`).
+  ChannelBar op alle overzichten live (`84322bf` + `76dd5c4`, FacetWP `theme`-
+  facet + index). Channel-contract + slug-vs-id-gotcha vastgelegd. Channels-hub-
+  richting beslist (Stap 12).
