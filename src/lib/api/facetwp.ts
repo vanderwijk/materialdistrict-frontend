@@ -6,7 +6,7 @@
  *
  * Bevestigd contract (Johan, sessie 4, 12-05-2026):
  *  - Body wordt ingepakt in `{ data: { facets, query_args } }`
- *  - Alle bekende facet-keys altijd aanwezig in `data.facets` (lege arrays voor ongeselecteerd)
+ *  - Alle 18 facet-keys altijd aanwezig in `data.facets` (lege arrays voor ongeselecteerd)
  *  - Response: `results: number[]`, `facets: { ... }`, `pager: { ... }`
  *  - Sort-waarden: `newest` / `oldest` / `az` / `za`
  *
@@ -30,7 +30,6 @@
 
 import {
   ALL_MATERIAL_FACET_KEYS,
-  MATERIAL_FILTER_FACETS,
   type AnyMaterialFacetName,
   type FacetSelection,
   type FacetWPFetchRequest,
@@ -75,11 +74,11 @@ export class FacetWPError extends Error {
 }
 
 // --------------------------------------------------------------------
-// Body builder — normaliseert selectie naar het volledige facet-key-formaat
+// Body builder — normaliseert selectie naar het 18-keys-formaat
 // --------------------------------------------------------------------
 
 /**
- * Bouwt de `data.facets`-shape: elke bekende facet-key aanwezig,
+ * Bouwt de `data.facets`-shape: elke van de 18 facet-keys aanwezig,
  * met een (mogelijk lege) string-array als waarde.
  *
  * Conventie uit Johan's contract: keys mogen NIET ontbreken.
@@ -103,7 +102,7 @@ function buildFacetsPayload(
  * Low-level POST naar `/facetwp/v1/fetch`. Geeft de ruwe response terug.
  *
  * Gebruik bij voorkeur `fetchMaterialsFiltered` of
- * `fetchMaterialFacetsBaseline` — die zorgen voor het volledige facet-key-formaat
+ * `fetchMaterialFacetsBaseline` — die zorgen voor het 18-keys-formaat
  * en de juiste cache-strategie.
  */
 export async function facetwpFetch(
@@ -261,6 +260,8 @@ export async function fetchMaterialFacetsBaseline(options?: {
 const SEARCH_PARAM_KEY = 'q'
 const SORT_PARAM_KEY = 'sort'
 const PAGE_PARAM_KEY = 'page'
+/** URL-param voor de ChannelBar (identiek op elke overzichtspagina). Mapt naar de `theme`-facet. */
+const CHANNEL_PARAM_KEY = 'channel'
 
 /**
  * Geldige sort-waarden zoals geretourneerd door FacetWP.
@@ -274,11 +275,27 @@ const VALID_SORT_VALUES: ReadonlySet<MaterialSortValue> = new Set([
 ])
 
 /**
- * Filter-facet-keys (zonder search/sort) — direct afgeleid van de
- * canonieke `MATERIAL_FILTER_FACETS` lijst zodat nieuwe FacetWP-admin
- * filters automatisch door de URL-parser worden geaccepteerd.
+ * Filter-facet-keys (zonder search/sort) — als ReadonlySet voor snelle
+ * include-check tijdens parsing.
  */
-const FILTER_FACET_KEYS_SET: ReadonlySet<string> = new Set(MATERIAL_FILTER_FACETS)
+const FILTER_FACET_KEYS_SET: ReadonlySet<string> = new Set([
+  'material_category',
+  'glossiness',
+  'translucence',
+  'structure',
+  'texture',
+  'hardness',
+  'temperature',
+  'acoustics',
+  'odeur',
+  'fire_resistance',
+  'uv_resistance',
+  'weather_resistance',
+  'scratch_resistance',
+  'weight',
+  'chemical_resistance',
+  'renewable',
+])
 
 /**
  * Resultaat van het parsen van Next.js searchParams: zowel de
@@ -322,6 +339,15 @@ export function parseFacetSelectionFromSearchParams(
 
     if (key === PAGE_PARAM_KEY) {
       // page wordt apart geretourneerd, niet in selection
+      continue
+    }
+
+    if (key === CHANNEL_PARAM_KEY) {
+      // ChannelBar levert één slug; FacetWP-themefacet verwacht een slug.
+      const slug = value.trim()
+      if (slug.length > 0) {
+        selection.theme = [slug]
+      }
       continue
     }
 
@@ -378,6 +404,12 @@ export function facetSelectionToSearchParams(
     if (key === 'order') {
       const sort = (value as string[])[0]
       if (sort) params.set(SORT_PARAM_KEY, sort)
+      continue
+    }
+
+    if (key === 'theme') {
+      const slug = (value as string[])[0]?.trim()
+      if (slug) params.set(CHANNEL_PARAM_KEY, slug)
       continue
     }
 

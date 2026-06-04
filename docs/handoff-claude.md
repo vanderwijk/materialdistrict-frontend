@@ -120,6 +120,6 @@ E2E-brand heeft vaak alleen **offline** testmateriaal → “Publish a material 
 
 1. Featured UI-check op test (Partner-account).
 2. ~~ChannelBar naar **brands**, **events**~~ — live op test (increment 2, `MANIFEST-channelbar-brands-events.md`).
-3. ChannelBar **materials** (FacetWP).
+3. ~~ChannelBar **materials** (FacetWP)~~ — live op test (`MANIFEST-channelbar-materials.md`); vereist FacetWP-facet `theme` (plugin `facetwp-theme-facet.php`).
 4. Landings `/channels/[slug]` met `GET /wp/v2/theme/{id}` + `theme_thumbnail`.
 5. ~~Materials-lijst: featured offline heads-up~~ — live op test (`MANIFEST-featured-offline-headsup.md`).

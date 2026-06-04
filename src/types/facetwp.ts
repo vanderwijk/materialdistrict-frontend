@@ -75,6 +75,13 @@ export type MaterialSearchFacetName = 'search_materials'
 export type MaterialSortFacetName = 'order'
 
 /**
+ * Channel-facet — de `theme`-taxonomie ("channels"). Gevuld via de ChannelBar
+ * (één slug), niet via de FilterSidebar. FacetWP-taxonomiefacets verwachten
+ * term-slugs als waarde (niet term-id's, anders dan de WP-REST-collecties).
+ */
+export type MaterialChannelFacetName = 'theme'
+
+/**
  * Sort-opties — exact zoals door FacetWP geretourneerd in
  * `facets.order.choices[].value` (Johan's voorbeeld-response).
  */
@@ -85,6 +92,7 @@ export type AnyMaterialFacetName =
   | MaterialFacetName
   | MaterialSearchFacetName
   | MaterialSortFacetName
+  | MaterialChannelFacetName
 
 /**
  * Volledige lijst van alle facet-keys die ALTIJD in de request worden
@@ -99,6 +107,7 @@ export type AnyMaterialFacetName =
 export const ALL_MATERIAL_FACET_KEYS: readonly AnyMaterialFacetName[] = [
   'search_materials',
   'order',
+  'theme',
   'material_category',
   // Sensorial
   'glossiness',
@@ -280,6 +289,8 @@ export type FacetSelection = {
 } & {
   search_materials?: string[]
   order?: MaterialSortValue[]
+  /** Channel (theme-taxonomie), één slug. Gevuld via `?channel=`. */
+  theme?: string[]
 }
 
 // --------------------------------------------------------------------

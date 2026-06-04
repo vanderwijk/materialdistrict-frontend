@@ -30,8 +30,8 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, EmptyState } from '@/components/ui'
-import { listMaterialsWithFacets } from '@/lib/api'
+import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
+import { getChannelCatalog, listMaterialsWithFacets } from '@/lib/api'
 import { parseFacetSelectionFromSearchParams } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { MaterialsContextWriter } from '@/lib/hooks/useMaterialsContext'
@@ -43,7 +43,6 @@ import {
 } from './_components/MaterialsFilterSidebar'
 import { MaterialsGrid } from './_components/MaterialsGrid'
 import { MaterialsPagination } from './_components/MaterialsPagination'
-import { MaterialsSearchInput } from './_components/MaterialsSearchInput'
 import { RecentlyViewedSection } from './_components/RecentlyViewedSection'
 import type { MaterialSortValue } from '@/types/facetwp'
 
@@ -90,12 +89,19 @@ export default async function MaterialsPage({
   delete filterSelection.order
   delete filterSelection.search_materials
 
-  const result = await listMaterialsWithFacets({
-    selection: filterSelection,
-    page,
-    sort,
-    search,
-  })
+  const channelSlug =
+    (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() ||
+    undefined
+
+  const [result, channels] = await Promise.all([
+    listMaterialsWithFacets({
+      selection: filterSelection,
+      page,
+      sort,
+      search,
+    }),
+    getChannelCatalog(),
+  ])
 
   const hasActiveFilters =
     Object.keys(filterSelection).length > 0 || Boolean(search)
@@ -122,10 +128,14 @@ export default async function MaterialsPage({
             </p>
           )}
         </div>
-        <div className="ov-page-header-aside">
-          <MaterialsSearchInput initialValue={search ?? ''} />
-        </div>
       </header>
+
+      <ChannelBarNav
+        channels={channels}
+        activeSlug={channelSlug}
+        initialSearch={search ?? ''}
+        searchPlaceholder="Search materials…"
+      />
 
       {/* Mobile filter-trigger rij — sessie 6 fix voor Punt 22.
           Op desktop verborgen via CSS-media-query. Plaats: tussen
