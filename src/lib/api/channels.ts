@@ -26,6 +26,22 @@ interface RawChannel {
   count?: number
 }
 
+interface RawMaterialChannelsResponse {
+  channels?: RawChannel[]
+}
+
+function mapChannelList(raw: RawChannel[] | undefined): Channel[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .filter((c) => typeof c.id === 'number' && typeof c.slug === 'string')
+    .map((c) => ({
+      id: c.id as number,
+      slug: c.slug as string,
+      label: c.label ?? (c.slug as string),
+      count: c.count ?? 0,
+    }))
+}
+
 /**
  * GET /md/v2/material-channels — de canonieke channels met term-id, slug en
  * label. Faalt zacht naar een lege lijst (de bar toont dan alleen "All" en het
@@ -34,18 +50,14 @@ interface RawChannel {
  */
 export async function getChannelCatalog(): Promise<Channel[]> {
   try {
-    const raw = await wpFetch<RawChannel[]>('/md/v2/material-channels', {
-      revalidate: 3600,
-    })
-    if (!Array.isArray(raw)) return []
-    return raw
-      .filter((c) => typeof c.id === 'number' && typeof c.slug === 'string')
-      .map((c) => ({
-        id: c.id as number,
-        slug: c.slug as string,
-        label: c.label ?? (c.slug as string),
-        count: c.count ?? 0,
-      }))
+    const raw = await wpFetch<RawMaterialChannelsResponse | RawChannel[]>(
+      '/md/v2/material-channels',
+      {
+        revalidate: 3600,
+      },
+    )
+    const list = Array.isArray(raw) ? raw : raw?.channels
+    return mapChannelList(list)
   } catch {
     return []
   }
