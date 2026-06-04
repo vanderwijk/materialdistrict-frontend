@@ -1,13 +1,15 @@
 /**
  * Channel-catalogus — de canonieke thema-lijst voor de ChannelBar.
  * ----------------------------------------------------------------------
- * Bron: GET /md/v2/material-channels → `{ id, slug, label, count }` per channel.
- * Levert in één call zowel de bar-opties (label + volgorde) als de slug→id-
- * resolutie die de overzichten nodig hebben voor het server-side thema-filter
- * (`?theme=<id>` op de WP-collecties).
+ * Bron: GET /md/v2/material-channels → channels met `id`, `slug`, `label`,
+ * `count`. Levert in één call zowel de bar-opties (label + volgorde) als de
+ * slug→id-resolutie die de overzichten nodig hebben voor het server-side
+ * thema-filter (`?theme=<id>` op de WP-collecties).
  *
- * `count` is een material-meting (catalog) en wordt niet runtime gebruikt voor
- * andere content-types; de bar toont geen counts.
+ * Defensief geparsed: accepteert een kale array of een wrapper
+ * ({ channels | data | items | terms: [...] }), en een `id` als getal óf als
+ * numerieke string (WP-term-id's komen soms als string terug). Faalt zacht
+ * naar een lege lijst zodat een hapering de pagina niet breekt.
  */
 
 import { wpFetch } from './wordpress'
@@ -19,61 +21,47 @@ export interface Channel {
   count: number
 }
 
-interface RawChannel {
-  id?: number | string
-  slug?: string
-  label?: string
-  count?: number
-}
-
-function parseChannelId(value: unknown): number | null {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value > 0 ? Math.trunc(value) : null
+/** Haal de array uit een kale array of een veelvoorkomende wrapper. */
+function extractArray(res: unknown): unknown[] {
+  if (Array.isArray(res)) return res
+  if (res && typeof res === 'object') {
+    const obj = res as Record<string, unknown>
+    for (const key of ['channels', 'data', 'items', 'terms']) {
+      if (Array.isArray(obj[key])) return obj[key] as unknown[]
+    }
   }
-  if (typeof value === 'string' && /^\d+$/.test(value)) {
-    const id = Number.parseInt(value, 10)
-    return id > 0 ? id : null
-  }
-  return null
+  return []
 }
 
-interface RawMaterialChannelsResponse {
-  channels?: RawChannel[]
-}
-
-function mapChannelList(raw: RawChannel[] | undefined): Channel[] {
-  if (!Array.isArray(raw)) return []
-  return raw
-    .map((c) => {
-      const id = parseChannelId(c.id)
-      const slug = typeof c.slug === 'string' ? c.slug : ''
-      if (null === id || '' === slug) return null
-      return {
-        id,
-        slug,
-        label: c.label ?? slug,
-        count: typeof c.count === 'number' ? c.count : 0,
-      }
-    })
-    .filter((c): c is Channel => c !== null)
+/** Map één ruw item naar een Channel, of null als het ongeldig is. */
+function toChannel(raw: unknown): Channel | null {
+  if (!raw || typeof raw !== 'object') return null
+  const c = raw as Record<string, unknown>
+  const id = Number(c.id ?? c.term_id)
+  const slug = typeof c.slug === 'string' ? c.slug : ''
+  if (!Number.isFinite(id) || id <= 0 || slug.length === 0) return null
+  const label =
+    typeof c.label === 'string'
+      ? c.label
+      : typeof c.name === 'string'
+        ? c.name
+        : slug
+  const count = Number(c.count ?? 0)
+  return { id, slug, label, count: Number.isFinite(count) ? count : 0 }
 }
 
 /**
  * GET /md/v2/material-channels — de canonieke channels met term-id, slug en
- * label. Faalt zacht naar een lege lijst (de bar toont dan alleen "All" en het
- * overzicht filtert niet), zodat een hapering in de catalogus de pagina niet
- * breekt.
+ * label. Robuust voor afwijkende response-vormen; lege lijst bij fout.
  */
 export async function getChannelCatalog(): Promise<Channel[]> {
   try {
-    const raw = await wpFetch<RawMaterialChannelsResponse | RawChannel[]>(
-      '/md/v2/material-channels',
-      {
-        revalidate: 3600,
-      },
-    )
-    const list = Array.isArray(raw) ? raw : raw?.channels
-    return mapChannelList(list)
+    const res = await wpFetch<unknown>('/md/v2/material-channels', {
+      revalidate: 3600,
+    })
+    return extractArray(res)
+      .map(toChannel)
+      .filter((c): c is Channel => c !== null)
   } catch {
     return []
   }
