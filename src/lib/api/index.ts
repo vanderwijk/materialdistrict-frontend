@@ -46,6 +46,10 @@ export type {
   StoryTypeOption,
 } from './content'
 
+// Channels — canonieke thema-catalogus voor de ChannelBar (alle overzichten)
+export { getChannelCatalog, resolveChannelId } from './channels'
+export type { Channel } from './channels'
+
 // FacetWP — voor het hoofdoverzicht /materials met filtering
 export {
   facetwpFetch,

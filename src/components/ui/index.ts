@@ -60,6 +60,7 @@ export { PreviewModeIndicator } from './PreviewModeIndicator'
 
 // --- Filtering & nav ---
 export { ChannelBar, DEFAULT_CHANNELS, ALL_CHANNELS } from './ChannelBar'
+export { ChannelBarNav } from './ChannelBarNav'
 
 export { FilterSidebar } from './FilterSidebar'
 export type { FilterOption, FilterSection, FilterSelection } from './FilterSidebar'

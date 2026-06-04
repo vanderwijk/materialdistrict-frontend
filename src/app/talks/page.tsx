@@ -23,11 +23,10 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, ContentCard, EmptyState } from '@/components/ui'
-import { listTalks } from '@/lib/api'
+import { Button, ChannelBarNav, ContentCard, EmptyState } from '@/components/ui'
+import { listTalks, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { TalksPagination } from './_components/TalksPagination'
-import { TalksSearchInput } from './_components/TalksSearchInput'
 
 const TALKS_PER_PAGE = 12
 
@@ -70,16 +69,23 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
 
   const search =
     (Array.isArray(params.q) ? params.q[0] : params.q)?.trim() || undefined
+  const channelSlug =
+    (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() ||
+    undefined
   const page = parsePage(params.page)
+
+  const channels = await getChannelCatalog()
+  const themeId = resolveChannelId(channels, channelSlug) ?? undefined
 
   const result = await listTalks({
     perPage: TALKS_PER_PAGE,
     page,
     search,
+    theme: themeId,
   })
 
   const total = result.total
-  const hasActiveFilters = Boolean(search)
+  const hasActiveFilters = Boolean(search) || Boolean(channelSlug)
 
   return (
     <>
@@ -94,10 +100,14 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
             </p>
           )}
         </div>
-        <div className="ov-page-header-aside">
-          <TalksSearchInput initialValue={search ?? ''} />
-        </div>
       </header>
+
+      <ChannelBarNav
+        channels={channels}
+        activeSlug={channelSlug}
+        initialSearch={search ?? ''}
+        searchPlaceholder="Search talks…"
+      />
 
       <div className="ov-wrap-single">
         {result.items.length === 0 ? (

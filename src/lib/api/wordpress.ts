@@ -1324,6 +1324,8 @@ export interface ListTalksParams {
   page?: number
   slug?: string
   search?: string
+  /** WP `theme` term-id voor het channel-filter (`?theme=<id>`). */
+  theme?: number
   orderby?: 'date' | 'modified' | 'title' | 'id'
   order?: 'asc' | 'desc'
   noCache?: boolean
@@ -1340,6 +1342,7 @@ export async function listTalks(
       page: params.page,
       slug: params.slug,
       search: params.search,
+      theme: params.theme,
       orderby: params.orderby ?? 'date',
       order: params.order ?? 'desc',
     },
