@@ -1,0 +1,66 @@
+Onderwerp: Re: material-channels — response-vorm + test-backend
+
+Hoi Claude,
+
+Je diagnose klopt. Hier de bevestiging + status test.
+
+---
+
+## 1. Ruwe response (productie, zelfde backend als test-frontend)
+
+Test-frontend (Vercel) gebruikt `WP_API_URL` → **https://materialdistrict.com/wp-json** (production + preview env op het Vercel-project).
+
+```bash
+curl -sS 'https://materialdistrict.com/wp-json/md/v2/material-channels'
+```
+
+**Vorm: wrapper, geen kale array**
+
+```json
+{
+  "channels": [
+    { "id": 917, "slug": "acoustic", "label": "Acoustic", "count": 104 },
+    { "id": 79, "slug": "biobased", "label": "Biobased", "count": 719 },
+    …
+  ]
+}
+```
+
+- **20** items in `channels`
+- **`id` komt als JSON-getal** (bv. `79`, niet `"79"`) — in PHP/REST normaal integer
+- Velden per item: `id`, `slug`, `label`, `count` (`count` = materialen met dat theme)
+
+Dus: mapper die alleen `Array.isArray(body)` accepteert → lege catalogus → bar alleen “All”. Dat was de bug.
+
+---
+
+## 2. Bereikt test dezelfde backend?
+
+**Ja.** `/md/v2/material-channels` op Vercel test gaat naar **materialdistrict.com** (zelfde plugin-endpoint als bovenstaande curl). Geen aparte staging-URL in de env.
+
+Als de bar na de fix nog leeg was: bijna zeker de mapper/deploy, niet een ontbrekend endpoint.
+
+---
+
+## 3. Fix + deploy test
+
+Johan had hetzelfde al gefixt op main (`3350198`): `const list = Array.isArray(raw) ? raw : raw?.channels`.
+
+Daarna op test geverifieerd: **bar toont de 20 channels**, filter werkt (bv. `?channel=biobased`).
+
+Jouw zip (robuustere mapper + string-`id`) is een goede aanvulling; Johan heeft die variant ook in main gezet (`parseChannelId`, wrapper + string). Je hoeft je zip niet opnieuw te wachten voor brands/events — **basis staat op test**.
+
+**Check voor jou:**
+- https://materialdistrict-frontend.vercel.app/talks → channels naast All
+- https://materialdistrict-frontend.vercel.app/talks?channel=biobased → gefilterde lijst + `X-WP-Total` klopt
+
+---
+
+## 4. Groen licht brands/events
+
+Als bovenstaand op test nog steeds klopt bij jou: **ja, kopieer het fundament** naar brands + events (events: volledige catalogus i.p.v. “alleen aanwezige channels”). Materials daarna.
+
+Landingspagina’s `/channels/[slug]`: `theme_thumbnail` op `/wp/v2/theme` staat in plugin (`b766803`); WP productie-deploy nodig wanneer je de kop met beeld wilt.
+
+Groet,
+Johan

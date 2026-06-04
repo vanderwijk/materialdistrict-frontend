@@ -20,10 +20,21 @@ export interface Channel {
 }
 
 interface RawChannel {
-  id?: number
+  id?: number | string
   slug?: string
   label?: string
   count?: number
+}
+
+function parseChannelId(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value > 0 ? Math.trunc(value) : null
+  }
+  if (typeof value === 'string' && /^\d+$/.test(value)) {
+    const id = Number.parseInt(value, 10)
+    return id > 0 ? id : null
+  }
+  return null
 }
 
 interface RawMaterialChannelsResponse {
@@ -33,13 +44,18 @@ interface RawMaterialChannelsResponse {
 function mapChannelList(raw: RawChannel[] | undefined): Channel[] {
   if (!Array.isArray(raw)) return []
   return raw
-    .filter((c) => typeof c.id === 'number' && typeof c.slug === 'string')
-    .map((c) => ({
-      id: c.id as number,
-      slug: c.slug as string,
-      label: c.label ?? (c.slug as string),
-      count: c.count ?? 0,
-    }))
+    .map((c) => {
+      const id = parseChannelId(c.id)
+      const slug = typeof c.slug === 'string' ? c.slug : ''
+      if (null === id || '' === slug) return null
+      return {
+        id,
+        slug,
+        label: c.label ?? slug,
+        count: typeof c.count === 'number' ? c.count : 0,
+      }
+    })
+    .filter((c): c is Channel => c !== null)
 }
 
 /**
