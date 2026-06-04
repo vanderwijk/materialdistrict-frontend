@@ -119,6 +119,7 @@ E2E-brand heeft vaak alleen **offline** testmateriaal → “Publish a material 
 ## Voorgestelde volgorde (frontend)
 
 1. Featured UI-check op test (Partner-account).
-2. ChannelBar naar **brands**, **events**, daarna **materials**.
-3. Landings `/channels/[slug]` met `GET /wp/v2/theme/{id}` + `theme_thumbnail`.
-4. Materials-lijst: `featured_state` / `featured_week_start` mappen voor offline-waarschuwing.
+2. ~~ChannelBar naar **brands**, **events**~~ — live op test (increment 2, `MANIFEST-channelbar-brands-events.md`).
+3. ChannelBar **materials** (FacetWP).
+4. Landings `/channels/[slug]` met `GET /wp/v2/theme/{id}` + `theme_thumbnail`.
+5. Materials-lijst: `featured_state` / `featured_week_start` mappen voor offline-waarschuwing.

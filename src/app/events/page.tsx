@@ -21,7 +21,8 @@
 
 import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { listEvents } from '@/lib/api'
+import { ChannelBarNav } from '@/components/ui'
+import { listEvents, getChannelCatalog } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { sortEventsByDate } from './_lib/events-order'
 import { EventsBrowser } from './_components/EventsBrowser'
@@ -48,8 +49,21 @@ export const metadata: Metadata = {
  * aflopend op start. Zie `_lib/events-order` voor de gedeelde logica (ook
  * gebruikt door de detailpagina voor prev/next + "other events").
  */
-export default async function EventsPage() {
-  const { items } = await listEvents({ perPage: EVENTS_FETCH_LIMIT, page: 1 })
+export default async function EventsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const params = await searchParams
+  const channelSlug =
+    (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() || undefined
+  const search =
+    (Array.isArray(params.q) ? params.q[0] : params.q)?.trim() || undefined
+
+  const [{ items }, channels] = await Promise.all([
+    listEvents({ perPage: EVENTS_FETCH_LIMIT, page: 1 }),
+    getChannelCatalog(),
+  ])
   const events = sortEventsByDate(items)
 
   return (
@@ -64,7 +78,14 @@ export default async function EventsPage() {
         </div>
       </header>
 
-      <EventsBrowser events={events} />
+      <ChannelBarNav
+        channels={channels}
+        activeSlug={channelSlug}
+        initialSearch={search ?? ''}
+        searchPlaceholder="Search events…"
+      />
+
+      <EventsBrowser events={events} channelSlug={channelSlug} search={search} />
 
       <JsonLd
         data={[

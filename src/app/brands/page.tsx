@@ -26,12 +26,11 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, EmptyState, BrandTile } from '@/components/ui'
-import { getBrandCountryOptions, listBrands } from '@/lib/api'
+import { Button, ChannelBarNav, EmptyState, BrandTile } from '@/components/ui'
+import { getBrandCountryOptions, listBrands, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { BrandsFilterSidebar } from './_components/BrandsFilterSidebar'
 import { BrandsPagination } from './_components/BrandsPagination'
-import { BrandsSearchInput } from './_components/BrandsSearchInput'
 
 const BRANDS_PER_PAGE = 24
 
@@ -74,8 +73,13 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
   const params = await searchParams
 
   const search = (Array.isArray(params.q) ? params.q[0] : params.q)?.trim() || undefined
+  const channelSlug =
+    (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() || undefined
   const selectedCountries = parseMultiValue(params.country)
   const page = parsePage(params.page)
+
+  const channels = await getChannelCatalog()
+  const themeId = resolveChannelId(channels, channelSlug) ?? undefined
 
   // Brands + country-facetopties parallel. De facetopties komen uit een
   // ruime ongefilterde fetch (zie getBrandCountryOptions) — de
@@ -85,12 +89,14 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
       perPage: BRANDS_PER_PAGE,
       page,
       search,
+      theme: themeId,
       country: selectedCountries.length > 0 ? selectedCountries : undefined,
     }),
     getBrandCountryOptions(),
   ])
 
-  const hasActiveFilters = selectedCountries.length > 0 || Boolean(search)
+  const hasActiveFilters =
+    selectedCountries.length > 0 || Boolean(search) || Boolean(channelSlug)
   const total = result.total
 
   return (
@@ -106,10 +112,14 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
             </p>
           )}
         </div>
-        <div className="ov-page-header-aside">
-          <BrandsSearchInput initialValue={search ?? ''} />
-        </div>
       </header>
+
+      <ChannelBarNav
+        channels={channels}
+        activeSlug={channelSlug}
+        initialSearch={search ?? ''}
+        searchPlaceholder="Search brands…"
+      />
 
       <div className="ov-wrap">
         <BrandsFilterSidebar

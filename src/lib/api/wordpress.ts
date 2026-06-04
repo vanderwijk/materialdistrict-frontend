@@ -755,6 +755,8 @@ export interface ListBrandsParams {
    * maar filtert nog niet. Zie open-issues-patch-sessie5.md.
    */
   country?: string[]
+  /** WP `theme` term-id voor het channel-filter (`?theme=<id>`). */
+  theme?: number
   orderby?: 'date' | 'modified' | 'title' | 'id' | 'include'
   order?: 'asc' | 'desc'
   noCache?: boolean
@@ -774,6 +776,7 @@ export async function listBrands(
       exclude: params.exclude,
       search: params.search,
       brand_country: params.country,
+      theme: params.theme,
       orderby: params.orderby ?? 'title',
       order: params.order ?? 'asc',
     },
