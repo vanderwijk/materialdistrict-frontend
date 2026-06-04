@@ -37,17 +37,30 @@ function upcomingMondays(count: number): string[] {
   return out
 }
 
+function dateFromIso(iso: string): Date | null {
+  const day = iso.slice(0, 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return null
+  const d = new Date(`${day}T12:00:00`)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
 function fmtDay(iso: string): string {
-  return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(
-    new Date(`${iso}T00:00:00`),
-  )
+  const d = dateFromIso(iso)
+  if (!d) return '—'
+  try {
+    return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(d)
+  } catch {
+    return '—'
+  }
 }
 
 function fmtWeekRange(startIso: string, endIso?: string): string {
   if (!startIso) return '—'
   let end = endIso
   if (!end) {
-    const d = new Date(`${startIso}T00:00:00`)
+    const start = dateFromIso(startIso)
+    if (!start) return '—'
+    const d = new Date(start)
     d.setDate(d.getDate() + 6)
     end = toIso(d)
   }
@@ -56,9 +69,17 @@ function fmtWeekRange(startIso: string, endIso?: string): string {
 
 function fmtResetDate(iso: string | null): string {
   if (!iso) return '—'
-  return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(
-    new Date(`${iso}T00:00:00`),
-  )
+  const d = dateFromIso(iso)
+  if (!d) return '—'
+  try {
+    return new Intl.DateTimeFormat('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    }).format(d)
+  } catch {
+    return '—'
+  }
 }
 
 /**

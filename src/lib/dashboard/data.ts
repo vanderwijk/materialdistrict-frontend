@@ -193,13 +193,18 @@ export async function getBrandProfile(slug: string): Promise<BrandProfile | null
 export async function getBrandMaterials(slug: string): Promise<MaterialListRow[]> {
   const brandId = await resolveBrandId(slug)
   if (brandId === null) return []
-  const token = await getAuthCookie()
-  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
-  const raw = await wpDashboardFetch<Parameters<typeof mapMaterialListRows>[0]>(
-    `/md/v2/dashboard/brands/${brandId}/materials`,
-    { method: 'GET', bearer: token },
-  )
-  return mapMaterialListRows(raw)
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapMaterialListRows>[0]>(
+      `/md/v2/dashboard/brands/${brandId}/materials`,
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapMaterialListRows(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) {
+      return []
+    }
+    throw err
+  }
 }
 
 /** GET /md/v2/dashboard/brands/{brandId}/materials/{id} (or blank for create) */
@@ -321,6 +326,13 @@ const EMPTY_FEATURED_SLOTS: FeaturedSlotsData = {
   slots: [],
 }
 
+/** WP may return a full ISO datetime; UI copy only needs the calendar date. */
+function normalizeDashboardDate(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  const day = String(iso).slice(0, 10)
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) ? day : null
+}
+
 interface RawFeaturedSlot {
   id?: string
   material_id?: number
@@ -371,14 +383,21 @@ export async function getFeaturedSlots(slug: string): Promise<FeaturedSlotsData>
     return {
       total: raw.featured_slots_total ?? 4,
       used: raw.featured_slots_used ?? 0,
-      resetDate: raw.featured_slots_reset_date ?? null,
+      resetDate: normalizeDashboardDate(raw.featured_slots_reset_date),
       slots: Array.isArray(raw.slots) ? raw.slots.map(mapFeaturedSlot) : [],
     }
   } catch (err) {
     if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) {
       return EMPTY_FEATURED_SLOTS
     }
-    throw err
+    if (err instanceof DashboardApiError) {
+      throw err
+    }
+    throw new DashboardApiError(
+      'md_dashboard_unavailable',
+      err instanceof Error ? err.message : 'Featured slots request failed',
+      500,
+    )
   }
 }
 
