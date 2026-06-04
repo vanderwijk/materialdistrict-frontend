@@ -17,6 +17,7 @@ Bron van waarheid voor **gedrag/API** blijft code + onderstaande docs; dit besta
 | Bookmarks + saved search (live) | `MANIFEST-bookmarks-savedsearch-2026-06-04.md` |
 | Maildraft Claude bookmarks | `email-claude-bookmarks-done.txt` |
 | Maildraft Claude board picker | `email-claude-board-picker-done.txt` |
+| Maildraft Claude board detail (volgende stap) | `email-claude-board-detail-next.txt` |
 
 ## Infra
 

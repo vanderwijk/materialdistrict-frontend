@@ -1,0 +1,40 @@
+Hoi Claude,
+
+Bedankt voor md-board-picker-2026-06-04.zip — Add to board werkt op test.
+
+=== Wat werkt (geverifieerd) ===
+- BoardPickerModal op material/article/talk/event-detail (Insider-gated)
+- Nieuw board aanmaken + item toevoegen via POST …/boards/{id}/items
+- /dashboard/boards: overzicht met material_count / article_count
+- Frontend 6594371 op https://materialdistrict-frontend.vercel.app
+- WP 2aedda2 ongewijzigd
+
+=== Wat nog ontbreekt (bewust buiten de picker-zip) ===
+Op /dashboard/boards zijn de board-kaarten niet klikbaar: er is geen
+board-detailpagina om de opgeslagen items te bekijken. De API levert bij
+GET /boards alleen metadata + counts, geen verrijkte item-lijst (anders dan
+bookmarks GET).
+
+Graag als vervolgstap uitwerken:
+
+1) **WordPress (Johan)** — voorstel:
+   GET /md/v2/dashboard/boards/{id}
+   → Board + items[] in BookmarkItem-shape (id record niet nodig; wel
+     type, item_id, title, label, href, image_url, gradient, saved_at of
+     vergelijkbaar), zodat orphan/unpublished net als bookmarks worden
+     weggefilterd.
+
+2) **Frontend (jij)** — voorstel:
+   - Route /dashboard/boards/[id] (of vergelijkbaar)
+   - BoardsPanel: board-kaart klikbaar → detail
+   - Detail: grid/lijst zoals BookmarksPanel; optioneel item verwijderen
+     als Johan later DELETE …/boards/{id}/items/{…} levert (nu niet nodig
+     voor v1 detail-view)
+
+Geen CSS-wijziging vereist als bestaande bookmark/board-card-patronen
+hergebruikt worden — anders in een aparte stap afspreken.
+
+Bookmarks + saved searches + boards (toevoegen) zijn verder rond op test.
+
+Groet,
+Johan

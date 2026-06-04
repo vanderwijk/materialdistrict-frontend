@@ -508,6 +508,9 @@ volgende sessie (build-order: nieuwe Stap 12).
 - **BD-1 UI** — `md-board-picker-2026-06-04.zip` op test; modal + GET boards + POST items.
 
 ### Nog open 🟢
+- **Board detail** — kaarten op `/dashboard/boards` niet klikbaar; geen
+  `GET /boards/{id}` met item-lijst (WP) + `/dashboard/boards/[id]` (frontend).
+  Zie `email-claude-board-detail-next.txt`.
 - Geen Save op book-/brand-detail (bewust buiten scope).
 - Item uit board verwijderen (endpoint nog niet).
 
