@@ -484,28 +484,53 @@ export function MaterialsFilterSidebar({
 
           return (
             <div className="uf-group" key={group}>
-              <button
-                type="button"
-                className="uf-group-toggle"
-                onClick={() => toggleGroup(group)}
-                aria-expanded={isGroupOpen}
-                aria-controls={`uf-group-${group}`}
-              >
-                <span className="uf-group-title">
-                  {MATERIAL_FACET_GROUP_LABELS[group]}
-                  {groupActiveCount > 0 && (
-                    <span className="filter-count is-active is-inline">
-                      {groupActiveCount}
-                    </span>
-                  )}
-                </span>
-                <IconChevronDown
-                  size={13}
-                  strokeWidth={2.5}
-                  className="uf-chevron"
-                  aria-hidden="true"
-                />
-              </button>
+              {isGroupOpen ? (
+                <button
+                  type="button"
+                  className="uf-group-toggle"
+                  onClick={() => toggleGroup(group)}
+                  aria-expanded="true"
+                  aria-controls={`uf-group-${group}`}
+                >
+                  <span className="uf-group-title">
+                    {MATERIAL_FACET_GROUP_LABELS[group]}
+                    {groupActiveCount > 0 && (
+                      <span className="filter-count is-active is-inline">
+                        {groupActiveCount}
+                      </span>
+                    )}
+                  </span>
+                  <IconChevronDown
+                    size={13}
+                    strokeWidth={2.5}
+                    className="uf-chevron"
+                    aria-hidden="true"
+                  />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="uf-group-toggle"
+                  onClick={() => toggleGroup(group)}
+                  aria-expanded="false"
+                  aria-controls={`uf-group-${group}`}
+                >
+                  <span className="uf-group-title">
+                    {MATERIAL_FACET_GROUP_LABELS[group]}
+                    {groupActiveCount > 0 && (
+                      <span className="filter-count is-active is-inline">
+                        {groupActiveCount}
+                      </span>
+                    )}
+                  </span>
+                  <IconChevronDown
+                    size={13}
+                    strokeWidth={2.5}
+                    className="uf-chevron"
+                    aria-hidden="true"
+                  />
+                </button>
+              )}
 
               {isGroupOpen && (
                 <div className="uf-group-body" id={`uf-group-${group}`}>
@@ -563,31 +588,59 @@ function FacetSection({
 
   return (
     <div className={cn('uf-section', nested && 'is-nested')}>
-      <button
-        type="button"
-        className="uf-section-toggle"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        aria-controls={sectionId}
-      >
-        <span>
-          {section.title}
-          {sectionActiveCount > 0 && (
-            <span
-              className="filter-count is-active is-inline"
-              aria-label={`${sectionActiveCount} active filter${sectionActiveCount === 1 ? '' : 's'}`}
-            >
-              {sectionActiveCount}
-            </span>
-          )}
-        </span>
-        <IconChevronDown
-          size={12}
-          strokeWidth={2}
-          className="uf-chevron"
-          aria-hidden="true"
-        />
-      </button>
+      {isOpen ? (
+        <button
+          type="button"
+          className="uf-section-toggle"
+          onClick={onToggle}
+          aria-expanded="true"
+          aria-controls={sectionId}
+        >
+          <span>
+            {section.title}
+            {sectionActiveCount > 0 && (
+              <span
+                className="filter-count is-active is-inline"
+                aria-label={`${sectionActiveCount} active filter${sectionActiveCount === 1 ? '' : 's'}`}
+              >
+                {sectionActiveCount}
+              </span>
+            )}
+          </span>
+          <IconChevronDown
+            size={12}
+            strokeWidth={2}
+            className="uf-chevron"
+            aria-hidden="true"
+          />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="uf-section-toggle"
+          onClick={onToggle}
+          aria-expanded="false"
+          aria-controls={sectionId}
+        >
+          <span>
+            {section.title}
+            {sectionActiveCount > 0 && (
+              <span
+                className="filter-count is-active is-inline"
+                aria-label={`${sectionActiveCount} active filter${sectionActiveCount === 1 ? '' : 's'}`}
+              >
+                {sectionActiveCount}
+              </span>
+            )}
+          </span>
+          <IconChevronDown
+            size={12}
+            strokeWidth={2}
+            className="uf-chevron"
+            aria-hidden="true"
+          />
+        </button>
+      )}
 
       {isOpen && (
         <div className="uf-section-body" id={sectionId}>
@@ -673,21 +726,39 @@ interface ApplicationPlaceholderProps {
 function ApplicationPlaceholder({ isOpen, onToggle }: ApplicationPlaceholderProps) {
   return (
     <div className="uf-section">
-      <button
-        type="button"
-        className="uf-section-toggle"
-        onClick={onToggle}
-        aria-expanded={isOpen}
-        aria-controls="uf-section-application"
-      >
-        <span>Application</span>
-        <IconChevronDown
-          size={12}
-          strokeWidth={2}
-          className="uf-chevron"
-          aria-hidden="true"
-        />
-      </button>
+      {isOpen ? (
+        <button
+          type="button"
+          className="uf-section-toggle"
+          onClick={onToggle}
+          aria-expanded="true"
+          aria-controls="uf-section-application"
+        >
+          <span>Application</span>
+          <IconChevronDown
+            size={12}
+            strokeWidth={2}
+            className="uf-chevron"
+            aria-hidden="true"
+          />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="uf-section-toggle"
+          onClick={onToggle}
+          aria-expanded="false"
+          aria-controls="uf-section-application"
+        >
+          <span>Application</span>
+          <IconChevronDown
+            size={12}
+            strokeWidth={2}
+            className="uf-chevron"
+            aria-hidden="true"
+          />
+        </button>
+      )}
       {isOpen && (
         <div className="uf-section-body" id="uf-section-application">
           <p className="uf-placeholder-note">
@@ -743,14 +814,18 @@ const PENDING_SKELETON_COUNT = 12
 
 export function MaterialsGridDimWrapper({ children }: { children: ReactNode }) {
   const { isPending } = useMobileFilter()
-  return (
+  return isPending ? (
     <div
       className="ov-grid-wrap"
-      data-pending={isPending ? 'true' : undefined}
-      aria-busy={isPending ? 'true' : undefined}
+      data-pending="true"
+      aria-busy="true"
       aria-live="polite"
     >
-      {isPending ? <MaterialsGridSkeleton /> : children}
+      <MaterialsGridSkeleton />
+    </div>
+  ) : (
+    <div className="ov-grid-wrap" aria-live="polite">
+      {children}
     </div>
   )
 }

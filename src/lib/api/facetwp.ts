@@ -6,7 +6,7 @@
  *
  * Bevestigd contract (Johan, sessie 4, 12-05-2026):
  *  - Body wordt ingepakt in `{ data: { facets, query_args } }`
- *  - Alle 18 facet-keys altijd aanwezig in `data.facets` (lege arrays voor ongeselecteerd)
+ *  - Alle bekende facet-keys altijd aanwezig in `data.facets` (lege arrays voor ongeselecteerd)
  *  - Response: `results: number[]`, `facets: { ... }`, `pager: { ... }`
  *  - Sort-waarden: `newest` / `oldest` / `az` / `za`
  *
@@ -30,6 +30,7 @@
 
 import {
   ALL_MATERIAL_FACET_KEYS,
+  MATERIAL_FILTER_FACETS,
   type AnyMaterialFacetName,
   type FacetSelection,
   type FacetWPFetchRequest,
@@ -74,11 +75,11 @@ export class FacetWPError extends Error {
 }
 
 // --------------------------------------------------------------------
-// Body builder — normaliseert selectie naar het 18-keys-formaat
+// Body builder — normaliseert selectie naar het volledige facet-key-formaat
 // --------------------------------------------------------------------
 
 /**
- * Bouwt de `data.facets`-shape: elke van de 18 facet-keys aanwezig,
+ * Bouwt de `data.facets`-shape: elke bekende facet-key aanwezig,
  * met een (mogelijk lege) string-array als waarde.
  *
  * Conventie uit Johan's contract: keys mogen NIET ontbreken.
@@ -102,7 +103,7 @@ function buildFacetsPayload(
  * Low-level POST naar `/facetwp/v1/fetch`. Geeft de ruwe response terug.
  *
  * Gebruik bij voorkeur `fetchMaterialsFiltered` of
- * `fetchMaterialFacetsBaseline` — die zorgen voor het 18-keys-formaat
+ * `fetchMaterialFacetsBaseline` — die zorgen voor het volledige facet-key-formaat
  * en de juiste cache-strategie.
  */
 export async function facetwpFetch(
@@ -273,27 +274,11 @@ const VALID_SORT_VALUES: ReadonlySet<MaterialSortValue> = new Set([
 ])
 
 /**
- * Filter-facet-keys (zonder search/sort) — als ReadonlySet voor snelle
- * include-check tijdens parsing.
+ * Filter-facet-keys (zonder search/sort) — direct afgeleid van de
+ * canonieke `MATERIAL_FILTER_FACETS` lijst zodat nieuwe FacetWP-admin
+ * filters automatisch door de URL-parser worden geaccepteerd.
  */
-const FILTER_FACET_KEYS_SET: ReadonlySet<string> = new Set([
-  'material_category',
-  'glossiness',
-  'translucence',
-  'structure',
-  'texture',
-  'hardness',
-  'temperature',
-  'acoustics',
-  'odeur',
-  'fire_resistance',
-  'uv_resistance',
-  'weather_resistance',
-  'scratch_resistance',
-  'weight',
-  'chemical_resistance',
-  'renewable',
-])
+const FILTER_FACET_KEYS_SET: ReadonlySet<string> = new Set(MATERIAL_FILTER_FACETS)
 
 /**
  * Resultaat van het parsen van Next.js searchParams: zowel de
