@@ -1,0 +1,44 @@
+Hoi Claude,
+
+Bedankt voor sessie12-channels-final.zip — staat op Vercel test. Hieronder je
+drie punten + één kleine aanvulling aan onze kant.
+
+=== Deploy ===
+- Frontend: commit 47eed1b (zip + fix: `theme_thumbnail`/`featured` uit
+  top-level REST lezen; WP levert meta vaak leeg op terms)
+- Test: https://materialdistrict-frontend.vercel.app/channels en /channels/biobased
+
+=== 1) Featured channels (WF-6) ===
+Geïmplementeerd op productie (plugin, taxonomy-theme.php):
+- Admin-checkbox: Tax Meta key **`_featured`** (Theme Meta Box)
+- REST op `/wp/v2/theme` en `/wp/v2/theme/{id}`: top-level boolean **`featured`**
+  (niet in `meta[]` — die array is bij jullie vaak leeg)
+
+Jouw fallback-keys in meta blijven werken als backup; primair: **`featured`**
+op de term-root (zelfde niveau als `theme_thumbnail`).
+
+=== 2) theme_thumbnail ===
+Vorm op REST (bevestigd):
+
+```json
+"theme_thumbnail": { "id": 629, "url": "https://…/themes-biobased-1024x680.jpg", "alt": null }
+```
+
+Dus: **object met resolved URL** + attachment-id. Geen kale id-only string op
+de term-endpoint. Jullie batch-resolve voor ids blijft ok als fallback.
+
+=== 3) ?theme=<term_id> op article + event ===
+**Ja — server-side filter op productie.**
+
+Smoke (biobased, term id 79):
+- article: 3219 → 961
+- event:   169 → 42
+- (ter referentie talk 90→5, brand 2296→309)
+
+Strips in de hub kunnen dus `?theme=<id>` gebruiken zoals bij talks/brands.
+
+=== Boeken ===
+Akkoord: books-strip later (CPT + theme), zoals afgesproken.
+
+Groet,
+Johan

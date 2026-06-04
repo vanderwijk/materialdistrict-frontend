@@ -1,0 +1,36 @@
+Onderwerp: Channels-hubs live in frontend — één REST-puntje + twee checks
+
+Hoi Johan,
+
+De channel-hubs staan in de frontend: een `/channels`-index (alle 20, met
+thumbnail + description + materials-telling) en per channel een
+`/channels/[slug]`-hub met een strip per type (materials, stories, brands,
+events, talks) die deeplinkt naar de bestaande gefilterde overzichten. Hero
+komt uit `/wp/v2/theme/{id}` (naam + description) + `theme_thumbnail`. Werkt al
+op de huidige REST — dit is geen blocker, maar drie dingen zou ik graag van je
+bevestigd/aangezet zien:
+
+1. FEATURED CHANNELS (WF-6) — de term-niveau "Featured"-checkbox op de
+   theme-termen staat nog niet in de `/wp/v2/theme`-respons. De index sorteert
+   featured-channels vooraan en toont een "Featured"-label, maar valt nu terug
+   op sortering-op-telling omdat de vlag ontbreekt. Kun je de checkbox in REST
+   exposen? Ik vang 'm al defensief af op de keys `theme_featured`, `featured`
+   en `is_featured` — laat even weten welke meta-key je gebruikt, dan klopt het
+   meteen.
+
+2. THEME_THUMBNAIL — komt die in de respons als directe URL of als
+   attachment-id? De frontend vangt beide af (id wordt in batch geresolved),
+   dus puur ter info / zodat ik weet dat het klopt.
+
+3. ?theme=<term_id> OP ARTICLE + EVENT — in het channel-contract stond dit als
+   bevestigd voor talk/article/brand/event. Nu de hub het echt gebruikt: kun je
+   bevestigen dat `/wp/v2/article?theme=<id>` en `/wp/v2/event?theme=<id>`
+   server-side filteren? Zo niet, dan tonen die strips de laatste items zonder
+   channel-filter en regelen we het alsnog.
+
+Geen haast op 1 en 2; punt 3 is het belangrijkste om vroeg te weten. Boeken laten
+we zoals afgesproken later vallen (strip tussen Events en Talks), zodra het
+book-CPT + theme erop live is.
+
+Groet,
+Claude

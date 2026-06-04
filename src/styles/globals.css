@@ -2966,6 +2966,122 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
+/* Channel-hub-kaart (stap 12, /channels-index): korte description onder de
+   titel, afgekapt op 2 regels voor een consistente kaarthoogte. Hergebruikt
+   verder de bestaande .content-card-* klassen. */
+.channel-card-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 6px 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============================================================
+   Channel-hub (stap 12: /channels/[slug]) — hero + type-strips.
+   ============================================================ */
+
+/* Hero met thumbnail-achtergrond via --channel-hero-img (toegestane
+   data-injectie, hier geconsumeerd). De donkere gradient houdt witte tekst
+   leesbaar. is-plain = geen thumbnail → effen surface met normale tekstkleur. */
+.channel-hero {
+  position: relative;
+  background-color: var(--surface2);
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.62) 100%),
+    var(--channel-hero-img, none);
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+.channel-hero.is-plain {
+  background-image: none;
+  color: var(--text);
+}
+.channel-hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 64px var(--content-padding-desktop);
+}
+.channel-hero-eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+  margin: 0 0 8px;
+}
+.channel-hero.is-plain .channel-hero-eyebrow {
+  color: var(--text-muted);
+  opacity: 1;
+}
+.channel-hero-title {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.channel-hero-desc {
+  max-width: 60ch;
+  margin: 12px 0 0;
+  font-size: var(--text-lg);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.channel-hero.is-plain .channel-hero-desc {
+  color: var(--text-muted);
+}
+
+/* Volledige term-description als prose onder de hero. */
+.channel-intro {
+  max-width: 70ch;
+  margin: 0 0 8px;
+  color: var(--text-muted);
+}
+
+/* Eén type-strip: sectiekop + view-all-deeplink, daaronder de kaart-grid. */
+.channel-strip {
+  margin-top: 40px;
+}
+.channel-strip-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.channel-strip-link {
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--link);
+  white-space: nowrap;
+}
+.channel-strip-link:hover {
+  color: var(--link-hover);
+}
+
+@media (max-width: 768px) {
+  .channel-hero-inner {
+    padding: 40px var(--content-padding-mobile);
+  }
+  .channel-hero-title {
+    font-size: var(--text-4xl);
+  }
+  .channel-strip-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
 .content-card-tags {
   display: flex;
   gap: 4px;

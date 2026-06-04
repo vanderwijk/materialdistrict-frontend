@@ -18,6 +18,8 @@ Bron van waarheid voor **gedrag/API** blijft code + onderstaande docs; dit besta
 | Maildraft Claude bookmarks | `email-claude-bookmarks-done.txt` |
 | Maildraft Claude board picker | `email-claude-board-picker-done.txt` |
 | Maildraft Claude board detail (volgende stap) | `email-claude-board-detail-next.txt` |
+| Channels hubs (sessie 12) | `MANIFEST-channels-sessie12.md` |
+| Maildraft Claude channels | `email-claude-channels-sessie12-done.txt` |
 
 ## Infra
 
@@ -37,6 +39,7 @@ GET /wp-json/wp/v2/{talk|article|brand|event}?theme=<term_id>
 - Slug → id: `GET /wp/v2/theme?slug=biobased` of item uit `/md/v2/material-channels`.
 - Paginatie: `X-WP-Total` / `X-WP-TotalPages` respecteren filter.
 - Items: `theme: [79, …]`; plugin ook `meta.channels` als `[{ id, slug, label }]`.
+- Term REST: `theme_thumbnail` = `{ id, url, alt }`; `featured` = boolean (Tax Meta `_featured`).
 - Gebruik **`theme`**, niet taxonomy `sector`, voor channel-bars/landings.
 
 `article` heeft daarnaast `?story_type=` (los van theme).
@@ -157,7 +160,7 @@ Docs: `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `dashboard-datacontract.md
 1. Featured UI-check op test (Partner-account).
 2. ~~ChannelBar naar **brands**, **events**~~ — live op test (increment 2, `MANIFEST-channelbar-brands-events.md`).
 3. ~~ChannelBar **materials** (FacetWP)~~ — live + geverifieerd (`MANIFEST-channelbar-materials.md`, FacetWP-facet `theme` + index).
-4. Landings `/channels/[slug]` met `GET /wp/v2/theme/{id}` + `theme_thumbnail`.
+4. ~~Landings `/channels` + `/channels/[slug]`~~ — live (`MANIFEST-channels-sessie12.md`).
 5. ~~Materials-lijst: featured offline heads-up~~ — live op test (`MANIFEST-featured-offline-headsup.md`).
 6. ~~Bookmarks Save + saved-search create~~ — live (`MANIFEST-bookmarks-savedsearch-2026-06-04.md`).
 7. ~~Board picker~~ — live (`MANIFEST-board-picker-2026-06-04.md`).

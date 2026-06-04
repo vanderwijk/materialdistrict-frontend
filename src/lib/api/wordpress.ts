@@ -330,6 +330,13 @@ export async function wpFetchPaginated<T>(
 // Taxonomie-helpers (werken nu al — onafhankelijk van post-meta blocker)
 // --------------------------------------------------------------------
 
+/** REST payload for `theme_thumbnail` on `/wp/v2/theme` (plugin taxonomy-theme.php). */
+export interface WPThemeThumbnailRest {
+  id: number
+  url: string
+  alt: string | null
+}
+
 export interface WPTermResponse {
   id: number
   count: number
@@ -340,6 +347,10 @@ export interface WPTermResponse {
   taxonomy: string
   parent: number
   meta: Record<string, unknown> | unknown[]
+  /** Channel hero image (resolved URL + attachment id). */
+  theme_thumbnail?: WPThemeThumbnailRest | null
+  /** Term-level "Featured" channel flag (WF-6, Tax Meta `_featured`). */
+  featured?: boolean
 }
 
 /**
@@ -911,6 +922,12 @@ export interface ListArticlesParams {
    * slugs worden ondersteund (`?story_type=news,people`).
    */
   storyType?: string
+  /**
+   * Channel-filter (stap 12): WP `theme` term-id. Gaat als `?theme=<id>` naar
+   * de article-collectie en filtert server-side op de `theme`-taxonomy. WP-zijde
+   * bevestigd (channel-contract 04-06). `undefined` = geen channel-filter.
+   */
+  theme?: number
   orderby?: 'date' | 'modified' | 'title' | 'id'
   order?: 'asc' | 'desc'
   noCache?: boolean
@@ -932,6 +949,8 @@ export async function listArticles(
       author: params.author,
       // D1 (live): filtert server-side op de story_type-taxonomy.
       story_type: params.storyType,
+      // Stap 12: channel-filter via de `theme`-taxonomy (term-id).
+      theme: params.theme,
       orderby: params.orderby ?? 'date',
       order: params.order ?? 'desc',
     },
@@ -1227,6 +1246,12 @@ export interface ListEventsParams {
    * voor server-side filtering is een meta_query nodig (custom endpoint).
    * Voor nu: filter client-side na fetch via `startsAt`.
    */
+  /**
+   * Channel-filter (stap 12): WP `theme` term-id. Gaat als `?theme=<id>` naar
+   * de event-collectie en filtert server-side op de `theme`-taxonomy. WP-zijde
+   * bevestigd (channel-contract 04-06). `undefined` = geen channel-filter.
+   */
+  theme?: number
   orderby?: 'date' | 'modified' | 'title' | 'id'
   order?: 'asc' | 'desc'
   noCache?: boolean
@@ -1243,6 +1268,8 @@ export async function listEvents(
       page: params.page,
       slug: params.slug,
       search: params.search,
+      // Stap 12: channel-filter via de `theme`-taxonomy (term-id).
+      theme: params.theme,
       orderby: params.orderby ?? 'date',
       order: params.order ?? 'desc',
     },

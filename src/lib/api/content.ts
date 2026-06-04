@@ -18,11 +18,11 @@
  * FacetWP filtered + baseline + WP REST batch-fetch tot één UI-shape.
  */
 
-import type { Article, RelatedItem } from '@/types/article'
+import type { Article, ArticleListItem, RelatedItem } from '@/types/article'
 import type { Brand, BrandListItem } from '@/types/brand'
-import type { Event } from '@/types/event'
+import type { Event, EventListItem } from '@/types/event'
 import type { Material, MaterialListItem } from '@/types/material'
-import type { Talk } from '@/types/talk'
+import type { Talk, TalkListItem } from '@/types/talk'
 import type { Page } from '@/types/page'
 import type { FacetSelection, MaterialSortValue } from '@/types/facetwp'
 
@@ -36,6 +36,12 @@ import {
   fetchMaterialFacetsBaseline,
   fetchMaterialsFiltered,
 } from './facetwp'
+
+import {
+  getChannelCatalog,
+  getChannelTerm,
+  type ChannelTerm,
+} from './channels'
 
 import {
   mapArticle,
@@ -889,6 +895,113 @@ export async function listTalks(
     ),
   )
   return { items, total, totalPages }
+}
+
+// --------------------------------------------------------------------
+// Channel hub (stap 12) — gemengde cross-entity hub voor /channels/[slug]
+// --------------------------------------------------------------------
+
+/** Eén type-strip op de hub: de eerste N items + het totaal (voor de deeplink). */
+export interface ChannelHubStrip<T> {
+  items: T[]
+  /** Totaal aantal items van dit type in het channel (voor "bekijk alle …"). */
+  total: number
+}
+
+/**
+ * De gemengde hub voor één channel: hero-term + een strip per content-type,
+ * in topmenu-volgorde (Materials → Stories → Brands → Events → Talks; Books
+ * later, tussen Events en Talks). `isEmpty` is true als geen enkel type items
+ * heeft — de pagina kan dan 404'en (keuze 6).
+ */
+export interface ChannelHub {
+  /** Hero: naam + description + thumbnail. Valt terug op de catalogus-basis
+   *  als `/wp/v2/theme/{id}` (term-detail) niet beschikbaar is. */
+  channel: ChannelTerm
+  materials: ChannelHubStrip<MaterialListItem>
+  stories: ChannelHubStrip<ArticleListItem>
+  brands: ChannelHubStrip<BrandListItem>
+  events: ChannelHubStrip<EventListItem>
+  talks: ChannelHubStrip<TalkListItem>
+  isEmpty: boolean
+}
+
+/**
+ * Bouwt de cross-entity hub voor één channel-slug. Resolved de slug naar het
+ * `theme` term-id via de catalogus; een onbekende slug → `null` (404).
+ *
+ * Alle data-bronnen draaien parallel (`Promise.all`):
+ *  - hero-term via `/wp/v2/theme/{id}`
+ *  - materials via de FacetWP `theme`-facet (slug) — zelfde pad als de bar
+ *  - stories/brands/events/talks via `?theme=<id>` op hun collectie
+ *
+ * Per strip de eerste `perStrip` items (default 8, keuze 1) + het totaal voor
+ * de "bekijk alle … in {channel}"-deeplink. Lege strips laat de pagina weg.
+ */
+export async function getChannelHub(
+  slug: string,
+  perStrip = 8,
+): Promise<ChannelHub | null> {
+  const catalog = await getChannelCatalog()
+  const entry = catalog.find((c) => c.slug === slug)
+  if (!entry) return null
+  const id = entry.id
+
+  const [term, materials, stories, brands, events, talks] = await Promise.all([
+    getChannelTerm(id),
+    listMaterialsWithFacets({ selection: { theme: [slug] }, perPage: perStrip }),
+    listArticles({ theme: id, perPage: perStrip }),
+    listBrands({ theme: id, perPage: perStrip }),
+    listEvents({ theme: id, perPage: perStrip }),
+    listTalks({ theme: id, perPage: perStrip }),
+  ])
+
+  const channel: ChannelTerm =
+    term ?? {
+      id: entry.id,
+      slug: entry.slug,
+      label: entry.label,
+      description: '',
+      thumbnailUrl: null,
+    }
+
+  const materialsStrip: ChannelHubStrip<MaterialListItem> = {
+    items: materials.items,
+    total: materials.pager.totalRows,
+  }
+  const storiesStrip: ChannelHubStrip<ArticleListItem> = {
+    items: stories.items,
+    total: stories.total,
+  }
+  const brandsStrip: ChannelHubStrip<BrandListItem> = {
+    items: brands.items,
+    total: brands.total,
+  }
+  const eventsStrip: ChannelHubStrip<EventListItem> = {
+    items: events.items,
+    total: events.total,
+  }
+  const talksStrip: ChannelHubStrip<TalkListItem> = {
+    items: talks.items,
+    total: talks.total,
+  }
+
+  const isEmpty =
+    materialsStrip.items.length === 0 &&
+    storiesStrip.items.length === 0 &&
+    brandsStrip.items.length === 0 &&
+    eventsStrip.items.length === 0 &&
+    talksStrip.items.length === 0
+
+  return {
+    channel,
+    materials: materialsStrip,
+    stories: storiesStrip,
+    brands: brandsStrip,
+    events: eventsStrip,
+    talks: talksStrip,
+    isEmpty,
+  }
 }
 
 // --------------------------------------------------------------------

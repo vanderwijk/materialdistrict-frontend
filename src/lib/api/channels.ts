@@ -12,13 +12,38 @@
  * naar een lege lijst zodat een hapering de pagina niet breekt.
  */
 
-import { wpFetch } from './wordpress'
+import {
+  wpFetch,
+  getTerms,
+  getTerm,
+  getMediaBatch,
+  type WPTermResponse,
+} from './wordpress'
 
 export interface Channel {
   id: number
   slug: string
   label: string
   count: number
+}
+
+/**
+ * Channel zoals getoond op de `/channels`-index (stap 12). Bovenop `Channel`:
+ * de term-presentatievelden uit `/wp/v2/theme` (description + thumbnail) en de
+ * term-niveau "Featured"-vlag (WF-6).
+ *
+ * - `count` = **materials**-telling uit `/md/v2/material-channels` (beslist:
+ *   één betrouwbare bron i.p.v. een vage cross-type-som).
+ * - `description` is HTML (term-description) of `''`.
+ * - `thumbnailUrl` is `null` als de term geen thumbnail heeft of de meta nog
+ *   niet geëxposed is.
+ * - `featured` valt terug op `false` zolang de REST-exposure van de term-vlag
+ *   nog niet live is (keuze 5) — sortering valt dan terug op telling.
+ */
+export interface ChannelIndexItem extends Channel {
+  description: string
+  thumbnailUrl: string | null
+  featured: boolean
 }
 
 /** Haal de array uit een kale array of een veelvoorkomende wrapper. */
@@ -77,4 +102,193 @@ export function resolveChannelId(
 ): number | null {
   if (!slug) return null
   return channels.find((c) => c.slug === slug)?.id ?? null
+}
+
+// --------------------------------------------------------------------
+// Channels-index (stap 12) — de `/channels`-hub-overzichtspagina
+// --------------------------------------------------------------------
+
+/** Lees een meta-veld defensief; meta kan een object of (lege) array zijn. */
+function readTermMeta(
+  meta: Record<string, unknown> | unknown[] | undefined,
+  key: string,
+): unknown {
+  if (!meta || Array.isArray(meta)) return undefined
+  return meta[key]
+}
+
+/**
+ * Term-thumbnail uit meta. `theme_thumbnail` (commit b766803) komt of als
+ * directe URL-string, of als attachment-id (integer/numerieke string). We
+ * geven hier de URL terug als die er meteen is, of een id om later in batch
+ * te resolven. Onbekend → `{ url: null, id: null }`.
+ */
+function parseThumbnail(value: unknown): { url: string | null; id: number | null } {
+  if (typeof value === 'string') {
+    const trimmed = value.trim()
+    if (trimmed.length === 0) return { url: null, id: null }
+    if (/^https?:\/\//i.test(trimmed)) return { url: trimmed, id: null }
+    const asNum = Number(trimmed)
+    if (Number.isFinite(asNum) && asNum > 0) return { url: null, id: asNum }
+    return { url: null, id: null }
+  }
+  if (typeof value === 'number' && Number.isFinite(value) && value > 0) {
+    return { url: null, id: value }
+  }
+  return { url: null, id: null }
+}
+
+/** Coerce een ruwe meta-waarde naar boolean (`true`/`'1'`/`1`/`'true'`). */
+function parseFlag(value: unknown): boolean {
+  if (value === true || value === 1) return true
+  if (typeof value === 'string') {
+    const v = value.trim().toLowerCase()
+    return v === '1' || v === 'true' || v === 'yes'
+  }
+  return false
+}
+
+/** Kandidaat-meta-keys voor de term-niveau "Featured"-vlag (fallback als meta niet leeg is). */
+const FEATURED_META_KEYS = ['theme_featured', 'featured', 'is_featured', '_featured'] as const
+
+/** Lees thumbnail uit REST `theme_thumbnail` (primair) of term-meta (fallback). */
+function parseThemeThumbnailFromTerm(term: WPTermResponse): {
+  url: string | null
+  id: number | null
+} {
+  const rest = term.theme_thumbnail
+  if (rest && typeof rest === 'object' && typeof rest.url === 'string' && rest.url) {
+    const id = typeof rest.id === 'number' && rest.id > 0 ? rest.id : null
+    return { url: rest.url, id }
+  }
+  const meta = term.meta as Record<string, unknown> | unknown[] | undefined
+  return parseThumbnail(readTermMeta(meta, 'theme_thumbnail'))
+}
+
+/** Lees featured uit REST `featured` (primair) of term-meta (fallback). */
+function parseFeaturedFromTerm(term: WPTermResponse): boolean {
+  if (term.featured === true) return true
+  const meta = term.meta as Record<string, unknown> | unknown[] | undefined
+  return FEATURED_META_KEYS.some((k) => parseFlag(readTermMeta(meta, k)))
+}
+
+/**
+ * Bouwt de `/channels`-index: alle channels met presentatievelden voor de
+ * hub-kaarten, featured-channels vooraan.
+ *
+ * Twee bronnen, parallel:
+ *  1. `/md/v2/material-channels` (`getChannelCatalog`) — de canonieke set +
+ *     betrouwbare **materials**-tellingen + label/slug (beslist als de telling
+ *     die we tonen).
+ *  2. `/wp/v2/theme` (`getTerms`) — term-description, `theme_thumbnail` en de
+ *     "Featured"-vlag. Per slug gejoined op de catalogus.
+ *
+ * De catalogus is leidend (de 20 channels). Faalt `/wp/v2/theme`, dan vallen
+ * we terug op kale kaarten (geen description/thumbnail, `featured=false`) zodat
+ * de index nooit leeg is.
+ *
+ * Sortering: featured eerst, daarna telling aflopend, daarna label oplopend.
+ * Zolang geen enkele term `featured` is (REST-exposure nog niet live, keuze 5),
+ * is dat effectief telling-aflopend.
+ */
+export async function getChannelsIndex(): Promise<ChannelIndexItem[]> {
+  const [catalog, terms] = await Promise.all([
+    getChannelCatalog(),
+    getTerms('theme', { perPage: 100, hide_empty: false }).catch(() => []),
+  ])
+
+  // Term-presentatievelden per slug.
+  const termBySlug = new Map<
+    string,
+    { description: string; thumbUrl: string | null; thumbId: number | null; featured: boolean }
+  >()
+  for (const t of terms) {
+    const { url, id } = parseThemeThumbnailFromTerm(t)
+    const featured = parseFeaturedFromTerm(t)
+    termBySlug.set(t.slug, {
+      description: typeof t.description === 'string' ? t.description : '',
+      thumbUrl: url,
+      thumbId: id,
+      featured,
+    })
+  }
+
+  // Thumbnails die als attachment-id binnenkwamen in één batch resolven.
+  const thumbIds = Array.from(termBySlug.values())
+    .map((v) => v.thumbId)
+    .filter((id): id is number => id !== null)
+  const mediaUrlById = new Map<number, string>()
+  if (thumbIds.length > 0) {
+    try {
+      const media = await getMediaBatch(Array.from(new Set(thumbIds)))
+      for (const m of media) mediaUrlById.set(m.id, m.source_url)
+    } catch {
+      // Thumbnail-resolve is niet kritiek — kaart valt terug op geen-thumbnail.
+    }
+  }
+
+  const items: ChannelIndexItem[] = catalog.map((c) => {
+    const term = termBySlug.get(c.slug)
+    const thumbnailUrl =
+      term?.thumbUrl ?? (term?.thumbId ? mediaUrlById.get(term.thumbId) ?? null : null)
+    return {
+      ...c,
+      description: term?.description ?? '',
+      thumbnailUrl,
+      featured: term?.featured ?? false,
+    }
+  })
+
+  items.sort((a, b) => {
+    if (a.featured !== b.featured) return a.featured ? -1 : 1
+    if (b.count !== a.count) return b.count - a.count
+    return a.label.localeCompare(b.label)
+  })
+
+  return items
+}
+
+// --------------------------------------------------------------------
+// Channel-term — hero-data voor `/channels/[slug]` (stap 12)
+// --------------------------------------------------------------------
+
+/** Presentatie van één channel-term: hero-naam, -description en -thumbnail. */
+export interface ChannelTerm {
+  id: number
+  slug: string
+  label: string
+  /** Term-description (HTML) of `''`. */
+  description: string
+  thumbnailUrl: string | null
+}
+
+/**
+ * Haal één channel-term op via `/wp/v2/theme` voor de hub-hero (naam +
+ * description + `theme_thumbnail`). Accepteert een term-id of slug. `null` bij
+ * een onbekende term — de pagina kan dan 404'en (keuze 6).
+ */
+export async function getChannelTerm(
+  idOrSlug: number | string,
+): Promise<ChannelTerm | null> {
+  const term = await getTerm('theme', idOrSlug).catch(() => null)
+  if (!term) return null
+
+  const { url, id } = parseThemeThumbnailFromTerm(term)
+  let thumbnailUrl = url
+  if (!thumbnailUrl && id) {
+    try {
+      const [media] = await getMediaBatch([id])
+      thumbnailUrl = media?.source_url ?? null
+    } catch {
+      thumbnailUrl = null
+    }
+  }
+
+  return {
+    id: term.id,
+    slug: term.slug,
+    label: term.name,
+    description: typeof term.description === 'string' ? term.description : '',
+    thumbnailUrl,
+  }
 }

@@ -20,6 +20,7 @@ export {
   getArticleTotalCount,
   getBrand,
   getBrandCountryOptions,
+  getChannelHub,
   getEvent,
   getMaterial,
   getMaterialDetail,
@@ -36,6 +37,8 @@ export {
 } from './content'
 export type {
   BrandCountryOption,
+  ChannelHub,
+  ChannelHubStrip,
   ListMaterialsByBrandParams,
   ListMaterialsResult,
   ListMaterialsWithFacetsParams,
@@ -47,8 +50,14 @@ export type {
 } from './content'
 
 // Channels — canonieke thema-catalogus voor de ChannelBar (alle overzichten)
-export { getChannelCatalog, resolveChannelId } from './channels'
-export type { Channel } from './channels'
+// + de channel-hub-data (stap 12: /channels + /channels/[slug]).
+export {
+  getChannelCatalog,
+  getChannelsIndex,
+  getChannelTerm,
+  resolveChannelId,
+} from './channels'
+export type { Channel, ChannelIndexItem, ChannelTerm } from './channels'
 
 // FacetWP — voor het hoofdoverzicht /materials met filtering
 export {

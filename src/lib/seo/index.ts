@@ -10,6 +10,7 @@ export {
   buildEvent,
   buildBook,
   buildBreadcrumbList,
+  buildCollectionPage,
 } from './structured-data'
 export type {
   StructuredData,
@@ -21,5 +22,6 @@ export type {
   EventSchema,
   BookSchema,
   BreadcrumbListSchema,
+  CollectionPageSchema,
   PersonSchema,
 } from './types'

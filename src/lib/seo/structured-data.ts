@@ -19,6 +19,7 @@ import type {
   ArticleSchema,
   BookSchema,
   BreadcrumbListSchema,
+  CollectionPageSchema,
   EventSchema,
   OrganizationSchema,
   ProductSchema,
@@ -425,4 +426,61 @@ export function buildBreadcrumbList(items: BreadcrumbInput[]): BreadcrumbListSch
       ...(item.url ? { item: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}` } : {}),
     })),
   }
+}
+
+/**
+ * CollectionPage — voor hub-/overzichtspagina's (stap 12: de channel-hubs).
+ *
+ * `url` mag een pad (`/channels/biobased`) of een absolute URL zijn; paden
+ * worden geprefixt met `SITE_URL`. Een optionele `items`-lijst wordt als
+ * `ItemList` opgenomen zodat Google de getoonde collectie herkent; lege
+ * lijsten laten de `mainEntity` weg.
+ */
+interface CollectionPageItemInput {
+  name?: string
+  url: string
+}
+
+interface CollectionPageInput {
+  name: string
+  description?: string
+  url: string
+  image?: string | null
+  items?: CollectionPageItemInput[]
+}
+
+export function buildCollectionPage(input: CollectionPageInput): CollectionPageSchema {
+  const abs = (u: string) => (u.startsWith('http') ? u : `${SITE_URL}${u}`)
+
+  const schema: CollectionPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: input.name,
+    url: abs(input.url),
+    isPartOf: {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+  }
+
+  if (input.description) schema.description = input.description
+  if (input.image) schema.image = abs(input.image)
+
+  const items = input.items ?? []
+  if (items.length > 0) {
+    schema.mainEntity = {
+      '@type': 'ItemList',
+      numberOfItems: items.length,
+      itemListElement: items.map((item, idx) => ({
+        '@type': 'ListItem' as const,
+        position: idx + 1,
+        url: abs(item.url),
+        ...(item.name ? { name: item.name } : {}),
+      })),
+    }
+  }
+
+  return schema
 }

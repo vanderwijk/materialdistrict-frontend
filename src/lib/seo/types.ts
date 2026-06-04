@@ -129,6 +129,31 @@ export interface BreadcrumbListSchema {
   }>
 }
 
+/**
+ * CollectionPage — voor hub/overzichtspagina's die een verzameling items
+ * bundelen (stap 12: de channel-hubs). Optioneel een `ItemList` met de
+ * getoonde items, zodat Google de pagina als collectie herkent.
+ */
+export interface CollectionPageSchema extends BaseThing {
+  '@type': 'CollectionPage'
+  isPartOf?: {
+    '@type': 'WebSite'
+    '@id'?: string
+    name?: string
+    url?: string
+  }
+  mainEntity?: {
+    '@type': 'ItemList'
+    numberOfItems?: number
+    itemListElement: Array<{
+      '@type': 'ListItem'
+      position: number
+      url: string
+      name?: string
+    }>
+  }
+}
+
 export interface WebSiteSchema extends BaseThing {
   '@type': 'WebSite'
   potentialAction?: {
@@ -146,5 +171,6 @@ export type StructuredData =
   | EventSchema
   | BookSchema
   | BreadcrumbListSchema
+  | CollectionPageSchema
   | WebSiteSchema
   | PersonSchema
