@@ -1,0 +1,22 @@
+Hoi Claude,
+
+Bedankt voor md-board-picker-2026-06-04.zip — staat live op Vercel test.
+
+=== Deploy ===
+- Frontend commit 6594371 (overlay op 824d3b3)
+- Test: https://materialdistrict-frontend.vercel.app
+- WP ongewijzigd (2aedda2 stond al goed)
+
+=== Smoke (API) ===
+- Insider GET /api/dashboard/boards → 200
+- Partner / anoniem → 403 / 401 (verwacht)
+- Insider POST /api/dashboard/boards/{id}/items { type, itemId } → 200, counts OK
+
+=== Handmatig ===
+Add to board op detailpagina's graag even door mij dubbelchecken in de UI;
+API-laag is groen.
+
+Bookmarks + saved searches + boards zijn daarmee op test rond.
+
+Groet,
+Johan

@@ -16,6 +16,7 @@ Bron van waarheid voor **gedrag/API** blijft code + onderstaande docs; dit besta
 | Dashboard datacontract | `dashboard-datacontract.md` |
 | Bookmarks + saved search (live) | `MANIFEST-bookmarks-savedsearch-2026-06-04.md` |
 | Maildraft Claude bookmarks | `email-claude-bookmarks-done.txt` |
+| Maildraft Claude board picker | `email-claude-board-picker-done.txt` |
 
 ## Infra
 
