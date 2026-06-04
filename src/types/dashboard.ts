@@ -417,6 +417,36 @@ export interface FeaturedPlacement {
   subject: string | null
 }
 
+/** Status of a weekly featured slot (Partner self-service booking). */
+export type FeaturedSlotState = 'scheduled' | 'active' | 'done'
+
+/**
+ * One booked featured week for a material (Partner self-service).
+ * Endpoint: GET/POST/DELETE /md/v2/dashboard/brands/{brandId}/featured-slots
+ */
+export interface FeaturedSlot {
+  id: string
+  materialId: number
+  materialName: string
+  materialSlug: string
+  /** ISO date, Monday of the booked week. */
+  weekStart: string
+  /** ISO date, Sunday of the booked week. */
+  weekEnd: string
+  status: FeaturedSlotState
+  isFeaturedNow: boolean
+  createdAt: string
+}
+
+/** Featured-slots payload: the brand's quota plus its booked weeks. */
+export interface FeaturedSlotsData {
+  total: number
+  used: number
+  /** ISO date the quota resets (Stripe membership end), null when not applicable. */
+  resetDate: string | null
+  slots: FeaturedSlot[]
+}
+
 // ============================================================
 // Brand — Add brand (claim/create)
 // ============================================================

@@ -1,5 +1,5 @@
 import { requireManagedBrand } from '@/lib/dashboard/brand-access'
-import { getFeaturedPlacements } from '@/lib/dashboard/data'
+import { getFeaturedSlots, getBrandMaterials } from '@/lib/dashboard/data'
 import { canManufacturerAccess } from '@/lib/config/membership'
 import { DashboardPageHeader } from '@/components/dashboard'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
@@ -32,11 +32,19 @@ export default async function BrandFeaturedPage({
     )
   }
 
-  const placements = await getFeaturedPlacements(brandSlug)
+  const [featured, materials] = await Promise.all([
+    getFeaturedSlots(brandSlug),
+    getBrandMaterials(brandSlug),
+  ])
+
+  const bookable = materials
+    .filter((m) => m.status === 'online')
+    .map((m) => ({ id: m.id, name: m.name }))
+
   return (
     <>
       {header}
-      <FeaturedPanel placements={placements} />
+      <FeaturedPanel brandId={brand.id} featured={featured} materials={bookable} />
     </>
   )
 }

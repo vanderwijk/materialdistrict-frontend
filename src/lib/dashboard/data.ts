@@ -30,7 +30,9 @@ import type {
   Interaction,
   BrandStatistics,
   LeadRoutingConfig,
-  FeaturedPlacement,
+  FeaturedSlot,
+  FeaturedSlotsData,
+  FeaturedSlotState,
   BrandCandidate,
 } from '@/types/dashboard'
 import { getAuthCookie } from '@/lib/auth/cookies'
@@ -47,7 +49,6 @@ import {
   mapInsights,
   mapInvoices,
   mapMaterialFormData,
-  mapFeaturedPlacements,
   mapBrandCandidates,
   mapMyRequests,
   mapInteractions,
@@ -312,19 +313,71 @@ export async function getLeadRouting(slug: string): Promise<LeadRoutingConfig> {
   }
 }
 
-/** GET /md/v2/dashboard/brands/{brandId}/featured (batch 4 — live, Partner+) */
-export async function getFeaturedPlacements(slug: string): Promise<FeaturedPlacement[]> {
+/** Empty featured-slots payload (non-Partner / unknown brand). */
+const EMPTY_FEATURED_SLOTS: FeaturedSlotsData = {
+  total: 0,
+  used: 0,
+  resetDate: null,
+  slots: [],
+}
+
+interface RawFeaturedSlot {
+  id?: string
+  material_id?: number
+  material_name?: string
+  material_slug?: string
+  week_start?: string
+  week_end?: string
+  status?: string
+  is_featured_now?: boolean
+  created_at?: string
+}
+interface RawFeaturedSlots {
+  featured_slots_total?: number
+  featured_slots_used?: number
+  featured_slots_reset_date?: string | null
+  slots?: RawFeaturedSlot[]
+}
+
+function mapFeaturedSlot(raw: RawFeaturedSlot): FeaturedSlot {
+  const status: FeaturedSlotState =
+    raw.status === 'active' || raw.status === 'done' ? raw.status : 'scheduled'
+  return {
+    id: String(raw.id ?? ''),
+    materialId: raw.material_id ?? 0,
+    materialName: raw.material_name ?? '',
+    materialSlug: raw.material_slug ?? '',
+    weekStart: raw.week_start ?? '',
+    weekEnd: raw.week_end ?? '',
+    status,
+    isFeaturedNow: raw.is_featured_now ?? false,
+    createdAt: raw.created_at ?? '',
+  }
+}
+
+/**
+ * GET /md/v2/dashboard/brands/{brandId}/featured-slots (Partner).
+ * Returns the quota counters plus the brand's booked weeks. Below Partner → 403
+ * and unknown brand → 404 both collapse to an empty payload; the page gates.
+ */
+export async function getFeaturedSlots(slug: string): Promise<FeaturedSlotsData> {
   const brandId = await resolveBrandId(slug)
-  if (brandId === null) return []
+  if (brandId === null) return EMPTY_FEATURED_SLOTS
   try {
-    const raw = await wpDashboardFetch<Parameters<typeof mapFeaturedPlacements>[0]>(
-      `/md/v2/dashboard/brands/${brandId}/featured`,
+    const raw = await wpDashboardFetch<RawFeaturedSlots>(
+      `/md/v2/dashboard/brands/${brandId}/featured-slots`,
       { method: 'GET', bearer: await requireToken() },
     )
-    return mapFeaturedPlacements(raw)
+    return {
+      total: raw.featured_slots_total ?? 4,
+      used: raw.featured_slots_used ?? 0,
+      resetDate: raw.featured_slots_reset_date ?? null,
+      slots: Array.isArray(raw.slots) ? raw.slots.map(mapFeaturedSlot) : [],
+    }
   } catch (err) {
-    // Below Partner → 403; unknown brand → 404. Panel gates separately.
-    if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) return []
+    if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) {
+      return EMPTY_FEATURED_SLOTS
+    }
     throw err
   }
 }
