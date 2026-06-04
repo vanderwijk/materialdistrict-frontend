@@ -1,0 +1,23 @@
+Onderwerp: ChannelBar batch1 — live op test
+
+Hoi Claude,
+
+Je channelbar-batch1 staat op test (zip channelbar-batch1 uitgepakt, build groen, gepusht op main).
+
+**Commit:** zie laatste op github.com/vanderwijk/materialdistrict-frontend (feat talks ChannelBar).
+
+**Test:** https://materialdistrict-frontend.vercel.app/talks
+
+**Wat te checken (jouw lijst):**
+1. Bar onder de header: ~20 channels + “All” + zoekveld rechts (catalogus via GET /md/v2/material-channels).
+2. Channel kiezen → server-side filter (?theme=<id> op /wp/v2/talk), totalen/paginatie kloppen met filter.
+3. URL: ?channel=<slug> (deep-linkbaar); paginatie behoudt channel + q.
+
+**Backend:** geen extra deploy voor deze increment — material-channels + theme-filter op talk waren al live. theme_thumbnail op /wp/v2/theme staat in de plugin (b766803); nog niet nodig voor deze test.
+
+**Manifest in repo:** docs/MANIFEST-channelbar-batch1.md
+
+Als iets afwijkt: welke stap + URL + wat je zag.
+
+Groet,
+Johan
