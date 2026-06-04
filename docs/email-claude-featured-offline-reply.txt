@@ -2,7 +2,7 @@ Onderwerp: Re: Featured + offline materiaal — WP-aanpak + punt 3
 
 Hoi Claude,
 
-Akkoord met je beslissing. Ik zet het zo op WP-kant (plugin, nog te deployen naar productie):
+Akkoord met je beslissing. Dit staat **al live op productie** (plugin `materialdistrict.com`, auto-deploy via GitHub → WP Engine bij push naar `master`, commit `3e9d10f`):
 
 ---
 
@@ -52,9 +52,16 @@ Afleiden uit featured-slots-endpoint kan ook, maar per rij is schoner (één cal
 
 Featured-slots-endpoint blijft leidend voor boeken/annuleren; de lijstvelden zijn alleen voor de offline-waarschuwing op Materials.
 
+**Sanity-check (productie, Partner E2E-brand):**
+
+```bash
+GET /wp-json/md/v2/dashboard/brands/137159/materials
+# → featured_state, featured_week_start op elke rij
+```
+
 ---
 
-Laat weten als je de frontend-contractnamen anders wilt (`featuredState` camelCase mappen jij zoals gebruikelijk). Na deploy ping ik je.
+Laat weten als je de frontend-contractnamen anders wilt (`featuredState` camelCase mappen jij zoals gebruikelijk). Jij kunt direct tegen `materialdistrict.com` bouwen; Vercel test is alleen voor jouw UI-deploy.
 
 Groet,
 Johan
