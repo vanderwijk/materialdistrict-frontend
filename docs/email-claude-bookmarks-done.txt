@@ -1,0 +1,38 @@
+Hoi Claude,
+
+Bedankt voor de zip md-bookmarks-savedsearch-2026-06-04-FINAL.zip — alles staat live.
+
+=== Wat Johan heeft gedaan ===
+
+WP (productie, plugin commit 2aedda2):
+- POST /md/v2/dashboard/bookmarks  { type, item_id }  → BookmarkItem (idempotent)
+- item_id in GET én POST-response (naast id voor DELETE)
+- POST /md/v2/dashboard/boards/{id}/items  (klaar voor jouw board-picker)
+- Bevestigd: POST /md/v2/dashboard/saved-searches was al live (Insider)
+
+Frontend (Vercel test, commit 824d3b3):
+- Jouw zip ingevoegd + mock.ts itemId-fix voor build
+- API-smoke: bookmarks GET/POST/DELETE OK; saved-search Insider 200 / partner 403
+
+=== Verificatie ===
+
+- Materials / talks / brands-grid: API-smoke OK
+- Event- en article-detail Save: handmatig door Johan getest — werkt
+- Let op: alleen gepubliceerde content (draft E2E-materiaal → 400, verwacht)
+
+Test: https://materialdistrict-frontend.vercel.app
+Accounts: docs/e2e-test-accounts.md (Insider voor saved search)
+
+=== Volgende stap voor jou ===
+
+Board picker ("Add to board"):
+- Backend staat: POST /md/v2/dashboard/boards/{id}/items  { type, item_id }
+- Nog te bouwen: modal + GET boards in picker + proxy-call; nieuwe CSS ok in aparte stap
+- Save op book-/brand-detail nog niet in UI (types ondersteunen het al)
+
+Daarnaast nog open in de roadmap: channel landings /channels/[slug] (build-order Stap 12).
+
+Repo-docs bijgewerkt: handoff-claude.md, open-issues.md, MANIFEST-bookmarks-savedsearch-2026-06-04.md.
+
+Groet,
+Johan

@@ -14,6 +14,8 @@ Bron van waarheid voor **gedrag/API** blijft code + onderstaande docs; dit besta
 | Catalog parse-fix | `MANIFEST-channelbar-catalogfix.md` |
 | Featured batch2 | `MANIFEST-featured-slots-batch2.md` |
 | Dashboard datacontract | `dashboard-datacontract.md` |
+| Bookmarks + saved search (live) | `MANIFEST-bookmarks-savedsearch-2026-06-04.md` |
+| Maildraft Claude bookmarks | `email-claude-bookmarks-done.txt` |
 
 ## Infra
 
@@ -116,23 +118,36 @@ Volledige tabel: `e2e-test-accounts.md`. Handmatige stappen: `featured-slots-ui-
 
 E2E-brand heeft vaak alleen **offline** testmateriaal → “Publish a material first” is normaal tot één materiaal online staat.
 
-## Bookmarks & boards (jun 2026, productie)
+## Bookmarks & saved searches — live (04-06-2026) ✅
 
-Public **Save**-knoppen (alle ingelogde users):
+| | Commit / zip |
+|---|--------------|
+| WP plugin | `2aedda2` (productie) |
+| Frontend test | `824d3b3` — zip `md-bookmarks-savedsearch-2026-06-04-FINAL.zip` |
+
+**End-to-end af:** Save op materials, articles, talks, events (+ cards). Johan
+handmatig OK op event + article. API-smoke op
+https://materialdistrict-frontend.vercel.app.
+
+Public **Save** (alle ingelogde users) → Next `/api/dashboard/bookmarks` → WP:
 
 | Methode | Route | Body |
 |---------|-------|------|
 | `GET` | `/md/v2/dashboard/bookmarks` | — |
-| `POST` | `/md/v2/dashboard/bookmarks` | `{ "type": "materials\|…", "item_id": <post_id> }` |
+| `POST` | `/md/v2/dashboard/bookmarks` | `{ "type", "item_id" }` |
 | `DELETE` | `/md/v2/dashboard/bookmarks/{id}` | — |
 
-Response bevat **`item_id`** (post-id) én **`id`** (record-id voor DELETE). POST is idempotent (201 nieuw, 200 bestaand). Alleen **gepubliceerde** targets; anders 400.
+Frontend gebruikt camelCase `itemId` in JSON naar Next; mapper → `item_id` naar WP.
+Response: **`item_id`** + **`id`** (record-id voor DELETE). Idempotent POST. Alleen
+**gepubliceerde** targets → anders 400.
 
-**Add to board** _(Insider)_: `POST /md/v2/dashboard/boards/{id}/items` met dezelfde `type` + `item_id` → `Board` met bijgewerkte counts.
+**Saved searches** _(Insider)_: `POST /md/v2/dashboard/saved-searches` — live;
+materials-filter "Save this search" op test.
 
-**Saved searches** _(Insider)_: `POST /md/v2/dashboard/saved-searches` met `{ "name", "query" }` — live; `summary` + `result_count` server-side.
+**Boards — volgende stap:** WP `POST …/boards/{id}/items` staat klaar; UI board-picker
+nog bouwen (modal + proxy, eigen CSS). Zie `open-issues.md` BD-1 UI.
 
-Insider smoke: `e2e-dashboard-insider@materialdistrict.com` / `E2eDashboard2026!`. Zie `dashboard-datacontract.md` + `dashboard-handoff-batch3-jeroen.md`.
+Docs: `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `dashboard-datacontract.md`.
 
 ## Voorgestelde volgorde (frontend)
 
@@ -141,3 +156,5 @@ Insider smoke: `e2e-dashboard-insider@materialdistrict.com` / `E2eDashboard2026!
 3. ~~ChannelBar **materials** (FacetWP)~~ — live + geverifieerd (`MANIFEST-channelbar-materials.md`, FacetWP-facet `theme` + index).
 4. Landings `/channels/[slug]` met `GET /wp/v2/theme/{id}` + `theme_thumbnail`.
 5. ~~Materials-lijst: featured offline heads-up~~ — live op test (`MANIFEST-featured-offline-headsup.md`).
+6. ~~Bookmarks Save + saved-search create~~ — live (`MANIFEST-bookmarks-savedsearch-2026-06-04.md`).
+7. **Board picker** — Add to board UI tegen `POST /boards/{id}/items`.

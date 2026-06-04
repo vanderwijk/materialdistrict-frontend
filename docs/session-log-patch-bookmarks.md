@@ -47,9 +47,8 @@ een bookmark aanmaken. Saved-searches had wél een POST-route, maar de
 hebben nu geen Save-knop; het bookmark-type ondersteunt ze wel zodra die
 knoppen later toegevoegd worden.
 
-**Afhankelijkheid (Johan):** `POST /md/v2/dashboard/bookmarks` + `item_id` in de
-bookmark-response. Frontend is tegen die shape gebouwd en werkt zodra het
-deployt. Zie `docs/email-johan-bookmarks-boards.txt`.
+**Afhankelijkheid (Johan):** ~~`POST /md/v2/dashboard/bookmarks` + `item_id`~~ —
+live plugin `2aedda2`, frontend test `824d3b3`.
 
 ## Saved-search-create — nu werkend
 
@@ -65,8 +64,8 @@ deployt. Zie `docs/email-johan-bookmarks-boards.txt`.
     POST loopt (spinner via `IconLoading`).
 - Gating gebruikt `useAuth()` direct (de page geeft `isMember` niet mee).
 
-**Afhankelijkheid (Johan):** bevestig dat de al-gecontracteerde
-`POST /md/v2/dashboard/saved-searches` live op productie staat.
+**Afhankelijkheid (Johan):** ~~`POST /md/v2/dashboard/saved-searches`~~ — live,
+Insider-smoke op productie + Vercel test.
 
 ## Geen CSS-wijzigingen
 
@@ -75,9 +74,8 @@ Alles hergebruikt bestaande klassen/componenten (`ActionButton`, `IconButton`,
 
 ## Volgende stap (niet in deze oplevering)
 
-Boards "Add to board" werkend maken: vereist een board-picker-modal (eigen
-styling → CSS-toevoeging) + het nieuwe `POST /md/v2/dashboard/boards/{id}/items`
-(in dezelfde Johan-mail meegevraagd). Wordt de eerstvolgende stap.
+Boards "Add to board" werkend maken: WP-endpoint `POST …/boards/{id}/items` live
+(plugin `2aedda2`). Frontend board-picker-modal (eigen styling) = eerstvolgende stap.
 
 ## Addendum (herbasis 04-06, 2e ronde)
 
@@ -87,5 +85,11 @@ styling → CSS-toevoeging) + het nieuwe `POST /md/v2/dashboard/boards/{id}/item
   bookmark-/saved-search-wijzigingen staan nu náást dat werk, niets overschreven.
 - Saved-search is nu **channel-bewust**: de opgeslagen `query` neemt de volledige
   URL-state mee (filters + q + sort + actief `?channel=`), minus paging.
-- Enige uitzondering: de ROOT `src/app/layout.tsx` (provider-mount) is op de
-  oudere snapshot gebaseerd — te verifiëren tegen de huidige bron.
+- ROOT `layout.tsx` + provider: gedeployed op test; geen regressie gemeld.
+
+## Verificatie (04-06-2026, na deploy)
+
+- Vercel test: `GET`/`POST`/`DELETE` `/api/dashboard/bookmarks` OK; saved-search
+  Insider 200 / partner 403; idempotent POST bookmark.
+- Johan handmatig: Save op event- en article-detail OK.
+- Alleen **gepubliceerde** targets (draft E2E-materiaal → 400 verwacht).

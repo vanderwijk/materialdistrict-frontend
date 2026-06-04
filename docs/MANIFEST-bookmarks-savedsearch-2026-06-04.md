@@ -28,7 +28,17 @@ Alle bewerkte bestanden zijn opnieuw afgeleid van Jeroens ACTUELE uploads
 - docs/session-log-patch-bookmarks.md
 - docs/open-issues-patch-bookmarks.md
 
+## Deploy & verificatie (04-06-2026)
+
+| Repo | Commit | Status |
+|------|--------|--------|
+| `materialdistrict-plugin` | `2aedda2` | Productie: POST bookmarks, `item_id`, POST board items |
+| `materialdistrict-frontend` | `824d3b3` | Vercel test: zip FINAL ingevoegd |
+
+**Geverifieerd:** API-smoke op test (bookmarks GET/POST/DELETE, saved-search Insider/partner);
+handmatig door Johan: Save op **event**- en **article**-detail.
+
 ## Afhankelijkheden Johan
-- POST /md/v2/dashboard/bookmarks + item_id in bookmark-response   [BM-1]
-- Bevestig POST /md/v2/dashboard/saved-searches live               [BM-2]
-- (volgende stap) POST /md/v2/dashboard/boards/{id}/items          [BD-1]
+- ~~POST /md/v2/dashboard/bookmarks + item_id~~ **[BM-1] ✅**
+- ~~POST /md/v2/dashboard/saved-searches live~~ **[BM-2] ✅**
+- ~~POST /md/v2/dashboard/boards/{id}/items~~ **[BD-1 WP] ✅** — frontend board-picker nog open

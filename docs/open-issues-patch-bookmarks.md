@@ -1,6 +1,8 @@
 # Open issues — patch Bookmarks / Saved searches / Boards
 
-> Append aan `docs/open-issues.md`. Datum: 04-06-2026.
+> **Status 04-06-2026:** BM-1, BM-2 en WP BD-1 afgerond. Inhoud hieronder is
+> historisch; actuele status staat in `open-issues.md` § Bookmarks (04-06).
+> Datum patch: 04-06-2026.
 > Sluit de eerder genoteerde "bookmark POST (publieke site)"- en
 > "board-items toevoegen"-gaten gedeeltelijk en herclassificeert ze.
 

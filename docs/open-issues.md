@@ -487,7 +487,32 @@ Gemengde cross-entity hub + `/channels`-index; topmenu-volgorde; bar blijft
 in-place filteren. Details in `openingsprompt-channels-sessie.md`. Dit is de
 volgende sessie (build-order: nieuwe Stap 12).
 
+## Sessie — Bookmarks + saved-search create (04-06-2026)
+
+> Zip `md-bookmarks-savedsearch-2026-06-04-FINAL.zip` → frontend `824d3b3` op
+> Vercel test. WP plugin `2aedda2` op productie.
+
+### Opgelost ✅
+- **BM-1** — `POST /md/v2/dashboard/bookmarks` + `item_id` in GET/POST-response.
+- **BM-2** — `POST /md/v2/dashboard/saved-searches` live (Insider); frontend
+  "Save this search" op `/materials` werkend.
+- **Bookmarks create-flow (frontend)** — `BookmarksProvider`, Save op
+  materials/articles/talks/events + material-cards; API-proxy GET/POST/DELETE.
+- **WP BD-1 (backend)** — `POST /md/v2/dashboard/boards/{id}/items` live.
+
+### Geverifieerd
+- API-smoke Vercel test (bookmarks + saved-search gating).
+- Handmatig Johan: Save op **event**- en **article**-detail.
+
+### Nog open 🟢 — volgende stap Claude
+- **BD-1 UI** — board-picker-modal + `POST` via proxy; endpoint staat klaar.
+  Geen Save op book-/brand-detail (bewust buiten scope zip).
+
+Zie `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `handoff-claude.md` § Bookmarks.
+
 ## Wijzigingen — append onderaan de lijst
+- **v1.x (04-06-2026, bookmarks)** — BM-1/BM-2 live; zip FINAL op test;
+  event/article Save handmatig OK; board-items POST WP live, picker UI open.
 - **v1.x (04-06-2026, 2e patch)** — Featured/offline heads-up live (`070d489`).
   ChannelBar op alle overzichten live (`84322bf` + `76dd5c4`, FacetWP `theme`-
   facet + index). Channel-contract + slug-vs-id-gotcha vastgelegd. Channels-hub-
