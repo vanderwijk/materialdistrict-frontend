@@ -1,6 +1,6 @@
 # Frontend-instructies — material type & categories (materiaalformulier)
 
-> **Voor:** frontend-agent (Jeroen / dashboard Next.js)
+> **Voor:** frontend-agent (Claude / dashboard Next.js)
 > **Van:** Johan (WordPress)
 > **Datum:** 03-06-2026
 > **Status:** te implementeren in `materialdistrict-frontend`

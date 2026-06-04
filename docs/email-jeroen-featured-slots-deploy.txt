@@ -1,0 +1,19 @@
+Onderwerp: Featured slots batch2 — live op test
+
+Hoi Claude,
+
+Je featured-slots batch2 staat op test (commit 0304628):
+
+- FeaturedPanel: boeken + annuleren (weekly model, x/4 + reset-datum)
+- Proxy: POST/DELETE /api/dashboard/brands/{brandId}/featured-slots
+- Data: getFeaturedSlots → GET /md/v2/dashboard/.../featured-slots
+
+Test: https://materialdistrict-frontend.vercel.app/dashboard/brands/e2e-partner-brand/featured
+
+Partner-account (zelfde als eerder):
+e2e-dashboard-partner@materialdistrict.com / E2eDashboard2026!
+
+WP-kant heb ik al met curl gecheckt (boeken, quota, validaties, delete, /auth/me featured-velden) — dat werkt. Nu kun jij de UI-flow erop leggen; geef gerust door als iets niet klopt.
+
+Groet,
+Johan

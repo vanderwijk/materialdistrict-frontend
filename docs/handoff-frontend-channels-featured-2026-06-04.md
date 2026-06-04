@@ -206,7 +206,22 @@ Response:
 }
 ```
 
-## 5. Niet live end-to-end getest
+## 5. Featured + offline materiaal
+
+Live (plugin commit `3e9d10f`):
+
+- `is_featured_now` = kalenderweek **active** én materiaal **publish** (online).
+- Offline tijdens geboekte week: niet zichtbaar op site; week blijft geboekt; quota telt door.
+- Geen blokkade op offline/draft/delete.
+
+Dashboard materials-lijst (`GET …/brands/{brandId}/materials`):
+
+- `featured_state`: `active` | `scheduled` | `null` (kalender, niet zichtbaarheid).
+- `featured_week_start`: ISO-maandag of `null`.
+
+Zie ook `handoff-claude.md` (frontend/test-samenvatting).
+
+## 6. Niet live end-to-end getest
 
 Nog niet live functioneel getest:
 - authenticated `GET/POST/DELETE /featured-slots`
