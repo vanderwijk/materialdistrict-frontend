@@ -504,9 +504,12 @@ volgende sessie (build-order: nieuwe Stap 12).
 - API-smoke Vercel test (bookmarks + saved-search gating).
 - Handmatig Johan: Save op **event**- en **article**-detail.
 
-### Nog open 🟢 — volgende stap Claude
-- **BD-1 UI** — board-picker-modal + `POST` via proxy; endpoint staat klaar.
-  Geen Save op book-/brand-detail (bewust buiten scope zip).
+### Opgelost (board picker, 04-06-2026) ✅
+- **BD-1 UI** — `md-board-picker-2026-06-04.zip` op test; modal + GET boards + POST items.
+
+### Nog open 🟢
+- Geen Save op book-/brand-detail (bewust buiten scope).
+- Item uit board verwijderen (endpoint nog niet).
 
 Zie `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `handoff-claude.md` § Bookmarks.
 

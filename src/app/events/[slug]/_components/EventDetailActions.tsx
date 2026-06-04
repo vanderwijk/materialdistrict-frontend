@@ -20,6 +20,7 @@ import { DetailActions } from '@/components/ui/DetailActions'
 import { InsiderGate } from '@/components/ui/InsiderGate'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useBookmarks } from '@/lib/hooks/useBookmarks'
+import { BoardPickerModal } from '@/components/ui/BoardPickerModal'
 
 export interface EventDetailActionsProps {
   eventId: number
@@ -40,6 +41,7 @@ export function EventDetailActions({
   const { isSaved, toggleBookmark } = useBookmarks()
 
   const [insiderGateOpen, setInsiderGateOpen] = useState(false)
+  const [boardPickerOpen, setBoardPickerOpen] = useState(false)
 
   function handleRequireSignIn() {
     const next = `/events/${eventSlug}`
@@ -55,7 +57,7 @@ export function EventDetailActions({
   }
 
   function handleAddToBoard() {
-    // Placeholder — boards add-to-board komt in de volgende stap.
+    setBoardPickerOpen(true)
   }
 
   return (
@@ -79,6 +81,14 @@ export function EventDetailActions({
         open={insiderGateOpen}
         onClose={() => setInsiderGateOpen(false)}
         feature="boards"
+      />
+
+      <BoardPickerModal
+        open={boardPickerOpen}
+        onClose={() => setBoardPickerOpen(false)}
+        type="events"
+        itemId={eventId}
+        title={eventTitle}
       />
     </>
   )

@@ -24,6 +24,7 @@ import { DetailActions } from '@/components/ui/DetailActions'
 import { InsiderGate } from '@/components/ui/InsiderGate'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useBookmarks } from '@/lib/hooks/useBookmarks'
+import { BoardPickerModal } from '@/components/ui/BoardPickerModal'
 import { useCompare } from '@/lib/hooks/useCompare'
 
 export interface MaterialDetailActionsProps {
@@ -46,6 +47,7 @@ export function MaterialDetailActions({
   const [insiderGateOpen, setInsiderGateOpen] = useState<
     'boards' | 'compare' | null
   >(null)
+  const [boardPickerOpen, setBoardPickerOpen] = useState(false)
 
   function handleRequireSignIn() {
     const next = `/materials/${materialSlug}`
@@ -61,7 +63,7 @@ export function MaterialDetailActions({
   }
 
   function handleAddToBoard() {
-    // Placeholder — boards-API komt in latere sessie.
+    setBoardPickerOpen(true)
   }
 
   function handleToggleCompare() {
@@ -92,6 +94,14 @@ export function MaterialDetailActions({
         open={insiderGateOpen !== null}
         onClose={() => setInsiderGateOpen(null)}
         feature={insiderGateOpen ?? 'compare'}
+      />
+
+      <BoardPickerModal
+        open={boardPickerOpen}
+        onClose={() => setBoardPickerOpen(false)}
+        type="materials"
+        itemId={materialId}
+        title={materialTitle}
       />
     </>
   )

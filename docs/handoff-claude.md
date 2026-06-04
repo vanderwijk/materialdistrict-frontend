@@ -144,8 +144,9 @@ Response: **`item_id`** + **`id`** (record-id voor DELETE). Idempotent POST. All
 **Saved searches** _(Insider)_: `POST /md/v2/dashboard/saved-searches` — live;
 materials-filter "Save this search" op test.
 
-**Boards — volgende stap:** WP `POST …/boards/{id}/items` staat klaar; UI board-picker
-nog bouwen (modal + proxy, eigen CSS). Zie `open-issues.md` BD-1 UI.
+**Boards — live (04-06-2026):** zip `md-board-picker-2026-06-04.zip` → `BoardPickerModal`,
+`GET`/`POST` `/api/dashboard/boards`, `POST …/boards/{id}/items`. Zie
+`MANIFEST-board-picker-2026-06-04.md`.
 
 Docs: `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `dashboard-datacontract.md`.
 
@@ -157,4 +158,4 @@ Docs: `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `dashboard-datacontract.md
 4. Landings `/channels/[slug]` met `GET /wp/v2/theme/{id}` + `theme_thumbnail`.
 5. ~~Materials-lijst: featured offline heads-up~~ — live op test (`MANIFEST-featured-offline-headsup.md`).
 6. ~~Bookmarks Save + saved-search create~~ — live (`MANIFEST-bookmarks-savedsearch-2026-06-04.md`).
-7. **Board picker** — Add to board UI tegen `POST /boards/{id}/items`.
+7. ~~Board picker~~ — live (`MANIFEST-board-picker-2026-06-04.md`).
