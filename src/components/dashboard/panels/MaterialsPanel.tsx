@@ -12,6 +12,15 @@ function fmtDate(iso: string): string {
   return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(iso))
 }
 
+/** Heads-up tekst bij het offline halen van een featured materiaal. */
+function featuredHeadsUp(m: MaterialListRow): string {
+  if (m.featuredState === 'active') {
+    return `“${m.name}” is featured this week. While it’s offline it won’t appear in the featured spots.`
+  }
+  const wk = m.featuredWeekStart ? ` (week of ${fmtDate(m.featuredWeekStart)})` : ''
+  return `“${m.name}” is scheduled as featured${wk}. While it’s offline it won’t appear there.`
+}
+
 /**
  * Brand materials management. Lists materials with an online/offline toggle,
  * shows publication quota usage, and links to create/edit. Status changes are
@@ -32,6 +41,7 @@ export function MaterialsPanel({
 }) {
   const [materials, setMaterials] = useState(initial)
   const [error, setError] = useState<string | null>(null)
+  const [confirmOffline, setConfirmOffline] = useState<MaterialListRow | null>(null)
   const unlimited = quota === UNLIMITED_PUBLICATIONS
   const atLimit = !unlimited && used >= quota
   const pct = unlimited || quota <= 0 ? 0 : Math.min(100, Math.round((used / quota) * 100))
@@ -47,7 +57,7 @@ export function MaterialsPanel({
     )
   }
 
-  async function toggleStatus(id: number) {
+  async function doToggle(id: number) {
     const current = materials.find((m) => m.id === id)
     if (!current) return
     const next: MaterialPublicationStatus = current.status === 'online' ? 'offline' : 'online'
@@ -75,6 +85,33 @@ export function MaterialsPanel({
     }
   }
 
+  /**
+   * Gate before flipping. Taking a featured material offline gets a soft,
+   * non-blocking heads-up first — WP hides offline materials from the featured
+   * spots, but the booking (and the used quota) stay. Everything else toggles
+   * straight away.
+   */
+  function toggleStatus(id: number) {
+    const current = materials.find((m) => m.id === id)
+    if (!current) return
+    const goingOffline = current.status === 'online'
+    if (
+      goingOffline &&
+      (current.featuredState === 'active' || current.featuredState === 'scheduled')
+    ) {
+      setConfirmOffline(current)
+      return
+    }
+    void doToggle(id)
+  }
+
+  function confirmTakeOffline() {
+    if (!confirmOffline) return
+    const id = confirmOffline.id
+    setConfirmOffline(null)
+    void doToggle(id)
+  }
+
   return (
     <div className="dash-panel">
       <div className="panel-head-row">
@@ -94,6 +131,28 @@ export function MaterialsPanel({
       </div>
 
       {error && <p className="form-error" role="alert">{error}</p>}
+
+      {confirmOffline && (
+        <div role="alert">
+          <p className="field-helper">{featuredHeadsUp(confirmOffline)}</p>
+          <div className="g2">
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              onClick={() => setConfirmOffline(null)}
+            >
+              Keep online
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              onClick={confirmTakeOffline}
+            >
+              Take offline anyway
+            </button>
+          </div>
+        </div>
+      )}
 
       {!unlimited && quota > 0 && (
         <div className="progress-track memb-quota">

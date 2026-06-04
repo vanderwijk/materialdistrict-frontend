@@ -79,6 +79,8 @@ interface RawMaterialListRow {
   status?: MaterialPublicationStatus
   updated_at?: string
   counts_against_quota?: boolean
+  featured_state?: 'active' | 'scheduled' | null
+  featured_week_start?: string | null
 }
 
 const EMPTY_SOCIAL: BrandSocialLinks = {
@@ -130,6 +132,8 @@ export function mapMaterialListRow(raw: RawMaterialListRow): MaterialListRow {
     status: raw.status ?? 'draft',
     updatedAt: raw.updated_at ?? '',
     countsAgainstQuota: raw.counts_against_quota ?? false,
+    featuredState: raw.featured_state ?? null,
+    featuredWeekStart: raw.featured_week_start ?? null,
   }
 }
 

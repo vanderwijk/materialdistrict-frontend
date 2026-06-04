@@ -136,10 +136,10 @@ export const MOCK_BRAND_PROFILES: Record<string, BrandProfile> = {
 
 export const MOCK_BRAND_MATERIALS: Record<string, MaterialListRow[]> = {
   materialdistrict: [
-    { id: 101, name: 'Acoustic wood panel', category: 'Wood', status: 'online', updatedAt: '2026-04-12', countsAgainstQuota: true },
-    { id: 102, name: 'Textile insulation board', category: 'Other naturals', status: 'offline', updatedAt: '2026-04-10', countsAgainstQuota: true },
-    { id: 103, name: 'Circular facade panel', category: 'Facade', status: 'online', updatedAt: '2026-04-08', countsAgainstQuota: true },
-    { id: 104, name: 'Recycled composite tile', category: 'Composite', status: 'online', updatedAt: '2026-04-05', countsAgainstQuota: false },
+    { id: 101, name: 'Acoustic wood panel', category: 'Wood', status: 'online', updatedAt: '2026-04-12', countsAgainstQuota: true, featuredState: null, featuredWeekStart: null },
+    { id: 102, name: 'Textile insulation board', category: 'Other naturals', status: 'offline', updatedAt: '2026-04-10', countsAgainstQuota: true, featuredState: null, featuredWeekStart: null },
+    { id: 103, name: 'Circular facade panel', category: 'Facade', status: 'online', updatedAt: '2026-04-08', countsAgainstQuota: true, featuredState: 'scheduled', featuredWeekStart: '2026-07-13' },
+    { id: 104, name: 'Recycled composite tile', category: 'Composite', status: 'online', updatedAt: '2026-04-05', countsAgainstQuota: false, featuredState: null, featuredWeekStart: null },
   ],
   'second-brand': [],
 }

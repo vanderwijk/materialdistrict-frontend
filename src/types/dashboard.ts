@@ -253,6 +253,14 @@ export interface MaterialListRow {
   updatedAt: string
   /** Whether this slot counts against the tier quota (false = standalone). */
   countsAgainstQuota: boolean
+  /**
+   * Featured booking on this material (calendar week), null = none. Drives the
+   * non-blocking heads-up when taking a featured material offline. This is the
+   * booking state, not visibility (WP hides offline materials from the slots).
+   */
+  featuredState: 'active' | 'scheduled' | null
+  /** ISO Monday of the relevant featured week, or null. */
+  featuredWeekStart: string | null
 }
 
 /** A taxonomy assignment on a material (3-level category path). */
