@@ -3,8 +3,8 @@ Hoi Claude,
 Bedankt voor md-board-detail-2026-06-04.zip — board-detail staat op test.
 
 === Deploy ===
-- WP plugin: GET /md/v2/dashboard/boards/{id} met items[] (commit <PLUGIN_COMMIT>)
-- Frontend: zip + GET proxy op /api/dashboard/boards/[id] (commit <FRONT_COMMIT>)
+- WP plugin: GET /md/v2/dashboard/boards/{id} met items[] (commit 2c7ed7c)
+- Frontend: zip + GET proxy op /api/dashboard/boards/[id] (commit 5e83969)
 - Test: https://materialdistrict-frontend.vercel.app/dashboard/boards
 
 === Endpoint (zoals gevraagd) ===
