@@ -6,6 +6,7 @@ import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { IconAdd, IconClose } from '@/components/ui/icons'
+import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import type { BrandProfile, BrandSocialLinks } from '@/types/dashboard'
 import type { ManufacturerTier } from '@/lib/config/membership'
 import { tierMeets } from '@/lib/dashboard/nav'
@@ -14,8 +15,6 @@ const COUNTRIES = [
   'Netherlands', 'Belgium', 'Germany', 'France', 'United Kingdom',
   'Spain', 'Italy', 'Denmark', 'Sweden', 'Other',
 ]
-
-const ALL_CHANNELS = ['Biobased', 'Sustainable', 'Acoustic', 'Circular', 'Recycled']
 
 const SOCIAL_FIELDS: { key: keyof BrandSocialLinks; label: string }[] = [
   { key: 'linkedin', label: 'LinkedIn' },
@@ -136,17 +135,21 @@ export function BrandProfileForm({
         <h2 className="panel-section-title">Channels</h2>
         <p className="panel-section-desc">Select the material channels this brand participates in.</p>
         <div className="chip-group">
-          {ALL_CHANNELS.map((channel) => (
-            <button
-              key={channel}
-              type="button"
-              className={`chip ${form.channels.includes(channel) ? 'is-on' : ''}`}
-              aria-pressed={form.channels.includes(channel)}
-              onClick={() => toggleChannel(channel)}
-            >
-              {channel}
-            </button>
-          ))}
+          {MATERIAL_CHANNEL_LABELS.map((channel) => {
+            const selected = form.channels.includes(channel)
+            const buttonProps = {
+              key: channel,
+              type: 'button' as const,
+              className: `chip ${selected ? 'is-on' : ''}`,
+              onClick: () => toggleChannel(channel),
+              children: channel,
+            }
+            return selected ? (
+              <button {...buttonProps} aria-pressed="true" />
+            ) : (
+              <button {...buttonProps} aria-pressed="false" />
+            )
+          })}
         </div>
       </div>
 

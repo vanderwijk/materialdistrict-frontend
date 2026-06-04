@@ -6,6 +6,7 @@ import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { IconAdd, IconClose, IconUpload, IconDelete } from '@/components/ui/icons'
+import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { tierMeets } from '@/lib/dashboard/nav'
 import type { ManufacturerTier } from '@/lib/config/membership'
 import type {
@@ -14,8 +15,6 @@ import type {
   MaterialTypeOption,
   MaterialAsset,
 } from '@/types/dashboard'
-
-const ALL_CHANNELS = ['Biobased', 'Sustainable', 'Acoustic', 'Circular', 'Recycled']
 
 /**
  * Material create/edit form. Controlled state seeded from the data layer.
@@ -308,7 +307,7 @@ export function MaterialForm({
       <div className="dash-panel">
         <h2 className="panel-section-title">Channels</h2>
         <div className="chip-group">
-          {ALL_CHANNELS.map((channel) => {
+          {MATERIAL_CHANNEL_LABELS.map((channel) => {
             const selected = form.channels.includes(channel)
             const chipProps = {
               type: 'button' as const,
