@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { AuthProvider } from '@/components/providers/AuthContext'
+import { BookmarksProvider } from '@/lib/hooks/useBookmarks'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
 import {
   getCurrentUser,
@@ -132,19 +133,21 @@ export default async function RootLayout({
         </a>
         <ThemeProvider>
           <AuthProvider initialUser={initialUser}>
-            {/* Sessie 7 fix Punt 17: ScrollToTop reset window-scroll
-                bij elke client-side route-change (PUSH/REPLACE).
-                Bij browser back/forward laat hij het over aan de
-                browser's native scroll-restoration. Eigen Suspense
-                omdat de component `useSearchParams()` gebruikt — in
-                Next.js 15+ moet die binnen een Suspense-boundary
-                staan. */}
-            <Suspense fallback={null}>
-              <ScrollToTop />
-            </Suspense>
-            <HeaderShell />
-            <main id="main">{children}</main>
-            <Footer />
+            <BookmarksProvider>
+              {/* Sessie 7 fix Punt 17: ScrollToTop reset window-scroll
+                  bij elke client-side route-change (PUSH/REPLACE).
+                  Bij browser back/forward laat hij het over aan de
+                  browser's native scroll-restoration. Eigen Suspense
+                  omdat de component `useSearchParams()` gebruikt — in
+                  Next.js 15+ moet die binnen een Suspense-boundary
+                  staan. */}
+              <Suspense fallback={null}>
+                <ScrollToTop />
+              </Suspense>
+              <HeaderShell />
+              <main id="main">{children}</main>
+              <Footer />
+            </BookmarksProvider>
           </AuthProvider>
         </ThemeProvider>
         {/* Global structured data — Organization + WebSite on every page.

@@ -30,6 +30,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { MaterialCard, InsiderGate } from '@/components/ui'
 import { useAuth } from '@/components/providers/AuthContext'
+import { useBookmarks } from '@/lib/hooks/useBookmarks'
 import type { MaterialListItem } from '@/types/material'
 
 export interface BrandMaterialsGridProps {
@@ -52,10 +53,10 @@ export function BrandMaterialsGrid({
 }: BrandMaterialsGridProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
+  const { isSaved, toggleBookmark } = useBookmarks()
 
   const [insiderGateOpen, setInsiderGateOpen] = useState(false)
   const [limitNotice, setLimitNotice] = useState<string | null>(null)
-  const [savedIds, setSavedIds] = useState<Set<number>>(new Set())
 
   const visible = materials.slice(0, maxVisible)
   const hasMore = totalCount > maxVisible
@@ -66,15 +67,6 @@ export function BrandMaterialsGrid({
 
   const handleRequireInsider = () => {
     setInsiderGateOpen(true)
-  }
-
-  const handleToggleSave = (id: number) => {
-    setSavedIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
   }
 
   const handleCompareLimit = () => {
@@ -115,10 +107,10 @@ export function BrandMaterialsGrid({
               material={m}
               isLoggedIn={isLoggedIn}
               isMember={isMember}
-              isSaved={savedIds.has(m.id)}
+              isSaved={isSaved('materials', m.id)}
               onRequireSignIn={handleRequireSignIn}
               onRequireInsider={handleRequireInsider}
-              onToggleSave={handleToggleSave}
+              onToggleSave={(id) => toggleBookmark('materials', id)}
               onCompareLimitReached={handleCompareLimit}
             />
           ))}

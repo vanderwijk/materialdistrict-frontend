@@ -23,6 +23,7 @@ import { useRouter } from 'next/navigation'
 import { DetailActions } from '@/components/ui/DetailActions'
 import { InsiderGate } from '@/components/ui/InsiderGate'
 import { useAuth } from '@/components/providers/AuthContext'
+import { useBookmarks } from '@/lib/hooks/useBookmarks'
 import { useCompare } from '@/lib/hooks/useCompare'
 
 export interface MaterialDetailActionsProps {
@@ -38,10 +39,10 @@ export function MaterialDetailActions({
 }: MaterialDetailActionsProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
+  const { isSaved, toggleBookmark } = useBookmarks()
   const { isInCompare, toggleCompare } = useCompare()
   const inCompare = isInCompare(materialId)
 
-  const [isSaved, setIsSaved] = useState(false)
   const [insiderGateOpen, setInsiderGateOpen] = useState<
     'boards' | 'compare' | null
   >(null)
@@ -56,7 +57,7 @@ export function MaterialDetailActions({
   }
 
   function handleToggleSave() {
-    setIsSaved((s) => !s)
+    toggleBookmark('materials', materialId)
   }
 
   function handleAddToBoard() {
@@ -77,7 +78,7 @@ export function MaterialDetailActions({
         isInCompareList={inCompare}
         isLoggedIn={isLoggedIn}
         isMember={isMember}
-        isSaved={isSaved}
+        isSaved={isSaved('materials', materialId)}
         onRequireSignIn={handleRequireSignIn}
         onRequireInsider={handleRequireInsider}
         onToggleSave={handleToggleSave}

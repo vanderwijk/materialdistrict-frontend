@@ -183,6 +183,7 @@ export function toWpBrandProfile(p: BrandProfile): Record<string, unknown> {
 interface RawBookmark {
   id: string
   type?: BookmarkType
+  item_id?: number
   title?: string
   label?: string
   href?: string
@@ -195,6 +196,7 @@ export function mapBookmark(raw: RawBookmark): BookmarkItem {
   return {
     id: raw.id,
     type: raw.type ?? 'materials',
+    itemId: typeof raw.item_id === 'number' ? raw.item_id : 0,
     title: raw.title ?? '',
     label: raw.label ?? '',
     href: raw.href ?? '#',
@@ -206,6 +208,14 @@ export function mapBookmark(raw: RawBookmark): BookmarkItem {
 
 export function mapBookmarks(raw: RawBookmark[]): BookmarkItem[] {
   return Array.isArray(raw) ? raw.map(mapBookmark) : []
+}
+
+/** Write-mapper for creating a bookmark (POST). camelCase → snake_case. */
+export function toWpBookmark(input: { type: BookmarkType; itemId: number }): {
+  type: BookmarkType
+  item_id: number
+} {
+  return { type: input.type, item_id: input.itemId }
 }
 
 // ---- Boards ----

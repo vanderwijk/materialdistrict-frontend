@@ -84,12 +84,20 @@ export type BookmarkType = 'materials' | 'articles' | 'brands' | 'talks' | 'even
  * One bookmarked item. `href` points at the public detail page so the card
  * is clickable; `gradient` mirrors the public card thumbnail styling.
  *
- * Endpoint: `GET /md/v2/dashboard/bookmarks`
+ * Endpoint: `GET  /md/v2/dashboard/bookmarks`
+ *           `POST /md/v2/dashboard/bookmarks` (body `{ type, item_id }`)
  *           `DELETE /md/v2/dashboard/bookmarks/{id}`
  */
 export interface BookmarkItem {
   id: string
   type: BookmarkType
+  /**
+   * Underlying WordPress post id of the bookmarked content (material /
+   * article / brand / …). Lets the public-site Save buttons map an item to
+   * its bookmark record without matching on slug. Supplied by WordPress on
+   * both the list and create responses.
+   */
+  itemId: number
   title: string
   /** Short content-type label shown on the card (e.g. "Material"). */
   label: string

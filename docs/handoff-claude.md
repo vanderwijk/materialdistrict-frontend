@@ -116,6 +116,24 @@ Volledige tabel: `e2e-test-accounts.md`. Handmatige stappen: `featured-slots-ui-
 
 E2E-brand heeft vaak alleen **offline** testmateriaal → “Publish a material first” is normaal tot één materiaal online staat.
 
+## Bookmarks & boards (jun 2026, productie)
+
+Public **Save**-knoppen (alle ingelogde users):
+
+| Methode | Route | Body |
+|---------|-------|------|
+| `GET` | `/md/v2/dashboard/bookmarks` | — |
+| `POST` | `/md/v2/dashboard/bookmarks` | `{ "type": "materials\|…", "item_id": <post_id> }` |
+| `DELETE` | `/md/v2/dashboard/bookmarks/{id}` | — |
+
+Response bevat **`item_id`** (post-id) én **`id`** (record-id voor DELETE). POST is idempotent (201 nieuw, 200 bestaand). Alleen **gepubliceerde** targets; anders 400.
+
+**Add to board** _(Insider)_: `POST /md/v2/dashboard/boards/{id}/items` met dezelfde `type` + `item_id` → `Board` met bijgewerkte counts.
+
+**Saved searches** _(Insider)_: `POST /md/v2/dashboard/saved-searches` met `{ "name", "query" }` — live; `summary` + `result_count` server-side.
+
+Insider smoke: `e2e-dashboard-insider@materialdistrict.com` / `E2eDashboard2026!`. Zie `dashboard-datacontract.md` + `dashboard-handoff-batch3-jeroen.md`.
+
 ## Voorgestelde volgorde (frontend)
 
 1. Featured UI-check op test (Partner-account).

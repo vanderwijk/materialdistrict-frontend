@@ -63,17 +63,19 @@ import {
   useTransition,
   type ReactNode,
 } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import {
   IconCheck,
   IconChevronDown,
   IconClose,
   IconFilter,
+  IconLoading,
   IconSaveSearch,
   InsiderIcon,
 } from '@/components/ui/icons'
-import { Skeleton } from '@/components/ui'
+import { Skeleton, InsiderGate } from '@/components/ui'
 import { cn } from '@/lib/utils/cn'
+import { useAuth } from '@/components/providers/AuthContext'
 import {
   MATERIAL_FACET_GROUP_LABELS,
   MATERIAL_FILTER_FACETS,
@@ -232,12 +234,22 @@ const PROPERTY_GROUP_ORDER: readonly MaterialFacetGroup[] = [
 export function MaterialsFilterSidebar({
   sections,
   preservedParams,
-  isMember = false,
 }: MaterialsFilterSidebarProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const { isOpen: mobileOpen, close: closeMobile, setActiveCount, setIsPending } = useMobileFilter()
+  const { isLoggedIn, isMember: authMember } = useAuth()
+  // Authoritatieve member-check (de page geeft `isMember` niet altijd mee).
+  const member = authMember
+
+  // Saved-search state
+  const [gateOpen, setGateOpen] = useState(false)
+  const [savingSearch, setSavingSearch] = useState(false)
+  const [saveNotice, setSaveNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(
+    null,
+  )
 
   // Sync transition-state naar de Context zodat de grid-wrapper kan dimmen.
   useEffect(() => {
@@ -376,6 +388,76 @@ export function MaterialsFilterSidebar({
   }
 
   // --------------------------------------------------------------------
+  // Saved search (Insider)
+  // --------------------------------------------------------------------
+
+  /**
+   * Canonieke querystring om deze zoekopdracht te herstellen op /materials.
+   * Neemt de volledige URL-state (filters + q + sort + actief channel),
+   * minus paging — zodat een opgeslagen search ook het channel bewaart.
+   */
+  function currentQueryString(): string {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('page')
+    params.delete('paged')
+    return params.toString()
+  }
+
+  const activeChannel = searchParams.get('channel')
+
+  /** Auto-naam afgeleid van de actieve selectie; WP berekent de summary. */
+  function suggestedName(): string {
+    const values = Object.values(localSelection).flatMap((arr) => arr ?? [])
+    const titleCase = (v: string) =>
+      v.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    if (preservedParams?.q) {
+      return `“${preservedParams.q}”${values.length ? ` · ${values.length} filters` : ''}`
+    }
+    if (activeChannel) {
+      return `${titleCase(activeChannel)}${values.length ? ` · ${values.length} filters` : ''}`
+    }
+    if (values.length === 0) return 'Materials search'
+    const first = titleCase(values[0])
+    return values.length > 1 ? `${first} · +${values.length - 1}` : first
+  }
+
+  const canSaveSearch =
+    totalSelected > 0 || Boolean(preservedParams?.q) || Boolean(activeChannel)
+
+  async function handleSaveSearch() {
+    if (savingSearch) return
+    if (!isLoggedIn) {
+      router.push(`/sign-in?next=${encodeURIComponent(buildUrl(localSelection))}`)
+      return
+    }
+    if (!member) {
+      setGateOpen(true)
+      return
+    }
+    const query = currentQueryString()
+    if (!query) return
+
+    setSavingSearch(true)
+    setSaveNotice(null)
+    try {
+      const res = await fetch('/api/dashboard/saved-searches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: suggestedName(), query }),
+      })
+      if (!res.ok) throw new Error('save failed')
+      setSaveNotice({ kind: 'ok', text: 'Search saved — find it in your dashboard.' })
+    } catch {
+      setSaveNotice({ kind: 'err', text: 'Could not save this search. Please try again.' })
+    } finally {
+      setSavingSearch(false)
+      if (typeof window !== 'undefined') {
+        window.setTimeout(() => setSaveNotice(null), 4000)
+      }
+    }
+  }
+
+  // --------------------------------------------------------------------
   // Section-by-group lookup
   // --------------------------------------------------------------------
 
@@ -421,15 +503,18 @@ export function MaterialsFilterSidebar({
             <button
               type="button"
               className="uf-header-save"
-              onClick={() => {
-                /* TODO sessie 8: saved-search-feature */
-              }}
+              onClick={handleSaveSearch}
               title="Save this search"
-              disabled
+              disabled={savingSearch || !canSaveSearch}
+              aria-busy={savingSearch || undefined}
             >
-              <IconSaveSearch size={10} strokeWidth={2.5} />
+              {savingSearch ? (
+                <IconLoading size={10} strokeWidth={2.5} />
+              ) : (
+                <IconSaveSearch size={10} strokeWidth={2.5} />
+              )}
               Save
-              {!isMember && <InsiderIcon size={12} />}
+              {!member && <InsiderIcon size={12} />}
             </button>
             {totalSelected > 0 && (
               <button type="button" className="uf-header-clear" onClick={clearAll}>
@@ -446,6 +531,17 @@ export function MaterialsFilterSidebar({
             </button>
           </div>
         </div>
+
+        {saveNotice && (
+          <div
+            className={`form-banner ${saveNotice.kind === 'ok' ? 'is-info' : 'is-error'}`}
+            role="status"
+            aria-live="polite"
+            style={{ margin: '0 0 12px' }}
+          >
+            {saveNotice.text}
+          </div>
+        )}
 
         {/* Material type — single-select, bovenaan */}
         {categorySection && (
@@ -551,6 +647,14 @@ export function MaterialsFilterSidebar({
           )
         })}
       </aside>
+
+      <InsiderGate
+        variant="modal"
+        feature="savedSearch"
+        open={gateOpen}
+        onClose={() => setGateOpen(false)}
+        ctaHref="/dashboard/membership"
+      />
     </>
   )
 }

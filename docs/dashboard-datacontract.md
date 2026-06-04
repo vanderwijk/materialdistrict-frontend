@@ -56,12 +56,14 @@ interface UserProfile {
 
 ### Bookmarks
 - `GET /md/v2/dashboard/bookmarks` → `BookmarkItem[]`
+- `POST /md/v2/dashboard/bookmarks` (body: `{ type, item_id }`) → `BookmarkItem` (idempotent; 201 new, 200 existing)
 - `DELETE /md/v2/dashboard/bookmarks/{id}` → `204`
 
 ```ts
 type BookmarkType = 'materials' | 'articles' | 'brands' | 'talks' | 'events' | 'books'
 interface BookmarkItem {
-  id: string
+  id: string              // bookmark record id (DELETE)
+  item_id: number         // underlying WP post id (Save button state)
   type: BookmarkType
   title: string
   label: string          // korte content-type-label, bv. "Material"
@@ -75,6 +77,7 @@ interface BookmarkItem {
 ### Boards _(Insider)_
 - `GET /md/v2/dashboard/boards` → `Board[]`
 - `POST /md/v2/dashboard/boards` (body: `{ name }`) → `Board`
+- `POST /md/v2/dashboard/boards/{id}/items` (body: `{ type, item_id }`) → `Board` (idempotent)
 - `PATCH /md/v2/dashboard/boards/{id}` → `Board`
 - `DELETE /md/v2/dashboard/boards/{id}` → `204`
 

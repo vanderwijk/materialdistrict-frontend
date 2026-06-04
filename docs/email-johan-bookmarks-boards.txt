@@ -1,0 +1,96 @@
+Onderwerp: Dashboard — bookmark-create + board-add-item endpoints (+ check saved-search POST)
+
+Hoi Johan,
+
+Voor de "Save"-knoppen op de publieke site (materials, articles, talks, events
+— en later books/brands) heb ik de frontend nu volledig werkend bedraad: zodra
+iemand op Save klikt schrijft de site naar de bookmark-API, en bij het laden
+van een pagina lezen we de bookmarks van de ingelogde gebruiker uit zodat de
+knop meteen "Saved" toont. Daarvoor missen aan WordPress-kant nog twee dingen.
+Plus één korte bevestiging over saved-searches.
+
+============================================================
+1) Bookmarks — create-endpoint + item_id in de response
+============================================================
+
+Nu bestaat alleen:
+  GET    /md/v2/dashboard/bookmarks            -> BookmarkItem[]
+  DELETE /md/v2/dashboard/bookmarks/{id}       -> 204
+
+Graag erbij:
+
+  POST   /md/v2/dashboard/bookmarks
+         body (JSON):  { "type": "<type>", "item_id": <post_id> }
+         ->  201/200 met het aangemaakte BookmarkItem (zelfde shape als GET,
+             zie hieronder), inclusief de record-"id" én "item_id".
+
+  - "type" is één van:  materials | articles | brands | talks | events | books
+    (let op: meervoud, gelijk aan de tabs in het dashboard-bookmarkspaneel).
+  - "item_id" = de onderliggende WP-post-id van het content-item
+    (material/article/…), niet de bookmark-record-id.
+  - Idempotent graag: bestaat de bookmark al voor deze (user, type, item_id),
+    geef dan gewoon het bestaande BookmarkItem terug (geen duplicaat, geen 409).
+
+En in de bestaande response (zowel GET als de nieuwe POST) graag het veld
+"item_id" toevoegen:
+
+  {
+    "id":        "<bookmark_record_id>",   // bestaat al — gebruikt voor DELETE
+    "item_id":   <post_id>,                // NIEUW — onderliggende content-post-id
+    "type":      "materials",
+    "title":     "...",
+    "label":     "Material",
+    "href":      "/materials/...",
+    "image_url": "https://... | null",
+    "gradient":  "linear-gradient(...) | null",
+    "saved_at":  "ISO-datum"
+  }
+
+Waarom item_id nodig is: op een detailpagina/-card weet de frontend de
+content-post-id, maar niet de bookmark-record-id. Met "item_id" in de lijst kan
+ik per item bepalen of het al opgeslagen is en, zo ja, met welke record-id ik
+moet DELETE'en. De DELETE blijft ongewijzigd (op record-id).
+
+============================================================
+2) Boards — item toevoegen aan een board
+============================================================
+
+Voor "Add to board" (Insider) heb ik straks een endpoint nodig om een
+content-item aan een board te koppelen. De board-CRUD bestaat al
+(GET/POST/PATCH/DELETE op /boards en /boards/{id}); alleen het toevoegen van
+items ontbreekt:
+
+  POST   /md/v2/dashboard/boards/{id}/items
+         body (JSON):  { "type": "<type>", "item_id": <post_id> }
+         ->  200 met het bijgewerkte Board (zelfde shape als GET /boards,
+             met opgehoogde material_count / article_count).
+
+  - Zelfde "type"-waardes als bij bookmarks.
+  - Idempotent: zit het item er al in, geef dan gewoon het board terug.
+  - (Verwijderen van een item komt later — nog niet nodig voor deze stap.)
+
+Dit endpoint is niet kritiek voor deze oplevering (de board-picker-UI bouw ik
+in de volgende stap), maar het is fijn als het meekan zodat ik die UI meteen
+tegen een echte backend kan afbouwen.
+
+============================================================
+3) Check — saved-searches POST live?
+============================================================
+
+De "Save this search"-knop in de materials-filter is nu werkend bedraad tegen:
+
+  POST   /md/v2/dashboard/saved-searches
+         body (JSON):  { "name": "...", "query": "<canonieke filter-querystring>" }
+         ->  het nieuwe SavedSearch (met door WP berekende "summary" +
+             "result_count")
+
+Dit endpoint stond al in het batch-3-contract. Kun je bevestigen dat het op
+productie live staat? Dan kan ik het afvinken. De "query" is letterlijk de
+querystring waarmee /materials de filters herstelt (bv.
+"category=composites&glossiness=matte"); de "summary" en "result_count"
+verwacht ik server-side berekend, zoals afgesproken.
+
+Geen haast met de timing, maar als 1 en 3 binnen afzienbare tijd kunnen, dan is
+het bookmark-verhaal end-to-end af.
+
+Groet, Claude

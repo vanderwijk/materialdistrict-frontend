@@ -45,11 +45,11 @@ export const MOCK_PROFILE: UserProfile = {
 }
 
 export const MOCK_BOOKMARKS: BookmarkItem[] = [
-  { id: 'bm1', type: 'materials', title: 'Acoustic wood panel', label: 'Material', href: '/materials/acoustic-wood-panel', imageUrl: null, gradient: 'linear-gradient(135deg,#d7e8b6,#eef6ff)', savedAt: '2026-04-12' },
-  { id: 'bm2', type: 'materials', title: 'Circular facade panel', label: 'Material', href: '/materials/circular-facade-panel', imageUrl: null, gradient: 'linear-gradient(135deg,#d6e6f0,#eef2d8)', savedAt: '2026-04-10' },
-  { id: 'bm3', type: 'articles', title: 'New circular insulation system enters large-scale projects', label: 'Article', href: '/articles/circular-insulation-system', imageUrl: null, gradient: 'linear-gradient(135deg,#d7e3ef,#f4f6f9)', savedAt: '2026-04-09' },
-  { id: 'bm4', type: 'brands', title: 'MaterialDistrict', label: 'Brand', href: '/brands/materialdistrict', imageUrl: null, gradient: 'linear-gradient(135deg,#e7dfd2,#eef6ff)', savedAt: '2026-04-02' },
-  { id: 'bm5', type: 'talks', title: 'Designing with biobased materials', label: 'Talk', href: '/talks/designing-with-biobased-materials', imageUrl: null, gradient: 'linear-gradient(135deg,#e5dde8,#f4f3f8)', savedAt: '2026-03-28' },
+  { id: 'bm1', itemId: 10001, type: 'materials', title: 'Acoustic wood panel', label: 'Material', href: '/materials/acoustic-wood-panel', imageUrl: null, gradient: 'linear-gradient(135deg,#d7e8b6,#eef6ff)', savedAt: '2026-04-12' },
+  { id: 'bm2', itemId: 10002, type: 'materials', title: 'Circular facade panel', label: 'Material', href: '/materials/circular-facade-panel', imageUrl: null, gradient: 'linear-gradient(135deg,#d6e6f0,#eef2d8)', savedAt: '2026-04-10' },
+  { id: 'bm3', itemId: 10003, type: 'articles', title: 'New circular insulation system enters large-scale projects', label: 'Article', href: '/articles/circular-insulation-system', imageUrl: null, gradient: 'linear-gradient(135deg,#d7e3ef,#f4f6f9)', savedAt: '2026-04-09' },
+  { id: 'bm4', itemId: 10004, type: 'brands', title: 'MaterialDistrict', label: 'Brand', href: '/brands/materialdistrict', imageUrl: null, gradient: 'linear-gradient(135deg,#e7dfd2,#eef6ff)', savedAt: '2026-04-02' },
+  { id: 'bm5', itemId: 10005, type: 'talks', title: 'Designing with biobased materials', label: 'Talk', href: '/talks/designing-with-biobased-materials', imageUrl: null, gradient: 'linear-gradient(135deg,#e5dde8,#f4f3f8)', savedAt: '2026-03-28' },
 ]
 
 export const MOCK_BOARDS: Board[] = [

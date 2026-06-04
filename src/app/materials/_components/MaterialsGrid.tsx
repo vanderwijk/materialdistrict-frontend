@@ -34,6 +34,7 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CompareBar, MaterialCard, InsiderGate } from '@/components/ui'
 import { useAuth } from '@/components/providers/AuthContext'
+import { useBookmarks } from '@/lib/hooks/useBookmarks'
 import type { MaterialListItem } from '@/types/material'
 
 // --------------------------------------------------------------------
@@ -52,17 +53,13 @@ export interface MaterialsGridProps {
 export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
+  const { isSaved, toggleBookmark } = useBookmarks()
 
   // Modal-state: één gate voor de hele grid
   const [insiderGateOpen, setInsiderGateOpen] = useState(false)
 
   // Limit-reached banner (boven de grid). Verdwijnt automatisch na 4s.
   const [limitNotice, setLimitNotice] = useState<string | null>(null)
-
-  // Saved-state placeholder — sessie 4 heeft nog geen saved-API.
-  // Klik op Save toont een visuele toggle maar persisteert niets.
-  // Vervangen in een sessie zodra Johan een /saved-endpoint heeft.
-  const [savedIds, setSavedIds] = useState<Set<number>>(new Set())
 
   // Materials-map voor CompareBar (id → MaterialListItem)
   const materialsById = useMemo(() => {
@@ -85,18 +82,6 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
 
   const handleRequireInsider = () => {
     setInsiderGateOpen(true)
-  }
-
-  const handleToggleSave = (materialId: number) => {
-    setSavedIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(materialId)) {
-        next.delete(materialId)
-      } else {
-        next.add(materialId)
-      }
-      return next
-    })
   }
 
   const handleCompareLimitReached = () => {
@@ -128,10 +113,10 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
             material={material}
             isLoggedIn={isLoggedIn}
             isMember={isMember}
-            isSaved={savedIds.has(material.id)}
+            isSaved={isSaved('materials', material.id)}
             onRequireSignIn={handleRequireSignIn}
             onRequireInsider={handleRequireInsider}
-            onToggleSave={handleToggleSave}
+            onToggleSave={(id) => toggleBookmark('materials', id)}
             onCompareLimitReached={handleCompareLimitReached}
             searchTerm={searchTerm}
           />

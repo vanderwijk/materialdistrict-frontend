@@ -34,9 +34,11 @@ Responses: **snake_case** (mapper → camelCase in frontend)
 | Methode | Route | `data.ts` | UI |
 |---|---|---|---|
 | `GET` | `/md/v2/dashboard/bookmarks` | `getBookmarks()` | `BookmarksPanel` |
+| `POST` | `/md/v2/dashboard/bookmarks` | — | public Save + idempotent |
 | `DELETE` | `/md/v2/dashboard/bookmarks/{id}` | — | verwijderen in panel |
 | `GET` | `/md/v2/dashboard/boards` | `getBoards()` | `BoardsPanel` _(Insider)_ |
 | `POST` | `/md/v2/dashboard/boards` | — | nieuw board |
+| `POST` | `/md/v2/dashboard/boards/{id}/items` | — | Add to board _(Insider)_ |
 | `PATCH` | `/md/v2/dashboard/boards/{id}` | — | rename |
 | `DELETE` | `/md/v2/dashboard/boards/{id}` | — | verwijderen |
 | `GET` | `/md/v2/dashboard/saved-searches` | `getSavedSearches()` | `SavedSearchesPanel` _(Insider)_ |
@@ -50,7 +52,7 @@ Responses: **snake_case** (mapper → camelCase in frontend)
 | `PATCH` | `/md/v2/dashboard/brands/{brandId}/materials/{id}` | — | material form save **of** status toggle |
 | `DELETE` | `/md/v2/dashboard/brands/{brandId}/materials/{id}` | — | trash material |
 
-**Niet in batch 3 (later):** bookmark **aanmaken** (public site), brand invoices, brand delete, brand candidates, featured placements.
+**Niet in batch 3 (later):** brand invoices, brand delete, brand candidates, featured placements, board item verwijderen.
 
 ---
 
@@ -64,6 +66,7 @@ Response: `BookmarkItem[]`:
 [
   {
     "id": "bm_abc123",
+    "item_id": 12345,
     "type": "materials",
     "title": "Oak veneer",
     "label": "Material",
@@ -77,9 +80,14 @@ Response: `BookmarkItem[]`:
 
 Opslag: usermeta `_md_dashboard_bookmarks` (array van records met `id`, `type`, `object_id`, `saved_at`).
 
+**`POST /md/v2/dashboard/bookmarks`** — body `{ "type": "materials", "item_id": 12345 }` → `BookmarkItem`
+
+- `type`: `materials` | `articles` | `brands` | `talks` | `events` | `books` (`books` → WP post type `article`).
+- Idempotent: bestaande bookmark voor `(user, type, item_id)` → `200` + bestaand item; nieuw → `201`.
+- `item_id` in response = onderliggende post-id (`object_id` in opslag).
+
 **`DELETE /md/v2/dashboard/bookmarks/{id}`** → `204`
 
-- Geen POST in v1 — bookmarks worden later vanaf de publieke site toegevoegd.
 - Verwijderde/orphan targets (post bestaat niet meer) worden niet in GET getoond.
 
 ---
@@ -109,7 +117,12 @@ Opslag: usermeta `_md_dashboard_bookmarks` (array van records met `id`, `type`, 
 
 **`DELETE /md/v2/dashboard/boards/{id}`** → `204`
 
-Opslag: usermeta `_md_dashboard_boards`. Items toevoegen aan boards (material/article ids) komt in een latere batch.
+**`POST /md/v2/dashboard/boards/{id}/items`** — body `{ "type": "materials", "item_id": 12345 }` → `Board`
+
+- Zelfde `type`-waarden als bookmarks. Idempotent: item al op board → `200` + board.
+- Counts (`material_count`, `article_count`) uit unified `items`-array (legacy `material_ids`/`article_ids` blijven gesynchroniseerd).
+
+Opslag: usermeta `_md_dashboard_boards`.
 
 ---
 
@@ -359,7 +372,7 @@ curl -s -X POST \
 
 ## Randgevallen
 
-1. **Bookmarks zonder POST** — panel kan leeg blijven tot public-site bookmark flow live is.
+1. **Bookmarks POST** — live op productie; public Save-buttons gebruiken `POST` + `item_id` in GET.
 2. **Insider 403** — boards, saved searches, insider insights vereisen actieve Insider (`/auth/me` → `membership.isInsider`).
 3. **Material PATCH dispatch** — `{ "status": "draft", "name": "x" }` triggert form save (niet status toggle) omdat `name` aanwezig is.
 4. **Free tier + downloads/videos/keywords** — 403 op form save; lege keywords op free tier is OK (meta wordt gewist).

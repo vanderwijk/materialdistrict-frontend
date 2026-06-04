@@ -26,13 +26,14 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
-import { Button, DetailActions } from '@/components/ui'
+import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
 import { JsonLd, buildEvent, buildBreadcrumbList } from '@/lib/seo'
 import { eventTypeLabel } from '@/lib/config/event-types'
 import type { Event } from '@/types/event'
 import type { MediaImage } from '@/types/media'
 import { sortEventsByDate } from '../_lib/events-order'
+import { EventDetailActions } from './_components/EventDetailActions'
 import { EventMediaViewer } from './_components/EventMediaViewer'
 import { EventPrevNext, type EventPrevNextNeighbour } from './_components/EventPrevNext'
 
@@ -185,7 +186,12 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           title={event.title}
           meta={metaParts.join(' · ')}
           actions={
-            <DetailActions type="event" shareTitle={event.title} customPrimary={registerBtn} />
+            <EventDetailActions
+              eventId={event.id}
+              eventSlug={slug}
+              eventTitle={event.title}
+              customPrimary={registerBtn}
+            />
           }
         />
 

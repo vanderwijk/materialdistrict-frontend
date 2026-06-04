@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation'
 import { DetailActions } from '@/components/ui/DetailActions'
 import { InsiderGate } from '@/components/ui/InsiderGate'
 import { useAuth } from '@/components/providers/AuthContext'
+import { useBookmarks } from '@/lib/hooks/useBookmarks'
 
 export interface TalkDetailActionsProps {
   talkId: number
@@ -30,8 +31,8 @@ export function TalkDetailActions({
 }: TalkDetailActionsProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
+  const { isSaved, toggleBookmark } = useBookmarks()
 
-  const [isSaved, setIsSaved] = useState(false)
   const [insiderGateOpen, setInsiderGateOpen] = useState(false)
 
   function handleRequireSignIn() {
@@ -44,7 +45,7 @@ export function TalkDetailActions({
   }
 
   function handleToggleSave() {
-    setIsSaved((s) => !s)
+    toggleBookmark('talks', talkId)
   }
 
   function handleAddToBoard() {
@@ -59,7 +60,7 @@ export function TalkDetailActions({
         shareTitle={talkTitle}
         isLoggedIn={isLoggedIn}
         isMember={isMember}
-        isSaved={isSaved}
+        isSaved={isSaved('talks', talkId)}
         onRequireSignIn={handleRequireSignIn}
         onRequireInsider={handleRequireInsider}
         onToggleSave={handleToggleSave}
