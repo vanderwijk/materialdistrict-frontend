@@ -61,6 +61,7 @@ import {
   mapMaterialCategoryOptions,
   mapMaterialTypeOptions,
 } from './mappers'
+import { mergeProfileFieldOptions } from '@/lib/config/profile-options'
 import { MOCK_MATERIAL_FORM } from './mock'
 
 /**
@@ -103,15 +104,16 @@ export async function getProfile(): Promise<UserProfile> {
  * 404s → empty lists, and the form renders free-text inputs instead.
  */
 export async function getProfileFieldOptions(): Promise<ProfileFieldOptions> {
-  const empty: ProfileFieldOptions = { professions: [], industries: [] }
   try {
     const raw = await wpDashboardFetch<Parameters<typeof mapProfileFieldOptions>[0]>(
       '/md/v2/dashboard/profile-options',
       { method: 'GET', bearer: await requireToken() },
     )
-    return mapProfileFieldOptions(raw)
+    return mergeProfileFieldOptions(mapProfileFieldOptions(raw))
   } catch (err) {
-    if (err instanceof DashboardApiError) return empty
+    if (err instanceof DashboardApiError) {
+      return mergeProfileFieldOptions({ professions: [], industries: [] })
+    }
     throw err
   }
 }

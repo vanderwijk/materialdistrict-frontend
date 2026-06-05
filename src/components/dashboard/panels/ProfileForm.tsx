@@ -4,18 +4,14 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input, Select, Checkbox } from '@/components/ui/form'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
+import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import type { UserProfile, ProfileFieldOptions } from '@/types/dashboard'
-
-const COUNTRIES = [
-  'Netherlands', 'Belgium', 'Germany', 'France', 'United Kingdom',
-  'Spain', 'Italy', 'Denmark', 'Sweden', 'Other',
-]
 
 /**
  * Personal profile form. Controlled state seeded from the data layer; the
  * sticky footer shows completion progress. Filled fields self-mark with a green
- * check (`showFilledState`). Profession and industry render as dropdowns when WP
- * supplies option lists, falling back to a free-text input when it doesn't.
+ * check (`showFilledState`). Profession, industry and country use the same
+ * option lists as the legacy WP profile (theme defaults until profile-options ships).
  *
  * Save POSTs the full `UserProfile` to `/api/dashboard/profile`, which maps it
  * to the WP snake_case body. Company name + VAT only apply when "Invoice to a
@@ -28,7 +24,10 @@ export function ProfileForm({
   initial: UserProfile
   options: ProfileFieldOptions
 }) {
-  const [form, setForm] = useState<UserProfile>(initial)
+  const [form, setForm] = useState<UserProfile>(() => ({
+    ...initial,
+    country: resolveCountryCode(initial.country),
+  }))
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const router = useRouter()
@@ -109,40 +108,22 @@ export function ProfileForm({
         </div>
 
         <div className="g2">
-          {options.professions.length > 0 ? (
-            <Select
-              label="Profession"
-              value={form.profession}
-              onChange={(e) => set('profession', e.target.value)}
-              placeholder="Select a profession"
-              options={options.professions.map((o) => ({ value: o.value, label: o.label }))}
-              showFilledState
-            />
-          ) : (
-            <Input
-              label="Profession"
-              value={form.profession}
-              onChange={(e) => set('profession', e.target.value)}
-              showFilledState
-            />
-          )}
-          {options.industries.length > 0 ? (
-            <Select
-              label="Industry / sector"
-              value={form.industry}
-              onChange={(e) => set('industry', e.target.value)}
-              placeholder="Select an industry"
-              options={options.industries.map((o) => ({ value: o.value, label: o.label }))}
-              showFilledState
-            />
-          ) : (
-            <Input
-              label="Industry / sector"
-              value={form.industry}
-              onChange={(e) => set('industry', e.target.value)}
-              showFilledState
-            />
-          )}
+          <Select
+            label="Profession"
+            value={form.profession}
+            onChange={(e) => set('profession', e.target.value)}
+            placeholder="Select a profession"
+            options={options.professions.map((o) => ({ value: o.value, label: o.label }))}
+            showFilledState
+          />
+          <Select
+            label="Industry / sector"
+            value={form.industry}
+            onChange={(e) => set('industry', e.target.value)}
+            placeholder="Select an industry / sector"
+            options={options.industries.map((o) => ({ value: o.value, label: o.label }))}
+            showFilledState
+          />
         </div>
 
         <div className="section-sep">
@@ -176,7 +157,7 @@ export function ProfileForm({
             value={form.country}
             onChange={(e) => set('country', e.target.value)}
             placeholder="Select a country"
-            options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+            options={COUNTRY_OPTIONS}
             showFilledState
           />
 
