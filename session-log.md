@@ -1905,8 +1905,10 @@ en write-mappers `toWpBoard` / `toWpSavedSearch` / `toWpMaterialForm`.
 - `PATCH`/`DELETE …/materials/[materialId]` — PATCH **dispatcht**: body met
   formvelden → form-save (retour MaterialFormData); body met alleen `{status}`
   → toggle (retour MaterialListRow), conform WP.
-- `POST /api/dashboard/media` — bestand → WP media library (cookie→Bearer,
-  multipart) → `{ id, name, url }`.
+- `POST /api/dashboard/media` — scoped upload (cookie→Bearer, multipart:
+  `file` + `brand_id` + `context`) → proxy naar
+  `POST /md/v2/dashboard/brands/{brandId}/media` → `{ id, name, url }`.
+  Gebruikt **niet** generieke `/wp/v2/media` (subscribers missen `upload_files`).
 - Gedeelde `api/dashboard-proxy.ts` helpers (`getTokenOr401`, `dashboardError`).
 
 **UI aangesloten:** BookmarksPanel (delete), BoardsPanel (create/delete),
@@ -2450,3 +2452,7 @@ baseline (zelfde pad als sensorial/technical — geen apart datamodel).
   `[{id,l1,l2,l3}]` voor hydratie met echte term-ids.
 - **Slug-alignment:** form static defaults vs. WP-term-slugs (vooral percentages)
   nog eens verifiëren bij eerste echte saves.
+- **Media upload (subscribers):** generieke `POST /wp/v2/media` faalde met
+  `rest_cannot_create`. Fix: scoped `POST /md/v2/dashboard/brands/{id}/media`
+  (plugin `3cb0676`, frontend `1169f60`); gallery `post_parent` sync bij save.
+  Handoff: `docs/email-claude-s13.3-dashboard-media-upload-done.txt`.

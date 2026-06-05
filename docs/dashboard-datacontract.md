@@ -240,8 +240,10 @@ interface MaterialFormData {
   keywords: string[]            // Plus+
 }
 ```
-> Uploads (featured/gallery/downloads) lopen vermoedelijk via de bestaande
-> WP-media-endpoints; dit form levert dan asset-id's terug i.p.v. files.
+> Uploads (featured/gallery/downloads/logo) lopen via
+> `POST /md/v2/dashboard/brands/{brand_id}/media` (frontend proxy:
+> `/api/dashboard/media`). Form levert asset-id's terug i.p.v. files. Gebruik
+> **niet** generieke `POST /wp/v2/media` — subscribers missen `upload_files`.
 
 ### Interactions (inkomende leads)
 - `GET /md/v2/dashboard/brands/{brandId}/interactions` → `Interaction[]`
@@ -350,7 +352,9 @@ interface BrandCandidate {
 ## Open punten voor Johan
 
 1. Bevestig basis-URL en of brand-routes op id of slug moeten.
-2. Upload-flow voor material-assets (eigen endpoint vs WP-media).
+2. ~~Upload-flow voor material-assets (eigen endpoint vs WP-media).~~ ✅ Scoped
+   dashboard-endpoint (`/md/v2/dashboard/brands/{id}/media`); zie
+   `docs/email-claude-s13.3-dashboard-media-upload-done.txt`.
 3. Billing-portal: Stripe customer portal-URL via WP, of eigen cancel-endpoint?
 4. `timeAgo` en `summary` (saved search) server-side formatteren — akkoord?
 5. Levert WP `countsAgainstQuota` per materiaal mee (losse publicaties)?

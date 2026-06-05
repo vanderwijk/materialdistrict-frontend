@@ -281,7 +281,14 @@ Dispatch-logica: als één van `name`, `description`, `type`, `featured_image_id
 
 ### Uploads
 
-Assets uploaden via **`POST /wp/v2/media`** (JWT). Form stuurt attachment-id's; WP controleert dat de user de attachment mag gebruiken (`post_author` of `edit_others_posts`).
+Assets uploaden via **`POST /md/v2/dashboard/brands/{brand_id}/media`** (JWT +
+managed-brand check). Browser → `POST /api/dashboard/media` (multipart: `file`,
+`brand_id`, optional `context`: `image` | `document`). Subscribers hebben geen
+`upload_files`; generieke **`POST /wp/v2/media`** werkt niet voor dashboard-users.
+
+Response: `{ id, name, url }`. Form save stuurt numeric attachment ids; WP
+controleert ownership (`post_author` of `edit_others_posts`) en koppelt gallery
+attachments aan het material/brand (`post_parent` + `menu_order`).
 
 ### WP meta keys (nieuw/gewijzigd)
 
@@ -303,7 +310,8 @@ Bestaande keys: `gallery`, `_material_brand`, featured image (thumbnail), `mater
    - `getBookmarks()`, `getBoards()`, `getSavedSearches()`, `getInsiderInsights()`, `getInvoices()`
    - Material form: fetch/create/save/delete via brand slug → id
 3. **`/api/dashboard/*` proxy routes** voor POST/PATCH/DELETE
-4. **Material edit page:** vervang mock door GET form + PATCH save; uploads → `/wp/v2/media` of proxy
+4. **Material edit page:** vervang mock door GET form + PATCH save; uploads →
+   `/api/dashboard/media` (proxy naar `/md/v2/dashboard/brands/{id}/media`)
 5. **PATCH materials list:** blijft `{ status }` only → `MaterialListRow` (batch 1)
 
 ---

@@ -63,14 +63,15 @@ Insider-gating (boards / saved-searches / insights) blijft client-side via
 | Create | `POST …/brands/{id}/materials` | retour: nieuwe `id` |
 | Edit | `PATCH …/brands/{id}/materials/{matId}` | |
 | Delete | `DELETE …/brands/{id}/materials/{matId}` | |
-| **Uploads** | `POST /wp/v2/media` (los van dashboard) | form stuurt `attachment_ids` mee; WP checkt brand-ownership. **Eerst bij Johan bevestigen**: veldnaam + flow |
+| **Uploads** | `POST /api/dashboard/media` → `POST /md/v2/dashboard/brands/{id}/media` | multipart: `file`, `brand_id`, `context` (`image` \| `document`). Subscribers mogen **niet** `POST /wp/v2/media`; scoped WP-endpoint + ownership-check bij save. |
 
 UI: `MaterialForm.handleSave` / `handleDelete` (stubs staan klaar). Downloads
 zijn Basis+, keywords Plus+ (gating al client-side; server dwingt af).
 
 ## Eerst bij Johan bevestigen (voordat bedraden zin heeft)
 
-- Materiaal-uploads: exacte koppeling media → materiaal (`attachment_ids`?).
+- ~~Materiaal-uploads: exacte koppeling media → materiaal~~ ✅ scoped upload +
+  `gallery_attachment_ids` + `post_parent` sync bij save (S13.3, plugin `3cb0676`).
 - Featured "Book slot": loopt dit via WooCommerce/upsell of een dashboard-endpoint?
 - Add brand: response-shapes van `claim` / `request-new`.
 - Membership portal: `GET /dashboard/membership/portal → { url }` bevestigen

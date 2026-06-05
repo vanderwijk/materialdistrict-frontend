@@ -579,7 +579,8 @@ export function toWpSavedSearch(
 
 /**
  * Material form → WP create/save body. Assets are sent as numeric attachment
- * ids (uploaded separately via /wp/v2/media); downloads carry their title.
+ * ids (uploaded separately via `/api/dashboard/media` →
+ * `/md/v2/dashboard/brands/{brandId}/media`); downloads carry their title.
  * Only applications that already have a real term id are forwarded — paths the
  * picker assigned a local `app:` id are dropped until WP maps them to terms.
  */
