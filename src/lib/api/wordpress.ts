@@ -330,13 +330,6 @@ export async function wpFetchPaginated<T>(
 // Taxonomie-helpers (werken nu al — onafhankelijk van post-meta blocker)
 // --------------------------------------------------------------------
 
-/** REST payload for `theme_thumbnail` on `/wp/v2/theme` (plugin taxonomy-theme.php). */
-export interface WPThemeThumbnailRest {
-  id: number
-  url: string
-  alt: string | null
-}
-
 export interface WPTermResponse {
   id: number
   count: number
@@ -347,10 +340,13 @@ export interface WPTermResponse {
   taxonomy: string
   parent: number
   meta: Record<string, unknown> | unknown[]
-  /** Channel hero image (resolved URL + attachment id). */
-  theme_thumbnail?: WPThemeThumbnailRest | null
-  /** Term-level "Featured" channel flag (WF-6, Tax Meta `_featured`). */
+  /**
+   * Top-level REST-velden op `theme`-termen (stap 12, Johan-deploy `0b0785e`).
+   * Bewust top-level i.p.v. in `meta[]` (term-meta is daar vaak leeg).
+   * Alleen aanwezig op de theme-taxonomy; optioneel voor andere taxonomieën.
+   */
   featured?: boolean
+  theme_thumbnail?: { id: number; url: string; alt: string } | null
 }
 
 /**
