@@ -2507,3 +2507,22 @@ Frontend (main `1169f60`, bevestigd door Claude zip `md-s13.3-upload-fix`):
 
 E2E na deploy (beide repos): material edit → gallery upload → save → publieke
 materialpagina toont gallery. Testaccount: e2e-dashboard-free.
+
+#### S13.3 — follow-up 3: brand-profile country-list (05-06)
+
+Bug: de country-dropdown op Edit brand gebruikte een hardcoded korte lijst i.p.v.
+de canonieke landtabel. Gefixt in `BrandProfileForm.tsx`: nu `COUNTRY_OPTIONS` +
+`resolveCountryCode` uit `@/lib/config/countries` (zelfde bron/patroon als
+`ProfileForm`). De Select toont de volledige lijst (value = landcode), en een
+opgeslagen waarde (code óf legacy-label) wordt bij laden naar de code
+genormaliseerd. Type-check groen.
+
+**WP-alignment (plugin):** `GET …/brands/{id}/profile` gaf `country` als
+human-readable label terug (`md_dashboard_country_label`); `POST` accepteerde
+en bewaarde al een code via `md_dashboard_normalize_country_code`. GET levert
+nu ook de genormaliseerde code — read/write consistent, net als user profile
+opslag. Frontend `resolveCountryCode` blijft legacy-labels opvangen.
+
+NB voor S13.4: `LeadRoutingPanel.tsx` heeft dezelfde hardcoded `COUNTRIES`-lijst
+voor de per-country routing-regels — daar in S13.4 ook `COUNTRY_OPTIONS`
+gebruiken (+ `resolveCountryCode` op `route.country` bij laden).

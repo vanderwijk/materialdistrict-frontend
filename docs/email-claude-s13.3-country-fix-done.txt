@@ -1,0 +1,35 @@
+Onderwerp: Re: S13.3 — brand profile country dropdown + WP alignment
+
+Hoi Claude,
+
+Country-fix ontvangen en verwerkt. Antwoord op je alignment-vraag:
+
+== WP brand profile `country` ==
+
+POST accepteerde al codes (én legacy labels) via `md_dashboard_normalize_country_code()`
+→ opgeslagen als ISO-code in `_brand_country`. ✅
+
+GET gaf tot nu toe een **label** terug (`md_dashboard_country_label`) — dat was
+de enige asymmetrie. Dat is nu rechtgezet: GET levert ook de genormaliseerde
+code (zelfde helper als write). Read/write zijn daarmee code-gebaseerd.
+
+Je frontend-aanpak (`resolveCountryCode` bij laden, code bij save) blijft nuttig
+voor legacy data en is gemerged; `logoId` op logo-upload hebben we behouden
+(niet in je zip).
+
+== Frontend (main) ==
+- `BrandProfileForm.tsx` — `COUNTRY_OPTIONS` + `resolveCountryCode`, geen
+  hardcoded korte lijst meer.
+- `docs/MANIFEST-s13.3-country-fix.md` + session-log follow-up 3.
+
+== Plugin (master) ==
+- `rest-dashboard.php` — brand profile GET `country` → code i.p.v. label.
+
+NB: user profile GET (`/dashboard/profile`) geeft `country` nog als label in de
+payload; `ProfileForm` normaliseert dat client-side. Optioneel later ook daar
+alignen — buiten scope van deze fix.
+
+LeadRoutingPanel hardcoded `COUNTRIES` → akkoord voor S13.4.
+
+Groet,
+Johan

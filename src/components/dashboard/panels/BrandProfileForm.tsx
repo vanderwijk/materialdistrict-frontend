@@ -14,14 +14,10 @@ import {
 } from '../fields'
 import { IconAdd, IconClose, IconCheck, IconUpload, IconImage } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
+import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import type { BrandProfile, BrandSocialLinks, MaterialAsset } from '@/types/dashboard'
 import { canManufacturerAccess, type ManufacturerTier } from '@/lib/config/membership'
 import { tierMeets } from '@/lib/dashboard/nav'
-
-const COUNTRIES = [
-  'Netherlands', 'Belgium', 'Germany', 'France', 'United Kingdom',
-  'Spain', 'Italy', 'Denmark', 'Sweden', 'Other',
-]
 
 const SOCIAL_FIELDS: { key: keyof BrandSocialLinks; label: string }[] = [
   { key: 'twitter', label: 'Twitter / X' },
@@ -47,7 +43,10 @@ export function BrandProfileForm({
   initial: BrandProfile
   tier: ManufacturerTier
 }) {
-  const [form, setForm] = useState<BrandProfile>(initial)
+  const [form, setForm] = useState<BrandProfile>({
+    ...initial,
+    country: resolveCountryCode(initial.country),
+  })
   const [keywordDraft, setKeywordDraft] = useState('')
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -208,8 +207,9 @@ export function BrandProfileForm({
           <Select
             label="Country"
             value={form.country}
+            placeholder="Select a country"
             onChange={(e) => set('country', e.target.value)}
-            options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+            options={COUNTRY_OPTIONS}
           />
         </div>
         <div className="g2">
