@@ -16,7 +16,7 @@ import { getAuthCookie } from '@/lib/auth/cookies'
  *   - niet ingelogd           → /sign-in?next=/checkout?plan=insider&interval=…
  *   - ingelogd                → POST /md/v2/checkout/insider → redirect checkout_url
  *   - 401 (token afgewezen)   → /sign-in?next=…
- *   - 409 already subscribed  → /membership?checkout=already
+ *   - 409 already subscribed  → /dashboard/membership?checkout=already
  *   - 503 unavailable         → /membership?checkout=unavailable
  *   - overige fout            → /membership?checkout=error
  *
@@ -68,7 +68,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       redirect(signInHref)
     }
     if (status === 409) {
-      redirect('/membership?checkout=already')
+      redirect('/dashboard/membership?checkout=already')
     }
     if (status === 503) {
       redirect('/membership?checkout=unavailable')

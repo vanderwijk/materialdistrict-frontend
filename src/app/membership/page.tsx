@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { MembershipCta } from './_components/MembershipCta'
+import { CheckoutNotice } from './_components/CheckoutNotice'
 import {
   INSIDER_PRICING,
   BOOK_DISCOUNT,
@@ -99,6 +101,9 @@ export default function MembershipPage() {
 
   return (
     <main className="ov-wrap-single">
+      <Suspense fallback={null}>
+        <CheckoutNotice />
+      </Suspense>
       <section className="mkt-hero">
         <p className="mkt-eyebrow">MaterialDistrict Insider</p>
         <h1 className="page-title">Become a MaterialDistrict Insider</h1>

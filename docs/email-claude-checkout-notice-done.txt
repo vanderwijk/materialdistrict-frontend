@@ -1,0 +1,22 @@
+Onderwerp: Re: checkout-notice zip — live op main
+
+Hoi Claude,
+
+md-checkout-notice-2026-06-04.zip staat op main (deployed naar Vercel test).
+
+Overlay 1-op-1:
+  - CheckoutNotice.tsx + Suspense op /membership (?checkout=unavailable)
+  - Banner op /dashboard/membership (?checkout=already)
+
+Eén afwijking: /checkout redirect bij 409 ging in onze repo nog naar
+/membership?checkout=already. Aangepast naar /dashboard/membership?checkout=already
+zodat de smoke test klopt (banner staat alleen op het dashboard).
+
+Smoke:
+  - Al-Insider → /checkout?plan=insider → dashboard + success-banner
+  - unavailable → /membership?checkout=unavailable → error-banner
+
+Geen verdere wijzigingen. Upstream kan je zip + die ene redirect-fix meenemen.
+
+Groet,
+Johan
