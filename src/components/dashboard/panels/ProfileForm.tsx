@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Input, Select, Checkbox } from '@/components/ui/form'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
+import { withCurrentSelectValue } from '@/lib/config/profile-options'
 import type { UserProfile, ProfileFieldOptions } from '@/types/dashboard'
 
 /**
@@ -34,6 +35,15 @@ export function ProfileForm({
 
   const set = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) =>
     setForm((f) => ({ ...f, [key]: value }))
+
+  const professionOptions = useMemo(
+    () => withCurrentSelectValue(options.professions, form.profession),
+    [options.professions, form.profession],
+  )
+  const industryOptions = useMemo(
+    () => withCurrentSelectValue(options.industries, form.industry),
+    [options.industries, form.industry],
+  )
 
   const progress = useMemo(() => {
     const fields = [
@@ -113,7 +123,7 @@ export function ProfileForm({
             value={form.profession}
             onChange={(e) => set('profession', e.target.value)}
             placeholder="Select a profession"
-            options={options.professions.map((o) => ({ value: o.value, label: o.label }))}
+            options={professionOptions.map((o) => ({ value: o.value, label: o.label }))}
             showFilledState
           />
           <Select
@@ -121,7 +131,7 @@ export function ProfileForm({
             value={form.industry}
             onChange={(e) => set('industry', e.target.value)}
             placeholder="Select an industry / sector"
-            options={options.industries.map((o) => ({ value: o.value, label: o.label }))}
+            options={industryOptions.map((o) => ({ value: o.value, label: o.label }))}
             showFilledState
           />
         </div>

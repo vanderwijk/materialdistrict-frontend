@@ -99,9 +99,8 @@ export async function getProfile(): Promise<UserProfile> {
 }
 
 /**
- * GET /md/v2/dashboard/profile-options — option lists for the profession and
- * industry dropdowns (global, not per-user). Until the endpoint is live it
- * 404s → empty lists, and the form renders free-text inputs instead.
+ * GET /md/v2/dashboard/profile-options — global profession/industry dropdown
+ * lists. Falls back to `DEFAULT_PROFILE_FIELD_OPTIONS` when the endpoint 404s.
  */
 export async function getProfileFieldOptions(): Promise<ProfileFieldOptions> {
   try {

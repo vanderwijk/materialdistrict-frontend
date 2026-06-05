@@ -1,53 +1,54 @@
-import type { ProfileFieldOptions } from '@/types/dashboard'
+import type { ProfileFieldOption, ProfileFieldOptions } from '@/types/dashboard'
 
 /**
  * Default profession / industry option lists — mirrored from
- * materialdistrict-theme/page-edit-profile.php (and page-register.php).
- * Used until `GET /md/v2/dashboard/profile-options` is live on WordPress.
+ * materialdistrict-plugin/profile-options.php (slug values).
+ * Used only when `GET /md/v2/dashboard/profile-options` is unavailable.
  */
 export const DEFAULT_PROFILE_FIELD_OPTIONS: ProfileFieldOptions = {
   professions: [
-    { value: 'Architect', label: 'Architect' },
-    { value: 'Designer', label: 'Designer' },
-    { value: 'Furniture designer', label: 'Furniture designer' },
-    { value: 'Product developer', label: 'Product developer' },
-    { value: 'Manufacturer', label: 'Manufacturer' },
-    { value: 'Contractor', label: 'Contractor' },
-    { value: 'Client', label: 'Client' },
-    { value: 'Teacher', label: 'Teacher' },
-    { value: 'Student', label: 'Student' },
-    { value: 'Other', label: 'Other' },
+    { value: 'architect', label: 'Architect' },
+    { value: 'designer', label: 'Designer' },
+    { value: 'furniture-designer', label: 'Furniture designer' },
+    { value: 'product-developer', label: 'Product developer' },
+    { value: 'manufacturer', label: 'Manufacturer' },
+    { value: 'contractor', label: 'Contractor' },
+    { value: 'client', label: 'Client' },
+    { value: 'professor', label: 'Professor' },
+    { value: 'teacher', label: 'Teacher' },
+    { value: 'student', label: 'Student' },
+    { value: 'other', label: 'Other' },
   ],
   industries: [
     {
-      value: 'Architecture',
+      value: 'architecture',
       label: 'Architecture (incl Urban Planning, Landscape Architecture and Infrastucture)',
     },
     {
-      value: 'Interior',
+      value: 'interior',
       label: 'Interior (incl Furniture and Interiorproducts)',
     },
     {
-      value: 'Fashion',
+      value: 'fashion',
       label: 'Fashion (incl Apparel, Sportswear and Accessoires)',
     },
     {
-      value: 'Mobility',
+      value: 'mobility',
       label: 'Mobility (incl Automotive, Ships, Bicycles)',
     },
     {
-      value: 'Graphic',
+      value: 'graphic',
       label: 'Graphic (incl Packaging, Print, Signing)',
     },
     {
-      value: 'Products',
+      value: 'products',
       label: 'Products (incl. Consumerproducts, Sportsgear, Business Goods)',
     },
-    { value: 'Other', label: 'Other' },
+    { value: 'other', label: 'Other' },
   ],
 }
 
-/** WP options when present, otherwise theme defaults. */
+/** WP options when present, otherwise plugin/theme defaults. */
 export function mergeProfileFieldOptions(fromWp: ProfileFieldOptions): ProfileFieldOptions {
   return {
     professions:
@@ -59,4 +60,13 @@ export function mergeProfileFieldOptions(fromWp: ProfileFieldOptions): ProfileFi
         ? fromWp.industries
         : DEFAULT_PROFILE_FIELD_OPTIONS.industries,
   }
+}
+
+/** Keep unknown stored values visible in a select (legacy / custom meta). */
+export function withCurrentSelectValue(
+  options: ProfileFieldOption[],
+  current: string,
+): ProfileFieldOption[] {
+  if (!current || options.some((o) => o.value === current)) return options
+  return [...options, { value: current, label: current }]
 }
