@@ -2402,8 +2402,8 @@ laag voor alles wat in beide formulieren voorkomt (DRY).
 - `src/components/dashboard/CurrentPlanBanner.tsx` — tier + prijs + pills
   (quota / featured placement / fair-korting) uit `membership.ts`.
 - `src/lib/dashboard/material-property-options.ts` — `buildMaterialPropertyOptions()`
-  merget de **live FacetWP-baseline** (filterbare facets) over statische defaults
-  (niet-filterbare environmental/content-facets); datalaag-helper
+  merget de **live FacetWP-baseline** over statische defaults wanneer choices
+  ontbreken (zelfde model voor alle 24 facets); datalaag-helper
   `getMaterialPropertyOptions()` met graceful fallback naar all-static.
 
 **Contract (`types/dashboard.ts`):**
@@ -2442,16 +2442,11 @@ bestanden schoon (alleen additief: `EMPTY_MATERIAL_PROPERTIES`,
 `PROPERTY_VALUE_OPTIONS`).
 
 #### Open (S13.3 — Johan)
-WP moet de nieuwe velden lezen/persisteren (camelCase ↔ snake_case ligt al vast
-in de mappers — zie mail). Frontend werkt nu volledig op mock + live FacetWP-
-baseline; ontbrekende endpoints degraderen netjes (lege lijst / statische opties).
-- **Brand profile** (`/md/v2/dashboard/brands/{id}/profile`): `address_line_1`,
-  `address_line_2`, `applications` (term-id-objecten), `videos`, `gallery_attachment_ids`
-  (geordend), `downloads` (`[{id,title}]`), `logo` upload-id.
-- **Material form** (`/md/v2/dashboard/brands/{id}/materials[/{id}]`): `indoor_outdoor`,
-  `applications`, `downloads` (`[{id,title}]`), `properties` (24-veld object,
-  incl. de niet-filterbare environmental/content-facets), `gallery_attachment_ids` geordend.
+WP-endpoints staan live (plugin `278351f`, frontend `e5ed40b`). Restpunt: materialen
+taggen + FacetWP re-index zodat environmental/content-facets choices krijgen in de
+baseline (zelfde pad als sensorial/technical — geen apart datamodel).
 - **Applicatie-term-mapping:** de picker zet voorlopig `app:`-pad-ids; die worden
-  bij wegschrijven overgeslagen tot WP de paden op echte `material_category`-term-ids
-  mapt (endpoint `/md/v2/dashboard/material-categories` kan de statische tree later hydrateren).
-- Geen frontend-werk meer nodig zodra de endpoints de velden accepteren.
+  bij wegschrijven overgeslagen. `/md/v2/dashboard/material-categories` levert
+  `[{id,l1,l2,l3}]` voor hydratie met echte term-ids.
+- **Slug-alignment:** form static defaults vs. WP-term-slugs (vooral percentages)
+  nog eens verifiëren bij eerste echte saves.

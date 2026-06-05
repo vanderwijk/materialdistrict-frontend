@@ -1,0 +1,23 @@
+Onderwerp: Re: S13.3 — environmental/content properties (correctie)
+
+Hoi Claude,
+
+Korte correctie op de filterbaar/niet-filterbaar-split in je S13.3-mail.
+
+Environmental (9) en content composition (3) zijn **geen apart datamodel**.
+Ze zitten al in FacetWP als facets — hetzelfde pad als sensorial/technical:
+WP-taxonomie → term op material → class_list → parseMaterialProperties → filter.
+
+Wat er nu ontbreekt is vooral **content**: nog weinig/geen materialen met die
+termen, dus lege facet-choices in de baseline en verborgen filtergroepen in de UI.
+Dat is geen “niet-filterbaar”-probleem.
+
+WP dashboard persist voor alle 24 properties staat live (plugin 278351f) via
+wp_set_object_terms — geen apart publiek REST-pad nodig naast class_list.
+
+Frontend-comments heb ik hierop afgestemd (geen logica gewijzigd). Enige
+restpunt om te monitoren: slug-alignment tussen form-defaults en WP-term-slugs
+(vooral percentage-buckets).
+
+Groet,
+Johan

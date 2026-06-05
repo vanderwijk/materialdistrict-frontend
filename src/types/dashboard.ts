@@ -429,8 +429,8 @@ export interface MaterialFormData {
   keywords: string[]
   /**
    * Search & filtering properties (24 fields / 4 groups). Drives discovery and
-   * compare. Filterable facet options come from the FacetWP baseline; the
-   * non-filterable environmental/content facets persist server-side (Johan).
+   * compare. Same taxonomy + FacetWP model for all groups; form options come
+   * from the FacetWP baseline when choices exist, else static defaults.
    */
   properties: MaterialProperties
 }

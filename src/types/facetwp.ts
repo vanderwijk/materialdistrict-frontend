@@ -12,11 +12,10 @@
  *  - Sort-waarden zijn `newest` / `oldest` / `az` / `za` (geen `_first`)
  *  - Request stuurt ALTIJD alle facet-keys (lege arrays voor ongeselecteerd)
  *
- * Sessie 6 (19-05-2026) — 12 nieuwe environmental + content-composition
- * facets toegevoegd. Activatie aan WP-zijde via `facetwp-import-
- * environmental.json` (zie `wordpress-instructions-facetwp-environmental.md`).
- * De frontend stuurt ze al mee in de request; tot Johan ze importeert
- * negeert FacetWP de keys en vallen ze uit de UI weg via de mapper.
+ * Sessie 6 (19-05-2026) — 12 environmental + content-composition facets
+ * toegevoegd (zelfde model als sensorial/technical). Facets staan in FacetWP;
+ * choices in baseline/filter-UI blijven leeg zolang er nog geen materialen
+ * met die termen geïndexeerd zijn. De frontend stuurt ze al mee in requests.
  *
  * Alle filterende facets zijn op `material` van toepassing.
  *

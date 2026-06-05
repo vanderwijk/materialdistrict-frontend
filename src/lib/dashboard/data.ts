@@ -325,9 +325,10 @@ export async function getMaterialTypes(): Promise<MaterialTypeOption[]> {
 
 /**
  * Per-property select options for the material form's Search & filtering block.
- * Filterable facets come from the live FacetWP baseline; the non-filterable
- * environmental/content facets fall back to static defaults. A baseline failure
- * degrades gracefully to all-static so the form always renders.
+ * Property options prefer the live FacetWP baseline (all 24 facets). Environmental
+ * and content-composition facets use the same path; empty baseline choices fall
+ * back to static defaults until tagged materials populate the index. A baseline
+ * failure degrades gracefully to all-static so the form always renders.
  */
 export async function getMaterialPropertyOptions(): Promise<MaterialPropertyOptions> {
   try {

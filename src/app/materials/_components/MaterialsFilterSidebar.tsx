@@ -569,7 +569,8 @@ export function MaterialsFilterSidebar({
         {PROPERTY_GROUP_ORDER.map((group) => {
           const groupSections = sectionsByGroup.get(group) ?? []
           // Groep niet renderen als er geen sub-facets beschikbaar zijn.
-          // Treedt op voor environmental/content totdat Johan importeert.
+          // Groep verborgen zolang de baseline geen facet-choices teruggeeft (bv.
+          // environmental/content nog zonder getagde materialen in de index).
           if (groupSections.length === 0) return null
 
           const groupActiveCount = groupSections.reduce(

@@ -9,8 +9,8 @@ Type-check: `tsc --noEmit` groen over de hele boom.
   Gedeelde applicatie-cascade (6 hoofd → 26 sub → 189 types) + lookup-helpers.
   Enige optiebron voor de ApplicationPicker in beide formulieren.
 - `src/lib/dashboard/material-property-options.ts`
-  `buildMaterialPropertyOptions()` — merget FacetWP-baseline (filterbaar) over
-  statische defaults (niet-filterbaar).
+  `buildMaterialPropertyOptions()` — merget FacetWP-baseline over statische defaults
+  wanneer facet-choices (nog) leeg zijn (alle 24 properties, zelfde model).
 - `src/components/dashboard/CurrentPlanBanner.tsx`
   Tier-specifieke "Current plan"-banner (prijs + pills uit membership-config).
 - `src/components/dashboard/fields/ApplicationPicker.tsx`

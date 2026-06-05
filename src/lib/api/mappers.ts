@@ -19,8 +19,8 @@
  * property-groep-mapping (Sensorial / Technical / Environmental /
  * Content composition). `FACET_UI_HINTS` uitgebreid met 12 nieuwe
  * environmental + content-composition facets. Mapper is robuust voor
- * facets die nog niet in baseline staan (Johan's WP-import nog niet
- * gedaan) — die worden overgeslagen, geen error.
+ * facets die (nog) niet in de baseline staan — die worden overgeslagen,
+ * geen error.
  */
 
 import type {
@@ -895,10 +895,9 @@ export function mapFacetWPToFilterSections(
   for (const key of MATERIAL_FILTER_FACETS) {
     const baselineFacet = baseline.facets[key]
     if (!baselineFacet) {
-      // Facet niet in baseline-response — overslaan. Dit treedt op voor
-      // de 12 environmental + content-composition facets totdat Johan
-      // ze in FacetWP heeft geactiveerd. Zodra dat gebeurt, verschijnen
-      // ze automatisch in de UI — geen frontend-deploy nodig.
+      // Facet niet in baseline-response — overslaan. Kan voorkomen zolang
+      // FacetWP nog geen choices/index voor die facet heeft. Zodra materialen
+      // termen dragen en de facet in de baseline zit, verschijnt hij in de UI.
       continue
     }
 

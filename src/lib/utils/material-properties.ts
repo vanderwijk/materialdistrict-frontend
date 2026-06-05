@@ -431,10 +431,9 @@ export function groupTagsByCategory(
 // Property value options — for the material form's Search & filtering
 // selects. Mirrored from the mockup value sets; slugs follow the
 // class_list convention so they round-trip with parseMaterialProperties.
-// For the FILTERABLE facets these defaults are overridden at runtime by
-// the live FacetWP baseline (see buildMaterialPropertyOptions); the
-// non-filterable environmental/content facets use these directly until
-// WordPress exposes them (Johan).
+// At runtime, buildMaterialPropertyOptions overrides these with FacetWP baseline
+// choices when available. Environmental/content facets share that path; static
+// defaults remain the fallback while the index has no (or empty) facet choices.
 // --------------------------------------------------------------------
 
 export interface PropertyValueOption {

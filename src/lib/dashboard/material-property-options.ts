@@ -2,12 +2,12 @@
  * buildMaterialPropertyOptions — assembles the per-property select options for
  * the material form's "Search & filtering" block.
  *
- * For the FILTERABLE facets (sensorial, technical, renewable) the live FacetWP
- * baseline is authoritative — its choices carry the real term slugs and labels
- * that the public filters use, so the form and the filters stay in sync. For
- * the non-filterable environmental/content facets (and as a fallback when the
- * baseline is unavailable) the static `PROPERTY_VALUE_OPTIONS` defaults are
- * used. The non-filterable facets persist server-side (Johan).
+ * All 24 property facets use the same model (WP taxonomy + FacetWP + class_list).
+ * The live FacetWP baseline is authoritative whenever it returns choices — that
+ * keeps form selects aligned with the public filters. Environmental and content-
+ * composition facets are in FacetWP too; they often have empty choices until
+ * materials carry those terms. When a facet is missing from the baseline or has
+ * no choices yet, we fall back to static `PROPERTY_VALUE_OPTIONS`.
  */
 
 import type { MaterialPropertyKey } from '@/types/material'
