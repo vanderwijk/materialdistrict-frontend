@@ -230,8 +230,13 @@ export const MOCK_BRAND_STATS: Record<string, BrandStatistics> = {
       { materialId: 103, name: 'Circular facade panel', views: 1340, requests: 11, downloads: 19 },
       { materialId: 104, name: 'Recycled composite tile', views: 980, requests: 7, downloads: 17 },
     ],
+    brochures: [
+      { title: 'Company brochure', downloads: 31 },
+      { title: 'Facade systems overview', downloads: 44 },
+      { title: 'Acoustic materials guide', downloads: 22 },
+    ],
   },
-  'second-brand': { metrics: [], materials: [] },
+  'second-brand': { metrics: [], materials: [], brochures: [] },
 }
 
 export const MOCK_LEAD_ROUTING: Record<string, LeadRoutingConfig> = {
@@ -242,8 +247,18 @@ export const MOCK_LEAD_ROUTING: Record<string, LeadRoutingConfig> = {
       { id: 1, country: 'Netherlands', name: 'Jeroen van Oostveen', email: 'nl@materialdistrict.com' },
       { id: 2, country: 'Germany', name: 'Lukas Meyer', email: 'de@materialdistrict.com' },
     ],
+    restrictToListedCountries: false,
+    sampleRequestsInsidersOnly: false,
+    downloadsInsidersOnly: false,
   },
-  'second-brand': { defaultName: '', defaultEmail: '', routes: [] },
+  'second-brand': {
+    defaultName: '',
+    defaultEmail: '',
+    routes: [],
+    restrictToListedCountries: false,
+    sampleRequestsInsidersOnly: false,
+    downloadsInsidersOnly: false,
+  },
 }
 
 export const MOCK_FEATURED: Record<string, FeaturedPlacement[]> = {

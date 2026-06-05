@@ -352,7 +352,7 @@ export async function getInteractions(slug: string): Promise<Interaction[]> {
 
 /** GET /md/v2/dashboard/brands/{brandId}/statistics (batch 2 — live; 403 free tier) */
 export async function getBrandStatistics(slug: string): Promise<BrandStatistics> {
-  const empty: BrandStatistics = { metrics: [], materials: [] }
+  const empty: BrandStatistics = { metrics: [], materials: [], brochures: [] }
   const brandId = await resolveBrandId(slug)
   if (brandId === null) return empty
   try {
@@ -369,7 +369,14 @@ export async function getBrandStatistics(slug: string): Promise<BrandStatistics>
 
 /** GET /md/v2/dashboard/brands/{brandId}/lead-routing (batch 2 — live; 403 free tier) */
 export async function getLeadRouting(slug: string): Promise<LeadRoutingConfig> {
-  const empty: LeadRoutingConfig = { defaultName: '', defaultEmail: '', routes: [] }
+  const empty: LeadRoutingConfig = {
+    defaultName: '',
+    defaultEmail: '',
+    routes: [],
+    restrictToListedCountries: false,
+    sampleRequestsInsidersOnly: false,
+    downloadsInsidersOnly: false,
+  }
   const brandId = await resolveBrandId(slug)
   if (brandId === null) return empty
   try {

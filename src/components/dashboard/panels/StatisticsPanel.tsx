@@ -1,10 +1,15 @@
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconInsiderInsights } from '@/components/ui/icons'
 import type { BrandStatistics } from '@/types/dashboard'
+import { StatisticsTables } from './StatisticsTables'
 
 const NUM = new Intl.NumberFormat('en-GB')
 
-/** Brand statistics: headline metric cards + per-material performance table. */
+/**
+ * Brand statistics: headline metric cards (server) + a tabbed performance
+ * section (Materials / Brochures) rendered by a small client island so the tab
+ * state stays client-side while this panel remains a server component.
+ */
 export function StatisticsPanel({ stats }: { stats: BrandStatistics }) {
   if (stats.metrics.length === 0) {
     return (
@@ -30,25 +35,7 @@ export function StatisticsPanel({ stats }: { stats: BrandStatistics }) {
         ))}
       </div>
 
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Per material</h2>
-        <div className="table-wrap t-stats">
-          <div className="t-head">
-            <span>Material</span>
-            <span>Views</span>
-            <span>Requests</span>
-            <span>Downloads</span>
-          </div>
-          {stats.materials.map((row, i) => (
-            <div key={row.materialId} className={`t-row ${i % 2 === 1 ? 'alt' : ''}`}>
-              <span className="t-strong">{row.name}</span>
-              <span>{NUM.format(row.views)}</span>
-              <span>{NUM.format(row.requests)}</span>
-              <span>{NUM.format(row.downloads)}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <StatisticsTables materials={stats.materials} brochures={stats.brochures} />
     </>
   )
 }

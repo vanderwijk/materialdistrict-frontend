@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Input, Select } from '@/components/ui/form'
+import { Input, Select, Switch } from '@/components/ui/form'
+import { InsiderBadge } from '@/components/ui/InsiderBadge'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { IconAdd, IconDelete } from '@/components/ui/icons'
 import type { LeadRoutingConfig, LeadRoute } from '@/types/dashboard'
@@ -13,8 +14,10 @@ const COUNTRIES = [
 ]
 
 /**
- * Geo-based lead routing (Plus+). A default contact plus per-country overrides
- * deciding who receives requests. Saves via `POST .../lead-routing`.
+ * Geo-based lead routing (Plus+). A default contact, per-country overrides, an
+ * optional "only listed countries" restriction, and the brand-level Insider
+ * gates for sample requests + downloads. Saves the whole config via
+ * `POST .../lead-routing`.
  */
 export function LeadRoutingPanel({
   brandId,
@@ -73,6 +76,20 @@ export function LeadRoutingPanel({
     }
   }
 
+  // Description for the country-restriction toggle (mirrors the demo logic).
+  const restrictDesc = !config.restrictToListedCountries ? (
+    'Off — anyone can submit a request regardless of country.'
+  ) : config.routes.length === 0 ? (
+    <span className="lr-restrict-warn">
+      Your list is empty — no one can request right now. Add countries above.
+    </span>
+  ) : (
+    <>
+      Only <strong>{config.routes.map((r) => r.country).filter(Boolean).join(', ')}</strong> can
+      submit requests. All other countries are blocked.
+    </>
+  )
+
   return (
     <>
       <div className="dash-panel">
@@ -123,6 +140,43 @@ export function LeadRoutingPanel({
             </button>
           </div>
         ))}
+
+        <Switch
+          className="lr-restrict"
+          checked={config.restrictToListedCountries}
+          onCheckedChange={(v) => setConfig((c) => ({ ...c, restrictToListedCountries: v }))}
+          label="Only accept requests from countries in my list"
+          description={restrictDesc}
+        />
+      </div>
+
+      <div className="dash-panel">
+        <div className="lr-insider-block">
+          <div className="lr-insider-head">
+            <InsiderBadge padded>Insider settings</InsiderBadge>
+            <span className="lr-insider-title">Restrict access for all your materials</span>
+          </div>
+          <p className="lr-insider-desc">
+            These settings apply to every material page of your brand. Ideal if you serve a
+            professional-only audience and want only verified Insider specifiers to reach you.
+          </p>
+          <div className="lr-insider-grid">
+            <Switch
+              tone="insider"
+              checked={config.sampleRequestsInsidersOnly}
+              onCheckedChange={(v) => setConfig((c) => ({ ...c, sampleRequestsInsidersOnly: v }))}
+              label="Sample requests: Insiders only"
+              description="Non-Insider visitors see a locked state and a prompt to join Insider to request a sample."
+            />
+            <Switch
+              tone="insider"
+              checked={config.downloadsInsidersOnly}
+              onCheckedChange={(v) => setConfig((c) => ({ ...c, downloadsInsidersOnly: v }))}
+              label="Downloads: Insiders only"
+              description="Brochures, datasheets and EPDs are only accessible to verified Insider members."
+            />
+          </div>
+        </div>
       </div>
 
       <DashboardStickyFooter progress={100} saving={saving} showPreview={false} onSave={handleSave} />

@@ -38,6 +38,7 @@ import type {
   InteractionType,
   StatMetric,
   MaterialStatRow,
+  BrochureStatRow,
   BrandStatistics,
   LeadRoute,
   LeadRoutingConfig,
@@ -748,9 +749,15 @@ interface RawMaterialStatRow {
   downloads?: number
 }
 
+interface RawBrochureStatRow {
+  title?: string
+  downloads?: number
+}
+
 interface RawBrandStatistics {
   metrics?: RawStatMetric[]
   materials?: RawMaterialStatRow[]
+  brochures?: RawBrochureStatRow[]
 }
 
 function mapStatMetric(raw: RawStatMetric): StatMetric {
@@ -767,10 +774,15 @@ function mapMaterialStatRow(raw: RawMaterialStatRow): MaterialStatRow {
   }
 }
 
+function mapBrochureStatRow(raw: RawBrochureStatRow): BrochureStatRow {
+  return { title: raw.title ?? '', downloads: raw.downloads ?? 0 }
+}
+
 export function mapBrandStatistics(raw: RawBrandStatistics): BrandStatistics {
   return {
     metrics: (raw.metrics ?? []).map(mapStatMetric),
     materials: (raw.materials ?? []).map(mapMaterialStatRow),
+    brochures: (raw.brochures ?? []).map(mapBrochureStatRow),
   }
 }
 
@@ -785,6 +797,9 @@ interface RawLeadRoutingConfig {
   default_name?: string
   default_email?: string
   routes?: RawLeadRoute[]
+  restrict_to_listed_countries?: boolean
+  sample_requests_insiders_only?: boolean
+  downloads_insiders_only?: boolean
 }
 
 function mapLeadRoute(raw: RawLeadRoute): LeadRoute {
@@ -796,6 +811,9 @@ export function mapLeadRoutingConfig(raw: RawLeadRoutingConfig): LeadRoutingConf
     defaultName: raw.default_name ?? '',
     defaultEmail: raw.default_email ?? '',
     routes: (raw.routes ?? []).map(mapLeadRoute),
+    restrictToListedCountries: raw.restrict_to_listed_countries ?? false,
+    sampleRequestsInsidersOnly: raw.sample_requests_insiders_only ?? false,
+    downloadsInsidersOnly: raw.downloads_insiders_only ?? false,
   }
 }
 
@@ -805,5 +823,8 @@ export function toWpLeadRouting(c: LeadRoutingConfig): Record<string, unknown> {
     default_name: c.defaultName,
     default_email: c.defaultEmail,
     routes: c.routes.map((r) => ({ country: r.country, name: r.name, email: r.email })),
+    restrict_to_listed_countries: c.restrictToListedCountries,
+    sample_requests_insiders_only: c.sampleRequestsInsidersOnly,
+    downloads_insiders_only: c.downloadsInsidersOnly,
   }
 }

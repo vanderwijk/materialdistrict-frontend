@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Input, Select } from '@/components/ui/form'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconMail, IconClose } from '@/components/ui/icons'
 import type { Interaction } from '@/types/dashboard'
@@ -16,14 +17,24 @@ const STATUS_BADGE: Record<string, string> = {
   Contact: 'b-gray',
 }
 
+const ALL = '' // sentinel: dropdown "all" option
+
+/** Distinct, sorted values for a dropdown, preserving first-seen-then-alpha. */
+function distinct(values: string[]): string[] {
+  return Array.from(new Set(values.filter(Boolean))).sort((a, b) => a.localeCompare(b))
+}
+
 /**
- * Incoming interactions (leads) with a slide-in detail drawer. List is
- * read-only display; opening a row reveals the full contact + message in the
- * `.ip-*` panel. Data is fetched server-side; this component handles only the
- * open/close UI state.
+ * Incoming interactions (leads) with a client-side filter bar (search + page +
+ * type) and a slide-in detail drawer. The list and drawer are unchanged; the
+ * filter bar narrows which rows render. Data is fetched server-side; this
+ * component handles only the filter + open/close UI state.
  */
 export function InteractionsPanel({ interactions }: { interactions: Interaction[] }) {
   const [open, setOpen] = useState<Interaction | null>(null)
+  const [query, setQuery] = useState('')
+  const [pageFilter, setPageFilter] = useState(ALL)
+  const [statusFilter, setStatusFilter] = useState(ALL)
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -35,6 +46,21 @@ export function InteractionsPanel({ interactions }: { interactions: Interaction[
     }
   }, [open])
 
+  const pageOptions = useMemo(() => distinct(interactions.map((it) => it.page)), [interactions])
+  const statusOptions = useMemo(() => distinct(interactions.map((it) => it.status)), [interactions])
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return interactions.filter((it) => {
+      if (pageFilter !== ALL && it.page !== pageFilter) return false
+      if (statusFilter !== ALL && it.status !== statusFilter) return false
+      if (!q) return true
+      return [it.person, it.company, it.page, it.email, it.role]
+        .some((field) => field.toLowerCase().includes(q))
+    })
+  }, [interactions, query, pageFilter, statusFilter])
+
+  // No interactions at all — nothing to filter, show the empty state only.
   if (interactions.length === 0) {
     return (
       <div className="dash-panel">
@@ -49,31 +75,67 @@ export function InteractionsPanel({ interactions }: { interactions: Interaction[
 
   return (
     <div className="dash-panel">
-      <div className="table-wrap t-interactions">
-        <div className="t-head">
-          <span>Page</span>
-          <span>Contact</span>
-          <span>Company</span>
-          <span>Type</span>
-          <span>When</span>
-        </div>
-        {interactions.map((it, i) => (
-          <button
-            key={it.id}
-            type="button"
-            className={`t-row t-row-btn ${i % 2 === 1 ? 'alt' : ''}`}
-            onClick={() => setOpen(it)}
-          >
-            <span className="t-strong">{it.page}</span>
-            <span>{it.person}</span>
-            <span>{it.company}</span>
-            <span>
-              <span className={`badge ${STATUS_BADGE[it.status] ?? 'b-gray'}`}>{it.status}</span>
-            </span>
-            <span>{it.timeAgo}</span>
-          </button>
-        ))}
+      <div className="dash-filterbar">
+        <Input
+          type="search"
+          placeholder="Search interactions…"
+          aria-label="Search interactions"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <Select
+          aria-label="Filter by page"
+          value={pageFilter}
+          onChange={(e) => setPageFilter(e.target.value)}
+          options={[
+            { value: ALL, label: 'All pages' },
+            ...pageOptions.map((p) => ({ value: p, label: p })),
+          ]}
+        />
+        <Select
+          aria-label="Filter by interaction type"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          options={[
+            { value: ALL, label: 'All interactions' },
+            ...statusOptions.map((s) => ({ value: s, label: s })),
+          ]}
+        />
       </div>
+
+      {filtered.length === 0 ? (
+        <EmptyState
+          icon={<IconMail size={28} />}
+          title="No matching interactions"
+          description="Try a different search term or clear the filters."
+        />
+      ) : (
+        <div className="table-wrap t-interactions">
+          <div className="t-head">
+            <span>Page</span>
+            <span>Contact</span>
+            <span>Company</span>
+            <span>Type</span>
+            <span>When</span>
+          </div>
+          {filtered.map((it, i) => (
+            <button
+              key={it.id}
+              type="button"
+              className={`t-row t-row-btn ${i % 2 === 1 ? 'alt' : ''}`}
+              onClick={() => setOpen(it)}
+            >
+              <span className="t-strong">{it.page}</span>
+              <span>{it.person}</span>
+              <span>{it.company}</span>
+              <span>
+                <span className={`badge ${STATUS_BADGE[it.status] ?? 'b-gray'}`}>{it.status}</span>
+              </span>
+              <span>{it.timeAgo}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className={`ip-overlay ${open ? 'open' : ''}`} aria-hidden={!open}>
         <div className="ip-backdrop" onClick={() => setOpen(null)} />

@@ -493,6 +493,12 @@ export interface MaterialStatRow {
   downloads: number
 }
 
+/** Per-brochure download row (the Brochures tab in the statistics panel). */
+export interface BrochureStatRow {
+  title: string
+  downloads: number
+}
+
 /**
  * The statistics panel payload. Everything is pre-aggregated by WordPress.
  *
@@ -502,6 +508,11 @@ export interface BrandStatistics {
   /** Headline metrics (4 cards in the mockup). */
   metrics: StatMetric[]
   materials: MaterialStatRow[]
+  /**
+   * Per-brochure download counts (the Brochures tab). Empty until WordPress
+   * delivers the aggregate; the panel renders an empty state in that case.
+   */
+  brochures: BrochureStatRow[]
 }
 
 // ============================================================
@@ -526,6 +537,21 @@ export interface LeadRoutingConfig {
   defaultName: string
   defaultEmail: string
   routes: LeadRoute[]
+  /**
+   * When true, only countries that have a rule may submit requests; all other
+   * countries are blocked. When false, anyone may submit regardless of country.
+   */
+  restrictToListedCountries: boolean
+  /**
+   * Brand-level Insider gate: when true, sample requests on every material page
+   * of this brand are restricted to verified Insider members.
+   */
+  sampleRequestsInsidersOnly: boolean
+  /**
+   * Brand-level Insider gate: when true, downloads (brochures, datasheets, EPDs)
+   * on every material page of this brand are restricted to Insider members.
+   */
+  downloadsInsidersOnly: boolean
 }
 
 // ============================================================

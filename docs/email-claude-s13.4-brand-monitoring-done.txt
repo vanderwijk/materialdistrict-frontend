@@ -1,0 +1,78 @@
+Onderwerp: Re: S13.4 — brand-monitoring zip merged + WP endpoints live
+
+Hoi Claude,
+
+md-s13.4-brand-monitoring.zip is ontvangen en verwerkt. Frontend overlay 1:1
+gemerged; de twee gevraagde WP-endpoint-uitbreidingen staan op master.
+
+== Frontend (main) ==
+
+Zip overlay (scoped — geen MaterialForm/BrandProfileForm/media teruggedraaid):
+- src/types/dashboard.ts — BrochureStatRow; brochures[]; 3 booleans LeadRoutingConfig
+- src/lib/dashboard/{mappers,data,mock}.ts — read/write + fallbacks
+- src/components/ui/form/Switch.tsx + index export
+- src/components/dashboard/panels/InteractionsPanel.tsx — filterbar + client filter
+- src/components/dashboard/panels/StatisticsPanel.tsx + StatisticsTables.tsx (nieuw)
+- src/components/dashboard/panels/LeadRoutingPanel.tsx — restrict-toggle + Insider-blok
+- src/styles/globals.css — additieve §S13.4 CSS (niet volledig overschreven)
+- docs/MANIFEST-s13.4-brand-monitoring.md
+
+tsc --noEmit groen.
+
+== Plugin (master) — rest-dashboard-batch2.php ==
+
+1. LEAD ROUTING — GET + POST /md/v2/dashboard/brands/{id}/lead-routing
+
+   Response + POST body keys (exact snake_case, conform jouw contract):
+     restrict_to_listed_countries
+     sample_requests_insiders_only
+     downloads_insiders_only
+
+   Persisted as brand post meta:
+     _brand_restrict_to_listed_countries
+     _brand_sample_requests_insiders_only
+     _brand_downloads_insiders_only
+
+   Waarden als 'true'/'false' strings; gelezen via md_meta_truthy().
+   Default false als nog niet gezet. POST accepteert partial body — booleans
+   worden opgeslagen ook als routes niet meegestuurd worden.
+
+2. STATISTICS — GET /md/v2/dashboard/brands/{id}/statistics
+
+   Nieuw veld:
+     brochures: [ { title, downloads } ]
+
+   Implementatie md_dashboard_brand_brochure_stat_rows():
+     • Primair: items uit _brand_dashboard_downloads (dashboard brand profile)
+     • Fallback: legacy PDF child attachments op brand (zelfde patroon als
+       theme page-statistics.php)
+     • downloads per item: attachment meta _brochure_downloads /
+       brochure_downloads / download_count
+
+   Lege array als brand geen brochures heeft — Brochures-tab toont lege state.
+
+== Nog open (bewust buiten scope) ==
+
+- LeadRoutingPanel country dropdown nog hardcoded COUNTRIES[] — volgt in S13.4
+  follow-up met COUNTRY_OPTIONS + resolveCountryCode (zoals BrandProfileForm).
+- Insiders-only toggles zijn instelbaar; publieke gating op materiaalpagina's
+  is een aparte stap (jij noemde dit ook in MANIFEST).
+- Books / upsell nog geparkeerd.
+
+== Testplan na deploy ==
+
+Lead routing (Plus-brand):
+  1. Toggle "Only accept requests from countries in my list" → save → refresh → staat
+  2. Toggle sample/downloads Insiders-only → save → refresh → beide behouden
+  3. Network: POST body bevat restrict_to_listed_countries,
+     sample_requests_insiders_only, downloads_insiders_only
+
+Statistics (Basis+):
+  4. Brochures-tab: rijen met titel + download count (of lege state)
+  5. GET statistics JSON bevat brochures-array naast metrics/materials
+
+Interactions:
+  6. Zoek/filter op bestaande interactions-respons — geen WP-wijziging nodig
+
+Groet,
+Johan
