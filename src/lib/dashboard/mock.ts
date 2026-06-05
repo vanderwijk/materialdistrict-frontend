@@ -220,15 +220,15 @@ export const MOCK_INTERACTIONS: Record<string, Interaction[]> = {
 export const MOCK_BRAND_STATS: Record<string, BrandStatistics> = {
   materialdistrict: {
     metrics: [
-      { label: 'Page views', value: 4820, note: '+12% vs last month' },
-      { label: 'Sample requests', value: 36, note: '+4 this week' },
-      { label: 'Brochure downloads', value: 58, note: null },
-      { label: 'Profile visits', value: 912, note: '+8% vs last month' },
+      { label: 'Website clicks', value: 284, note: 'Total clicks to brand websites' },
+      { label: 'Requests', value: 42, note: 'Total requests sent' },
+      { label: 'Brochure downloads', value: 97, note: 'Total brochure downloads' },
+      { label: 'Most viewed', value: 4820, note: 'Views — Acoustic wood panel' },
     ],
     materials: [
-      { materialId: 101, name: 'Acoustic wood panel', views: 1820, requests: 18, downloads: 22 },
-      { materialId: 103, name: 'Circular facade panel', views: 1340, requests: 11, downloads: 19 },
-      { materialId: 104, name: 'Recycled composite tile', views: 980, requests: 7, downloads: 17 },
+      { materialId: 101, name: 'Acoustic wood panel', views: 1820, requests: 18 },
+      { materialId: 103, name: 'Circular facade panel', views: 1340, requests: 11 },
+      { materialId: 104, name: 'Recycled composite tile', views: 980, requests: 7 },
     ],
     brochures: [
       { title: 'Company brochure', downloads: 31 },

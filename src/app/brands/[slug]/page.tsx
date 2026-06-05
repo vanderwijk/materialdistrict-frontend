@@ -170,6 +170,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
 
               <BrandDetailInfoCard
                 brandSlug={brand.slug}
+                brandId={brand.id}
                 website={brand.website}
                 address={brand.address}
                 city={brand.city}

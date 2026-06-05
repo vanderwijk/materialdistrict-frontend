@@ -25,6 +25,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
+import { logInteractionEvent } from '@/lib/api/interactions'
 import { GetInTouchModal } from '@/app/materials/[slug]/_components/GetInTouchModal'
 import {
   IconLinkedin,
@@ -120,6 +121,9 @@ export function BrandDetailContactCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="brand-contact-website"
+                onClick={() =>
+                  logInteractionEvent({ type: 'website_click', brandId })
+                }
               >
                 Visit website <span aria-hidden="true">↗</span>
               </a>

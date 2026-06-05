@@ -32,7 +32,7 @@ import type {
 } from '@/types/article'
 import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event, EventListItem, EventVenue, EventVideo } from '@/types/event'
-import type { Material, MaterialListItem, MaterialPublication } from '@/types/material'
+import type { Material, MaterialListItem, MaterialPublication, MaterialDownload } from '@/types/material'
 import type { Gallery, ImageSizeKey, MediaImage, MediaSize } from '@/types/media'
 import type { Talk, TalkListItem, TalkSpeaker } from '@/types/talk'
 import type { Page, PageSeo } from '@/types/page'
@@ -238,6 +238,26 @@ export function mapMaterialListItem(
  * @param raw - WP REST material response
  * @param gallery - gallery uit `splitGallery(attachments, featured_media)`
  */
+/**
+ * Map de downloads-entiteit van een material. Items zonder bruikbare url
+ * worden overgeslagen; `id` valt terug op de url als er geen attachment-id is.
+ */
+function mapMaterialDownloads(
+  raw: Array<{ id?: string | number; title?: string; url?: string; type?: string }> | undefined,
+): MaterialDownload[] {
+  if (!Array.isArray(raw)) return []
+  return raw
+    .filter((d): d is { id?: string | number; title?: string; url?: string; type?: string } =>
+      !!d && typeof d.url === 'string' && d.url.length > 0,
+    )
+    .map((d) => ({
+      id: String(d.id ?? d.url),
+      title: typeof d.title === 'string' ? d.title : '',
+      url: String(d.url),
+      type: typeof d.type === 'string' ? d.type : '',
+    }))
+}
+
 export function mapMaterial(
   raw: WPMaterialRawResponse,
   gallery: Gallery,
@@ -283,6 +303,13 @@ export function mapMaterial(
     datasheetUrl: stringOrNull(m.datasheet_url),
     epdUrl: stringOrNull(m.epd_url),
     productUrl: stringOrNull(m.product_url),
+
+    downloads: mapMaterialDownloads(m.downloads),
+    brandWebsite: stringOrNull(m.brand_website),
+    sampleRequestsInsidersOnly: Boolean(m.brand_sample_requests_insiders_only),
+    downloadsInsidersOnly: Boolean(m.brand_downloads_insiders_only),
+    restrictToListedCountries: Boolean(m.brand_restrict_to_listed_countries),
+    acceptedCountries: Array.isArray(m.brand_accepted_countries) ? m.brand_accepted_countries : [],
 
     date: raw.date,
     modified: raw.modified,
@@ -742,6 +769,7 @@ function mapUser(raw: WPAuthMeRawResponse['user']): User {
     avatarUrl: raw.avatar_url,
     profession: raw.profession,
     company: raw.company,
+    country: raw.country ?? null,
     membership: mapMembership(raw.membership),
     brands: raw.connected_brands.map(mapBrandMembership),
   }

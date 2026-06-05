@@ -484,13 +484,12 @@ export interface StatMetric {
   note: string | null
 }
 
-/** Per-material performance row. */
+/** Per-material performance row. Downloads are a separate entity (see `brochures`). */
 export interface MaterialStatRow {
   materialId: number
   name: string
   views: number
   requests: number
-  downloads: number
 }
 
 /** Per-brochure download row (the Brochures tab in the statistics panel). */

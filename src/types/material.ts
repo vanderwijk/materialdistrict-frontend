@@ -151,6 +151,16 @@ export interface MaterialMeta {
   datasheet_url?: string
   epd_url?: string
   product_url?: string
+  /** Brand-website (Johan-handoff interactions). */
+  brand_website?: string | null
+  /** Brand-brede Insider-gates (uit `_brand_*_insiders_only`). */
+  brand_sample_requests_insiders_only?: boolean
+  brand_downloads_insiders_only?: boolean
+  /** Lead-routing: restrict + accepted-countries als ISO-codes. */
+  brand_restrict_to_listed_countries?: boolean
+  brand_accepted_countries?: string[]
+  /** Downloads-entiteit van het material (meerdere per material). */
+  downloads?: Array<{ id?: string | number; title?: string; url?: string; type?: string }>
   /** Raw underscore-velden (alleen rollout-fallback, niet primair gebruiken). */
   _material_brand?: string | null
   _material_code?: string | null
@@ -282,6 +292,21 @@ export interface MaterialListItem {
 }
 
 /**
+ * Eén downloadbaar bestand gekoppeld aan een material (brochure, datasheet,
+ * EPD, ...). Meerdere per material; vervangt op termijn de losse
+ * `datasheetUrl`/`epdUrl`/`productUrl`-velden in `DownloadsCard`.
+ */
+export interface MaterialDownload {
+  /** Stabiele key (attachment-id of url-fallback). */
+  id: string
+  /** Documenttitel; lege string als niet ingevuld. */
+  title: string
+  url: string
+  /** Bestandstype-label, bv. 'PDF'. Lege string als onbekend. */
+  type: string
+}
+
+/**
  * Volledig material voor de detailpagina.
  * Inclusief gallery, content-HTML, video, downloads, brand-object.
  */
@@ -335,6 +360,20 @@ export interface Material {
   datasheetUrl: string | null
   epdUrl: string | null
   productUrl: string | null
+
+  /** Echte downloads-entiteit (meerdere per material). Vervangt de losse url-velden. */
+  downloads: MaterialDownload[]
+
+  /** Brand-website — o.a. de "reach them directly"-uitweg bij de country-gate. */
+  brandWebsite: string | null
+
+  /** Brand-brede Insider-gates (uit de lead-routing-instellingen van de brand). */
+  sampleRequestsInsidersOnly: boolean
+  downloadsInsidersOnly: boolean
+
+  /** Lead-routing: alleen gelijste landen mogen aanvragen + de lijst (ISO-codes). */
+  restrictToListedCountries: boolean
+  acceptedCountries: string[]
 
   /** Datums. */
   date: string

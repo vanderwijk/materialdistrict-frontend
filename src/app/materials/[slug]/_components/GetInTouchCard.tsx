@@ -31,6 +31,11 @@ export interface GetInTouchCardProps {
   materialTitle: string
   /** Brand-naam — alleen renderen als bekend. */
   brandName?: string | null
+  /** Lead-routing + Insider-gate, doorgegeven aan de modal. */
+  restrictToListedCountries?: boolean
+  acceptedCountries?: string[]
+  brandWebsite?: string | null
+  sampleRequestsInsidersOnly?: boolean
 }
 
 export function GetInTouchCard({
@@ -38,6 +43,10 @@ export function GetInTouchCard({
   materialId,
   materialTitle,
   brandName,
+  restrictToListedCountries,
+  acceptedCountries,
+  brandWebsite,
+  sampleRequestsInsidersOnly,
 }: GetInTouchCardProps) {
   const { isLoggedIn } = useAuth()
   const [modalOpen, setModalOpen] = useState(false)
@@ -97,6 +106,10 @@ export function GetInTouchCard({
         materialId={materialId}
         materialTitle={materialTitle}
         brandName={brandName}
+        restrictToListedCountries={restrictToListedCountries}
+        acceptedCountries={acceptedCountries}
+        brandWebsite={brandWebsite}
+        sampleRequestsInsidersOnly={sampleRequestsInsidersOnly}
       />
     </>
   )

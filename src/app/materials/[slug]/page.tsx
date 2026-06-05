@@ -328,6 +328,10 @@ export default async function MaterialDetailPage({
               materialId={material.id}
               materialTitle={material.title}
               brandName={material.brandName}
+              restrictToListedCountries={material.restrictToListedCountries}
+              acceptedCountries={material.acceptedCountries}
+              brandWebsite={material.brandWebsite}
+              sampleRequestsInsidersOnly={material.sampleRequestsInsidersOnly}
             />
 
             {material.brandName && (
@@ -341,6 +345,10 @@ export default async function MaterialDetailPage({
 
             <DownloadsCard
               materialSlug={material.slug}
+              materialId={material.id}
+              brandId={material.brandId}
+              downloads={material.downloads}
+              downloadsInsidersOnly={material.downloadsInsidersOnly}
               datasheetUrl={material.datasheetUrl}
               epdUrl={material.epdUrl}
               productUrl={material.productUrl}

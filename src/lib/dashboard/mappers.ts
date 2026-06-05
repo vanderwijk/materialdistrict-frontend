@@ -746,7 +746,6 @@ interface RawMaterialStatRow {
   name?: string
   views?: number
   requests?: number
-  downloads?: number
 }
 
 interface RawBrochureStatRow {
@@ -770,7 +769,6 @@ function mapMaterialStatRow(raw: RawMaterialStatRow): MaterialStatRow {
     name: raw.name ?? '',
     views: raw.views ?? 0,
     requests: raw.requests ?? 0,
-    downloads: raw.downloads ?? 0,
   }
 }
 

@@ -11366,7 +11366,7 @@ mark.search-mark {
 /* --- Table column templates + helpers --- */
 .t-materials .t-head,.t-materials .t-row{grid-template-columns:2fr 1fr 120px 130px 70px}
 .t-interactions .t-head,.t-interactions .t-row{grid-template-columns:1.4fr 1fr 1fr 110px 100px}
-.t-stats .t-head,.t-stats .t-row{grid-template-columns:2fr 1fr 1fr 1fr}
+.t-stats .t-head,.t-stats .t-row{grid-template-columns:2fr 1fr 1fr}
 .t-strong{font-weight:600;color:var(--text)}
 .t-row-btn{width:100%;text-align:left;background:none;font:inherit;cursor:pointer;border:none;border-bottom:1px solid var(--border)}
 .t-row-btn:last-child{border-bottom:none}
@@ -11563,3 +11563,24 @@ mark.search-mark {
   .dash-filterbar{grid-template-columns:1fr}
   .lr-insider-grid{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   §S13.4-B3 — Public material page: download/sample gates + country block
+   ============================================================ */
+
+/* --- Downloads: Insider-lock --- */
+.mat-downloads-card-locked-note{font-size:12px;color:var(--text-muted);line-height:1.5;margin:0 0 10px}
+.mat-downloads-card-locked-note a{color:var(--ct-member);font-weight:600}
+.mat-downloads-card-cta.is-locked{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);color:var(--text-hint);border-color:var(--border);cursor:pointer}
+.mat-downloads-card-cta.is-locked:hover{color:var(--ct-member);border-color:var(--ct-member)}
+
+/* --- Get in touch: locked sample option --- */
+.git-option.is-locked{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;opacity:0.65;cursor:default}
+.git-option.is-locked .git-option-hint a{color:var(--ct-member);font-weight:600}
+
+/* --- Get in touch: lead-routing country block --- */
+.git-country-block{border:1px solid var(--amber);background:var(--amber-pale,rgba(224,123,43,0.08));border-radius:var(--radius-md);padding:14px 16px;margin-bottom:16px}
+.git-country-block-title{font-weight:700;font-size:13px;color:var(--navy);margin:0 0 4px}
+.git-country-block-body{font-size:12px;color:var(--text-muted);line-height:1.55;margin:0}
+.git-country-block-body a{color:var(--navy);font-weight:600}
+.git-country-block-cta{display:inline-flex;align-items:center;margin-top:10px;font-size:13px;font-weight:600;color:var(--navy)}

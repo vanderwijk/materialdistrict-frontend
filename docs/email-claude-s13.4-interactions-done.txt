@@ -1,0 +1,88 @@
+Onderwerp: Re: md-s13.4-interactions — zip merged + WP endpoints live op test
+
+Hoi Claude,
+
+md-s13.4-interactions.zip is ontvangen en verwerkt. Staat op main (commit volgt
+direct na deze mail) en wordt gedeployed naar:
+https://materialdistrict-frontend.vercel.app
+
+== Frontend overlay (main) ==
+
+Zip 1:1 gemerged conform MANIFEST (complete bestanden, geen patches):
+- Nieuw: src/lib/api/interactions.ts
+- Nieuw: src/app/api/interactions/events/route.ts
+- Gewijzigd: types (shared, material, dashboard), lib/api (wordpress, mappers),
+  lib/dashboard (mappers, mock), dashboard StatisticsTables + LeadRoutingPanel,
+  material-pagina (page, DownloadsCard, GetInTouchModal, GetInTouchCard),
+  brand-pagina (page, BrandDetailContactCard, BrandDetailInfoCard)
+- docs/MANIFEST-s13.4-interactions.md toegevoegd
+
+globals.css: bewust NIET blind overschreven (zip-base miste homepage S10.2/S10.3).
+Alleen additief:
+  • .t-stats grid 4→3 kolommen (downloads-kolom eruit)
+  • §S13.4-B3 gate-CSS (.git-country-block, locked download/sample states)
+
+InteractionsPanel + Switch.tsx ongewijzigd (al eerder gemerged). npm run build groen.
+
+== Landen-nuancering — bevestigd ==
+
+Publieke material-gate: label-tegen-label (brand_accepted_countries + user.country
+als labels). Dashboard lead-routing + WP enforcement: codes. Geen code-conversie
+op de publieke gate — zoals afgesproken.
+
+== WP endpoints — LIVE op productie (materialdistrict.com) ==
+
+Bevestiging op jouw E2E-punten 1–7:
+
+1. GET /md/v2/auth/me
+   country: label (bv. "Afghanistan" op e2e-partner testaccount)
+   country_code: ISO-2 (bv. "AF")
+   LIVE ✓
+
+2. GET /wp/v2/material/{id}
+   meta.downloads[] + brand_website, brand_restrict_to_listed_countries,
+   brand_sample_requests_insiders_only, brand_downloads_insiders_only,
+   brand_accepted_countries (labels[])
+   LIVE ✓ (steekproef op live material-post)
+
+3. POST /md/v2/get-in-touch — country/insider enforcement
+   403 md_lead_country_blocked / md_lead_insider_required
+   LIVE ✓ (get-in-touch werkt end-to-end; SES gefixt vandaag)
+
+4. POST /md/v2/interactions/events
+   Geregistreerd op /md/v2/ route-index
+   Types: website_click | brochure_download
+   LIVE ✓
+
+5. GET /md/v2/dashboard/brands/{id}/statistics
+   4 metrics-kaarten; materials[] zonder downloads-kolom; brochures[] ongewijzigd
+   LIVE ✓ (plugin, eerder geleverd)
+
+6. Lead-routing server-side + publieke brand-REST
+   LIVE ✓ (geen extra WP-wijziging nodig)
+
+7. Frontend proxy POST /api/interactions/events → WP (cookie JWT → Bearer)
+   LIVE na deploy ✓
+
+== E2E — laten we samen lopen ==
+
+Zodra Vercel klaar is, stel ik voor dit pad te doorlopen:
+
+  A. Inloggen → /auth/me country zichtbaar in network tab
+  B. Material met downloads + brand-gates → Insider-locks + country-block UI
+  C. get-in-touch buiten accepted countries → 403 (UI: submit uit + website-link)
+  D. get-in-touch succes → lead in dashboard Interactions + Requests-stat
+  E. Website-link klik → POST interactions/events website_click → stat omhoog
+  F. Brochure download → POST brochure_download → lead + brochures-teller
+  G. Statistics → 4 kaarten + materials-tab zonder downloads-kolom
+
+E2e-accounts: docs/e2e-test-accounts.md (partner/free/specifier).
+
+== Geparkeerd ==
+
+type=material_view — akkoord, niet in deze release.
+
+Laat weten wanneer je klaar bent voor het E2E-walkthrough; ik kan meeschakelen.
+
+Groet,
+Johan

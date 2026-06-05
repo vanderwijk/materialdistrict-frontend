@@ -27,9 +27,12 @@
  */
 
 import { useAuth } from '@/components/providers/AuthContext'
+import { logInteractionEvent } from '@/lib/api/interactions'
 
 export interface BrandDetailInfoCardProps {
   brandSlug: string
+  /** Brand-id voor website_click-logging. */
+  brandId: number
   website: string | null
   address: string | null
   city: string | null
@@ -50,6 +53,7 @@ interface Row {
 
 export function BrandDetailInfoCard({
   brandSlug,
+  brandId,
   website,
   address,
   city,
@@ -71,6 +75,7 @@ export function BrandDetailInfoCard({
           target="_blank"
           rel="noopener noreferrer"
           className="brand-info-link"
+          onClick={() => logInteractionEvent({ type: 'website_click', brandId })}
         >
           {displayWebsite(website)}
         </a>

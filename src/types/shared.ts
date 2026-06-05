@@ -227,6 +227,14 @@ export interface User {
   profession: string | null
   /** Profile field — not always filled. */
   company: string | null
+  /**
+   * Readable country label (e.g. `Netherlands`) as delivered by `/auth/me`,
+   * matching the dashboard profile and a brand's `accepted_countries`. `null`
+   * when not set. Used for the lead-routing country gate on public material
+   * pages (matched label-against-label; `/auth/me` also exposes an optional
+   * ISO `country_code` for code-level logic, not consumed here yet).
+   */
+  country: string | null
 
   /** Reader membership (always present, default free/inactive). */
   membership: Membership
@@ -341,6 +349,7 @@ export interface WPAuthMeRawResponse {
     avatar_url: string | null
     profession: string | null
     company: string | null
+    country: string | null
     membership: {
       tier: ReaderTier
       is_insider: boolean

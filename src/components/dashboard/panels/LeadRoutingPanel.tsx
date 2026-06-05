@@ -6,12 +6,13 @@ import { Input, Select, Switch } from '@/components/ui/form'
 import { InsiderBadge } from '@/components/ui/InsiderBadge'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { IconAdd, IconDelete } from '@/components/ui/icons'
+import { COUNTRY_OPTIONS, resolveCountryCode, countryLabel } from '@/lib/config/countries'
 import type { LeadRoutingConfig, LeadRoute } from '@/types/dashboard'
 
-const COUNTRIES = [
-  'Netherlands', 'Belgium', 'Germany', 'France', 'United Kingdom',
-  'Spain', 'Italy', 'Denmark', 'Sweden', 'Other',
-]
+/** Normalize stored route countries (legacy labels or codes) to select codes. */
+function normalizeRoutes(c: LeadRoutingConfig): LeadRoutingConfig {
+  return { ...c, routes: c.routes.map((r) => ({ ...r, country: resolveCountryCode(r.country) })) }
+}
 
 /**
  * Geo-based lead routing (Plus+). A default contact, per-country overrides, an
@@ -27,7 +28,7 @@ export function LeadRoutingPanel({
   initial: LeadRoutingConfig
 }) {
   const router = useRouter()
-  const [config, setConfig] = useState<LeadRoutingConfig>(initial)
+  const [config, setConfig] = useState<LeadRoutingConfig>(() => normalizeRoutes(initial))
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
@@ -67,7 +68,7 @@ export function LeadRoutingPanel({
       }
       // WP reassigns route ids — re-read so the UI has the canonical config.
       const saved = (await res.json()) as LeadRoutingConfig
-      setConfig(saved)
+      setConfig(normalizeRoutes(saved))
       router.refresh()
     } catch {
       setSaveError('Could not save lead routing. Please try again.')
@@ -85,7 +86,7 @@ export function LeadRoutingPanel({
     </span>
   ) : (
     <>
-      Only <strong>{config.routes.map((r) => r.country).filter(Boolean).join(', ')}</strong> can
+      Only <strong>{config.routes.map((r) => countryLabel(r.country)).filter(Boolean).join(', ')}</strong> can
       submit requests. All other countries are blocked.
     </>
   )
@@ -125,8 +126,8 @@ export function LeadRoutingPanel({
               label="Country"
               value={route.country}
               onChange={(e) => updateRoute(route.id, 'country', e.target.value)}
-              placeholder="Select"
-              options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+              placeholder="Select a country"
+              options={COUNTRY_OPTIONS}
             />
             <Input label="Name" value={route.name} onChange={(e) => updateRoute(route.id, 'name', e.target.value)} />
             <Input label="Email" type="email" value={route.email} onChange={(e) => updateRoute(route.id, 'email', e.target.value)} />

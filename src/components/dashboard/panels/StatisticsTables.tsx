@@ -39,14 +39,12 @@ export function StatisticsTables({
             <span>Material</span>
             <span>Views</span>
             <span>Requests</span>
-            <span>Downloads</span>
           </div>
           {materials.map((row, i) => (
             <div key={row.materialId} className={`t-row ${i % 2 === 1 ? 'alt' : ''}`}>
               <span className="t-strong">{row.name}</span>
               <span>{NUM.format(row.views)}</span>
               <span>{NUM.format(row.requests)}</span>
-              <span>{NUM.format(row.downloads)}</span>
             </div>
           ))}
         </div>

@@ -529,6 +529,16 @@ export interface WPMaterialRawResponse {
     datasheet_url?: string
     epd_url?: string
     product_url?: string
+    /** Brand-website (Johan-handoff interactions). */
+    brand_website?: string | null
+    /** Brand-brede Insider-gates (uit `_brand_*_insiders_only`). */
+    brand_sample_requests_insiders_only?: boolean
+    brand_downloads_insiders_only?: boolean
+    /** Lead-routing: restrict + accepted-countries als ISO-codes. */
+    brand_restrict_to_listed_countries?: boolean
+    brand_accepted_countries?: string[]
+    /** Downloads-entiteit van het material (meerdere per material). */
+    downloads?: Array<{ id?: string | number; title?: string; url?: string; type?: string }>
     /** Raw underscore-velden (alleen rollout-fallback). */
     _material_brand?: string | null
     _material_code?: string | null

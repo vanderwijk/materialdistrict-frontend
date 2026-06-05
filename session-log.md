@@ -2554,3 +2554,28 @@ Build-order stap 10. De twee resterende open homepage-punten afgerond; S10.1
 
 ### Status
 S10.2 + S10.3 gesloten. Deploy naar Vercel test (05-06-2026).
+
+---
+
+## Sessie S13.4 — Interactions (integraal) — 05-06-2026
+
+Frontend zip `md-s13.4-interactions` 1:1 gemerged op main (commit volgt). WP-
+contractpunten 1–7 stonden al live op productie (plugin master).
+
+### Frontend overlay
+- Nieuw: `lib/api/interactions.ts`, `app/api/interactions/events/route.ts`
+- Statistics: materials[] zonder downloads-kolom; 4 metrics-kaarten
+- Publieke datalaag: material.downloads[], brand_* gates, user.country uit /auth/me
+- Materiaalpagina: download/sample Insider-gates + country-block (label-tegen-label)
+- Brand-pagina: website_click logging op website-links
+- globals.css: additief §S13.4-B3 + `.t-stats` 4→3 kolommen (homepage partner-CSS
+  bewust niet teruggedraaid)
+
+### WP live (productie geverifieerd 05-06)
+- GET /auth/me → country (label) + country_code
+- POST /md/v2/interactions/events geregistreerd
+- GET /wp/v2/material → downloads[] + brand_* + brand_accepted_countries (labels)
+- POST /md/v2/get-in-touch → lead + country/insider enforcement
+
+### E2E testplan (Claude + Johan)
+Zie docs/MANIFEST-s13.4-interactions.md punten 1–7.

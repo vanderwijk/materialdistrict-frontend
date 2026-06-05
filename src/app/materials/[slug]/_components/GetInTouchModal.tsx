@@ -19,6 +19,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useAuth } from '@/components/providers/AuthContext'
 
 // --------------------------------------------------------------------
 // Types
@@ -47,6 +48,17 @@ export interface GetInTouchModalProps {
   title?: string
   /** Brand-naam — als bekend, anders generieke fallback. */
   brandName?: string | null
+  /**
+   * Lead-routing country-gate (material-afgeleid). Wanneer `restrict` aan staat
+   * en het land van de ingelogde user niet in `acceptedCountries` (ISO-codes)
+   * zit, toont de modal een melding + zet de submit uit + verwijst naar de
+   * brand-website. Geen harde blokkade van het paneel.
+   */
+  restrictToListedCountries?: boolean
+  acceptedCountries?: string[]
+  brandWebsite?: string | null
+  /** Brand-brede Insider-gate op sample-aanvragen. */
+  sampleRequestsInsidersOnly?: boolean
 }
 
 type RequestOptionKey =
@@ -141,7 +153,12 @@ export function GetInTouchModal({
   brandId,
   title,
   brandName,
+  restrictToListedCountries = false,
+  acceptedCountries = [],
+  brandWebsite = null,
+  sampleRequestsInsidersOnly = false,
 }: GetInTouchModalProps) {
+  const { user, isMember } = useAuth()
   const [selected, setSelected] = useState<Set<RequestOptionKey>>(new Set())
   const [message, setMessage] = useState('')
   const [pending, setPending] = useState(false)
@@ -149,6 +166,13 @@ export function GetInTouchModal({
   const [success, setSuccess] = useState(false)
   const firstFocusRef = useRef<HTMLButtonElement | null>(null)
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+
+  const userCountry = user?.country ?? ''
+  // user.country en acceptedCountries zijn beide leesbare labels (Johan-handoff
+  // interactions): match label-tegen-label, geen code-conversie.
+  const countryBlocked = restrictToListedCountries && !acceptedCountries.includes(userCountry)
+  const sampleLocked = sampleRequestsInsidersOnly && !isMember
+  const acceptedLabels = acceptedCountries.filter(Boolean).join(', ')
 
   // Reset state als modal opnieuw opent
   useEffect(() => {
@@ -196,6 +220,7 @@ export function GetInTouchModal({
   )
 
   const toggleOption = (key: RequestOptionKey) => {
+    if (sampleLocked && key === 'sample') return
     setSelected((prev) => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key)
@@ -206,7 +231,7 @@ export function GetInTouchModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (selected.size === 0) return
+    if (selected.size === 0 || countryBlocked) return
     setPending(true)
     setError(null)
     try {
@@ -217,7 +242,7 @@ export function GetInTouchModal({
         body: JSON.stringify({
           ...(typeof materialId === 'number' ? { materialId } : {}),
           ...(typeof brandId === 'number' ? { brandId } : {}),
-          options: Array.from(selected),
+          options: Array.from(selected).filter((k) => !(sampleLocked && k === 'sample')),
           message: message.trim() || null,
         }),
       })
@@ -311,9 +336,58 @@ export function GetInTouchModal({
               )}
             </p>
 
+            {countryBlocked && (
+              <div className="git-country-block" role="alert">
+                <p className="git-country-block-title">
+                  {brandName ?? 'This brand'} only accepts requests from{' '}
+                  {acceptedLabels || 'selected countries'}.
+                </p>
+                <p className="git-country-block-body">
+                  Your account country
+                  {userCountry ? ` (${userCountry})` : ''} isn&apos;t on the list,
+                  so you can&apos;t send a request here. <a href="/dashboard/profile">Update your region</a>.
+                </p>
+                {brandWebsite && (
+                  <a
+                    href={brandWebsite}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="git-country-block-cta"
+                  >
+                    Reach {brandName ?? 'them'} directly via their website
+                    <span aria-hidden="true"> ↗</span>
+                  </a>
+                )}
+              </div>
+            )}
+
             <ul className="git-options" role="list">
               {REQUEST_OPTIONS.map((opt, idx) => {
                 const isSelected = selected.has(opt.key)
+                const locked = sampleLocked && opt.key === 'sample'
+                if (locked) {
+                  return (
+                    <li key={opt.key}>
+                      <div className="git-option is-locked" aria-disabled="true">
+                        <span className="git-option-check" aria-hidden="true">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                          </svg>
+                        </span>
+                        <span className="git-option-icon" aria-hidden="true">
+                          {opt.icon}
+                        </span>
+                        <span className="git-option-text">
+                          <span className="git-option-label">{opt.label}</span>
+                          <span className="git-option-hint">
+                            Insiders only — <a href="/membership">join Insider</a> to request a sample
+                          </span>
+                        </span>
+                      </div>
+                    </li>
+                  )
+                }
                 return (
                   <li key={opt.key}>
                     <button
@@ -366,7 +440,7 @@ export function GetInTouchModal({
               <button
                 type="submit"
                 className="git-submit"
-                disabled={selected.size === 0 || pending}
+                disabled={selected.size === 0 || pending || countryBlocked}
               >
                 {pending ? 'Sending…' : 'Send request'}
               </button>
