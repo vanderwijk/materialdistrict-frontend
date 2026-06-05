@@ -1,0 +1,111 @@
+Onderwerp: Re: S13.3 — dashboard media upload (gallery/featured/logo/downloads) fix live
+
+Hoi Claude,
+
+Gallery-upload (en alle andere dashboard file uploads) faalden met 401 op
+`/api/dashboard/media` en WP-melding “Sorry, you are not allowed to create
+posts as this user.” Dashboard-users zijn WP subscribers zonder `upload_files`;
+de proxy postte naar generieke `POST /wp/v2/media`.
+
+Fix: scoped dashboard-upload-endpoint in WP + frontend-proxy + gallery parent
+sync bij save (publieke site haalt gallery via `?parent=<post_id>`).
+
+== WP-fix (plugin, master) — niet in jouw repo ==
+Nieuw: `POST /md/v2/dashboard/brands/{brand_id}/media`
+- JWT + `md_dashboard_require_managed_brand`
+- Multipart field `file`, optional `context`: `image` (default) | `document`
+- Mime whitelist + size limits + rate limit (30/15min/user)
+- `wp_handle_upload` + `wp_insert_attachment`, `post_author` = current user
+- Response: `{ id, name, url }` (zelfde shape als `md_dashboard_material_asset`)
+
+Bij material/brand save:
+- Gallery: `md_dashboard_sync_gallery_attachment_parents()` — zet `post_parent` +
+  `menu_order` op attachments; unlink removed ids
+- Featured/logo: `post_parent` op thumbnail-attachment bij save
+
+Plugin commit: (zie git log na push)
+
+== Frontend-fix — repliceer in upstream (3 bestanden) ==
+
+--- 1. `src/app/api/dashboard/media/route.ts` ---
+
+Was: forward naar `POST ${WP_API_URL}/wp/v2/media` met raw bytes + Content-Type.
+
+Nu:
+- Lees uit FormData: `file` (required), `brand_id` (required, numeric string),
+  `context` (`image` | `document`, default `image`)
+- 400 als `brand_id` ontbreekt
+- Forward multipart naar:
+  `POST ${WP_API_URL}/md/v2/dashboard/brands/${brandId}/media`
+  met Bearer JWT (geen handmatige Content-Type — boundary blijft intact)
+- Map response `{ id, name, url }` → `MaterialAsset` (niet meer WP REST
+  `source_url` / `title.rendered`)
+
+Kern van de proxy:
+
+```tsx
+const wpForm = new FormData()
+wpForm.append('file', file, file.name)
+wpForm.append('context', context)
+
+const res = await fetch(`${WP_API_URL}/md/v2/dashboard/brands/${brandId}/media`, {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${token}` },
+  body: wpForm,
+  cache: 'no-store',
+})
+```
+
+--- 2. `src/components/dashboard/panels/MaterialForm.tsx` ---
+
+`uploadFile` krijgt optionele `context`:
+
+```tsx
+async function uploadFile(
+  file: File,
+  context: 'image' | 'document' = 'image',
+): Promise<MaterialAsset | null> {
+  const data = new FormData()
+  data.append('file', file)
+  data.append('brand_id', String(brandId))
+  data.append('context', context)
+  const res = await fetch('/api/dashboard/media', { method: 'POST', body: data })
+  // ... error handling unchanged
+}
+```
+
+Call sites:
+- `GalleryField`: `onUpload={(file) => uploadFile(file, 'image')}`
+- `DownloadsField`: `onUpload={(file) => uploadFile(file, 'document')}`
+- Featured image: `uploadFile(file)` — default `image`
+
+Prop `brandId` was al aanwezig; geen nieuwe props nodig.
+
+--- 3. `src/components/dashboard/panels/BrandProfileForm.tsx` ---
+
+Zelfde patroon als MaterialForm, maar `brand_id` uit `form.brandId`:
+
+```tsx
+data.append('brand_id', String(form.brandId))
+```
+
+- Logo upload: `uploadFile(file)` — default `image`
+- Gallery: `uploadFile(file, 'image')`
+- Downloads: `uploadFile(file, 'document')`
+
+== Geen wijzigingen aan ==
+- `GalleryField.tsx`, `DownloadsField.tsx` — interface `onUpload(file)` ongewijzigd
+- Save mappers / `toWpMaterialForm()` — gallery save-payload ongewijzigd
+- Types in `types/dashboard.ts`
+
+== Test na deploy (beide repos) ==
+1. Material edit → upload gallery image → thumbnail in lijst
+2. Save → PATCH met `gallery_attachment_ids`
+3. Publieke materialpagina → gallery zichtbaar (attachments hebben nu parent)
+
+E2E: `e2e-dashboard-free@materialdistrict.com` / `E2eDashboard2026!`
+
+Deploy: plugin master → WP Engine; frontend main → Vercel.
+
+Groet,
+Johan

@@ -1,12 +1,13 @@
 /**
  * POST /api/dashboard/media
  *
- * Uploads a file to the WP media library (`POST /wp/v2/media`) on the user's
- * behalf and returns a `MaterialAsset` ({ id, name, url }) the material form
- * can reference. The JWT is HttpOnly, so the browser uploads to this proxy
- * (multipart, field `file`) and we forward the bytes with the Bearer token.
+ * Uploads a file via the scoped dashboard endpoint
+ * (`POST /md/v2/dashboard/brands/{brandId}/media`) and returns a
+ * `MaterialAsset` ({ id, name, url }). Requires `brand_id` and the file in
+ * multipart form data; optional `context` is `image` (default) or `document`.
  *
- * WP checks the user may create/own the attachment; failures bubble up.
+ * Does not use generic `/wp/v2/media` — dashboard users are subscribers without
+ * the global `upload_files` cap.
  */
 
 import { NextResponse } from 'next/server'
@@ -20,13 +21,32 @@ export async function POST(request: Request): Promise<NextResponse> {
   if (error) return error
 
   let file: File | null = null
+  let brandId: string | null = null
+  let context: 'image' | 'document' = 'image'
+
   try {
     const form = await request.formData()
     const f = form.get('file')
     if (f instanceof File) file = f
+
+    const rawBrandId = form.get('brand_id')
+    if (typeof rawBrandId === 'string' && /^\d+$/.test(rawBrandId)) {
+      brandId = rawBrandId
+    }
+
+    const rawContext = form.get('context')
+    if (rawContext === 'document') context = 'document'
   } catch {
-    // fall through to the missing-file error
+    // fall through to validation errors below
   }
+
+  if (!brandId) {
+    return NextResponse.json(
+      { code: 'md_dashboard_invalid_request', message: 'Brand id is required.' },
+      { status: 400 },
+    )
+  }
+
   if (!file) {
     return NextResponse.json(
       { code: 'md_dashboard_invalid_request', message: 'No file provided.' },
@@ -35,24 +55,24 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const res = await fetch(`${WP_API_URL}/wp/v2/media`, {
+    const wpForm = new FormData()
+    wpForm.append('file', file, file.name)
+    wpForm.append('context', context)
+
+    const res = await fetch(`${WP_API_URL}/md/v2/dashboard/brands/${brandId}/media`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': file.type || 'application/octet-stream',
-        'Content-Disposition': `attachment; filename="${encodeURIComponent(file.name)}"`,
-      },
-      body: await file.arrayBuffer(),
+      headers: { Authorization: `Bearer ${token}` },
+      body: wpForm,
       cache: 'no-store',
     })
 
     const data = (await res.json().catch(() => null)) as
-      | { id?: number; source_url?: string; title?: { rendered?: string }; message?: string }
+      | { id?: string; name?: string; url?: string | null; code?: string; message?: string }
       | null
 
     if (!res.ok || !data?.id) {
       throw new DashboardApiError(
-        'md_dashboard_unavailable',
+        data?.code ?? 'md_dashboard_unavailable',
         data?.message ?? 'Upload failed.',
         res.status || 502,
         data,
@@ -61,8 +81,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const asset: MaterialAsset = {
       id: String(data.id),
-      name: data.title?.rendered || file.name,
-      url: data.source_url ?? null,
+      name: data.name || file.name,
+      url: data.url ?? null,
     }
     return NextResponse.json(asset, { status: 200 })
   } catch (err) {

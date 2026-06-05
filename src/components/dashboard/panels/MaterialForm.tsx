@@ -94,13 +94,18 @@ export function MaterialForm({
       return { ...f, channels: [...f.channels, channel] }
     })
 
-  /** Upload one file to the WP media library via the proxy → MaterialAsset. */
-  async function uploadFile(file: File): Promise<MaterialAsset | null> {
+  /** Upload one file via the scoped dashboard media endpoint → MaterialAsset. */
+  async function uploadFile(
+    file: File,
+    context: 'image' | 'document' = 'image',
+  ): Promise<MaterialAsset | null> {
     setSaveError(null)
     setUploading(true)
     try {
       const data = new FormData()
       data.append('file', file)
+      data.append('brand_id', String(brandId))
+      data.append('context', context)
       const res = await fetch('/api/dashboard/media', { method: 'POST', body: data })
       if (!res.ok) {
         const err = await res.json().catch(() => null)
@@ -287,7 +292,7 @@ export function MaterialForm({
             <GalleryField
               value={form.gallery}
               onChange={(next) => set('gallery', next)}
-              onUpload={uploadFile}
+              onUpload={(file) => uploadFile(file, 'image')}
               uploading={uploading}
             />
           </div>
@@ -316,7 +321,7 @@ export function MaterialForm({
           <DownloadsField
             value={form.downloads}
             onChange={(next) => set('downloads', next)}
-            onUpload={uploadFile}
+            onUpload={(file) => uploadFile(file, 'document')}
             uploading={uploading}
           />
         ) : (
