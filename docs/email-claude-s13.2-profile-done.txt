@@ -1,0 +1,91 @@
+Onderwerp: S13.2 My profile + Insider insights — live + replicatie-overzicht
+
+Hoi Claude,
+
+S13.2 staat live op Vercel test. Hieronder wat er is gedaan en wat jij in je
+eigen repo moet repliceren.
+
+FRONTEND (materialdistrict-frontend, main)
+------------------------------------------
+Commits:
+  - 5b073a3  feat(dashboard): S13.2 My profile + Insider insights panels
+  - 86cabae  fix(dashboard): profile dropdowns + volledige landenlijst
+  - d89a872  fix(dashboard): slug-alignment met WP + replicatiedoc
+
+Test: https://materialdistrict-frontend.vercel.app/dashboard/profile
+      https://materialdistrict-frontend.vercel.app/dashboard/insider-insights
+
+Replicatie in jouw upstream repo: zie docs/replication-claude-s13.2.md
+(15 bestanden — volledige file manifest, type/mapper-wijzigingen, CSS, en
+Johan's afwijkingen t.o.v. jouw zip staan daar exact beschreven).
+
+Belangrijkste afwijkingen t.o.v. jouw s13.2 zip:
+  1. Profession/industry dropdowns gebruiken nu SLUGS (architect, interior, …)
+     i.p.v. legacy labels (Architect, Interior). Sluit aan op WP hieronder.
+  2. Country = volledige lijst uit theme/inc/countries.php (src/lib/config/
+     countries.ts), niet de 10-landen-hardcode uit de zip.
+  3. Onbekende legacy usermeta blijft zichtbaar via withCurrentSelectValue()
+     (extra dropdown-optie als opgeslagen waarde niet in de registry staat).
+
+InsightsPanel: prop hernoemd van locked → isInsider (zoals in jouw zip bedoeld).
+
+
+WORDPRESS — PUNT 1 + 2 AF (plugin 964d1ac)
+--------------------------------------------
+Live na deploy materialdistrict-plugin:
+
+  GET  /md/v2/dashboard/profile
+  POST /md/v2/dashboard/profile
+  GET  /md/v2/dashboard/profile-options   ← nieuw
+
+Profile GET/POST velden (snake_case):
+  first_name, last_name, email, phone, profession, industry, address,
+  postcode, city, country, invoice_to_company, company, vat_number, avatar_url
+
+Usermeta-mapping (geen data gewist, legacy blijft leesbaar):
+  phone              → telephone
+  profession         → profession      (slug; legacy "Architect" → architect)
+  industry           → sector          (slug; legacy "Interior" → interior)
+  address            → address_street + address
+  postcode           → postcode + zipcode
+  city               → city
+  country            → country         (ISO-code, bv. NL)
+  invoice_to_company → billing_is_company ('true'/'false')
+  company            → billing_company_name / company
+  vat_number         → billing_vat_number
+
+profile-options shape (zoals gevraagd):
+  {
+    "professions": [ { "value": "architect", "label": "Architect" }, ... ],
+    "industries":  [ { "value": "interior", "label": "Interior (incl …)" }, ... ]
+  }
+
+Lijsten staan centraal in plugin/profile-options.php (niet in de database).
+Zelfde opties als page-edit-profile.php / page-register.php. Bij POST: slug
+opslaan als bekend; onbekende waarden pass-through (geen bulk-migratie).
+
+Industry-slugs: interior (niet interior-design) — sluit aan op legacy sector-
+waarden. Profession bevat ook professor (alleen in oude shortcode, niet in
+register-form).
+
+Audit onbekende meta (rapport alleen, wijzigt niets):
+  wp eval 'print_r( md_profile_audit_unknown_meta_values() );'
+
+
+WORDPRESS — PUNT 3 NOG OPEN
+-----------------------------
+GET /md/v2/dashboard/insider-insights: frontend is klaar voor pages, format,
+insider_only, pdf_url, gradient — WP payload is nog niet uitgebreid. Non-Insiders
+zien nu een lege lijst zolang het endpoint 403 teruggeeft; dat lossen we op als
+punt 3 live is (lijst voor alle ingelogde users, per-rapport gating).
+
+
+VOLGENDE STAPPEN
+----------------
+1. Jij: overlay replication-claude-s13.2.md in je eigen Next.js repo.
+2. Johan: insider-insights WP-uitbreiding (punt 3) wanneer prioriteit.
+3. Optioneel later: theme page-edit-profile.php laten lezen uit dezelfde
+   profile-options helper (één lijst, geen drift).
+
+Groet,
+Johan
