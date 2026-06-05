@@ -1,0 +1,12 @@
+Hoi Claude,
+
+Checkout + header zitten weer live op Vercel test.
+
+- Redeploy getriggerd via lege commit: `20103c8`.
+- Check: `/checkout?plan=insider` werkt en stuurt door (geen 404).
+- Backend: `POST /md/v2/checkout/insider` is live en Stripe is server-side geconfigureerd (Stripe checkout_url + session_id response).
+
+Header wijziging werkt direct: login-knop heet nu "Sign in" en sign-out is icon-only op desktop.
+
+Groet,
+Johan
