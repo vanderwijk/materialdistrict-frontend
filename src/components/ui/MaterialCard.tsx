@@ -39,9 +39,23 @@
  *  - Trade-off: eerste klik wordt 50-150 ms langzamer voor users die direct
  *    klikken zonder hover. In de praktijk (cursor-flick + touch) is dat
  *    nagenoeg onmerkbaar, terwijl de pagina-load merkbaar lichter wordt.
+ *
+ * Fix (compare/save deden niets):
+ *  - De Save- en Compare-knoppen liggen als overlay BINNEN de card-Link
+ *    (ContentCard rendert de hele card als één `<Link>` / HoverPrefetchLink).
+ *    Een klik op een van die knoppen bubbelde door naar de Link, waardoor
+ *    Next.js direct naar `/materials/[slug]` navigeerde. De toggle draaide
+ *    dan wel even, maar de grid + CompareBar werden door die navigatie
+ *    ge-unmount voordat er iets zichtbaar werd — gevoel: "compare werkt niet".
+ *  - Oplossing: beide handlers vangen nu het click-event op en roepen
+ *    `preventDefault()` + `stopPropagation()` aan, zodat de klik op een
+ *    actie-knop niet doorslaat naar de card-navigatie. Dit raakt geen
+ *    gedeelde componenten — `ActionButton` gaf het event al door via
+ *    `...rest`.
  */
 
 import { useCallback } from 'react'
+import type { MouseEvent } from 'react'
 import type { MaterialListItem } from '@/types/material'
 import { useCompare } from '@/lib/hooks/useCompare'
 import { ActionButton } from './ActionButton'
@@ -121,37 +135,54 @@ export function MaterialCard({
   const inCompare = isInCompare(material.id)
 
   // Save: login-required. Niet Insider-only volgens sessie 4 gating-decision.
-  const handleSave = useCallback(() => {
-    if (!isLoggedIn) {
-      onRequireSignIn?.()
-      return
-    }
-    onToggleSave?.(material.id)
-  }, [isLoggedIn, onRequireSignIn, onToggleSave, material.id])
+  //
+  // preventDefault + stopPropagation: de knop ligt als overlay binnen de
+  // card-Link. Zonder dit bubbelt de klik door en navigeert de card naar de
+  // detailpagina, waardoor de save-toggle visueel niets lijkt te doen.
+  const handleSave = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!isLoggedIn) {
+        onRequireSignIn?.()
+        return
+      }
+      onToggleSave?.(material.id)
+    },
+    [isLoggedIn, onRequireSignIn, onToggleSave, material.id],
+  )
 
   // Compare: login-required én Insider-only.
-  const handleCompare = useCallback(() => {
-    if (!isLoggedIn) {
-      onRequireSignIn?.()
-      return
-    }
-    if (!isMember) {
-      onRequireInsider?.()
-      return
-    }
-    const result = toggleCompare(material.id)
-    if (result === 'limit-reached') {
-      onCompareLimitReached?.()
-    }
-  }, [
-    isLoggedIn,
-    isMember,
-    onRequireSignIn,
-    onRequireInsider,
-    toggleCompare,
-    material.id,
-    onCompareLimitReached,
-  ])
+  //
+  // preventDefault + stopPropagation: zie handleSave — zonder dit slaat de
+  // klik door naar de card-navigatie en wordt de CompareBar nooit zichtbaar.
+  const handleCompare = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!isLoggedIn) {
+        onRequireSignIn?.()
+        return
+      }
+      if (!isMember) {
+        onRequireInsider?.()
+        return
+      }
+      const result = toggleCompare(material.id)
+      if (result === 'limit-reached') {
+        onCompareLimitReached?.()
+      }
+    },
+    [
+      isLoggedIn,
+      isMember,
+      onRequireSignIn,
+      onRequireInsider,
+      toggleCompare,
+      material.id,
+      onCompareLimitReached,
+    ],
+  )
 
   // Image-fallback (W4): MediaImage.alt is leeg op gemiddelde OBRO-attachments,
   // dus material-titel als fallback. De derde laag (generieke "Material image")
