@@ -11584,3 +11584,20 @@ mark.search-mark {
 .git-country-block-body{font-size:12px;color:var(--text-muted);line-height:1.55;margin:0}
 .git-country-block-body a{color:var(--navy);font-weight:600}
 .git-country-block-cta{display:inline-flex;align-items:center;margin-top:10px;font-size:13px;font-weight:600;color:var(--navy)}
+
+/* ============================================================
+   §S13.5 — Tier-preview (reader): InsiderGate preview-overlay + insights-acties
+   ============================================================ */
+
+/* --- InsiderGate preview-variant (reader reveal; spiegelt BrandTierGate section) --- */
+.insider-gate.is-preview{position:relative;border-radius:8px;overflow:hidden}
+.insider-gate-content-blur{filter:blur(6px);opacity:0.5;pointer-events:none;user-select:none}
+.insider-gate-preview-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(255,255,255,0.7);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+[data-theme="dark"] .insider-gate-preview-overlay{background:rgba(20,20,20,0.7)}
+.insider-gate-preview-overlay .insider-gate-card{max-width:420px;width:100%}
+.insider-gate-preview-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:16px 20px 20px}
+/* Preview-active: content zichtbaar, subtiele teal preview-rand */
+.insider-gate.is-preview-active{border:1px dashed var(--ct-member);border-radius:8px;padding:12px}
+
+/* --- Insights-banner: Preview + Become naast elkaar --- */
+.insights-banner-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}

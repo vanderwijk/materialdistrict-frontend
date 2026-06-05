@@ -5,17 +5,16 @@ import { IconClose } from '@/components/ui/icons'
 
 /**
  * PreviewModeIndicator — globale fixed-bottom-center indicator die zichtbaar
- * wordt zodra er ten minste één brand-tier preview-mode actief is.
+ * wordt zodra er ten minste één tier-preview actief is.
  *
- * Gebruik: render dit één keer in de root-layout (bv. in `app/layout.tsx`)
- * binnen een `<PreviewModeProvider>`. De indicator regelt zelf zijn
- * zichtbaarheid via `activePreviews.size`.
+ * Gemount één keer in `DashboardShell` binnen de `<PreviewModeProvider>`.
+ * De indicator regelt zelf zijn zichtbaarheid via `activePreviews.size` en
+ * dient zowel de brand-tier-previews (`BrandTierGate`) als de reader/Insider-
+ * previews (`InsiderGate variant="preview"`).
  *
  * Sluiten kan ALLEEN via deze indicator (gebruiker-keuze sessie 3A: niet
- * via individuele section-gate-knoppen). Section-gates met preview tonen
- * alleen "Preview" — die knop verdwijnt na unlock.
- *
- * Niet-Insider-gerelateerd. Voor Insider-gating bestaat geen preview-modus.
+ * via individuele gate-knoppen). Gates met preview tonen alleen "Preview" —
+ * die knop verdwijnt na unlock.
  */
 export function PreviewModeIndicator() {
   const { activePreviews, closeAll } = usePreviewMode()
@@ -35,7 +34,7 @@ export function PreviewModeIndicator() {
         <span className="preview-mode-indicator-text">
           <strong>{label}</strong>
           <span className="preview-mode-indicator-sublabel">
-            — changes will not be saved
+            — a preview of what you&apos;d unlock
           </span>
         </span>
         <button

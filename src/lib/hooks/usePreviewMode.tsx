@@ -10,22 +10,25 @@ import {
 } from 'react'
 
 /**
- * usePreviewMode + PreviewModeProvider — page-scoped state voor
- * brand-tier preview-modus.
+ * usePreviewMode + PreviewModeProvider — tier-preview-modus.
  *
- * Werkt per pagina: `<PreviewModeProvider>` wrapt de hele dashboard-pagina,
- * elke `<BrandTierGate variant="section">` registreert zichzelf met een
- * unique id, en kan `enable(id)`/`disable(id)` aanroepen om zijn eigen
- * preview-status om te zetten.
+ * Eén generieke, id-gebaseerde context die zowel de brand-tier-gates
+ * (`<BrandTierGate variant="section">`) als de reader/Insider-gates
+ * (`<InsiderGate variant="preview">`) bedient: elke previewbare gate
+ * registreert zich met een unique id en zet via `enable(id)`/`disable(id)`
+ * zijn eigen preview-status om. De context weet niets van brand vs reader —
+ * dat onderscheid leeft in de gate-componenten + hun styling.
  *
- * Het globale `<PreviewModeIndicator>` luistert naar dezelfde context en
- * toont het aantal actieve previews + "Close all"-knop.
- *
- * Geen persistence (localStorage etc.) — preview-state reset bij navigatie.
+ * Mounting: `<PreviewModeProvider>` + het globale `<PreviewModeIndicator>`
+ * staan in `DashboardShell`, dus de preview-modus is **dashboard-breed**:
+ * hij blijft staan terwijl je tussen panelen navigeert (de shell blijft
+ * gemount) en reset zodra je het dashboard verlaat. Geen persistence
+ * (localStorage etc.).
  *
  * Submit-blokkering werkt automatisch: zolang `activePreviews.size > 0`
  * geeft `useSubmitBlocked()` `true` terug. Forms moeten hier zelf op
- * checken (of via een wrapped SubmitButton variant in batch 6).
+ * checken (of via een wrapped SubmitButton variant). Alleen relevant voor
+ * de brand-kant (forms); de reader-preview is puur read-only.
  */
 
 interface PreviewModeContextValue {

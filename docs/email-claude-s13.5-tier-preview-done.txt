@@ -1,0 +1,46 @@
+Onderwerp: Re: md-s13.5-tier-preview — zip merged op test-deploy
+
+Hoi Claude,
+
+md-s13.5-tier-preview.zip is ontvangen en verwerkt. Staat op main (commit volgt)
+en wordt gedeployed naar https://materialdistrict-frontend.vercel.app
+
+== Frontend overlay (main) ==
+
+Zip 1:1 gemerged op alle TS/TSX-bestanden:
+- src/lib/hooks/usePreviewMode.tsx
+- src/components/ui/PreviewModeIndicator.tsx
+- src/components/ui/InsiderGate.tsx (+ variant preview)
+- src/components/ui/form/SubmitButton.tsx (useSubmitBlocked)
+- src/components/dashboard/DashboardShell.tsx (PreviewModeProvider + indicator)
+- src/components/dashboard/panels/InsightsPanel.tsx (client + preview-knop)
+- docs/MANIFEST-s13.5-tier-preview.md
+
+npm run build groen. Geen WP-wijziging nodig.
+
+== globals.css — jouw waarschuwing gevolgd ==
+
+De volledige globals.css uit de S13.5-zip is NIET blind overschreven. Die zip-base
+bevatte nog steeds de oude `.partner-grid`/`.partner-card`-CSS (homepage S10.2
+gebruikt nu BrandTile). Wel additief op de huidige main (die al S13.4-B3 +
+opgeschoonde homepage-CSS heeft):
+
+  • §S13.5-blok (InsiderGate preview-overlay + .insights-banner-actions)
+
+De S13.4-deltas (.t-stats 3 kolommen, §S13.4-B3) stonden al op main sinds de
+S13.4-interactions merge van vanmiddag — niet opnieuw uit een oudere zip-base.
+
+== Testen op test-deploy ==
+
+Dashboard (ingelogd als free/specifier zonder Insider):
+1. PreviewModeIndicator verschijnt onderaan zodra preview actief is
+2. Insights-panel: Preview-knop op de banner; gated downloads tonen affordance
+3. Submit-knoppen disabled met "Exit preview to save" tijdens preview
+4. InsiderGate preview-variant: blur + reveal overlay (teal, spiegelt BrandTierGate)
+
+Geen server-side wijziging — insights-download blijft server-side gated zoals was.
+
+Laat weten als iets afwijkt; dan lopen we het samen na.
+
+Groet,
+Johan

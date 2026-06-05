@@ -3,6 +3,8 @@
 import { usePathname } from 'next/navigation'
 import type { User } from '@/types/shared'
 import { resolveDashboardScope } from '@/lib/dashboard/nav'
+import { PreviewModeProvider } from '@/lib/hooks/usePreviewMode'
+import { PreviewModeIndicator } from '@/components/ui/PreviewModeIndicator'
 import { DashboardSidebar } from './DashboardSidebar'
 import { DashboardMobileNav } from './DashboardMobileNav'
 
@@ -26,12 +28,13 @@ export function DashboardShell({
   const scope = resolveDashboardScope(pathname)
 
   return (
-    <>
+    <PreviewModeProvider>
       <DashboardMobileNav user={user} scope={scope} />
       <div className="dash-layout fade-in">
         <DashboardSidebar user={user} scope={scope} />
         <div className="dash-content">{children}</div>
       </div>
-    </>
+      <PreviewModeIndicator />
+    </PreviewModeProvider>
   )
 }

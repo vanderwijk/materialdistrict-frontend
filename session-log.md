@@ -2579,3 +2579,16 @@ contractpunten 1–7 stonden al live op productie (plugin master).
 
 ### E2E testplan (Claude + Johan)
 Zie docs/MANIFEST-s13.4-interactions.md punten 1–7.
+
+---
+
+## Sessie S13.5 — Dashboard tier-preview (05-06-2026)
+
+Pure frontend overlay `md-s13.5-tier-preview.zip`:
+- `usePreviewMode` + `PreviewModeProvider` in `DashboardShell`
+- `InsiderGate` variant `preview`; `InsightsPanel` preview-knop
+- `SubmitButton` blocked tijdens preview
+- globals.css: additief §S13.5-blok (zip-volledige globals NIET blind gemerged —
+  bevatte stale partner-grid; §S13.5 CSS handmatig op huidige main)
+
+Geen WP-wijziging. Deploy naar Vercel test.

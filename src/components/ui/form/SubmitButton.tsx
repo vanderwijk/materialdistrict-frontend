@@ -27,6 +27,7 @@
 
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { useFormState } from './FormStateContext'
+import { useSubmitBlocked } from '@/lib/hooks/usePreviewMode'
 
 export interface SubmitButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
@@ -37,6 +38,11 @@ export interface SubmitButtonProps
    * Default: "Please fill in all required fields".
    */
   errorLabel?: string
+  /**
+   * Tekst wanneer een tier-preview actief is (submit geblokkeerd). Sluiten
+   * gebeurt via de globale PreviewModeIndicator. Default: "Exit preview to save".
+   */
+  blockedLabel?: string
   /** Button-variant in normaal-state. Default: primary. */
   variant?: 'primary' | 'green' | 'blue' | 'navy'
   /** Button size. Default: md. */
@@ -48,6 +54,7 @@ export const SubmitButton = forwardRef<HTMLButtonElement, SubmitButtonProps>(
     {
       children,
       errorLabel = 'Please fill in all required fields',
+      blockedLabel = 'Exit preview to save',
       variant = 'primary',
       size = 'md',
       onClick,
@@ -59,6 +66,9 @@ export const SubmitButton = forwardRef<HTMLButtonElement, SubmitButtonProps>(
   ) {
     const formState = useFormState()
     const inErrorState = formState?.hasFormError ?? false
+    // Tier-preview actief → submit blokkeren (NOOP-safe buiten een
+    // PreviewModeProvider, dus geen effect op publieke forms).
+    const submitBlocked = useSubmitBlocked()
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       formState?.triggerSubmit()
@@ -81,11 +91,11 @@ export const SubmitButton = forwardRef<HTMLButtonElement, SubmitButtonProps>(
         type="submit"
         className={btnClassName}
         onClick={handleClick}
-        disabled={disabled}
+        disabled={disabled || submitBlocked}
         aria-live="polite"
         {...rest}
       >
-        {inErrorState ? errorLabel : children}
+        {submitBlocked ? blockedLabel : inErrorState ? errorLabel : children}
       </button>
     )
   },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, type ReactNode } from 'react'
 import Link from 'next/link'
 import {
   IconCompare,
@@ -14,6 +14,7 @@ import {
   IconInsiderInsights,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
+import { usePreviewMode } from '@/lib/hooks/usePreviewMode'
 import { InsiderMark } from './InsiderMark'
 
 // ============================================================
@@ -138,7 +139,20 @@ interface CardProps extends BaseProps {
   variant: 'card'
 }
 
-type InsiderGateProps = ModalProps | PaywallProps | PanelProps | CardProps
+interface PreviewProps extends BaseProps {
+  /**
+   * Reader-analoog van `BrandTierGate variant="section"`: toont de teal
+   * gate-overlay over geblurde Insider-content; de "Preview"-knop onthult
+   * `children` read-only en registreert bij de `PreviewModeProvider`
+   * (in `DashboardShell`), zodat de globale `PreviewModeIndicator` verschijnt.
+   * Sluiten gebeurt centraal via die indicator.
+   */
+  variant: 'preview'
+  /** De Insider-content die in preview-mode read-only wordt onthuld. */
+  children: ReactNode
+}
+
+type InsiderGateProps = ModalProps | PaywallProps | PanelProps | CardProps | PreviewProps
 
 // Backward-compat: oude `mode` prop accepteren als alias voor `variant`
 interface LegacyModeAlias {
@@ -185,6 +199,12 @@ interface LegacyModeAlias {
  *   <InsiderGate variant="card" feature="insights" />
  */
 export function InsiderGate(props: InsiderGateProps & LegacyModeAlias) {
+  // Preview-coordinatie (alleen actief in de `preview`-variant; NOOP-safe
+  // buiten een PreviewModeProvider, dus onschadelijk voor de andere varianten).
+  const reactId = useId()
+  const gateId = `insider-gate-${reactId}`
+  const { isEnabled, enable } = usePreviewMode()
+
   // Backward-compat: oude `mode` prop → nieuwe `variant` prop
   // (TS struggles with the union narrow here; cast to a permissive shape)
   const legacyMode = (props as { mode?: 'modal' | 'inline' }).mode
@@ -204,6 +224,49 @@ export function InsiderGate(props: InsiderGateProps & LegacyModeAlias) {
   const ctaHref = props.ctaHref ?? '/membership'
   const ctaLabel = props.ctaLabel ?? 'Become an Insider — €10/month'
   const signInHref = props.signInHref ?? '/sign-in'
+
+  // === Preview variant — reader reveal (mirror van BrandTierGate section) ===
+  if (props.variant === 'preview') {
+    // Preview actief: onthul de Insider-content read-only. Sluiten gebeurt
+    // centraal via de PreviewModeIndicator.
+    if (isEnabled(gateId)) {
+      return (
+        <div
+          className={cn('insider-gate is-preview-active', props.className)}
+          data-preview-id={gateId}
+        >
+          {props.children}
+        </div>
+      )
+    }
+    return (
+      <div
+        className={cn('insider-gate is-preview', props.className)}
+        data-preview-id={gateId}
+      >
+        <div className="insider-gate-content-blur" aria-hidden="true">
+          {props.children}
+        </div>
+        <div className="insider-gate-preview-overlay">
+          <div className="insider-gate-card">
+            <GateTop title={title} description={description} icon={icon} />
+            <div className="insider-gate-preview-actions">
+              <button
+                type="button"
+                className="btn btn-secondary btn-sm"
+                onClick={() => enable(gateId)}
+              >
+                Preview
+              </button>
+              <Link href={ctaHref} className="btn btn-insider btn-sm">
+                {ctaLabel}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // === Modal variant ===
   if (variant === 'modal' && 'open' in props && 'onClose' in props) {
