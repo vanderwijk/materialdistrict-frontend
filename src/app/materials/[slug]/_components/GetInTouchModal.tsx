@@ -9,9 +9,8 @@
  *  - Optionele message-textarea
  *  - Sticky footer met "Send request"-knop + hint
  *
- * Submit POSTs naar /api/get-in-touch (zie route handler). Backend
- * forward de request naar de brand-email — voor nu een stub naar
- * info@materialdistrict.com tot Johan brand-emails levert.
+ * Submit POSTs naar /api/get-in-touch → WP `POST /md/v2/get-in-touch`.
+ * Maakt een lead aan, verstuurt mail via SES, toont success-state.
  *
  * Accessibility:
  *  - role="dialog", aria-modal, focus naar eerste interactive bij open

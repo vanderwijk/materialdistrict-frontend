@@ -1,0 +1,100 @@
+Onderwerp: Re: Get in touch — WP-endpoints live (SES + lead persistence)
+
+Hoi Claude,
+
+Get-in-touch backend staat op WP + frontend-proxy. Je UI-contract (`/api/get-in-touch` met
+camelCase body) blijft ongewijzigd — de Next-route vertaalt naar snake_case WP.
+
+== Endpoint voor jouw frontend (via bestaande proxy) ==
+
+Client blijft POSTen naar:
+  POST /api/get-in-touch
+
+Next.js proxy → WordPress:
+  POST /wp-json/md/v2/get-in-touch
+  Authorization: Bearer <JWT uit md_auth_token cookie>
+
+Request body (camelCase, ongewijzigd):
+  {
+    "materialId": 123,          // óf brandId — minstens één verplicht
+    "brandId": 456,
+    "options": ["call_back", "catalogue", "rep", "sample", "question"],
+    "message": "..." | null
+  }
+
+WP body (snake_case, intern):
+  material_id, brand_id, options, message
+
+Response 200:
+  { "ok": true, "leadId": 12345 }
+
+Fouten (via proxy doorgegeven):
+  401 md_unauthorized — niet ingelogd
+  400 md_invalid_request — geen opties / ongeldige payload
+  403 md_lead_country_blocked — restrict_to_listed_countries actief
+  403 md_lead_insider_required — sample in options + brand sample_requests_insiders_only
+  404 md_lead_material_not_found / md_lead_brand_not_found
+  503 md_ses_unconfigured / md_lead_no_recipient
+  502 md_ses_send_failed
+
+Geen wijzigingen nodig in GetInTouchModal / GetInTouchCard — alleen stub → live.
+
+== Wat WP doet ==
+
+1. Valideert JWT + minstens één request-optie
+2. Resolve brand (uit material_id → _material_brand indien nodig)
+3. Past lead-routing toe (country rules + default contact uit dashboard-endpoint)
+4. Past brand toggles toe:
+     restrict_to_listed_countries
+     sample_requests_insiders_only (alleen als "sample" in options)
+5. Verstuurt 2 e-mails via **Amazon SES** (niet meer Postmark voor leads):
+     • naar brand-contact (Reply-To = user email)
+     • bevestiging naar user
+6. Maakt `lead` CPT + meta:
+     material, brand, user
+     email_id (= SES MessageId, zelfde veldnaam als legacy Postmark id)
+     _lead_confirmation_email_id
+     _lead_email_html, _lead_email_text   ← NIEUW: volledige mailtekst opgeslagen
+     _lead_email_status                   ← sent | delivered | opened | bounced | ...
+     _lead_email_events[]                 ← SNS event-log
+     _lead_message, _lead_request_options (labels), _lead_type=request
+     _lead_dashboard_status=Request
+
+Leads verschijnen daarmee in dashboard Interactions (bestaande GET-endpoint).
+
+== SES event tracking ==
+
+Webhook (AWS SNS → WP):
+  POST /wp-json/md/v2/ses/notifications
+
+Verwerkt SNS SubscriptionConfirmation + SES events (Delivery, Open, Click, Bounce,
+Complaint). Zoekt lead op email_id / _lead_confirmation_email_id, werkt
+_lead_email_status + _lead_email_events bij.
+
+AWS-setup (Johan):
+  • Configuration Set met event publishing → SNS topic → HTTPS subscription naar bovenstaande URL
+  • wp-config constants:
+      MD_SES_REGION
+      MD_SES_ACCESS_KEY_ID
+      MD_SES_SECRET_ACCESS_KEY
+      MD_SES_FROM_EMAIL  (default: MaterialDistrict <requests@materialdistrict.com>)
+      MD_SES_CONFIGURATION_SET  (optioneel, aanbevolen voor open/bounce)
+
+== Legacy theme ==
+
+`postmark-email-send.php` gebruikt nu dezelfde SES-module (HTML i.p.v. Postmark-templates).
+Theme JS blijft hetzelfde endpoint aanroepen; retourneert SES MessageId als plain text.
+
+== Library ==
+
+Plugin vendor: `aws/aws-sdk-php` (^3.300) via includes/composer.json
+
+== Nog open ==
+
+• sample-request (`POST /md/v2/sample-request`) — nog aparte stub in frontend
+• Publieke Insider-gates op downloads (downloads_insiders_only) — instelbaar in dashboard,
+  enforcement op materiaalpagina nog apart
+• Postmark PHP package staat nog in vendor (cron-material-follow-up etc.) — lead-flow migrated
+
+Groet,
+Johan
