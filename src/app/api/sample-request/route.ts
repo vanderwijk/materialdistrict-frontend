@@ -10,11 +10,7 @@
  *    voorkomt al dat de form rendert, maar deze route doet een extra check)
  *  - NIET Insider-only — alle ingelogde gebruikers mogen samples aanvragen
  *
- * Placeholder-status: deze route forward NOG NIET naar Johan's WP-endpoint
- * (`POST /wp-json/md/v2/sample-request`, zie W14). Voor batch 3 valideren
- * we de input, loggen we het verzoek, en returneren `{ ok: true }`. Zodra
- * Johan's endpoint live is, vervangen we het body van deze handler met
- * een `wpAuthFetch`-call.
+ * Placeholder-status: forwards to WordPress `POST /md/v2/sample-request`.
  *
  * Body-shape (zie W14 in `open-issues-patch-sessie4.md`):
  *   {
@@ -34,7 +30,11 @@
  */
 
 import { NextResponse } from 'next/server'
-import { getAuthCookie } from '@/lib/auth/cookies'
+import { getCurrentUser, WordPressAuthError } from '@/lib/api/wordpress'
+import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
+import { clearAuthCookie, getAuthCookie } from '@/lib/auth/cookies'
+
+export const dynamic = 'force-dynamic'
 
 // --------------------------------------------------------------------
 // Validation
@@ -143,7 +143,30 @@ export async function POST(request: Request): Promise<NextResponse> {
     )
   }
 
-  // 2. Body parse + validate
+  try {
+    await getCurrentUser(token)
+  } catch (err) {
+    if (err instanceof WordPressAuthError) {
+      await clearAuthCookie()
+      return NextResponse.json(
+        {
+          code: 'md_auth_required',
+          message: 'Please sign in to request a sample.',
+        },
+        { status: 401 },
+      )
+    }
+    console.error('[api/sample-request] auth check failed', err)
+    return NextResponse.json(
+      {
+        code: 'md_internal_error',
+        message: 'Something went wrong.',
+      },
+      { status: 500 },
+    )
+  }
+
+  // Body parse + validate
   let rawBody: unknown
   try {
     rawBody = await request.json()
@@ -168,37 +191,28 @@ export async function POST(request: Request): Promise<NextResponse> {
     )
   }
 
-  // 3. Forward to WordPress — PLACEHOLDER (W14)
-  //
-  // Wanneer Johan's endpoint live is, vervang dit blok met:
-  //
-  //   try {
-  //     await wpAuthFetch<{ ok: true }>(`/md/v2/sample-request`, {
-  //       method: 'POST',
-  //       body: validation.payload,
-  //       bearer: token,
-  //     })
-  //   } catch (err) {
-  //     if (err instanceof WordPressAuthError) {
-  //       return NextResponse.json(
-  //         { code: err.code, message: err.message },
-  //         { status: err.status ?? 400 },
-  //       )
-  //     }
-  //     console.error('[api/sample-request]', err)
-  //     return NextResponse.json(
-  //       { code: 'md_internal_error', message: 'Something went wrong.' },
-  //       { status: 500 },
-  //     )
-  //   }
-  //
-  // Voor nu: log het verzoek en return success. Geen back-end persistence.
-  console.log('[sample-request] placeholder forward', {
-    material_id: validation.payload.material_id,
-    email_domain: validation.payload.email.split('@')[1] ?? 'unknown',
-    has_company: Boolean(validation.payload.company),
-    has_message: Boolean(validation.payload.message),
-  })
-
-  return NextResponse.json({ ok: true }, { status: 200 })
+  // Forward to WordPress.
+  try {
+    await wpDashboardFetch<{ ok: boolean; lead_id: number }>(
+      '/md/v2/sample-request',
+      {
+        method: 'POST',
+        bearer: token,
+        body: validation.payload,
+      },
+    )
+    return NextResponse.json({ ok: true }, { status: 200 })
+  } catch (err) {
+    if (err instanceof DashboardApiError) {
+      return NextResponse.json(
+        { code: err.code, message: err.message },
+        { status: err.status },
+      )
+    }
+    console.error('[api/sample-request]', err)
+    return NextResponse.json(
+      { code: 'md_internal_error', message: 'Something went wrong.' },
+      { status: 500 },
+    )
+  }
 }

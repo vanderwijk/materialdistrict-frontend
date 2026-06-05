@@ -1,0 +1,147 @@
+Onderwerp: Re: Interactions contract — WP deliveries + endpoint-voorkeur
+
+Hoi Claude,
+
+wordpress-instructions-interactions.md ontving ik (geen zip); het bestand stond
+niet in mijn projecten/Downloads, dus ik heb het contract uit je mail + de zeven
+punten verwerkt. Hieronder status per punt en mijn antwoord op je endpoint-vraag.
+
+== Endpoint-voorkeur (punt 2 + 3) ==
+
+Twee endpoints — niet één generiek POST voor alles:
+
+1. **Requests/contact persist** → bestaand `POST /md/v2/get-in-touch`
+   (frontend-proxy: `POST /api/get-in-touch`, camelCase body ongewijzigd).
+   Maakt `lead` CPT + meta (`_lead_type=request`, `_lead_dashboard_status=Request`),
+   SES-mail, country-gate + insider-gate server-side. Verschijnt in dashboard
+   Interactions + telt mee in statistics Requests.
+
+2. **Event-logging** → nieuw `POST /md/v2/interactions/events`
+   Authorization: Bearer JWT (ingelogde user verplicht).
+
+   Body (snake_case):
+     {
+       "type": "website_click" | "brochure_download",
+       "brand_id": 123,           // óf afleidbaar via material_id
+       "material_id": 456,        // optioneel
+       "download_id": 789          // attachment-id; alias attachment_id ook geaccepteerd
+     }
+
+   `type`-waarden exact:
+     • `website_click`     — alleen aggregaat; verhoogt `_brand_website_clicks`;
+                           geen lead-row, geen interactions-lijst entry
+     • `brochure_download` — verhoogt `_brochure_downloads` op attachment;
+                           maakt lead met `_lead_type=brochure_download` →
+                           interactions-lijst (status Download) + brochures-stat
+
+   Response 200:
+     website_click:     { "ok": true, "type": "website_click" }
+     brochure_download: { "ok": true, "type": "brochure_download", "lead_id": 99, "downloads": 12 }
+
+   Fouten:
+     401 md_unauthorized
+     400 md_invalid_request (ongeldig type / body)
+     403 md_interaction_insider_required (downloads_insiders_only)
+     404 md_interaction_invalid_context / md_interaction_invalid_attachment
+
+**Views** zitten bewust niet in dit events-endpoint. Statistics leest al
+`post_views_count` per materiaal; headless incrementeert die meta nog niet
+(legacy theme deed dat op single-material). Als je views vanuit Next wilt
+loggen, kan dat als apart `type=material_view` — zeg het even, dan voeg ik
+die toe zonder de aggregaat-only regel te breken.
+
+== Punt 1 — auth/me country (LIVE) ==
+
+GET /md/v2/auth/me → user-object uitgebreid:
+  country: "Netherlands" | null  // leesbaar label (matcht dashboard-profiel + accepted_countries)
+  country_code: "NL" | null     // ISO-2, optioneel
+
+Gebruik `country` (label) voor de country-gate; `country_code` voor ISO-logica.
+
+== Punt 2 — get-in-touch persist (LIVE, wiring) ==
+
+`POST /md/v2/get-in-touch` staat in de plugin (SES + lead CPT). Zelfde contract
+als mijn eerdere get-in-touch-mail:
+  • lead-routing + restrict_to_listed_countries (403 md_lead_country_blocked)
+  • sample_requests_insiders_only bij optie "sample" (403 md_lead_insider_required)
+  • Response: { "ok": true, "lead_id": 12345 }
+
+Frontend-proxy hoeft niet te wijzigen.
+
+== Punt 3 — event-logging (LIVE) ==
+
+Zie endpoint-voorkeur hierboven. `website_click` → metrics-kaart Website clicks;
+`brochure_download` → brochures[] + interactions type brochure-download.
+
+== Punt 4 — statistics-correctie (LIVE) ==
+
+GET /md/v2/dashboard/brands/{id}/statistics:
+
+Metrics-kaarten (volgorde + labels):
+  1. Website clicks
+  2. Requests
+  3. Brochure downloads
+  4. Most viewed          // hoogste post_views_count van één materiaal
+
+materials[] rijen: alleen material_id, name, views, requests
+  → **downloads veld verwijderd** (downloads leven in brochures[])
+
+brochures[] ongewijzigd (S13.4).
+
+== Punt 5 — publieke material-REST (LIVE) ==
+
+GET /wp/v2/material/{id} → meta uitgebreid:
+
+  downloads: [ { id, title, url, type } ]
+    // primair uit dashboard `_material_dashboard_downloads`; fallback meta `downloads`
+
+  brand_website: string | null
+  brand_restrict_to_listed_countries: boolean
+  brand_sample_requests_insiders_only: boolean
+  brand_downloads_insiders_only: boolean
+  brand_accepted_countries: string[]   // route-landen als labels (bv. "Netherlands")
+
+Booleans via md_meta_truthy-conventie. Lege accepted_countries = geen routes gezet.
+
+== Punt 6 — lead-routing-afdwinging (LIVE) ==
+
+Server-side al actief in get-in-touch + sample-request:
+  restrict_to_listed_countries → 403 md_lead_country_blocked als user-land
+  niet in route-lijst (user.country ISO vs route country codes).
+
+Frontend country-gate kan nu:
+  • user.country uit /auth/me
+  • brand_restrict_to_listed_countries + brand_accepted_countries uit material-meta
+  • brand_website voor verwijzing
+
+Panel open + submit disabled = frontend; POST wordt sowieso geweigerd.
+
+== Punt 7 — publieke brand-REST (bevestigd) ==
+
+GET /wp/v2/brand/{id} levert al:
+  meta.website / meta._brand_website
+  meta.address
+  meta.city
+  meta.country_detail
+
+E-mail wordt niet geëxposeerd op publieke brand-REST (alleen contact_email in
+meta — frontend negeert die op publieke pagina's). Geen WP-wijziging nodig.
+
+== Deploy / testplan ==
+
+Country-gate prereqs:
+  1. GET /auth/me → country + country_detail aanwezig
+  2. GET /wp/v2/material/{id} → downloads[] + brand_* velden
+  3. Ingelogde user buiten accepted countries → get-in-touch 403
+
+Interactions flow:
+  4. POST get-in-touch → lead in GET …/interactions + Requests-stat omhoog
+  5. POST interactions/events type=website_click → Website clicks-stat omhoog
+  6. POST interactions/events type=brochure_download → lead in interactions +
+     brochures[] count omhoog
+
+Statistics:
+  7. materials[] zonder downloads-kolom; 4 metrics-kaarten conform hierboven
+
+Groet,
+Johan

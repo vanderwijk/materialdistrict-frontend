@@ -1,0 +1,140 @@
+Onderwerp: Re: materialcard-comparefix — merged + follow-up fixes (CompareBar)
+
+Hoi Claude,
+
+Je materialcard-comparefix.zip is gemerged en na deploy getest. De click-bubbling
+fix werkt zoals bedoeld. Tijdens testen kwamen nog drie vervolgproblemen naar
+boven; die zijn in main opgelost. Hieronder het volledige overzicht van wat er
+in de frontend is gewijzigd (commits 56bb8c1 → d4c89e8).
+
+== 1. Jouw zip — click bubbling (commit 56bb8c1) ==
+
+Bestand: `src/components/ui/MaterialCard.tsx`
+
+Probleem (bevestigd):
+  Save/Compare-knoppen liggen als overlay binnen de card-Link (HoverPrefetchLink).
+  Klik bubbelde door → directe navigatie naar `/materials/[slug]`. toggleCompare
+  draaide technisch wel, maar grid + CompareBar werden ge-unmount voordat er iets
+  zichtbaar werd.
+
+Jouw fix (1:1 overgenomen):
+  `handleSave` en `handleCompare` typen nu `MouseEvent<HTMLButtonElement>` en
+  roepen `e.preventDefault()` + `e.stopPropagation()` aan vóór gating/toggle.
+
+Geen wijzigingen aan ActionButton, ContentCard, Card, useCompare of layout —
+precies zoals je aangaf.
+
+== 2. CompareBar flitst en verdwijnt (commit 6fa3362) ==
+
+Symptoom na jouw fix:
+  Op `/materials`: CompareBar schoot kort omhoog en verdween direct. Tweede
+  material toevoegen leek niets te doen. Op detailpagina: Compare-knop deed
+  niets zichtbaars (geen bar).
+
+Oorzaak A — conflicterende CSS in `src/styles/globals.css`:
+  Twee `.compare-bar`-blokken:
+    • Oud mockup-blok (~§24): `transform: translateY(100%)` + `.compare-bar.visible`
+      om zichtbaar te maken. CompareBar.tsx zet nooit `.visible`.
+    • Nieuw sessie-4-blok (~§5746): slide-up animatie, maar overschrijft transform niet.
+
+  Gevolg: animatie schuift bar kort omhoog, daarna wint `translateY(100%)` weer →
+  bar off-screen. compareIds bleven wél staan (icoon actief), vandaar "tweede klik
+  doet niets".
+
+Fix CSS:
+  • Legacy mockup-blok (`.compare-bar` + `.compare-bar.visible`) verwijderd.
+  • Sessie-4 animatie: `animation-fill-mode: forwards` toegevoegd.
+
+Oorzaak B — CompareBar alleen op overzicht:
+  CompareProvider zat in `materials/layout.tsx`, maar CompareBar alleen in
+  MaterialsGrid. Op `/materials/[slug]` geen bar-component.
+
+Fix:
+  • Nieuw: `src/app/materials/[slug]/_components/MaterialDetailCompareBar.tsx`
+  • Gerenderd onderaan `src/app/materials/[slug]/page.tsx`
+  • Deelt compare-state via dezelfde CompareProvider in layout.
+
+== 3. Fallback-labels "Material #136960" op detail (commit d4c89e8) ==
+
+Symptoom:
+  Op detailpagina toonde CompareBar alleen het huidige material met titel/brand/thumb.
+  Eerdere selecties uit het overzicht: lege thumb + "Material #<id>".
+
+Oorzaak:
+  CompareBar kreeg metadata via lokale `materialsById`-Map per page:
+    • MaterialsGrid → map van grid-items
+    • MaterialDetailCompareBar → map met alleen huidig material
+  compareIds leefden wél in CompareProvider (layout-niveau), metadata niet.
+
+Fix — metadata in CompareProvider:
+
+Bestand: `src/lib/hooks/useCompare.tsx`
+  • Nieuw type: `CompareMaterialSnapshot` (Pick van MaterialListItem:
+    id, title, brandName, hero, slug, link)
+  • Provider-state uitgebreid: `{ ids: number[]; materials: Map<id, snapshot> }`
+  • `toggleCompare(id, material?)` — bij toevoegen snapshot opslaan; bij
+    remove/clear ook map opschonen
+  • Nieuw: `registerCompareMaterial(material)` — metadata bijwerken zonder toggle
+  • Nieuw: `getCompareMaterial(id)` — lookup voor CompareBar
+
+Bestand: `src/components/ui/CompareBar.tsx`
+  • Slot-resolutie: `materialsById?.get(id) ?? getCompareMaterial(id) ?? null`
+  • Prop `materialsById` blijft bestaan als optionele override/enrichment
+
+Bestand: `src/components/ui/MaterialCard.tsx`
+  • `toggleCompare(material.id, { id, title, brandName, hero, slug, link })`
+    bij succesvolle Insider-gated toggle
+
+Bestand: `src/app/materials/_components/MaterialsGrid.tsx`
+  • `useEffect`: registreert snapshots voor grid-items die al in compareIds staan
+    (backfill bij paginering / terugkeer naar overzicht)
+
+Bestand: `src/app/materials/[slug]/_components/MaterialDetailActions.tsx`
+  • Props uitgebreid: `brandName`, `hero`
+  • `handleToggleCompare` geeft snapshot mee aan `toggleCompare`
+
+Bestand: `src/app/materials/[slug]/page.tsx`
+  • `brandName` + `hero={material.gallery.hero}` doorgegeven aan MaterialDetailActions
+  • MaterialDetailCompareBar blijft staan; roept `registerCompareMaterial` aan
+    on mount voor het huidige material
+
+== Wat niet is gewijzigd ==
+
+  • ActionButton, ContentCard, Card, HoverPrefetchLink — ongewijzigd (behalve
+    MaterialCard handlers zoals in jouw zip)
+  • CompareProvider-locatie: nog steeds `src/app/materials/layout.tsx`
+  • Insider-gating, MAX_COMPARE=3, CompareBar href `/compare?ids=...` — ongewijzigd
+  • Geen localStorage-persistence (bewust; Fase 2 / Boards)
+  • Geen plugin/WP-wijzigingen
+
+== Commits op main ==
+
+  56bb8c1  fix(materials): stop compare/save clicks bubbling to card link
+  6fa3362  fix(materials): keep CompareBar visible after slide-up animation
+  d4c89e8  fix(materials): persist compare metadata across page navigation
+
+== Getest (productie, Insider-account) ==
+
+  ✅ /materials — Compare togglet, bar blijft zichtbaar, geen card-navigatie
+  ✅ Meerdere materials toevoegen — slots vullen met titel, brand, thumb
+  ✅ /materials/[slug] — CompareBar zichtbaar; alle slots tonen echte namen
+  ✅ Card-body klik → nog steeds navigatie naar detail
+  ✅ Clear → lege bar; refresh → state reset (verwacht gedrag v1)
+
+NB: compare-items die vóór commit d4c89e8 al in de lijst stonden missen metadata
+in de Map. Eén keer Clear + opnieuw toevoegen lost dat op.
+
+== Open / vervolg ==
+
+  • `/compare?ids=...` pagina zelf — nog placeholder-href (sessie 4 scope)
+  • CompareBar op brand-detail (`BrandMaterialsGrid`) — provider op brands-layout
+    bestaat; bar zelf nog niet op layout-niveau (zelfde patroon als materials
+    vóór deze fix)
+  • Optioneel: API-fetch voor ontbrekende snapshots (materials buiten huidige
+    grid/detail) — nu niet gebouwd; fallback "Material #id" blijft voor edge cases
+
+Bedankt voor de geïsoleerde MaterialCard-fix — goede diagnose. De CSS-dubbeling
+en metadata-split waren losse issues die pas na deploy zichtbaar werden.
+
+Groet,
+Johan
