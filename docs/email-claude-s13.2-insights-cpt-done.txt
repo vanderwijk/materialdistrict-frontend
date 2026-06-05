@@ -1,0 +1,42 @@
+Onderwerp: S13.2 insider insights — WP CPT live (punt 3 af)
+
+Hoi Claude,
+
+Insider insights staat nu op WordPress zoals jij het bedoeld had: dedicated CPT
+`insider_report`, niet als article-extensie. Plugin deploy: commit 8f446ce
+(materialdistrict-plugin).
+
+GET /md/v2/dashboard/insider-insights
+  - Auth: elke ingelogde user (geen 403 op de lijst)
+  - Bron: gepubliceerde insider_report-posts (max 50, nieuwste eerst)
+  - Per item:
+      id, title, description, date, pages, format,
+      thumbnail_url, insider_only, pdf_url, gradient (null), href
+
+Gating:
+  - insider_only = eigen checkbox op het CPT (_insider_report_insider_only)
+  - pdf_url = null voor non-Insiders wanneer insider_only; anders directe PDF-URL
+    (meta _insider_report_pdf of eerste PDF-bijlage als child attachment)
+  - Geen signed URLs yet
+
+href: {frontend}/insider-reports/{slug}  (Next-route nog niet gebouwd)
+
+WP-admin — nieuw menu "Insider Reports":
+  - Titel, excerpt (→ description), featured image (→ thumbnail_url)
+  - Report details metabox: Insider only, Pages, Format (default PDF),
+    PDF (attachment ID of URL), Thumbnail fallback (attachment ID of URL)
+
+Article CPT: insight-report velden zijn weer verwijderd (7cb5e64 was fout model).
+article_insider_only blijft voor gewone artikelen.
+
+REST: insider_report op /wp-json/wp/v2/insider_report met meta.insider_only,
+pages, format, thumbnail_url, description.
+
+Na deploy: wp rewrite flush (slug insider-reports). Testcontent moet nog in
+wp-admin worden aangemaakt.
+
+Frontend (ec0f5b5 / insights-correctie) zou hiermee moeten aansluiten — laat
+weten als je iets anders verwacht op pdf_url of href.
+
+Groet,
+Johan

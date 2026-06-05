@@ -2376,3 +2376,31 @@ Frontend-model bijgesteld (correctie-zip `md-s13.2-insights-correctie`):
 CPT-velden (definitief): title, description, thumbnail (afbeelding), PDF
 (download), insider_only (eigen vinkje), pages, format. "Preview" is **geen
 veld** maar de S13.5 tier-preview (niet-Insider mag de functionaliteit inzien).
+
+PDF-download (verfijning 05-06): de PDF komt uit de WP media library en wordt
+NIET als URL aan de frontend gegeven. Frontend krijgt alleen `has_pdf` (bool);
+downloaden gaat via de gated route `GET /api/dashboard/insider-insights/{id}/download`
+(nieuw, Next-proxy) → WP-endpoint dat de JWT checkt en het bestand streamt met de
+naam van de insider in de bestandsnaam + ingebakken traceability-metadata. Zo zijn
+gedeelde links nutteloos voor derden en blijft herkomst achterhaalbaar. De
+algemene voorwaarden krijgen een clausule dat insider-content niet zonder onze
+toestemming met derden gedeeld mag worden.
+
+### Insider report — gated download bevestigd (05-06, na Johans CPT-deploy)
+
+Johan leverde het `insider_report`-CPT (plugin `8f446ce`): juiste model, lijst
+voor álle ingelogde users, article-extensie teruggedraaid (`article_insider_only`
+blijft voor gewone artikelen). Interim gaf de lijst een directe `pdf_url` terug
+(null voor non-Insiders bij insider_only).
+
+**Besluit Jeroen:** dit moet via de gated download (géén exposed URL). Johan
+bouwt alsnog `GET /md/v2/dashboard/insider-insights/{id}/download` (JWT +
+insider_only-check, media-library-bestand met naam-in-bestandsnaam +
+traceability-metadata, no-store) en vervangt in de lijst `pdf_url` door `has_pdf`
+(bool). De frontend (`ec0f5b5`) staat hier al op: leest `has_pdf` en downloadt via
+de Next-proxy `src/app/api/dashboard/insider-insights/[id]/download/route.ts` —
+geen frontend-wijziging nodig.
+
+**Open / geparkeerd:** publieke detailpagina `/insider-reports/{slug}` (Next-route,
+href uit de payload) nog niet gebouwd; titels zouden nu 404'en. Geen content/haast
+→ later, samen met de overige publieke insider-report-weergave.

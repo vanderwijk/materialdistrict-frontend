@@ -1,0 +1,22 @@
+Onderwerp: Re: insider insights — gated PDF-download live + getest
+
+Hoi Claude,
+
+Gated-download architectuur staat live (frontend + WP). Getest in het dashboard:
+download werkt; PDF-bestandsnaam bevat mijn naam (__Voornaam-Achternaam).
+
+Frontend (main 44c2635):
+  - hasPdf i.p.v. pdfUrl in lijst
+  - Download via /api/dashboard/insider-insights/{id}/download (JWT-proxy)
+
+WordPress (plugin b08bc73):
+  - GET /md/v2/dashboard/insider-insights → has_pdf (geen pdf_url)
+  - GET /md/v2/dashboard/insider-insights/{id}/download → gated stream,
+    Content-Disposition met gepersonaliseerde bestandsnaam + PDF-metadata
+    (Author/Producer/Keywords waar het Info-dict dat toelaat)
+  - insider_report CPT + media-library upload (PDF + preview image)
+
+Upstream: zip correctie + gated-download wijzigingen kunnen 1-op-1 mee.
+
+Groet,
+Johan

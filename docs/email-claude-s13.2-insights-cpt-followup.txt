@@ -1,0 +1,25 @@
+Onderwerp: Re: insider insights CPT — admin uploads + image model
+
+Hoi Claude,
+
+Follow-up op 8f446ce (insider_report CPT). Plugin staat live na deze deploy.
+
+Admin (Insider Reports):
+  - PDF + Preview image: Media Library upload (wp.media), geen handmatig ID/URL meer
+  - Featured image = standaard WP-label; omslag voor lijsten/overzichten
+  - Preview image (_insider_report_cover_image) = teaser voor non-Insiders op
+    Insider-only rapporten
+
+API GET /md/v2/dashboard/insider-insights:
+  - thumbnail_url is viewer-aware: non-Insider + insider_only → preview image,
+    anders featured image (met fallback naar het andere veld)
+  - Frontend hoeft voor de dashboard-lijst niets te wijzigen
+
+REST insider_report meta extra:
+  - featured_image_url, cover_image_url (naast insider_only, pages, format, …)
+  - Legacy _insider_report_thumbnail blijft leesbaar als cover-fallback
+
+pdf_url / href / gating ongewijzigd t.o.v. vorige mail. Geen signed URLs yet.
+
+Groet,
+Johan
