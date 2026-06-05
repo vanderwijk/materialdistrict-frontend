@@ -2404,3 +2404,18 @@ geen frontend-wijziging nodig.
 **Open / geparkeerd:** publieke detailpagina `/insider-reports/{slug}` (Next-route,
 href uit de payload) nog niet gebouwd; titels zouden nu 404'en. Geen content/haast
 → later, samen met de overige publieke insider-report-weergave.
+
+### Insider report — gated download LIVE + geverifieerd (05-06)
+
+Live en getest:
+- Frontend main `44c2635`: `hasPdf` i.p.v. `pdfUrl` in de lijst; download via de
+  JWT-proxy `/api/dashboard/insider-insights/{id}/download`.
+- WP-plugin `b08bc73`: lijst geeft `has_pdf` (geen `pdf_url`); download =
+  gated stream met gepersonaliseerde bestandsnaam (`__Voornaam-Achternaam`) +
+  PDF-metadata (Author/Producer/Keywords waar het Info-dict dat toelaat).
+  `insider_report`-CPT + media-library-upload (PDF + preview image) live.
+- Johan getest in het dashboard: download werkt, naam zit in de bestandsnaam.
+- De insights-correctie-zip sluit 1-op-1 aan op de deploy (upstream consistent).
+
+Resteert: publieke detailpagina `/insider-reports/{slug}` (Next-route) —
+geparkeerd, geen content/haast; later samen met de publieke insider-report-weergave.
