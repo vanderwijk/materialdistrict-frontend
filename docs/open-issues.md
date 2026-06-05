@@ -521,3 +521,87 @@ Zie `MANIFEST-bookmarks-savedsearch-2026-06-04.md`, `handoff-claude.md` § Bookm
   ChannelBar op alle overzichten live (`84322bf` + `76dd5c4`, FacetWP `theme`-
   facet + index). Channel-contract + slug-vs-id-gotcha vastgelegd. Channels-hub-
   richting beslist (Stap 12).
+
+## Sessie — Compare/save fix op /materials (05-06-2026)
+
+> Zijstap buiten de build-order, gestart vanuit een bugmelding (compare deed
+> niets op `/materials`). Frontend-diagnose + fix; Johan merge + drie
+> vervolgfixes op main (`56bb8c1` → `d4c89e8`), getest op productie met
+> Insider-account.
+
+### Opgelost ✅
+- **Click-bubbling** — Save/Compare op de cards liggen als overlay binnen de
+  card-Link (`HoverPrefetchLink`); een klik bubbelde door en navigeerde direct
+  naar `/materials/[slug]`. `toggleCompare` draaide technisch wel, maar grid +
+  CompareBar werden door die navigatie ge-unmount voordat er iets zichtbaar
+  werd. Fix: `handleSave`/`handleCompare` in `MaterialCard.tsx` typen nu
+  `MouseEvent<HTMLButtonElement>` en roepen `preventDefault()` +
+  `stopPropagation()` aan vóór gating/toggle. Geen wijzigingen aan
+  `ActionButton`, `ContentCard`, `Card`, `useCompare` of layout. Johan `56bb8c1`.
+- **CompareBar flitste/verdween** — twee `.compare-bar`-blokken in `globals.css`
+  (legacy mockup met `translateY(100%)` + ongebruikte `.visible`, vs. het
+  sessie-4 slide-up-blok) werkten elkaar tegen. Legacy-blok verwijderd +
+  `animation-fill-mode: forwards` toegevoegd. Johan `6fa3362`.
+- **CompareBar ontbrak op detail + metadata-verlies** — bar zat alleen in
+  `MaterialsGrid`, niet op `/materials/[slug]`; en de slot-metadata leefde per
+  page (lokale `materialsById`-map), waardoor eerdere selecties op detail als
+  "Material #<id>" toonden. Bar toegevoegd op detail
+  (`MaterialDetailCompareBar`); compare-metadata nu centraal in `useCompare`
+  via een snapshot-map (`registerCompareMaterial` / `getCompareMaterial`,
+  `toggleCompare(id, material?)`). Johan `6fa3362` + `d4c89e8`.
+
+### Follow-up 🟢
+- **CMP-1 — CompareBar op brand-detail (`BrandMaterialsGrid`)**
+  **Eigenaar:** Claude (volgende sessie, lage urgentie)
+  De `CompareProvider` hangt al op de brands-layout, maar de CompareBar zelf nog
+  niet op layout-niveau — zelfde situatie als materials vóór deze fix. Bouwen via
+  hetzelfde patroon. **Aandachtspunt:** compare-state leeft nu per sectie
+  (materials apart van brands); als we de bar op brands tonen, expliciet kiezen
+  of dat één gedeelde lijst moet worden of bewust gescheiden blijft.
+- **CMP-2 — Snapshot-fetch voor materials buiten grid/detail (optioneel)**
+  Voor edge cases (material in compare dat noch in de huidige grid noch op het
+  huidige detail staat) valt de bar terug op "Material #<id>". Optioneel later
+  een API-fetch voor ontbrekende snapshots; nu niet gebouwd.
+- **`/compare?ids=…`-pagina** — nog placeholder-href; valt onder bestaande
+  stap-4-scope, ongewijzigd.
+
+### NB
+Compare-items die vóór `d4c89e8` al in de lijst stonden missen metadata in de
+snapshot-map; één keer Clear + opnieuw toevoegen lost dat op. Niet relevant na
+de deploy.
+
+## Wijzigingen — append onderaan de lijst
+- **v1.x (05-06-2026, compare-fix)** — Compare/save op `/materials` deed niets
+  zichtbaars (click-bubbling). Frontend-fix `MaterialCard.tsx` geleverd; Johan
+  merge `56bb8c1` + drie vervolgfixes (`6fa3362` CSS-dubbeling/zichtbaarheid,
+  `d4c89e8` metadata-persistentie + bar op detail). Getest op productie. Twee
+  nieuwe 🟢 follow-ups: CMP-1 (bar op brand-detail) en CMP-2 (snapshot-fetch).
+
+## Sessie 10 — Homepage afronding (S10.2 + S10.3) (05-06-2026)
+
+### Opgelost ✅
+- **S10.2 (material-type-carrousel)** — categorierij gevuld uit de
+  `material_category`-taxonomie (`getTerms`, hide_empty, alfabetisch), deeplink
+  `/materials?material_category=<slug>`. Nieuwe component `MaterialCategoryStrip`;
+  hergebruik bestaande `.hp-cats`-strip (nul nieuwe CSS); defensieve fallback naar
+  "All materials". Beslissing: alle top-level material-types in taxonomie-volgorde.
+- **S10.3 (partners-bron)** — placeholder vervangen door Partner-tier brands
+  (`listBrands` -> filter `partner`), roterende subset van max 8 per revalidate,
+  hergebruik `BrandTile`. Nieuwe component `FeaturedPartners`. Dode
+  `.partner-grid`/`.partner-card`-CSS opgeruimd.
+
+### Te verifieren op test-deploy 🟡
+- **HP-V1** — partners-blok vereist dat de `partner`-vlag op brands gevuld is;
+  anders blijft het blok (graceful) leeg.
+- **HP-V2** — bevestigen dat de `material_category`-facet/taxonomie echte
+  material-types teruggeeft en `?material_category=<slug>` correct filtert (docs
+  hadden een dubbelzinnig slug-voorbeeld dat type- en thema-slugs mengde).
+
+### Status
+S10.1 (boeken) blijft geparkeerd. Homepage daarmee functioneel compleet op
+boeken na.
+
+## Wijzigingen — append onderaan de lijst
+- **v1.x (05-06-2026, homepage-afronding)** — S10.2 + S10.3 gesloten (carrousel +
+  partners). Twee deploy-verificatiepunten HP-V1/HP-V2. `globals.css` alleen dode
+  partner-CSS verwijderd.

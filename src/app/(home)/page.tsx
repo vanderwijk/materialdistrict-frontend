@@ -7,8 +7,8 @@
  * verandert de URL niet: dit serveert nog steeds `/`.
  *
  * Server Component. Aggregeert de content-types tot één "magazine"-pagina. Eén
- * Promise.all (materials/articles/events); books volgt zodra de Books-domeinlaag
- * er is (nu placeholder).
+ * Promise.all (materials/articles/events/brands); books volgt zodra de
+ * Books-domeinlaag er is (nu placeholder).
  *
  * Hero-bovenkant: gast ziet de promo-band (PromoHero); klikt die weg → dan
  * verschijnt de FeaturedArticleHero. Ingelogde users zien meteen de
@@ -21,7 +21,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ContentCard } from '@/components/ui'
-import { listMaterials, listArticles, listEvents } from '@/lib/api'
+import {
+  listMaterials,
+  listArticles,
+  listEvents,
+  listBrands,
+  getTerms,
+} from '@/lib/api'
+import type { BrandListItem } from '@/types/brand'
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { JsonLd, buildWebSite, buildOrganization } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { sortEventsByDate } from '@/app/events/_lib/events-order'
@@ -37,6 +45,11 @@ import {
   TopStoriesWidget,
   type StoryListItem,
 } from './_components/TopStoriesWidget'
+import { FeaturedPartners } from './_components/FeaturedPartners'
+import {
+  MaterialCategoryStrip,
+  type MaterialCategoryLink,
+} from './_components/MaterialCategoryStrip'
 
 /** Aggregatie ververst elke 10 min (overzicht-cadence uit de kwaliteitseisen). */
 export const revalidate = 600
@@ -45,8 +58,22 @@ export const revalidate = 600
 const MATERIALS_FETCH = 24
 const ARTICLES_FETCH = 12
 const EVENTS_FETCH = 100
+/**
+ * Brand-fetch voor de partners-strip. Eén brede pagina; er is geen
+ * server-side partner-filter, dus we filteren client-side op de `partner`-
+ * vlag. Cap = WP per_page-max (100). Groeit de brand-catalogus ooit ver
+ * voorbij 100 met partners verspreid daarachter, dan is een server-side
+ * `?partner=`-filter de follow-up — nu ruim voldoende voor de Partner-tier-
+ * omvang.
+ */
+const BRANDS_FETCH = 100
 /** Terugval voor de hero-telling als de count onverwacht 0/onbekend is. */
 const MATERIALS_COUNT_FALLBACK = 3200
+
+/** Aantal partners in het homepage-blok (akkoord: 6–8). */
+const PARTNERS_VISIBLE = 8
+/** Rotatie-venster, gelijk aan de page-revalidate (10 min). */
+const PARTNER_ROTATION_BUCKET_MS = 10 * 60 * 1000
 
 /** Statische marketing-content (geen WP-bron in v1; zie open-issues S10.x). */
 const QUOTES = [
@@ -68,16 +95,6 @@ const QUOTES = [
     name: 'Elena Rossi',
     role: 'Architect',
   },
-] as const
-
-/** Placeholder-partners tot er een echte partners-bron is (open issue S10.x). */
-const PARTNERS = [
-  'Partner One',
-  'Partner Two',
-  'Partner Three',
-  'Partner Four',
-  'Partner Five',
-  'Partner Six',
 ] as const
 
 export const metadata: Metadata = {
@@ -103,11 +120,40 @@ function formatDate(value: string): string {
   })
 }
 
+/**
+ * Kiest een roterende subset Partner-tier brands. Deterministisch binnen een
+ * render (alle bezoekers in hetzelfde ISR-venster zien dezelfde HTML) en
+ * schuift mee per regeneratie: het 10-min-bucket bepaalt het startpunt van een
+ * roterend venster over de (op id gesorteerde) partnerlijst. Zo komen na
+ * verloop van tijd alle partners aan bod, zonder `Math.random` (stabiel voor
+ * ISR — geen flikkerende selectie binnen een cache-venster).
+ */
+function pickRotatingPartners(
+  partners: BrandListItem[],
+  count = PARTNERS_VISIBLE,
+): BrandListItem[] {
+  if (partners.length <= count) return partners
+  const ordered = [...partners].sort((a, b) => a.id - b.id)
+  const bucket = Math.floor(Date.now() / PARTNER_ROTATION_BUCKET_MS)
+  const start = bucket % ordered.length
+  return Array.from(
+    { length: count },
+    (_, i) => ordered[(start + i) % ordered.length],
+  )
+}
+
 export default async function HomePage() {
-  const [matRes, artRes, eventRes] = await Promise.all([
+  const [matRes, artRes, eventRes, brandRes, catTerms] = await Promise.all([
     listMaterials({ perPage: MATERIALS_FETCH }),
     listArticles({ perPage: ARTICLES_FETCH }),
     listEvents({ perPage: EVENTS_FETCH }),
+    listBrands({ perPage: BRANDS_FETCH, orderby: 'title', order: 'asc' }),
+    // Material-types voor de categorie-carrousel. Defensief: als de taxonomie
+    // (nog) niet REST-bereikbaar is, degradeert de strip tot "All materials"
+    // i.p.v. de hele homepage te laten falen.
+    getTerms('material_category', { perPage: 100, hide_empty: true }).catch(
+      () => [],
+    ),
   ])
 
   // --- Materials: één fetch, meerdere afgeleiden -------------------------
@@ -138,6 +184,19 @@ export default async function HomePage() {
   const upcoming = orderedEvents.filter((e) => !e.isPast)
   const featuredEvent = upcoming.find((e) => e.featured) ?? upcoming[0] ?? null
 
+  // --- Partners: Partner-tier brands, roterende subset (S10.3) -----------
+  const partnerBrands = brandRes.items.filter((b) => b.partner)
+  const rotatingPartners = pickRotatingPartners(partnerBrands)
+
+  // --- Material-types: carrousel-bron (S10.2) ----------------------------
+  // Alle (niet-lege) material_category-termen, alfabetisch = taxonomie-volgorde.
+  // De slug matcht de FacetWP `material_category`-facetwaarde, dus de deeplink
+  // `/materials?material_category=<slug>` filtert direct.
+  const materialCategories: MaterialCategoryLink[] = catTerms
+    .filter((t) => t.slug)
+    .map((t) => ({ label: decodeHtmlEntities(t.name), slug: t.slug }))
+    .sort((a, b) => a.label.localeCompare(b.label))
+
   // --- Sidebar (Top stories): articles + materials, al gemapt ------------
   const sidebarArticles: StoryListItem[] = artRes.items.slice(0, 5).map((a) => ({
     href: `/articles/${a.slug}`,
@@ -161,14 +220,9 @@ export default async function HomePage() {
 
         <PromoHero materialCount={materialCount} />
 
-        {/* Categorierij — minimale strip (volledige carousel = follow-up S10.x). */}
-        <nav className="hp-cats" aria-label="Material categories">
-          <div className="hp-cats-inner">
-            <Link href="/materials" className="hp-cat-link">
-              All materials
-            </Link>
-          </div>
-        </nav>
+        {/* Material-type-carrousel (S10.2) — degradeert tot "All materials"
+            als er geen categorieën zijn. */}
+        <MaterialCategoryStrip categories={materialCategories} />
 
         <div className="hp-main">
           <div className="hp-content">
@@ -302,19 +356,9 @@ export default async function HomePage() {
               </div>
             </section>
 
-            {/* Featured partners (placeholder-bron in v1 — open issue S10.x) */}
-            <section className="hp-section">
-              <div className="section-hd">
-                <h2 className="section-title">Featured partners</h2>
-              </div>
-              <div className="partner-grid">
-                {PARTNERS.map((p) => (
-                  <div className="partner-card" key={p}>
-                    {p}
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* Featured partners — Partner-tier brands, roterende subset (S10.3).
+                Verdwijnt automatisch als er geen partners zijn. */}
+            <FeaturedPartners partners={rotatingPartners} />
           </div>
 
           <aside className="hp-sidebar" aria-label="More from MaterialDistrict">

@@ -2526,3 +2526,31 @@ opslag. Frontend `resolveCountryCode` blijft legacy-labels opvangen.
 NB voor S13.4: `LeadRoutingPanel.tsx` heeft dezelfde hardcoded `COUNTRIES`-lijst
 voor de per-country routing-regels — daar in S13.4 ook `COUNTRY_OPTIONS`
 gebruiken (+ `resolveCountryCode` op `route.country` bij laden).
+
+---
+
+## Sessie 10 — Homepage afronding (S10.2 + S10.3) (05-06-2026)
+
+Build-order stap 10. De twee resterende open homepage-punten afgerond; S10.1
+(boeken) blijft geparkeerd.
+
+### S10.3 — Featured partners (echte bron)
+- Placeholder-array `PARTNERS` vervangen door `listBrands` → filter op
+  `partner === true`, roterende subset van max 8 (10-min ISR-bucket).
+- Weergave via `BrandTile` in `.ov-grid-brands`; `FeaturedPartners` component.
+- Dode `.partner-grid`/`.partner-card`-CSS verwijderd uit `globals.css`.
+
+### S10.2 — Material-type-carrousel
+- Bron: `getTerms('material_category', { hide_empty:true })`.
+- Deeplink: `/materials?material_category=<slug>`.
+- `MaterialCategoryStrip` component; degradeert naar alleen "All materials" bij
+  lege taxonomie.
+
+### Te verifieren op test-deploy (HP-V1 / HP-V2)
+1. Partners-blok toont Partner-tier brands (24 partners in eerste 100 brands op
+   productie — vlag is gevuld).
+2. Carrousel toont material-types (Ceramics, Glass, Metals, Wood, …) — geen
+   theme-slugs; `/materials?material_category=ceramics` filtert via FacetWP.
+
+### Status
+S10.2 + S10.3 gesloten. Deploy naar Vercel test (05-06-2026).
