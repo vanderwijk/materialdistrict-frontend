@@ -222,32 +222,30 @@ export interface SavedSearch {
 // ============================================================
 
 /**
- * A trend report / insight entry. Reports flagged `insiderOnly` are gated for
- * non-Insiders (shown as a locked teaser); un-flagged reports are downloadable
- * by anyone via `pdfUrl`.
+ * An insider report: a standalone downloadable document with its OWN CPT —
+ * not an article/story. Reports flagged `insiderOnly` are gated for non-Insiders
+ * (the S13.5 tier-preview lets them peek); un-flagged reports download for anyone.
  *
  * Endpoint: `GET /md/v2/dashboard/insider-insights`
  */
 export interface InsightReport {
   id: string
   title: string
-  summary: string
+  /** Description of the document (shown on the report, not in the list row). */
+  description: string
   /** ISO date; formatted client-side to e.g. "Apr 2026". */
   date: string
-  /** e.g. "Trend report", "Material forecast". */
-  category: string
   /** Page count for the meta line ("28 pages"). */
   pages: number
   /** File format label, e.g. "PDF". */
   format: string
-  /** CSS gradient for the thumbnail block (matches public card styling). */
+  /** Thumbnail image URL; falls back to `gradient` when null. */
+  thumbnailUrl: string | null
+  /** CSS gradient fallback for the thumbnail block when no image is set. */
   gradient: string
-  /**
-   * Insider-only gating. Same `meta.insider_only` flag as articles/stories
-   * (set via the wp-admin checkbox). `false` → free, downloadable by anyone.
-   */
+  /** Insider-only gating — its OWN checkbox on the insider-report CPT. */
   insiderOnly: boolean
-  /** Signed download URL; `null` while not generated or gated for this user. */
+  /** Signed download URL for the PDF; `null` while gated/ungenerated. */
   pdfUrl: string | null
   href: string
 }

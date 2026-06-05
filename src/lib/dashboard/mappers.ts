@@ -361,13 +361,13 @@ export function mapSavedSearches(raw: RawSavedSearch[]): SavedSearch[] {
 interface RawInsight {
   id: string
   title?: string
-  summary?: string
+  description?: string
   date?: string
-  category?: string
   pages?: number
   format?: string
+  thumbnail_url?: string | null
   gradient?: string
-  /** Same flag as articles: `meta.insider_only` / `meta._insider_only`. */
+  /** Own checkbox on the insider-report CPT (not the article meta). */
   insider_only?: boolean
   pdf_url?: string | null
   href?: string
@@ -377,11 +377,11 @@ export function mapInsight(raw: RawInsight): InsightReport {
   return {
     id: raw.id,
     title: raw.title ?? '',
-    summary: raw.summary ?? '',
+    description: raw.description ?? '',
     date: raw.date ?? '',
-    category: raw.category ?? 'Report',
     pages: typeof raw.pages === 'number' ? raw.pages : 0,
     format: raw.format ?? 'PDF',
+    thumbnailUrl: raw.thumbnail_url ?? null,
     gradient: raw.gradient ?? 'linear-gradient(135deg,#d7e8b6,#eef6ff)',
     insiderOnly: raw.insider_only ?? false,
     pdfUrl: raw.pdf_url ?? null,

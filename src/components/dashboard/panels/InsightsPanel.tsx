@@ -54,7 +54,12 @@ export function InsightsPanel({
             const thumbStyle = { '--cover': report.gradient } as CSSProperties
             return (
               <li key={report.id} className="insight-row">
-                <span className="insight-thumb" style={thumbStyle} aria-hidden="true" />
+                {report.thumbnailUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="insight-thumb" src={report.thumbnailUrl} alt="" />
+                ) : (
+                  <span className="insight-thumb" style={thumbStyle} aria-hidden="true" />
+                )}
                 <div className="insight-row-body">
                   <Link href={report.href} className="insight-row-title">
                     {report.title}

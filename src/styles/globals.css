@@ -11365,7 +11365,7 @@ mark.search-mark {
 .insight-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
 .insight-row:first-child{padding-top:4px}
 .insight-row:last-child{border-bottom:none}
-.insight-thumb{width:54px;height:54px;border-radius:var(--radius);background:var(--cover,var(--surface2));flex-shrink:0}
+.insight-thumb{width:54px;height:54px;border-radius:var(--radius);background:var(--cover,var(--surface2));object-fit:cover;flex-shrink:0}
 .insight-row-body{flex:1;min-width:0}
 .insight-row-title{font-size:15px;font-weight:600;color:var(--navy)}
 .insight-row-title:hover{text-decoration:underline}

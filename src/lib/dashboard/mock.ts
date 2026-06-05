@@ -71,10 +71,10 @@ export const MOCK_SAVED_SEARCHES: SavedSearch[] = [
 ]
 
 export const MOCK_INSIGHTS: InsightReport[] = [
-  { id: 'i1', title: 'Biobased Materials Trend Report Q1 2026', summary: 'Biobased composites and circular facades lead the quarter.', date: '2026-04-01', category: 'Trend report', pages: 28, format: 'PDF', gradient: 'linear-gradient(135deg,#d7e8b6,#eef6ff)', insiderOnly: true, pdfUrl: null, href: '/dashboard/insider-insights#q1-2026' },
-  { id: 'i2', title: 'Circular Construction: State of the Market Q4 2025', summary: 'Where circular construction stands across Europe.', date: '2026-01-15', category: 'Market report', pages: 34, format: 'PDF', gradient: 'linear-gradient(135deg,#d6e6f0,#eef2d8)', insiderOnly: true, pdfUrl: null, href: '/dashboard/insider-insights#circular-q4-2025' },
-  { id: 'i3', title: 'Material Innovation Index Q3 2025', summary: 'The quarter\u2019s most notable material innovations, ranked.', date: '2025-10-01', category: 'Index', pages: 22, format: 'PDF', gradient: 'linear-gradient(135deg,#e7dfd2,#eef6ff)', insiderOnly: true, pdfUrl: null, href: '/dashboard/insider-insights#innovation-q3-2025' },
-  { id: 'i4', title: 'Introduction to Sustainable Specification', summary: 'A free primer on specifying sustainable materials.', date: '2025-10-01', category: 'Primer', pages: 12, format: 'PDF', gradient: 'linear-gradient(135deg,#dfe9d4,#f4f6f9)', insiderOnly: false, pdfUrl: '#', href: '/dashboard/insider-insights#intro-sustainable-spec' },
+  { id: 'i1', title: 'Biobased Materials Trend Report Q1 2026', description: 'Biobased composites and circular facades lead the quarter.', date: '2026-04-01', pages: 28, format: 'PDF', thumbnailUrl: null, gradient: 'linear-gradient(135deg,#d7e8b6,#eef6ff)', insiderOnly: true, pdfUrl: null, href: '/dashboard/insider-insights#q1-2026' },
+  { id: 'i2', title: 'Circular Construction: State of the Market Q4 2025', description: 'Where circular construction stands across Europe.', date: '2026-01-15', pages: 34, format: 'PDF', thumbnailUrl: null, gradient: 'linear-gradient(135deg,#d6e6f0,#eef2d8)', insiderOnly: true, pdfUrl: null, href: '/dashboard/insider-insights#circular-q4-2025' },
+  { id: 'i3', title: 'Material Innovation Index Q3 2025', description: 'The quarter\u2019s most notable material innovations, ranked.', date: '2025-10-01', pages: 22, format: 'PDF', thumbnailUrl: null, gradient: 'linear-gradient(135deg,#e7dfd2,#eef6ff)', insiderOnly: true, pdfUrl: null, href: '/dashboard/insider-insights#innovation-q3-2025' },
+  { id: 'i4', title: 'Introduction to Sustainable Specification', description: 'A free primer on specifying sustainable materials.', date: '2025-10-01', pages: 12, format: 'PDF', thumbnailUrl: null, gradient: 'linear-gradient(135deg,#dfe9d4,#f4f6f9)', insiderOnly: false, pdfUrl: '#', href: '/dashboard/insider-insights#intro-sustainable-spec' },
 ]
 
 export const MOCK_MY_REQUESTS: MyRequest[] = [

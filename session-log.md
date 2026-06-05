@@ -12,7 +12,9 @@
 ---
 
 ## Laatste update
-Datum: 12-05-2026 (ochtend)
+Datum: 05-06-2026 — S13.2 (My profile + Insider insights) live op test;
+insider-report-model gecorrigeerd naar eigen CPT. Eerder deze ronde: Stap 12
+Channels-hubs gebouwd, S13.1 Bookmarks & Boards (picker + detail) werkend.
 Sessie: Johan-gesprek — alle 9 datacontract/auth-vragen beantwoord ✅
 
 ---
@@ -2090,3 +2092,287 @@ Richting vastgelegd met Jeroen (zie `openingsprompt-channels-sessie.md`):
 - Bar blijft in-place filteren; hubs via de index (+ evt. klein bruggetje).
 - SEO = Claude (canonical/JSON-LD); `?channel=`-overzichten canonical naar het
   kale overzicht.
+
+### Stap 12 — Channels-hubs gebouwd (`/channels` + `/channels/[slug]`) (04-06)
+
+#### Gebouwd
+
+**Datalaag (batch 1)**
+- `theme`-filter doorgetrokken naar `listArticles` + `listEvents`
+  (`wordpress.ts`: `theme?: number` → `?theme=<id>`; wrappers in `content.ts`
+  forwarden via de bestaande spread). Materials/brands/talks hadden het al.
+- `getChannelHub(slug, perStrip=8)` (`content.ts`) — resolved slug→term-id via
+  de catalogus (onbekend = `null`), haalt parallel hero-term + 5 strips op
+  (Materials via FacetWP `theme`-facet/slug, rest via `?theme=<id>`), met per
+  strip de eerste 8 items + totaal, en een `isEmpty`-vlag.
+- `getChannelsIndex()` (`channels.ts`) — joint `/md/v2/material-channels`
+  (canonieke set + materials-telling) met `/wp/v2/theme` (description +
+  `theme_thumbnail` + featured-vlag). Sortering: featured → telling → label.
+- `getChannelTerm(idOrSlug)` (`channels.ts`) — hero-data (naam + description +
+  thumbnail) voor de hub.
+- `buildCollectionPage()` + `CollectionPageSchema` (`seo/`).
+- Barrel (`api/index.ts`) doorgezet.
+
+**`/channels`-index (batch 2)**
+- `channels/page.tsx` (server) + `ChannelIndexCard` (op `Card`-primitives) +
+  `loading.tsx` + `channels/layout.tsx` (`CompareProvider`, voor de
+  materials-strip met compare in de hub).
+- SEO: BreadcrumbList + CollectionPage (ItemList van de hubs). Canonical
+  `/channels`.
+
+**`/channels/[slug]`-hub (batch 3)**
+- `[slug]/page.tsx` (server) — hero (`ChannelHero`, thumbnail-achtergrond via
+  `--channel-hero-img`) + volledige description als prose + strips per type in
+  topmenu-volgorde, elk via `ChannelStrip` met een "View all … in {channel}"-
+  deeplink (`/materials?channel=…` enz.). Lege types vallen weg.
+  `generateStaticParams` (alle 20) + `generateMetadata` (unieke titel +
+  description + canonical per channel). `notFound()` bij onbekend/leeg channel.
+- Kaarten: `ContentCard` voor materials/stories/events/talks, `BrandTile` voor
+  brands — beide hergebruikt, geen nieuwe kaarttypes.
+- `[slug]/loading.tsx`.
+- SEO: BreadcrumbList (Home → Channels → channel) + CollectionPage met een
+  gecombineerde ItemList van de getoonde items.
+
+**CSS** — alleen toevoegingen in `globals.css` (compleet meegeleverd):
+`.channel-card-desc`, `.channel-hero*`, `.channel-intro`, `.channel-strip*`.
+Verder hergebruik van `ov-*` / `content-card-*`. Brace-balans 1889/1889.
+
+#### Beslissingen (met Jeroen, deze sessie)
+1. 8 items per strip. 2. Hero = thumbnail-achtergrond + naam + 2-regel-teaser,
+volledige description eronder. 3. Geen bar→hub-bruggetje in v1. 4. Index-telling
+= materials (één betrouwbare bron). 5. Featured-first bouwen; terugval op
+telling-sortering tot de WF-6-vlag in REST staat. 6. Leeg/onbekend channel → 404.
+
+#### Stylingkeuzes (autonoom)
+- Channel = hub, geen content-item → eigen `ChannelIndexCard` i.p.v. ContentCard.
+- Materials in de strip via `ContentCard` (niet `MaterialCard`) — vermijdt de
+  client-callback-machinerie (compare/sample-gate); compare-state blijft wel
+  beschikbaar via de layout-`CompareProvider` mocht dat later nodig zijn.
+- "Featured" als eyebrow, geen aparte sectie (voorkomt lege sectie pre-exposure).
+
+#### Open / vervolg
+Zie open-issues-patch (C-CH.1 featured-vlag-exposure, C-CH.2 books-strip,
+C-CH.3 events-strip-ordering). Mail aan Johan: `email-johan-channels-featured-flag.txt`.
+
+### S13.1 — Bookmarks & saved-search werkend gemaakt (04-06)
+
+#### Aanleiding
+
+Reads + deletes van het hele dashboard-datacontract waren al bedraad (batch
+1–4 + portal). Wat ontbrak was de **create-kant**: "Save" op detailpagina's en
+material-cards was een lokale, niet-persistente toggle, en `POST
+/md/v2/dashboard/bookmarks` was nooit gecontracteerd. Daardoor kon je nergens
+een bookmark aanmaken. Saved-searches had wél een POST-route, maar de
+"Save this search"-knop in de materials-filter was een bewuste TODO-no-op.
+
+#### Bookmarks — nu werkend
+
+**Nieuw:**
+- `src/lib/hooks/useBookmarks.tsx` — client-provider + `useBookmarks()`, zelfde
+  loose-mode-patroon als `useCompare`. Hydrateert eenmalig de bookmarks van de
+  ingelogde gebruiker (GET) naar een Map `"{type}:{itemId}" → bookmarkId`, en
+  `toggleBookmark(type, itemId)` schrijft optimistisch door (POST om toe te
+  voegen, DELETE op record-id om te verwijderen) met revert bij fout. Geen
+  dubbel-klik-races (per-key pending-guard). Anoniem = lege set, geen fetch.
+- `src/app/api/dashboard/bookmarks/route.ts` — `GET` (hydratie-lijst) +
+  `POST` (create, body `{ type, itemId }` → WP `{ type, item_id }` via nieuwe
+  `toWpBookmark`). DELETE bestond al in `[id]/route.ts`.
+- `src/app/events/[slug]/_components/EventDetailActions.tsx` — events gebruikten
+  `<DetailActions>` direct (server-rendered, Save was no-op). Nieuwe client-
+  wrapper sluit Save aan op `useBookmarks`, met `customPrimary` (Register/Visit)
+  doorgegeven vanuit de page.
+
+**Gewijzigd:**
+- `src/types/dashboard.ts` — `BookmarkItem` krijgt `itemId: number` (onderliggende
+  WP-post-id; nodig om een card/detail aan zijn bookmark-record te koppelen).
+- `src/lib/dashboard/mappers.ts` — `RawBookmark.item_id`, `mapBookmark` leest het,
+  + write-mapper `toWpBookmark`. Rest van het bestand byte-identiek
+  (`wpRenderedHtml` ongemoeid).
+- `src/app/layout.tsx` — `<BookmarksProvider>` gemount binnen `AuthProvider`
+  (rond shell), zodat elk client-eiland de saved-state deelt.
+- Save-knoppen bedraad op `useBookmarks` i.p.v. lokale state:
+  - `MaterialDetailActions`, `ArticleDetailActions`, `TalkDetailActions`
+  - `MaterialsGrid` + `BrandMaterialsGrid` (material-cards)
+  - `EventDetailActions` (nieuw)
+
+**Buiten scope (geen Save-affordance vandaag):** book- en brand-detailpagina's
+hebben nu geen Save-knop; het bookmark-type ondersteunt ze wel zodra die
+knoppen later toegevoegd worden.
+
+**Afhankelijkheid (Johan):** ~~`POST /md/v2/dashboard/bookmarks` + `item_id`~~ —
+live plugin `2aedda2`, frontend test `824d3b3`.
+
+#### Saved-search-create — nu werkend
+
+- `src/app/materials/_components/MaterialsFilterSidebar.tsx` — de "Save this
+  search"-knop is niet langer disabled:
+  - Anoniem → redirect naar `/sign-in?next=<huidige URL>`.
+  - Ingelogd, geen Insider → `InsiderGate` (feature `savedSearch`).
+  - Insider → `POST /api/dashboard/saved-searches` met `{ name, query }`.
+    `query` = canonieke filter-querystring (`buildUrl(localSelection)` zonder
+    pathname); `name` = auto-afgeleid uit de actieve selectie (WP berekent de
+    `summary`). Bevestiging/fout via de bestaande `.form-banner`-klasse —
+    **geen nieuwe CSS**. Knop disabled zolang er niets geselecteerd is of de
+    POST loopt (spinner via `IconLoading`).
+- Gating gebruikt `useAuth()` direct (de page geeft `isMember` niet mee).
+
+**Afhankelijkheid (Johan):** ~~`POST /md/v2/dashboard/saved-searches`~~ — live,
+Insider-smoke op productie + Vercel test.
+
+#### Geen CSS-wijzigingen
+
+Alles hergebruikt bestaande klassen/componenten (`ActionButton`, `IconButton`,
+`form-banner is-info/is-error`, `InsiderGate`, `btn`). `globals.css` ongewijzigd.
+
+#### Volgende stap (niet in deze oplevering)
+
+Boards "Add to board" werkend maken: WP-endpoint `POST …/boards/{id}/items` live
+(plugin `2aedda2`). Frontend board-picker-modal (eigen styling) = eerstvolgende stap.
+
+#### Addendum (herbasis 04-06, 2e ronde)
+
+- Alle bewerkte bestanden opnieuw afgeleid van Jeroens actuele bron nadat bleek
+  dat de werkkopie verouderd was (featured/offline-velden op `MaterialListRow`,
+  ChannelBar-`theme`-facet, en een a11y-refactor in de FilterSidebar). Mijn
+  bookmark-/saved-search-wijzigingen staan nu náást dat werk, niets overschreven.
+- Saved-search is nu **channel-bewust**: de opgeslagen `query` neemt de volledige
+  URL-state mee (filters + q + sort + actief `?channel=`), minus paging.
+- ROOT `layout.tsx` + provider: gedeployed op test; geen regressie gemeld.
+
+#### Verificatie (04-06-2026, na deploy)
+
+- Vercel test: `GET`/`POST`/`DELETE` `/api/dashboard/bookmarks` OK; saved-search
+  Insider 200 / partner 403; idempotent POST bookmark.
+- Johan handmatig: Save op event- en article-detail OK.
+- Alleen **gepubliceerde** targets (draft E2E-materiaal → 400 verwacht).
+
+### S13.1 — Board picker ("Add to board") (04-06)
+
+#### Wat
+
+"Add to board" op de detailpagina's was een no-op (gating + placeholder). Nu opent
+het een `BoardPickerModal` waarin de gebruiker het item aan een bestaand board
+toevoegt of een nieuw board aanmaakt.
+
+**Nieuw:**
+- `src/components/ui/BoardPickerModal.tsx` — Insider-modal. Bij openen GET
+  `/api/dashboard/boards`; klik op een board → POST `/boards/{id}/items`
+  `{ type, itemId }`; "New board" → naam via prompt → POST `/boards` → meteen het
+  item toevoegen. Succes-scherm via `git-success`. Hergebruikt de `git-*`
+  modal-shell + `git-option`-rijen → **geen nieuwe CSS**.
+- `src/app/api/dashboard/boards/[id]/items/route.ts` — POST-proxy naar Johans
+  `POST /md/v2/dashboard/boards/{id}/items` (live, plugin 2aedda2).
+
+**Gewijzigd:**
+- `src/app/api/dashboard/boards/route.ts` — `GET` toegevoegd (lijst voor de
+  picker); bestaande `POST` ongemoeid.
+- De vier detail-wrappers (material/article/talk/event): `handleAddToBoard`
+  opent nu de modal i.p.v. niets te doen.
+
+#### Gating
+Ongewijzigd: `DetailActions` checkt eerst ingelogd (→ sign-in) en Insider
+(→ InsiderGate) vóór `onAddToBoard`. De modal gaat dus uit van een Insider.
+
+#### Geen CSS-wijzigingen
+`globals.css` ongemoeid; alles via bestaande `git-*` / `btn` / icon-klassen.
+
+#### Resteert
+- Save-knop op book-/brand-detail (los puntje; types ondersteunen het al).
+- Roadmap: channel-hubs `/channels` + `/channels/[slug]` (build-order Stap 12).
+
+### S13.1 — Board-detailpagina (04-06)
+
+#### Wat
+Board-kaarten op /dashboard/boards waren niet klikbaar; er was geen pagina om de
+opgeslagen items te bekijken. Toegevoegd:
+
+**Nieuw:**
+- `src/app/dashboard/boards/[id]/page.tsx` — server-pagina; `getBoard(id)` →
+  `notFound()` bij onbekend/niet-eigen board (of zolang het endpoint nog niet
+  live is). Header = board-naam.
+- `src/components/dashboard/panels/BoardDetailPanel.tsx` — items-grid die exact
+  de bookmark-card-opmaak hergebruikt (`bm-grid`/`bm-card`) + lege staat. Back-
+  link via `btn btn-outline btn-sm`. **Geen nieuwe CSS.**
+
+**Gewijzigd:**
+- `src/types/dashboard.ts` — `BoardItem` (BookmarkItem-shape zonder record-id) +
+  `BoardDetail` (Board + items[]).
+- `src/lib/dashboard/mappers.ts` — `mapBoardItem` + `mapBoardDetail`.
+- `src/lib/dashboard/data.ts` — `getBoard(id)` → GET `/md/v2/dashboard/boards/{id}`;
+  404/403 → null.
+- `src/components/dashboard/panels/BoardsPanel.tsx` — cover + titel in een `Link`
+  naar het detail (zoals BookmarksPanel); delete-knop blijft werken.
+
+#### Afhankelijkheid
+`GET /md/v2/dashboard/boards/{id}` (Johan) — contract per mail 04-06. Vooruit
+gebouwd; werkt zodra gedeployed.
+
+#### Geen botsing met channels-sessie
+Alle geraakte bestanden zitten in dashboard/types/data/mappers — disjunct van de
+parallelle Stap-12 (channels) levering (die raakt o.a. globals.css, lib/api,
+lib/seo). Geen overlappende bestanden.
+
+### S13.2 — My profile + Insider insights (05-06) ✅ LIVE op Vercel test
+
+#### Live
+- Frontend: Johan-commits `5b073a3`, `86cabae`, `d89a872`. WP-plugin `964d1ac`.
+- Test: `/dashboard/profile` + `/dashboard/insider-insights`.
+
+#### Gebouwd (samenvatting)
+- **My profile** uitgebreid naar de demo: personal details (incl. phone,
+  profession, industry) + billing/adres + "Invoice to a company" (company +
+  VAT). Groene vinkjes via `showFilledState`; voortgang via sticky footer.
+  Avatar-blok verwijderd.
+- **Insider insights** herschreven: upsell-banner (niet-Insiders) + altijd de
+  rapportlijst; per rij Download PDF óf "Insider only" via `insiderOnly`.
+- Datalaag/types/mappers/mock uitgebreid (`UserProfile`, `InsightReport`,
+  `ProfileFieldOptions`); `getProfileFieldOptions()` toegevoegd. Save-route
+  ongewijzigd (gebruikte al `toWpUserProfile`).
+
+#### Afwijkingen t.o.v. de oorspronkelijke zip (door Johan, nu canoniek)
+1. **Profession/industry = SLUGS** (`architect`, `interior`, …), niet legacy
+   labels. Dropdowns altijd gevuld: WP `profile-options` wint, anders
+   `DEFAULT_PROFILE_FIELD_OPTIONS` (`src/lib/config/profile-options.ts` +
+   `mergeProfileFieldOptions` in `data.ts`). Dus géén vrij-tekst-fallback meer.
+2. **Country = volledige lijst** uit `src/lib/config/countries.ts` (ISO-code als
+   value; `resolveCountryCode()` normaliseert WP-label → code bij form-init).
+   Niet langer de 10-landen-hardcode.
+3. **`withCurrentSelectValue()`** — onbekende legacy usermeta blijft zichtbaar
+   als extra dropdown-optie (niets verdwijnt).
+- Nieuw in repo: `src/lib/config/countries.ts`, `src/lib/config/profile-options.ts`,
+  `scripts/gen-countries.mjs` (generator, optioneel).
+
+#### WP-contract live (punt 1 + 2)
+- `GET`/`POST /md/v2/dashboard/profile` met alle velden (snake_case).
+- `GET /md/v2/dashboard/profile-options` (professions + industries, slugs).
+- Usermeta-mapping behoudt legacy (phone→telephone, industry→sector,
+  invoice_to_company→billing_is_company, enz.); slugs opgeslagen, onbekende
+  waarden pass-through (geen bulk-migratie).
+
+#### Open (S13.2-staart)
+- **Insider insights — punt 3 (WP):** payload nog niet uitgebreid met `pages`,
+  `format`, `insider_only`, `pdf_url`, `gradient`. Frontend is er klaar voor;
+  non-Insiders zien een lege lijst zolang het endpoint 403 geeft. Johan pakt dit
+  op wanneer prioriteit; dan tonen we de lijst voor alle ingelogde users met
+  per-rapport gating.
+- Optioneel later: theme `page-edit-profile.php` uit dezelfde profile-options-
+  helper laten lezen (één lijst, geen drift).
+
+#### Correctie — insider report = eigen CPT (05-06, na deploy)
+
+> Misverstand rechtgezet vóórdat Johan punt 3 bouwde. Een **insider report is
+> géén article/story-uitbreiding** maar een **eigen, los downloadbaar document
+> (eigen CPT)**. De eerdere instructie om `meta.insider_only` van articles te
+> hergebruiken is ingetrokken.
+
+Frontend-model bijgesteld (correctie-zip `md-s13.2-insights-correctie`):
+- `InsightReport`: `summary` → `description`; `category` verwijderd;
+  `thumbnailUrl` toegevoegd (echte afbeelding, `gradient` als fallback);
+  `insiderOnly` is nu een **eigen** veld op dit CPT (geen article-meta).
+- `mapInsight`/`RawInsight`, `MOCK_INSIGHTS` en `InsightsPanel` mee aangepast
+  (rij toont nu de thumbnail-afbeelding met gradient-fallback). `.insight-thumb`
+  kreeg `object-fit:cover`.
+
+CPT-velden (definitief): title, description, thumbnail (afbeelding), PDF
+(download), insider_only (eigen vinkje), pages, format. "Preview" is **geen
+veld** maar de S13.5 tier-preview (niet-Insider mag de functionaliteit inzien).
