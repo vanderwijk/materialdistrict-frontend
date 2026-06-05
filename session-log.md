@@ -12,10 +12,11 @@
 ---
 
 ## Laatste update
-Datum: 05-06-2026 — S13.2 (My profile + Insider insights) live op test;
-insider-report-model gecorrigeerd naar eigen CPT. Eerder deze ronde: Stap 12
-Channels-hubs gebouwd, S13.1 Bookmarks & Boards (picker + detail) werkend.
-Sessie: Johan-gesprek — alle 9 datacontract/auth-vragen beantwoord ✅
+Datum: 05-06-2026 — S13.3 (Dashboard: brand- en materiaalformulieren)
+gelijkgetrokken aan de demo. Frontend klaar; type-check groen. Wacht op Johan
+voor het persisteren van de nieuwe velden (zie de S13.3-sectie + mail). Eerder
+deze ronde: S13.2 (My profile + Insider insights) live, insider-report = eigen
+CPT; Stap 12 Channels-hubs; S13.1 Bookmarks & Boards.
 
 ---
 
@@ -2377,45 +2378,80 @@ CPT-velden (definitief): title, description, thumbnail (afbeelding), PDF
 (download), insider_only (eigen vinkje), pages, format. "Preview" is **geen
 veld** maar de S13.5 tier-preview (niet-Insider mag de functionaliteit inzien).
 
-PDF-download (verfijning 05-06): de PDF komt uit de WP media library en wordt
-NIET als URL aan de frontend gegeven. Frontend krijgt alleen `has_pdf` (bool);
-downloaden gaat via de gated route `GET /api/dashboard/insider-insights/{id}/download`
-(nieuw, Next-proxy) → WP-endpoint dat de JWT checkt en het bestand streamt met de
-naam van de insider in de bestandsnaam + ingebakken traceability-metadata. Zo zijn
-gedeelde links nutteloos voor derden en blijft herkomst achterhaalbaar. De
-algemene voorwaarden krijgen een clausule dat insider-content niet zonder onze
-toestemming met derden gedeeld mag worden.
 
-### Insider report — gated download bevestigd (05-06, na Johans CPT-deploy)
+### S13.3 — Dashboard: Brand- en materiaalformulieren (05-06)
 
-Johan leverde het `insider_report`-CPT (plugin `8f446ce`): juiste model, lijst
-voor álle ingelogde users, article-extensie teruggedraaid (`article_insider_only`
-blijft voor gewone artikelen). Interim gaf de lijst een directe `pdf_url` terug
-(null voor non-Insiders bij insider_only).
+Brand profile én material add/edit gelijkgetrokken aan de demo. Eén gedeelde
+laag voor alles wat in beide formulieren voorkomt (DRY).
 
-**Besluit Jeroen:** dit moet via de gated download (géén exposed URL). Johan
-bouwt alsnog `GET /md/v2/dashboard/insider-insights/{id}/download` (JWT +
-insider_only-check, media-library-bestand met naam-in-bestandsnaam +
-traceability-metadata, no-store) en vervangt in de lijst `pdf_url` door `has_pdf`
-(bool). De frontend (`ec0f5b5`) staat hier al op: leest `has_pdf` en downloadt via
-de Next-proxy `src/app/api/dashboard/insider-insights/[id]/download/route.ts` —
-geen frontend-wijziging nodig.
+**Beslissingen (Jeroen):**
+- Indoor/Outdoor op materiaal = **multi** (beide tegelijk mag).
+- Current-plan-banner = **tier-specifiek** + "Compare plans"-CTA voor niet-Partner.
+  Banner toont de **echte config-prijzen** (Partner €3.000, Plus €1.500, Basis
+  €750) — de mockup-prijs €3.750 is stale; config overrulet de mockup voor waarden.
 
-**Open / geparkeerd:** publieke detailpagina `/insider-reports/{slug}` (Next-route,
-href uit de payload) nog niet gebouwd; titels zouden nu 404'en. Geen content/haast
-→ later, samen met de overige publieke insider-report-weergave.
+**Gedeelde fundamenten (nieuw):**
+- `src/lib/config/material-applications.ts` — de complete applicatie-cascade
+  (6 hoofd → 26 sub → 189 types) 1:1 uit de mockup. **Enige optiebron** voor de
+  picker in beide formulieren.
+- `src/components/dashboard/fields/` — vier gedeelde componenten:
+  `ApplicationPicker` (Main/Sub/Type + Add + breadcrumb-chips, max 3, dedup),
+  `DownloadsField` (documenttitel + file + lijst), `VideoLinksField` (URL + lijst
+  + lege staat), `GalleryField` (upload + reorder via toetsenbord-toegankelijke
+  up/down + verwijderen).
+- `src/components/dashboard/CurrentPlanBanner.tsx` — tier + prijs + pills
+  (quota / featured placement / fair-korting) uit `membership.ts`.
+- `src/lib/dashboard/material-property-options.ts` — `buildMaterialPropertyOptions()`
+  merget de **live FacetWP-baseline** (filterbare facets) over statische defaults
+  (niet-filterbare environmental/content-facets); datalaag-helper
+  `getMaterialPropertyOptions()` met graceful fallback naar all-static.
 
-### Insider report — gated download LIVE + geverifieerd (05-06)
+**Contract (`types/dashboard.ts`):**
+- `MaterialAsset` + optioneel `title` (gedeelde downloads-met-titel-shape).
+- `BrandProfile`: `address` → `addressLine1` + `addressLine2`; nieuw
+  `applications` (`MaterialCategoryPath[]`), `videos`, `gallery`, `downloads`.
+- `MaterialFormData`: `categories` → `applications`; nieuw `indoorOutdoor`
+  (`Array<'indoor'|'outdoor'>`) en `properties` (`MaterialProperties`, 24 velden).
+- `material-properties.ts`: `EMPTY_MATERIAL_PROPERTIES` + `PROPERTY_VALUE_OPTIONS`
+  geëxporteerd (beide additief).
 
-Live en getest:
-- Frontend main `44c2635`: `hasPdf` i.p.v. `pdfUrl` in de lijst; download via de
-  JWT-proxy `/api/dashboard/insider-insights/{id}/download`.
-- WP-plugin `b08bc73`: lijst geeft `has_pdf` (geen `pdf_url`); download =
-  gated stream met gepersonaliseerde bestandsnaam (`__Voornaam-Achternaam`) +
-  PDF-metadata (Author/Producer/Keywords waar het Info-dict dat toelaat).
-  `insider_report`-CPT + media-library-upload (PDF + preview image) live.
-- Johan getest in het dashboard: download werkt, naam zit in de bestandsnaam.
-- De insights-correctie-zip sluit 1-op-1 aan op de deploy (upstream consistent).
+**BrandProfileForm — demo-volgorde:** Current plan-banner → Brand details + logo
+→ Contact & company (adres line 1/2) → Social channels → Sectors & applications
+(Plus+) → Media (gallery alle tiers + video links Plus+) → Downloads & brochures
+(Plus+) → Keywords (Plus+) → Channel coupling (**Partner**, max 3 + Active
+channel links + 24-uurs-melding).
 
-Resteert: publieke detailpagina `/insider-reports/{slug}` (Next-route) —
-geparkeerd, geen content/haast; later samen met de publieke insider-report-weergave.
+**MaterialForm — demo-volgorde:** Basic information (naam + featured image) →
+Classification (type + Indoor/Outdoor-toggle + Material applications) → Media
+(gallery + video links Plus+) → Documents & downloads (Plus+) → Search &
+filtering (24 properties / 4 groepen, hergebruik `material-properties.ts`) →
+Keywords (Plus+) → Channel coupling (**Partner**, max 3 + Active channel links)
+→ Danger zone. De oude losse Categories-Selects + `categoryOptions`-prop +
+`getMaterialCategories()`-call uit de edit/new-pages verwijderd; die fetchen nu
+`getMaterialPropertyOptions()`.
+
+**Gating** volgt exact de mockup (`mfGate`): sectors/video/downloads/keywords =
+Plus+, channel coupling = Partner. Ook server-side door WP afgedwongen.
+
+**Styling:** alle nieuwe regels in één `globals.css` (sectie "S13.3 — Brand &
+material form fields"), CSS-tokens, geen inline hardcoded waarden, responsive
+grids + dark-mode. `.asset-list`/`.asset-row` hergebruikt.
+
+**Kwaliteit:** `tsc --noEmit` groen over de hele boom; export-diff op gedeelde
+bestanden schoon (alleen additief: `EMPTY_MATERIAL_PROPERTIES`,
+`PROPERTY_VALUE_OPTIONS`).
+
+#### Open (S13.3 — Johan)
+WP moet de nieuwe velden lezen/persisteren (camelCase ↔ snake_case ligt al vast
+in de mappers — zie mail). Frontend werkt nu volledig op mock + live FacetWP-
+baseline; ontbrekende endpoints degraderen netjes (lege lijst / statische opties).
+- **Brand profile** (`/md/v2/dashboard/brands/{id}/profile`): `address_line_1`,
+  `address_line_2`, `applications` (term-id-objecten), `videos`, `gallery_attachment_ids`
+  (geordend), `downloads` (`[{id,title}]`), `logo` upload-id.
+- **Material form** (`/md/v2/dashboard/brands/{id}/materials[/{id}]`): `indoor_outdoor`,
+  `applications`, `downloads` (`[{id,title}]`), `properties` (24-veld object,
+  incl. de niet-filterbare environmental/content-facets), `gallery_attachment_ids` geordend.
+- **Applicatie-term-mapping:** de picker zet voorlopig `app:`-pad-ids; die worden
+  bij wegschrijven overgeslagen tot WP de paden op echte `material_category`-term-ids
+  mapt (endpoint `/md/v2/dashboard/material-categories` kan de statische tree later hydrateren).
+- Geen frontend-werk meer nodig zodra de endpoints de velden accepteren.

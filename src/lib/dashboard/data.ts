@@ -62,6 +62,12 @@ import {
   mapMaterialTypeOptions,
 } from './mappers'
 import { mergeProfileFieldOptions } from '@/lib/config/profile-options'
+import { fetchMaterialFacetsBaseline } from '@/lib/api/facetwp'
+import { EMPTY_MATERIAL_PROPERTIES } from '@/lib/utils/material-properties'
+import {
+  buildMaterialPropertyOptions,
+  type MaterialPropertyOptions,
+} from './material-property-options'
 import { MOCK_MATERIAL_FORM } from './mock'
 
 /**
@@ -261,13 +267,15 @@ export async function getMaterialForm(
       name: '',
       description: '',
       type: '',
+      indoorOutdoor: [],
       featuredImage: null,
-      categories: [],
+      applications: [],
       channels: [],
       gallery: [],
       videos: [],
       downloads: [],
       keywords: [],
+      properties: { ...EMPTY_MATERIAL_PROPERTIES },
     }
   }
   // Edit: fetch the form from WP (batch 3 — live).
@@ -312,6 +320,21 @@ export async function getMaterialTypes(): Promise<MaterialTypeOption[]> {
   } catch (err) {
     if (err instanceof DashboardApiError) return []
     throw err
+  }
+}
+
+/**
+ * Per-property select options for the material form's Search & filtering block.
+ * Filterable facets come from the live FacetWP baseline; the non-filterable
+ * environmental/content facets fall back to static defaults. A baseline failure
+ * degrades gracefully to all-static so the form always renders.
+ */
+export async function getMaterialPropertyOptions(): Promise<MaterialPropertyOptions> {
+  try {
+    const baseline = await fetchMaterialFacetsBaseline()
+    return buildMaterialPropertyOptions(baseline)
+  } catch {
+    return buildMaterialPropertyOptions(null)
   }
 }
 

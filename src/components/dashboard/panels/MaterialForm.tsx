@@ -1,43 +1,61 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
-import { IconAdd, IconClose, IconUpload, IconDelete } from '@/components/ui/icons'
+import {
+  ApplicationPicker,
+  DownloadsField,
+  VideoLinksField,
+  GalleryField,
+} from '../fields'
+import { IconAdd, IconClose, IconCheck, IconUpload, IconDelete, IconImage } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { tierMeets } from '@/lib/dashboard/nav'
-import type { ManufacturerTier } from '@/lib/config/membership'
+import { canManufacturerAccess, type ManufacturerTier } from '@/lib/config/membership'
+import {
+  PROPERTY_GROUP_LABELS,
+  getAllPropertyGroups,
+  humanizeFacet,
+} from '@/lib/utils/material-properties'
+import type { MaterialPropertyOptions } from '@/lib/dashboard/material-property-options'
+import type { MaterialPropertyKey } from '@/types/material'
 import type {
   MaterialFormData,
-  MaterialCategoryPath,
   MaterialTypeOption,
   MaterialAsset,
 } from '@/types/dashboard'
 
+const MAX_CHANNELS = 3
+const INDOOR_OUTDOOR: Array<{ value: 'indoor' | 'outdoor'; label: string }> = [
+  { value: 'indoor', label: 'Indoor' },
+  { value: 'outdoor', label: 'Outdoor' },
+]
+
 /**
- * Material create/edit form. Controlled state seeded from the data layer.
- * Assets upload to the WP media library via `/api/dashboard/media`. Downloads
- * require Basis+, keywords require Plus+ (gated inline and enforced by WP).
- * Save = POST (create) / PATCH (edit); Delete = DELETE.
+ * Material create/edit form, aligned to the demo. Controlled state seeded from
+ * the data layer. Tier-gated sections (video links, downloads, keywords =
+ * Plus+; channel coupling = Partner) use BrandTierGate; gates are also enforced
+ * by WordPress. Save = POST (create) / PATCH (edit); Delete = DELETE.
  */
 export function MaterialForm({
   slug,
   brandId,
   initial,
   tier,
-  categoryOptions,
   typeOptions,
+  propertyOptions,
 }: {
   slug: string
   brandId: number
   initial: MaterialFormData
   tier: ManufacturerTier
-  /** Assignable categories (with real WP term ids) from the taxonomy endpoint. */
-  categoryOptions: MaterialCategoryPath[]
   /** Material types from the material_category taxonomy endpoint. */
   typeOptions: MaterialTypeOption[]
+  /** Per-property select options (FacetWP baseline for filterable facets, static otherwise). */
+  propertyOptions: MaterialPropertyOptions
 }) {
   const router = useRouter()
   const [form, setForm] = useState<MaterialFormData>(initial)
@@ -45,7 +63,36 @@ export function MaterialForm({
   const [saveError, setSaveError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
   const [keywordDraft, setKeywordDraft] = useState('')
-  const [videoDraft, setVideoDraft] = useState('')
+  const featuredInputRef = useRef<HTMLInputElement>(null)
+
+  const canVideos = canManufacturerAccess(tier, 'Video uploads')
+  const canDownloads = canManufacturerAccess(tier, 'PDF & EPD downloads')
+  const canKeywords = tierMeets(tier, 'plus')
+  const canChannels = tierMeets(tier, 'partner')
+  const isEdit = form.mode === 'edit'
+
+  const set = <K extends keyof MaterialFormData>(key: K, value: MaterialFormData[K]) =>
+    setForm((f) => ({ ...f, [key]: value }))
+
+  const setProperty = (facet: MaterialPropertyKey, value: string) =>
+    setForm((f) => ({ ...f, properties: { ...f.properties, [facet]: value } }))
+
+  const toggleIndoorOutdoor = (value: 'indoor' | 'outdoor') =>
+    setForm((f) => ({
+      ...f,
+      indoorOutdoor: f.indoorOutdoor.includes(value)
+        ? f.indoorOutdoor.filter((v) => v !== value)
+        : [...f.indoorOutdoor, value],
+    }))
+
+  const toggleChannel = (channel: string) =>
+    setForm((f) => {
+      if (f.channels.includes(channel)) {
+        return { ...f, channels: f.channels.filter((c) => c !== channel) }
+      }
+      if (f.channels.length >= MAX_CHANNELS) return f
+      return { ...f, channels: [...f.channels, channel] }
+    })
 
   /** Upload one file to the WP media library via the proxy → MaterialAsset. */
   async function uploadFile(file: File): Promise<MaterialAsset | null> {
@@ -69,67 +116,11 @@ export function MaterialForm({
     }
   }
 
-  const canDownloads = tierMeets(tier, 'basis')
-  const canKeywords = tierMeets(tier, 'plus')
-  const isEdit = form.mode === 'edit'
-
-  const set = <K extends keyof MaterialFormData>(key: K, value: MaterialFormData[K]) =>
-    setForm((f) => ({ ...f, [key]: value }))
-
-  const toggleChannel = (channel: string) =>
-    setForm((f) => ({
-      ...f,
-      channels: f.channels.includes(channel)
-        ? f.channels.filter((c) => c !== channel)
-        : [...f.channels, channel],
-    }))
-
-  // Cascading l1/l2/l3 option lists derived from the leaf-only catalogue.
-  const l1Options = useMemo(
-    () => Array.from(new Set(categoryOptions.map((o) => o.l1).filter(Boolean))),
-    [categoryOptions],
-  )
-  function l2OptionsFor(l1: string) {
-    return Array.from(new Set(categoryOptions.filter((o) => o.l1 === l1 && o.l2).map((o) => o.l2)))
-  }
-  function l3OptionsFor(l1: string, l2: string) {
-    return Array.from(
-      new Set(categoryOptions.filter((o) => o.l1 === l1 && o.l2 === l2 && o.l3).map((o) => o.l3)),
-    )
-  }
-  /** Resolve the real WP leaf term id for an exact (l1,l2,l3) selection, else ''. */
-  function resolveCategoryId(l1: string, l2: string, l3: string): string {
-    const match = categoryOptions.find((o) => o.l1 === l1 && o.l2 === l2 && o.l3 === l3)
-    return match ? match.id : ''
-  }
-
-  function addCategory() {
-    setForm((f) => ({
-      ...f,
-      categories: [...f.categories, { id: '', l1: '', l2: '', l3: '' }],
-    }))
-  }
-  function removeCategory(index: number) {
-    setForm((f) => ({
-      ...f,
-      categories: f.categories.filter((_, i) => i !== index),
-    }))
-  }
-  function updateCategory(index: number, level: 'l1' | 'l2' | 'l3', value: string) {
-    setForm((f) => ({
-      ...f,
-      categories: f.categories.map((c, i) => {
-        if (i !== index) return c
-        const next =
-          level === 'l1'
-            ? { l1: value, l2: '', l3: '' }
-            : level === 'l2'
-              ? { l1: c.l1, l2: value, l3: '' }
-              : { l1: c.l1, l2: c.l2, l3: value }
-        // Stamp the real term id once the path matches a catalogue leaf.
-        return { ...next, id: resolveCategoryId(next.l1, next.l2, next.l3) }
-      }),
-    }))
+  async function handleFeaturedChange(file: File | null) {
+    if (!file) return
+    const asset = await uploadFile(file)
+    if (asset) set('featuredImage', asset)
+    if (featuredInputRef.current) featuredInputRef.current.value = ''
   }
 
   /** Only bind Select to a value that exists in the catalogue (avoids controlled-select warnings). */
@@ -142,12 +133,7 @@ export function MaterialForm({
     setKeywordDraft('')
   }
 
-  function addVideo() {
-    const url = videoDraft.trim()
-    if (!url || form.videos.includes(url)) return
-    set('videos', [...form.videos, url])
-    setVideoDraft('')
-  }
+  const propertyGroups = useMemo(() => getAllPropertyGroups(form.properties), [form.properties])
 
   const progress = useMemo(() => {
     const checks = [form.name.trim() !== '', form.description.trim() !== '', form.type !== '', form.featuredImage !== null]
@@ -171,7 +157,7 @@ export function MaterialForm({
         const err = await res.json().catch(() => null)
         setSaveError(
           err?.code === 'md_dashboard_forbidden'
-            ? 'Your membership tier does not allow one of these fields (videos/downloads need Basis+, keywords need Plus+).'
+            ? 'One of these fields needs a higher membership tier (video links/downloads need Plus+, channel coupling needs Partner).'
             : err?.message ?? 'Could not save the material. Please try again.',
         )
         return
@@ -206,257 +192,172 @@ export function MaterialForm({
 
   return (
     <>
+      {/* 1. Basic information */}
       <div className="dash-panel">
-        <h2 className="panel-section-title">Basics</h2>
-        <Input label="Material name" value={form.name} onChange={(e) => set('name', e.target.value)} />
-        <Textarea label="Description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
-        <Select
-          label="Material type"
-          value={typeSelectValue}
-          onChange={(e) => set('type', e.target.value)}
-          placeholder={typeOptions.length > 0 ? 'Select a type' : 'Material types not available yet'}
-          options={typeOptions.map((t) => ({ value: t.id, label: t.name }))}
-        />
-      </div>
-
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Featured image</h2>
+        <h2 className="panel-section-title">Basic information</h2>
         {saveError && <p className="form-error" role="alert">{saveError}</p>}
-        <div className="upload-box">
-          <IconUpload size={22} />
-          <span className="upload-name">
-            {form.featuredImage ? form.featuredImage.name : 'Upload a featured image (JPG/PNG)'}
-          </span>
-          <label className="btn btn-outline btn-sm">
-            {uploading ? 'Uploading…' : 'Choose file'}
-            <input
-              type="file"
-              accept="image/*"
-              hidden
-              onChange={async (e) => {
-                const file = e.target.files?.[0]
-                e.target.value = ''
-                if (!file) return
-                const asset = await uploadFile(file)
-                if (asset) set('featuredImage', asset)
-              }}
-            />
-          </label>
-        </div>
-      </div>
-
-      <div className="dash-panel">
-        <div className="panel-head-row">
-          <h2 className="panel-section-title">Categories</h2>
-          <button
-            type="button"
-            className="btn btn-outline btn-sm"
-            onClick={addCategory}
-            disabled={categoryOptions.length === 0}
-          >
-            <IconAdd size={16} /> Add category
-          </button>
-        </div>
-        {categoryOptions.length === 0 && (
-          <p className="field-helper">The category list isn&apos;t available right now.</p>
-        )}
-        {categoryOptions.length > 0 && form.categories.length === 0 && (
-          <p className="field-helper">No categories yet.</p>
-        )}
-        {form.categories.map((cat, i) => {
-          const l2opts = cat.l1 ? l2OptionsFor(cat.l1) : []
-          const l3opts = cat.l1 && cat.l2 ? l3OptionsFor(cat.l1, cat.l2) : []
-          return (
-            <div key={i} className="cat-row">
-              <Select
-                label="Level 1"
-                value={cat.l1}
-                onChange={(e) => updateCategory(i, 'l1', e.target.value)}
-                placeholder="—"
-                options={l1Options.map((v) => ({ value: v, label: v }))}
-              />
-              <Select
-                label="Level 2"
-                value={cat.l2}
-                onChange={(e) => updateCategory(i, 'l2', e.target.value)}
-                placeholder="—"
-                options={l2opts.map((v) => ({ value: v, label: v }))}
-                disabled={l2opts.length === 0}
-              />
-              <Select
-                label="Level 3"
-                value={cat.l3}
-                onChange={(e) => updateCategory(i, 'l3', e.target.value)}
-                placeholder="—"
-                options={l3opts.map((v) => ({ value: v, label: v }))}
-                disabled={l3opts.length === 0}
-              />
-              <button
-                type="button"
-                className="icon-btn cat-remove"
-                onClick={() => removeCategory(i)}
-                aria-label="Remove category"
-              >
-                <IconClose size={16} />
-              </button>
+        <div className="material-basics-grid">
+          <div className="material-basics-main">
+            <Input label="Material name" value={form.name} onChange={(e) => set('name', e.target.value)} />
+            <Textarea label="Material description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={5} />
+          </div>
+          <div className="material-featured-field">
+            <span className="field-label">Featured image</span>
+            <div className="material-featured-box">
+              {form.featuredImage?.url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={form.featuredImage.url} alt="" className="material-featured-img" />
+              ) : (
+                <span className="material-featured-empty">
+                  <IconImage size={18} />
+                  <span className="material-featured-name">
+                    {form.featuredImage?.name ?? 'No image yet'}
+                  </span>
+                </span>
+              )}
             </div>
-          )
-        })}
-      </div>
-
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Channels</h2>
-        <div className="chip-group">
-          {MATERIAL_CHANNEL_LABELS.map((channel) => {
-            const selected = form.channels.includes(channel)
-            const chipProps = {
-              type: 'button' as const,
-              className: `chip ${selected ? 'is-on' : ''}`,
-              onClick: () => toggleChannel(channel),
-              children: channel,
-            }
-            return selected ? (
-              <button key={channel} {...chipProps} aria-pressed="true" />
-            ) : (
-              <button key={channel} {...chipProps} aria-pressed="false" />
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="dash-panel">
-        <div className="panel-head-row">
-          <h2 className="panel-section-title">Gallery</h2>
-          <label className="btn btn-outline btn-sm">
-            <IconAdd size={16} /> {uploading ? 'Uploading…' : 'Add image'}
             <input
+              ref={featuredInputRef}
               type="file"
               accept="image/*"
-              hidden
-              onChange={async (e) => {
-                const file = e.target.files?.[0]
-                e.target.value = ''
-                if (!file) return
-                const asset = await uploadFile(file)
-                if (asset) set('gallery', [...form.gallery, asset])
-              }}
+              className="sr-only"
+              onChange={(e) => handleFeaturedChange(e.target.files?.[0] ?? null)}
             />
-          </label>
+            <button
+              type="button"
+              className="btn btn-outline btn-block"
+              onClick={() => featuredInputRef.current?.click()}
+              disabled={uploading}
+            >
+              <IconUpload size={16} /> {uploading ? 'Uploading…' : 'Choose image'}
+            </button>
+          </div>
         </div>
-        {form.gallery.length === 0 ? (
-          <p className="field-helper">No gallery images yet.</p>
-        ) : (
-          <ul className="asset-list">
-            {form.gallery.map((g) => (
-              <li key={g.id} className="asset-row">
-                <span>{g.name}</span>
-                <button
-                  type="button"
-                  className="icon-btn"
-                  onClick={() => set('gallery', form.gallery.filter((x) => x.id !== g.id))}
-                  aria-label={`Remove ${g.name}`}
-                >
-                  <IconDelete size={16} />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
       </div>
 
+      {/* 2. Classification */}
       <div className="dash-panel">
-        <h2 className="panel-section-title">Videos</h2>
-        <div className="kw-input-row">
-          <Input
-            label="Video URL (YouTube/Vimeo)"
-            value={videoDraft}
-            onChange={(e) => setVideoDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                addVideo()
-              }
-            }}
+        <h2 className="panel-section-title">Classification</h2>
+        <p className="panel-section-desc">Material type, indoor/outdoor use and application categories.</p>
+        <div className="g2">
+          <Select
+            label="Material type"
+            value={typeSelectValue}
+            placeholder="Select material type"
+            onChange={(e) => set('type', e.target.value)}
+            options={typeOptions.map((t) => ({ value: t.id, label: t.name }))}
+            disabled={typeOptions.length === 0}
           />
-          <button type="button" className="btn btn-outline" onClick={addVideo}>
-            <IconAdd size={16} /> Add
-          </button>
+          <div className="field-group">
+            <span className="field-label">Indoor / Outdoor use</span>
+            <div className="toggle-group">
+              {INDOOR_OUTDOOR.map((o) => {
+                const on = form.indoorOutdoor.includes(o.value)
+                return (
+                  <button
+                    key={o.value}
+                    type="button"
+                    className={`toggle-btn ${on ? 'is-on' : ''}`}
+                    aria-pressed={on}
+                    onClick={() => toggleIndoorOutdoor(o.value)}
+                  >
+                    {o.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
-        {form.videos.length > 0 && (
-          <ul className="asset-list">
-            {form.videos.map((v) => (
-              <li key={v} className="asset-row">
-                <span>{v}</span>
-                <button
-                  type="button"
-                  className="icon-btn"
-                  onClick={() => set('videos', form.videos.filter((x) => x !== v))}
-                  aria-label={`Remove ${v}`}
-                >
-                  <IconDelete size={16} />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+
+        <div className="field-block">
+          <span className="field-label">Material applications</span>
+          <p className="field-helper">Select up to three levels: main application, sub application, and type.</p>
+          <ApplicationPicker value={form.applications} onChange={(next) => set('applications', next)} />
+        </div>
       </div>
 
+      {/* 3. Media */}
       <div className="dash-panel">
-        <h2 className="panel-section-title">Downloads (PDF &amp; EPD)</h2>
-        {canDownloads ? (
-          <>
-            <div className="panel-head-row">
-              <p className="field-helper">Datasheets, brochures, EPDs.</p>
-              <label className="btn btn-outline btn-sm">
-                <IconAdd size={16} /> {uploading ? 'Uploading…' : 'Add file'}
-                <input
-                  type="file"
-                  hidden
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0]
-                    e.target.value = ''
-                    if (!file) return
-                    const asset = await uploadFile(file)
-                    if (asset) set('downloads', [...form.downloads, asset])
-                  }}
-                />
-              </label>
-            </div>
-            {form.downloads.length === 0 ? (
-              <p className="field-helper">No documents yet.</p>
+        <h2 className="panel-section-title">Media</h2>
+        <p className="panel-section-desc">Gallery images and video links displayed on your material page.</p>
+        <div className="media-grid">
+          <div>
+            <span className="field-subhead">Gallery images</span>
+            <GalleryField
+              value={form.gallery}
+              onChange={(next) => set('gallery', next)}
+              onUpload={uploadFile}
+              uploading={uploading}
+            />
+          </div>
+          <div>
+            <span className="field-subhead">Video links</span>
+            {canVideos ? (
+              <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
             ) : (
-              <ul className="asset-list">
-                {form.downloads.map((d) => (
-                  <li key={d.id} className="asset-row">
-                    <span>{d.name}</span>
-                    <button
-                      type="button"
-                      className="icon-btn"
-                      onClick={() => set('downloads', form.downloads.filter((x) => x.id !== d.id))}
-                      aria-label={`Remove ${d.name}`}
-                    >
-                      <IconDelete size={16} />
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <BrandTierGate
+                variant="page"
+                required="plus"
+                title="Video links"
+                description="Add product videos, showreels and installation films to your material pages. Available from the Plus tier."
+                upgradeHref="../../membership"
+              />
             )}
-          </>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. Documents & downloads */}
+      <div className="dash-panel">
+        <h2 className="panel-section-title">Documents &amp; downloads</h2>
+        <p className="panel-section-desc">Upload brochures, technical datasheets, EPDs or installation guides.</p>
+        {canDownloads ? (
+          <DownloadsField
+            value={form.downloads}
+            onChange={(next) => set('downloads', next)}
+            onUpload={uploadFile}
+            uploading={uploading}
+          />
         ) : (
           <BrandTierGate
             variant="page"
-            required="basis"
-            title="Downloads"
-            description="Offer datasheets, brochures and EPDs on your material pages. Available from the Basis tier."
-            upgradeHref="../membership"
+            required="plus"
+            title="Documents & downloads"
+            description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
+            upgradeHref="../../membership"
           />
         )}
       </div>
 
+      {/* 5. Search & filtering */}
+      <div className="dash-panel">
+        <h2 className="panel-section-title">Search &amp; filtering</h2>
+        <p className="panel-section-desc">These properties determine how this material is found and compared.</p>
+        {propertyGroups.map((group) => (
+          <div key={group.group} className="property-group">
+            <span className="field-subhead">{PROPERTY_GROUP_LABELS[group.group]}</span>
+            <div className="property-grid">
+              {group.entries.map((entry) => (
+                <Select
+                  key={entry.facet}
+                  label={humanizeFacet(entry.facet)}
+                  value={form.properties[entry.facet]}
+                  placeholder={`Select ${humanizeFacet(entry.facet).toLowerCase()}`}
+                  onChange={(e) => setProperty(entry.facet, e.target.value)}
+                  options={propertyOptions[entry.facet].map((o) => ({ value: o.value, label: o.label }))}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 6. Keywords */}
       <div className="dash-panel">
         <h2 className="panel-section-title">Keywords</h2>
         {canKeywords ? (
           <>
+            <p className="panel-section-desc">Add keywords to improve findability. Think of material properties, applications or certifications.</p>
             <div className="kw-input-row">
               <Input
                 label="Add keyword"
@@ -495,7 +396,61 @@ export function MaterialForm({
             required="plus"
             title="Keywords"
             description="Add discovery keywords so buyers find this material faster. Available from the Plus tier."
-            upgradeHref="../membership"
+            upgradeHref="../../membership"
+          />
+        )}
+      </div>
+
+      {/* 7. Channel coupling — Partner only */}
+      <div className="dash-panel">
+        <h2 className="panel-section-title">Channel coupling</h2>
+        <p className="panel-section-desc">
+          Link this material to up to {MAX_CHANNELS} editorial channels. It will appear on those channel pages
+          alongside curated articles, talks and brands.
+        </p>
+        {canChannels ? (
+          <>
+            <span className="field-subhead">Select up to {MAX_CHANNELS} channels</span>
+            <div className="chip-group">
+              {MATERIAL_CHANNEL_LABELS.map((channel) => {
+                const selected = form.channels.includes(channel)
+                const atMax = !selected && form.channels.length >= MAX_CHANNELS
+                return (
+                  <button
+                    key={channel}
+                    type="button"
+                    className={`chip ${selected ? 'is-on' : ''}`}
+                    aria-pressed={selected}
+                    disabled={atMax}
+                    onClick={() => toggleChannel(channel)}
+                  >
+                    {channel}
+                    {selected && <IconCheck size={12} className="chip-check" aria-hidden="true" />}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="active-channel-links">
+              <span className="field-subhead">Active channel links</span>
+              {form.channels.length === 0 ? (
+                <p className="field-helper">No channels linked yet.</p>
+              ) : (
+                <div className="chip-group">
+                  {form.channels.map((c) => (
+                    <span key={c} className="chip is-active-link">{c}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <BrandTierGate
+            variant="page"
+            required="partner"
+            title="Channel coupling"
+            description="Link this material to editorial channels so it appears on channel pages alongside relevant articles, talks and brands. Available on the Partner tier."
+            upgradeHref="../../membership"
           />
         )}
       </div>

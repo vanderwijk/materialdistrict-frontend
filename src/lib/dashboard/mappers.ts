@@ -42,6 +42,8 @@ import type {
   LeadRoute,
   LeadRoutingConfig,
 } from '@/types/dashboard'
+import type { MaterialProperties } from '@/types/material'
+import { EMPTY_MATERIAL_PROPERTIES } from '@/lib/utils/material-properties'
 
 // ---- Raw WP shapes (only the fields we read) ----
 
@@ -81,7 +83,8 @@ interface RawBrandProfile {
   email?: string
   phone?: string
   country?: string
-  address?: string
+  address_line_1?: string
+  address_line_2?: string
   postcode?: string
   city?: string
   vat_number?: string
@@ -91,6 +94,10 @@ interface RawBrandProfile {
   logo_name?: string | null
   channels?: string[]
   keywords?: string[]
+  applications?: RawMaterialCategory[]
+  videos?: string[]
+  gallery?: RawMaterialAsset[]
+  downloads?: RawMaterialAsset[]
 }
 
 interface RawMaterialListRow {
@@ -151,7 +158,8 @@ export function mapBrandProfile(raw: RawBrandProfile): BrandProfile {
     email: raw.email ?? '',
     phone: raw.phone ?? '',
     country: raw.country ?? '',
-    address: raw.address ?? '',
+    addressLine1: raw.address_line_1 ?? '',
+    addressLine2: raw.address_line_2 ?? '',
     postcode: raw.postcode ?? '',
     city: raw.city ?? '',
     vatNumber: raw.vat_number ?? '',
@@ -161,6 +169,10 @@ export function mapBrandProfile(raw: RawBrandProfile): BrandProfile {
     logoName: raw.logo_name ?? null,
     channels: raw.channels ?? [],
     keywords: raw.keywords ?? [],
+    applications: (raw.applications ?? []).map(mapCategory),
+    videos: raw.videos ?? [],
+    gallery: (raw.gallery ?? []).map(mapAsset),
+    downloads: (raw.downloads ?? []).map(mapAsset),
   }
 }
 
@@ -201,16 +213,52 @@ export function toWpUserProfile(p: UserProfile): Record<string, unknown> {
   }
 }
 
+/**
+ * Parse a stringified asset/term id to a real numeric WP id, or null for
+ * not-yet-persisted local ids (empty, `local-…`, or the `app:` path ids the
+ * application picker assigns before a real term id exists).
+ */
+function wpNumericId(v: string): number | null {
+  const n = Number(v)
+  return Number.isFinite(n) && v.trim() !== '' && !v.startsWith('local-') && !v.startsWith('app:')
+    ? n
+    : null
+}
+
+/** Ordered numeric attachment ids for a gallery (drops not-yet-persisted ids). */
+function galleryToWp(assets: MaterialAsset[]): number[] {
+  return assets.map((a) => wpNumericId(a.id)).filter((n): n is number => n !== null)
+}
+
+/** Downloads → `[{ id, title }]`, preserving the document title; drops local ids. */
+function downloadsToWp(assets: MaterialAsset[]): Array<{ id: number; title: string }> {
+  return assets
+    .map((a) => {
+      const id = wpNumericId(a.id)
+      return id === null ? null : { id, title: a.title ?? '' }
+    })
+    .filter((d): d is { id: number; title: string } => d !== null)
+}
+
+/** Application paths → term-id objects (only paths that already carry a real term id). */
+function applicationsToWp(paths: MaterialCategoryPath[]): Array<{ id: number }> {
+  return paths
+    .map((c) => wpNumericId(c.id))
+    .filter((n): n is number => n !== null)
+    .map((id) => ({ id }))
+}
+
 /** POST body for brand profile — omits server-managed `brand_id` / `slug`. */
 export function toWpBrandProfile(p: BrandProfile): Record<string, unknown> {
-  return {
+  const body: Record<string, unknown> = {
     brand_name: p.brandName,
     description: p.description,
     website: p.website,
     email: p.email,
     phone: p.phone,
     country: p.country,
-    address: p.address,
+    address_line_1: p.addressLine1,
+    address_line_2: p.addressLine2,
     postcode: p.postcode,
     city: p.city,
     vat_number: p.vatNumber,
@@ -218,7 +266,18 @@ export function toWpBrandProfile(p: BrandProfile): Record<string, unknown> {
     social: p.social,
     channels: p.channels,
     keywords: p.keywords,
+    applications: applicationsToWp(p.applications),
+    videos: p.videos,
+    gallery_attachment_ids: galleryToWp(p.gallery),
+    downloads: downloadsToWp(p.downloads),
   }
+
+  const logoId = p.logoId ? wpNumericId(p.logoId) : null
+  if (logoId !== null) {
+    body.logo_attachment_id = logoId
+  }
+
+  return body
 }
 
 // ============================================================
@@ -427,6 +486,7 @@ interface RawMaterialAsset {
   id: string | number
   name?: string
   url?: string | null
+  title?: string
 }
 
 interface RawMaterialCategory {
@@ -442,17 +502,21 @@ interface RawMaterialFormData {
   name?: string
   description?: string
   type?: string
+  indoor_outdoor?: Array<'indoor' | 'outdoor'>
   featured_image?: RawMaterialAsset | null
-  categories?: RawMaterialCategory[]
+  applications?: RawMaterialCategory[]
   channels?: string[]
   gallery?: RawMaterialAsset[]
   videos?: string[]
   downloads?: RawMaterialAsset[]
   keywords?: string[]
+  properties?: Partial<MaterialProperties>
 }
 
 function mapAsset(raw: RawMaterialAsset): MaterialAsset {
-  return { id: String(raw.id), name: raw.name ?? '', url: raw.url ?? null }
+  const asset: MaterialAsset = { id: String(raw.id), name: raw.name ?? '', url: raw.url ?? null }
+  if (raw.title !== undefined) asset.title = raw.title
+  return asset
 }
 
 function mapCategory(raw: RawMaterialCategory): MaterialCategoryPath {
@@ -485,13 +549,15 @@ export function mapMaterialFormData(raw: RawMaterialFormData): MaterialFormData 
     name: raw.name ?? '',
     description: raw.description ?? '',
     type: raw.type ?? '',
+    indoorOutdoor: Array.isArray(raw.indoor_outdoor) ? raw.indoor_outdoor : [],
     featuredImage: raw.featured_image ? mapAsset(raw.featured_image) : null,
-    categories: (raw.categories ?? []).map(mapCategory),
+    applications: (raw.applications ?? []).map(mapCategory),
     channels: raw.channels ?? [],
     gallery: (raw.gallery ?? []).map(mapAsset),
     videos: raw.videos ?? [],
     downloads: (raw.downloads ?? []).map(mapAsset),
     keywords: raw.keywords ?? [],
+    properties: { ...EMPTY_MATERIAL_PROPERTIES, ...(raw.properties ?? {}) },
   }
 }
 
@@ -513,29 +579,24 @@ export function toWpSavedSearch(
 
 /**
  * Material form → WP create/save body. Assets are sent as numeric attachment
- * ids (uploaded separately via /wp/v2/media). Only categories that already
- * have a real term id are forwarded — newly-picked paths without a term id are
- * dropped (a real taxonomy picker is a follow-up).
+ * ids (uploaded separately via /wp/v2/media); downloads carry their title.
+ * Only applications that already have a real term id are forwarded — paths the
+ * picker assigned a local `app:` id are dropped until WP maps them to terms.
  */
 export function toWpMaterialForm(form: MaterialFormData): Record<string, unknown> {
-  const numId = (v: string): number | null => {
-    const n = Number(v)
-    return Number.isFinite(n) && v.trim() !== '' && !v.startsWith('local-') ? n : null
-  }
   return {
     name: form.name,
     description: form.description,
-    type_id: numId(form.type),
-    featured_image_id: form.featuredImage ? numId(form.featuredImage.id) : null,
-    gallery_attachment_ids: form.gallery.map((a) => numId(a.id)).filter((n): n is number => n !== null),
-    download_attachment_ids: form.downloads.map((a) => numId(a.id)).filter((n): n is number => n !== null),
+    type_id: wpNumericId(form.type),
+    indoor_outdoor: form.indoorOutdoor,
+    featured_image_id: form.featuredImage ? wpNumericId(form.featuredImage.id) : null,
+    gallery_attachment_ids: galleryToWp(form.gallery),
+    downloads: downloadsToWp(form.downloads),
     videos: form.videos,
     keywords: form.keywords,
-    categories: form.categories
-      .map((c) => numId(c.id))
-      .filter((n): n is number => n !== null)
-      .map((id) => ({ id })),
+    applications: applicationsToWp(form.applications),
     channels: form.channels,
+    properties: form.properties,
   }
 }
 

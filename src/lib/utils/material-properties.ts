@@ -89,6 +89,13 @@ const EMPTY_PROPERTIES: MaterialProperties = {
   upcycled_content: '',
 }
 
+/**
+ * A complete, blank 24-field properties object. Reused by the dashboard mapper
+ * (fallback when WP omits a field) and the material form (initial state), so a
+ * MaterialProperties value is always fully populated.
+ */
+export const EMPTY_MATERIAL_PROPERTIES: MaterialProperties = { ...EMPTY_PROPERTIES }
+
 // --------------------------------------------------------------------
 // Parser
 // --------------------------------------------------------------------
@@ -419,3 +426,49 @@ export function groupTagsByCategory(
     }))
     .filter((g) => g.tags.length > 0)
 }
+
+// --------------------------------------------------------------------
+// Property value options — for the material form's Search & filtering
+// selects. Mirrored from the mockup value sets; slugs follow the
+// class_list convention so they round-trip with parseMaterialProperties.
+// For the FILTERABLE facets these defaults are overridden at runtime by
+// the live FacetWP baseline (see buildMaterialPropertyOptions); the
+// non-filterable environmental/content facets use these directly until
+// WordPress exposes them (Johan).
+// --------------------------------------------------------------------
+
+export interface PropertyValueOption {
+  value: string
+  label: string
+}
+
+export const PROPERTY_VALUE_OPTIONS: Record<MaterialPropertyKey, PropertyValueOption[]> = {
+  glossiness: [{ value: 'matte', label: 'Matte' }, { value: 'semi-gloss', label: 'Semi-gloss' }, { value: 'gloss', label: 'Gloss' }, { value: 'high-gloss', label: 'High gloss' }],
+  translucence: [{ value: '0-percent', label: '0%' }, { value: '25-percent', label: '25%' }, { value: '50-percent', label: '50%' }, { value: '75-percent', label: '75%' }, { value: '100-percent', label: '100%' }],
+  structure: [{ value: 'open', label: 'Open' }, { value: 'closed', label: 'Closed' }, { value: 'rough', label: 'Rough' }],
+  texture: [{ value: 'smooth', label: 'Smooth' }, { value: 'medium', label: 'Medium' }, { value: 'rough', label: 'Rough' }],
+  hardness: [{ value: 'soft', label: 'Soft' }, { value: 'medium', label: 'Medium' }, { value: 'hard', label: 'Hard' }],
+  temperature: [{ value: 'cold', label: 'Cold' }, { value: 'neutral', label: 'Neutral' }, { value: 'warm', label: 'Warm' }],
+  acoustics: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  odeur: [{ value: 'none', label: 'None' }, { value: 'slight', label: 'Slight' }, { value: 'strong', label: 'Strong' }],
+  weight: [{ value: 'light', label: 'Light' }, { value: 'medium', label: 'Medium' }, { value: 'heavy', label: 'Heavy' }],
+  fire_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  uv_resistance: [{ value: 'unknown', label: 'Unknown' }, { value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  weather_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  scratch_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  chemical_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  renewable: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'partially', label: 'Partially' }],
+  energy_saving: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  climate_neutral: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'partially', label: 'Partially' }],
+  generates_energy: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  reduces_energy_use: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  reduces_water_use: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  reduces_waste: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  reduces_transport: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  sustainably_produced: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  free_from_toxins: [{ value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }],
+  biobased_content: [{ value: '0-percent', label: '0%' }, { value: '1-25-percent', label: '1\u201325%' }, { value: '26-50-percent', label: '26\u201350%' }, { value: '51-75-percent', label: '51\u201375%' }, { value: '76-99-percent', label: '76\u201399%' }, { value: '100-percent', label: '100%' }],
+  recycled_content: [{ value: '0-percent', label: '0%' }, { value: '1-25-percent', label: '1\u201325%' }, { value: '26-50-percent', label: '26\u201350%' }, { value: '51-75-percent', label: '51\u201375%' }, { value: '76-99-percent', label: '76\u201399%' }, { value: '100-percent', label: '100%' }],
+  upcycled_content: [{ value: '0-percent', label: '0%' }, { value: '1-25-percent', label: '1\u201325%' }, { value: '26-50-percent', label: '26\u201350%' }, { value: '51-75-percent', label: '51\u201375%' }, { value: '76-99-percent', label: '76\u201399%' }, { value: '100-percent', label: '100%' }],
+}
+

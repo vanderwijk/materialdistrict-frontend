@@ -1,0 +1,65 @@
+Onderwerp: S13.3 — brand- en materiaalformulieren: nieuwe velden om te persisteren
+
+Hoi Johan,
+
+De brand- en materiaalformulieren in het dashboard zijn gelijkgetrokken aan de
+demo. De frontend is klaar en draait op mock + de live FacetWP-baseline;
+ontbrekende velden degraderen netjes (lege lijst / statische opties), dus niets
+breekt zolang jij dit nog niet hebt. Wat hieronder staat is het enige dat aan
+WP-kant nog moet gebeuren: de nieuwe velden lezen en wegschrijven. De
+camelCase↔snake_case-vertaling zit al in de mappers; jij hoeft alleen de
+snake_case-shapes hieronder te respecteren.
+
+== Brand profile ==
+Endpoint: GET/POST /md/v2/dashboard/brands/{id}/profile
+
+Nieuw te lezen (GET) en te accepteren (POST):
+- address_line_1 (string) en address_line_2 (string)
+  -> het oude losse "address"-veld is gesplitst in twee.
+- applications: array, max 3. POST: [{ "id": <term_id> }]. GET (per item):
+  { "id": <term_id>, "l1": "...", "l2": "...", "l3": "..." } (main/sub/type-labels).
+- videos: string[] (YouTube/Vimeo-URL's).
+- gallery_attachment_ids: number[] in DISPLAY-volgorde (de gebruiker kan
+  herordenen; volgorde moet bewaard blijven).
+- downloads: [{ "id": <attachment_id>, "title": "<documenttitel>" }].
+- logo: upload-id (zelfde mediaproxy als de rest).
+
+== Material add/edit ==
+Endpoint: GET /md/v2/dashboard/brands/{id}/materials/{id}
+          POST .../materials  (create)  /  PATCH .../materials/{id} (edit)
+
+Nieuw te lezen en te accepteren:
+- indoor_outdoor: string[] met "indoor" en/of "outdoor" (mag allebei).
+- applications: zelfde shape als brand (max 3, [{id}] bij schrijven,
+  {id,l1,l2,l3} bij lezen). Dit vervangt het oude "categories"-veld.
+- downloads: [{ "id": <attachment_id>, "title": "..." }] (titel toegevoegd).
+- gallery_attachment_ids: number[] in display-volgorde.
+- properties: object met 24 sleutels (snake_case), waarde = term-slug of "".
+  Filterbaar (bestaan al als FacetWP-facets): glossiness, translucence,
+  structure, texture, hardness, temperature, acoustics, odeur, weight,
+  fire_resistance, uv_resistance, weather_resistance, scratch_resistance,
+  chemical_resistance, renewable.
+  Niet-filterbaar (deze moeten nog gepersisteerd + bij voorkeur op de publieke
+  material ontsloten worden zodat class_list/parse blijft kloppen):
+  energy_saving, climate_neutral, generates_energy, reduces_energy_use,
+  reduces_water_use, reduces_waste, reduces_transport, sustainably_produced,
+  free_from_toxins, biobased_content, recycled_content, upcycled_content.
+
+== Applicatie-term-mapping (belangrijk) ==
+De picker werkt frontend-only op een vaste boom (main → sub → type). Tot er
+echte term-ids zijn, zet hij voorlopige ids in de vorm "app:Main|Sub|Type".
+Die filtert de mapper er bij het wegschrijven uit (alleen echte numerieke
+term-ids gaan mee). Twee opties, jouw keuze:
+1) /md/v2/dashboard/material-categories teruggeven als [{id,l1,l2,l3}] zodat de
+   frontend de boom kan hydrateren met echte ids; of
+2) server-side de "app:Main|Sub|Type"-strings naar material_category-term-ids
+   mappen bij opslaan.
+Voor nu is optie 1 het schoonst en sluit aan op de bestaande
+mapMaterialCategoryOptions.
+
+Tier-gating wordt al server-side door jou afgedwongen (sectors/video/downloads/
+keywords = Plus+, channel coupling = Partner); de frontend spiegelt dat alleen.
+
+Geen frontend-werk meer nodig zodra de endpoints deze velden accepteren.
+
+Groet, Claude

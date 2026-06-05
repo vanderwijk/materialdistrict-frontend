@@ -1,5 +1,5 @@
 import { requireManagedBrand } from '@/lib/dashboard/brand-access'
-import { getMaterialForm, getMaterialCategories, getMaterialTypes } from '@/lib/dashboard/data'
+import { getMaterialForm, getMaterialTypes, getMaterialPropertyOptions } from '@/lib/dashboard/data'
 import { DashboardPageHeader } from '@/components/dashboard'
 import { MaterialForm } from '@/components/dashboard/panels/MaterialForm'
 
@@ -10,10 +10,10 @@ export default async function NewMaterialPage({
 }) {
   const { brandSlug } = await params
   const { brand } = await requireManagedBrand(brandSlug)
-  const [form, categoryOptions, typeOptions] = await Promise.all([
+  const [form, typeOptions, propertyOptions] = await Promise.all([
     getMaterialForm(brandSlug, null),
-    getMaterialCategories(),
     getMaterialTypes(),
+    getMaterialPropertyOptions(),
   ])
 
   return (
@@ -26,7 +26,7 @@ export default async function NewMaterialPage({
           { label: 'Add material' },
         ]}
       />
-      <MaterialForm slug={brandSlug} brandId={brand.id} initial={form} tier={brand.tier} categoryOptions={categoryOptions} typeOptions={typeOptions} />
+      <MaterialForm slug={brandSlug} brandId={brand.id} initial={form} tier={brand.tier} typeOptions={typeOptions} propertyOptions={propertyOptions} />
     </>
   )
 }

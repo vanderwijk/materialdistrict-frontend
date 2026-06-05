@@ -29,6 +29,7 @@ import type {
   FeaturedPlacement,
   BrandCandidate,
 } from '@/types/dashboard'
+import { EMPTY_MATERIAL_PROPERTIES } from '@/lib/utils/material-properties'
 
 // ------------------------------------------------------------
 // Personal account
@@ -102,7 +103,8 @@ export const MOCK_BRAND_PROFILES: Record<string, BrandProfile> = {
     email: 'info@materialdistrict.com',
     phone: '+31 (0)20 713 06 41',
     country: 'Netherlands',
-    address: 'Keizersgracht 174',
+    addressLine1: 'Keizersgracht 174',
+    addressLine2: '',
     postcode: '1016 DW',
     city: 'Amsterdam',
     vatNumber: 'NL123456789B01',
@@ -118,7 +120,21 @@ export const MOCK_BRAND_PROFILES: Record<string, BrandProfile> = {
     logoUrl: null,
     logoName: 'materialdistrict-logo.svg',
     channels: ['Biobased', 'Sustainable'],
-    keywords: ['acoustic', 'biobased', 'facade', 'circular'],
+    keywords: ['sustainable', 'cork', 'biobased', 'facade', 'flooring', 'circular'],
+    applications: [
+      { id: 'app:Building Elements|Facades|Facade Panels', l1: 'Building Elements', l2: 'Facades', l3: 'Facade Panels' },
+      { id: 'app:Floor- & Wall Coverings|Wall Coverings|Wall Panels', l1: 'Floor- & Wall Coverings', l2: 'Wall Coverings', l3: 'Wall Panels' },
+    ],
+    videos: [],
+    gallery: [
+      { id: 'g1', name: 'gallery-image-01.jpg', url: null },
+      { id: 'g2', name: 'gallery-image-02.jpg', url: null },
+    ],
+    downloads: [
+      { id: 'd1', name: 'company-brochure.pdf', url: null, title: 'Company brochure' },
+      { id: 'd2', name: 'product-catalogue.pdf', url: null, title: 'Product catalogue' },
+      { id: 'd3', name: 'sustainability-report.pdf', url: null, title: 'Sustainability report' },
+    ],
   },
   'second-brand': {
     brandId: 2,
@@ -129,7 +145,8 @@ export const MOCK_BRAND_PROFILES: Record<string, BrandProfile> = {
     email: 'hello@example.com',
     phone: '',
     country: 'Netherlands',
-    address: '',
+    addressLine1: '',
+    addressLine2: '',
     postcode: '',
     city: 'Rotterdam',
     vatNumber: '',
@@ -139,6 +156,10 @@ export const MOCK_BRAND_PROFILES: Record<string, BrandProfile> = {
     logoName: null,
     channels: [],
     keywords: [],
+    applications: [],
+    videos: [],
+    gallery: [],
+    downloads: [],
   },
 }
 
@@ -159,10 +180,11 @@ export const MOCK_MATERIAL_FORM: MaterialFormData = {
   description:
     'High-performance acoustic panel made from responsibly sourced wood fibers for interior applications.',
   type: 'Wood',
+  indoorOutdoor: ['indoor'],
   featuredImage: { id: 'feat', name: 'acoustic-wood-panel-featured.jpg', url: null },
-  categories: [
-    { id: 'c1', l1: 'Interior', l2: 'Walls', l3: 'Wall panel' },
-    { id: 'c2', l1: 'Building', l2: 'Insulation', l3: 'Acoustic insulation' },
+  applications: [
+    { id: 'app:Floor- & Wall Coverings|Wall Coverings|Acoustic Wall Panels', l1: 'Floor- & Wall Coverings', l2: 'Wall Coverings', l3: 'Acoustic Wall Panels' },
+    { id: 'app:Building Elements|Ceilings|Acoustic Ceilings', l1: 'Building Elements', l2: 'Ceilings', l3: 'Acoustic Ceilings' },
   ],
   channels: ['Biobased', 'Acoustic'],
   gallery: [
@@ -170,8 +192,9 @@ export const MOCK_MATERIAL_FORM: MaterialFormData = {
     { id: 'g2', name: 'gallery-image-02.jpg', url: null },
   ],
   videos: [],
-  downloads: [],
-  keywords: ['acoustic', 'wood', 'interior'],
+  downloads: [{ id: 'd1', name: 'brochure.pdf', url: null, title: 'Brochure' }],
+  keywords: ['acoustic', 'wood fiber', 'interior', 'wall panel', 'sustainable'],
+  properties: { ...EMPTY_MATERIAL_PROPERTIES, glossiness: 'matte' },
 }
 
 export const MOCK_INTERACTIONS: Record<string, Interaction[]> = {

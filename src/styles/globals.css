@@ -11486,3 +11486,98 @@ mark.search-mark {
 /* --- Dashboard loading skeleton --- */
 .dash-loading{display:flex;flex-direction:column;gap:16px}
 .dash-loading .dash-panel{display:flex;flex-direction:column;gap:12px}
+
+/* ============================================================
+   S13.3 — Brand & material form fields (shared)
+   Current-plan banner, logo/featured uploaders, application picker,
+   downloads, video links, gallery reorder, property block, toggles.
+   ============================================================ */
+
+/* --- Current plan banner --- */
+.plan-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--navy);color:#fff;border-radius:var(--radius-md);padding:16px 22px;box-shadow:var(--shadow)}
+.plan-banner-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.plan-banner-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6)}
+.plan-banner-tier{font-size:14px;font-weight:700}
+.plan-banner-pills{display:flex;flex-wrap:wrap;gap:8px}
+.plan-banner-pill{font-size:12px;font-weight:600;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,0.14);color:#fff}
+.plan-banner-aside{font-size:13px;font-weight:600;color:rgba(255,255,255,0.85)}
+.plan-banner-cta{font-size:13px;font-weight:700;padding:8px 18px;border-radius:var(--radius);background:#fff;color:var(--navy);text-decoration:none}
+.plan-banner-cta:hover{background:var(--surface2)}
+
+/* --- Two-column header grids (brand details / material basics) --- */
+.brand-details-grid,.material-basics-grid{display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start}
+.brand-details-main,.material-basics-main{display:flex;flex-direction:column;gap:14px}
+.brand-logo-field,.material-featured-field{display:flex;flex-direction:column;gap:8px}
+.brand-logo-box,.material-featured-box{display:flex;align-items:center;justify-content:center;min-height:120px;border:1px dashed var(--border);border-radius:var(--radius-md);background:var(--surface2);overflow:hidden;text-align:center}
+.brand-logo-img,.material-featured-img{max-width:100%;max-height:120px;object-fit:contain}
+.brand-logo-empty,.material-featured-empty{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-hint);font-size:12px;padding:12px}
+.brand-logo-name,.material-featured-name{word-break:break-word}
+
+/* --- Buttons / subheads / blocks --- */
+.btn-block{width:100%;justify-content:center}
+.field-subhead{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px}
+.field-block{margin-top:18px}
+.field-helper.is-error{color:var(--red)}
+
+/* --- Indoor / Outdoor toggle --- */
+.toggle-group{display:flex;gap:10px}
+.toggle-btn{flex:1;height:44px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;font-weight:600;color:var(--text-muted);background:var(--surface2);cursor:pointer;transition:all 0.15s}
+.toggle-btn:hover{border-color:var(--navy)}
+.toggle-btn.is-on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* --- Media two-column --- */
+.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+
+/* --- Application picker (Main/Sub/Type cascade + breadcrumb chips) --- */
+.app-cascade{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:start}
+.app-path-list{display:flex;flex-direction:column;gap:7px;margin-top:12px;list-style:none;padding:0}
+.app-path{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--green-mid);background:var(--green-pale);border-radius:var(--radius);padding:8px 12px;font-size:13px}
+.app-path-crumbs{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.app-path-crumb{font-size:11px;color:var(--text-hint)}
+.app-path-leaf{color:var(--text);font-weight:700}
+.app-path-remove{color:var(--red);flex-shrink:0}
+
+/* --- Asset rows (downloads & video links reuse .asset-list/.asset-row) --- */
+.asset-row-main{display:flex;align-items:center;gap:10px;min-width:0}
+.asset-row-icon{color:var(--text-hint);flex-shrink:0}
+.asset-row-label{color:var(--text);word-break:break-word}
+.asset-row-url{color:var(--text-muted);font-size:12px}
+.asset-row-text{display:flex;flex-direction:column;gap:2px;min-width:0}
+.asset-row-hint{font-size:11px;color:var(--text-hint)}
+
+/* --- Downloads field --- */
+.doc-add-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:start}
+.file-choose{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* --- Video links field --- */
+.video-add-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+
+/* --- Gallery field (reorder) --- */
+.gallery-row{align-items:center}
+.gallery-thumb{width:44px;height:44px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;background:var(--surface2)}
+.gallery-thumb-empty{display:flex;align-items:center;justify-content:center;color:var(--text-hint);border:1px solid var(--border)}
+.gallery-actions{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.gallery-upload-btn{width:100%;justify-content:center;margin-top:12px;border-style:dashed}
+
+/* --- Property block (Search & filtering) --- */
+.property-group{margin-top:18px}
+.property-group:first-of-type{margin-top:0}
+.property-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+
+/* --- Channel coupling --- */
+.chip-check{flex-shrink:0}
+.chip.is-active-link{background:var(--navy);border-color:var(--navy);color:#fff;cursor:default}
+.active-channel-links{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* --- Responsive: collapse the form grids on narrow screens --- */
+@media (max-width:720px){
+  .brand-details-grid,.material-basics-grid,.media-grid,.property-grid{grid-template-columns:1fr}
+  .app-cascade{grid-template-columns:1fr 1fr}
+  .doc-add-row{grid-template-columns:1fr}
+  .file-choose{max-width:none}
+}
+
+/* --- Dark mode --- */
+[data-theme="dark"] .plan-banner-pill{background:rgba(255,255,255,0.16)}
+[data-theme="dark"] .app-path{background:rgba(120,170,120,0.12);border-color:var(--green-mid)}
+[data-theme="dark"] .brand-logo-box,[data-theme="dark"] .material-featured-box{background:var(--surface);border-color:var(--border)}

@@ -19,6 +19,7 @@
  */
 
 import type { ManufacturerTier } from '@/lib/config/membership'
+import type { MaterialProperties } from '@/types/material'
 
 // ============================================================
 // Shared primitives
@@ -308,7 +309,10 @@ export interface BrandProfile {
   email: string
   phone: string
   country: string
-  address: string
+  /** Street + number. */
+  addressLine1: string
+  /** Optional second address line (suite, floor, etc.). */
+  addressLine2: string
   postcode: string
   city: string
   vatNumber: string
@@ -316,10 +320,24 @@ export interface BrandProfile {
   social: BrandSocialLinks
   logoUrl: string | null
   logoName: string | null
+  /** Set after a fresh media upload; sent as `logo_attachment_id` on save. */
+  logoId?: string | null
   /** Material channels the brand participates in (e.g. Biobased). */
   channels: string[]
   /** SEO / discovery keywords (Plus+ feature). */
   keywords: string[]
+  /**
+   * Sectors & applications — the 3-level application paths this brand serves
+   * (max 3). Same shape and shared picker as a material's `applications`.
+   * Plus+ feature.
+   */
+  applications: MaterialCategoryPath[]
+  /** Video links (YouTube / Vimeo URLs) shown on the brand page (Plus+). */
+  videos: string[]
+  /** Gallery images shown on the brand page, in display order. */
+  gallery: MaterialAsset[]
+  /** Downloads & brochures (each with an optional document title). */
+  downloads: MaterialAsset[]
 }
 
 // ============================================================
@@ -365,11 +383,17 @@ export interface MaterialTypeOption {
   name: string
 }
 
-/** A gallery image reference in the material form. */
+/**
+ * An uploaded asset reference (gallery image or download) used in both forms.
+ * `title` is the optional, human-entered document title for downloads &
+ * brochures (shared shape across brand profile and material forms); gallery
+ * images leave it undefined.
+ */
 export interface MaterialAsset {
   id: string
   name: string
   url: string | null
+  title?: string
 }
 
 /**
@@ -387,13 +411,28 @@ export interface MaterialFormData {
   description: string
   /** material_category term id (stringified). */
   type: string
+  /**
+   * Indoor / outdoor classification. Multi-select: a material may be both.
+   * Empty array = not yet specified.
+   */
+  indoorOutdoor: Array<'indoor' | 'outdoor'>
   featuredImage: MaterialAsset | null
-  categories: MaterialCategoryPath[]
+  /**
+   * Material applications — the 3-level application paths (max 3). Same shape
+   * and shared picker as a brand's `applications`. Was previously `categories`.
+   */
+  applications: MaterialCategoryPath[]
   channels: string[]
   gallery: MaterialAsset[]
   videos: string[]
   downloads: MaterialAsset[]
   keywords: string[]
+  /**
+   * Search & filtering properties (24 fields / 4 groups). Drives discovery and
+   * compare. Filterable facet options come from the FacetWP baseline; the
+   * non-filterable environmental/content facets persist server-side (Johan).
+   */
+  properties: MaterialProperties
 }
 
 // ============================================================
