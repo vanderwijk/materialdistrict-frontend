@@ -23,7 +23,8 @@ Bij material/brand save:
   `menu_order` op attachments; unlink removed ids
 - Featured/logo: `post_parent` op thumbnail-attachment bij save
 
-Plugin commit: (zie git log na push)
+Plugin commit: `3cb0676` (master)
+Frontend commit: `1169f60` (main)
 
 == Frontend-fix — repliceer in upstream (3 bestanden) ==
 
