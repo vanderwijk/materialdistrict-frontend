@@ -49,6 +49,7 @@ import {
   toMaterialTags,
 } from '@/lib/utils/material-properties'
 import { MaterialDetailActions } from './_components/MaterialDetailActions'
+import { MaterialDetailCompareBar } from './_components/MaterialDetailCompareBar'
 import { MaterialDetailBackLink } from './_components/MaterialDetailBackLink'
 import { GetInTouchCard } from './_components/GetInTouchCard'
 import { DownloadsCard } from './_components/DownloadsCard'
@@ -351,6 +352,17 @@ export default async function MaterialDetailPage({
         brandName={material.brandName}
         brandSlug={material.brandSlug}
         currentMaterialId={material.id}
+      />
+
+      <MaterialDetailCompareBar
+        material={{
+          id: material.id,
+          title: material.title,
+          brandName: material.brandName,
+          hero: material.gallery.hero,
+          slug: material.slug,
+          link: `/materials/${material.slug}`,
+        }}
       />
 
       <JsonLd

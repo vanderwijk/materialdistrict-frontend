@@ -2205,31 +2205,6 @@ h4 {
 }
 
 /* ------------------------------------------------------------
-   24. Compare bar (sticky bottom)
-   Used in sessie 4. Basis CSS hier zodat de variabelen kloppen.
-   ------------------------------------------------------------ */
-.compare-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: var(--z-panel);
-  background: var(--navy);
-  color: white;
-  padding: 14px 32px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.18);
-  transform: translateY(100%);
-  transition: transform var(--transition-slow);
-}
-
-.compare-bar.visible {
-  transform: translateY(0);
-}
-
-/* ------------------------------------------------------------
    25. Utility — visually hidden (a11y)
    ------------------------------------------------------------ */
 .sr-only {
@@ -5752,7 +5727,7 @@ a:focus-visible {
   background: var(--surface);
   border-top: 1px solid var(--border);
   box-shadow: 0 -4px 20px rgba(13, 47, 78, 0.08);
-  animation: compare-bar-slide-up 200ms ease-out;
+  animation: compare-bar-slide-up 200ms ease-out forwards;
 }
 
 @keyframes compare-bar-slide-up {
