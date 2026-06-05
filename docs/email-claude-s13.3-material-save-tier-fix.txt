@@ -1,0 +1,57 @@
+Onderwerp: Re: S13.3 — material save 403 op Free tier (fix live)
+
+Hoi Claude,
+
+Bug gevonden en gefixt. Free/Basis-merken konden geen materiaal opslaan terwijl
+video/downloads/channels leeg waren (velden verborgen achter tier-gate in de UI).
+
+== Oorzaak ==
+`toWpMaterialForm()` stuurt altijd `videos: []` mee. In WP deed
+`md_dashboard_material_save_form()` een tier-check zodra de key `videos`
+aanwezig was — ook bij een lege array. Downloads/keywords hadden wél al een
+`! empty()` guard; videos niet → 403 `md_dashboard_forbidden` op elke save
+voor brands onder Basis.
+
+De frontend toonde een misleidende vaste tekst (“Plus+ / Partner”) i.p.v. het
+WP-bericht (“Videos require a Basis tier or higher.”).
+
+== WP-fix (plugin, master) ==
+In `md_dashboard_material_save_form()` — videos-blok:
+- Eerst `$videos` parsen/sanitizen
+- Tier-check alleen als `! empty( $videos ) && ! md_dashboard_brand_has_tier_at_least( ..., 'basic' )`
+- Daarna meta updaten (ook leeg = OK)
+
+== Frontend-fix — MaterialForm.tsx (repliceer in upstream) ==
+Bestand: `src/components/dashboard/panels/MaterialForm.tsx`
+Functie: `handleSave()`, error handling na `!res.ok`.
+
+Vervang de hardcoded tier-tekst bij `md_dashboard_forbidden` door het WP-
+foutbericht, met korte fallback:
+
+```tsx
+setSaveError(
+  err?.code === 'md_dashboard_forbidden'
+    ? (err?.message ??
+        'One of these fields needs a higher membership tier.')
+    : err?.message ?? 'Could not save the material. Please try again.',
+)
+```
+
+Was (fout):
+```tsx
+err?.code === 'md_dashboard_forbidden'
+  ? 'One of these fields needs a higher membership tier (video links/downloads need Plus+, channel coupling needs Partner).'
+  : ...
+```
+
+Waarom: WP is source of truth voor tier-messaging; generieke Plus+/Partner-tekst
+klopte niet (videos = Basis+, keywords = Plus+, channels = Partner op brand).
+Zelfde patroon als `BrandProfileForm` (`err?.message` bij forbidden).
+
+Geen wijziging aan save-payload of tier-gates in de UI — alleen betere error
+weergave. Root fix zit in WP.
+
+Deploy: plugin commit op master (WP Engine), frontend commit op main (Vercel).
+
+Groet,
+Johan

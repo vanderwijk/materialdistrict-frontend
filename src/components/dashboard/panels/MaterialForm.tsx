@@ -157,7 +157,8 @@ export function MaterialForm({
         const err = await res.json().catch(() => null)
         setSaveError(
           err?.code === 'md_dashboard_forbidden'
-            ? 'One of these fields needs a higher membership tier (video links/downloads need Plus+, channel coupling needs Partner).'
+            ? (err?.message ??
+                'One of these fields needs a higher membership tier.')
             : err?.message ?? 'Could not save the material. Please try again.',
         )
         return
