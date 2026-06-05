@@ -1,13 +1,20 @@
 /**
  * POST /api/dashboard/media
  *
- * Uploads a file via the scoped dashboard endpoint
- * (`POST /md/v2/dashboard/brands/{brandId}/media`) and returns a
- * `MaterialAsset` ({ id, name, url }). Requires `brand_id` and the file in
- * multipart form data; optional `context` is `image` (default) or `document`.
+ * Uploads a file to the WP media library on the user's behalf and returns a
+ * `MaterialAsset` ({ id, name, url }) the dashboard forms can reference. The
+ * JWT is HttpOnly, so the browser uploads to this proxy (multipart) and we
+ * forward it with the Bearer token.
  *
- * Does not use generic `/wp/v2/media` — dashboard users are subscribers without
- * the global `upload_files` cap.
+ * Dashboard users are WP subscribers without `upload_files`, so we forward to
+ * the scoped, brand-managed endpoint `POST /md/v2/dashboard/brands/{id}/media`
+ * (not generic `/wp/v2/media`, which 401s for these users). WP sets
+ * `post_author` to the current user; on save, gallery/featured attachments get
+ * `post_parent` so the public site reads them via `?parent=<post_id>`.
+ *
+ * FormData: `file` (required), `brand_id` (required), `context` (`image` |
+ * `document`, default `image`). Do not set Content-Type manually — fetch keeps
+ * the multipart boundary intact.
  */
 
 import { NextResponse } from 'next/server'

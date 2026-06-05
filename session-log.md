@@ -2451,9 +2451,9 @@ baseline (zelfde pad als sensorial/technical — geen apart datamodel).
   `[{id,l1,l2,l3}]` voor hydratie met echte term-ids.
 - **Slug-alignment:** form static defaults vs. WP-term-slugs (vooral percentages)
   nog eens verifiëren bij eerste echte saves.
-- **Media upload (subscribers):** generieke `POST /wp/v2/media` faalde met
-  `rest_cannot_create`. Fix: scoped `POST /md/v2/dashboard/brands/{id}/media`
+- **Media upload (subscribers):** ✅ scoped `POST /md/v2/dashboard/brands/{id}/media`
   (plugin `3cb0676`, frontend `1169f60`); gallery `post_parent` sync bij save.
+  Claude zip `md-s13.3-upload-fix` bevestigt dezelfde frontend-implementatie.
   Handoff: `docs/email-claude-s13.3-dashboard-media-upload-done.txt`.
 
 #### S13.3 — follow-up na Johan (05-06)
@@ -2484,3 +2484,26 @@ Twee correcties van Johan verwerkt:
    messaging (videos = Basis+, keywords = Plus+, channels = Partner). Toegepast in
    `MaterialForm.tsx` en `BrandProfileForm.tsx`. Geen wijziging aan save-payload
    of UI-tier-gates.
+
+#### S13.3 — follow-up 2: upload-401 gefixt (05-06)
+
+Dashboard file-uploads (gallery/downloads/logo/featured) faalden met 401 op
+`/api/dashboard/media` ("Sorry, you are not allowed to create posts as this
+user"): dashboard-users zijn WP-subscribers zonder `upload_files`, en de proxy
+postte naar de generieke `POST /wp/v2/media`.
+
+Root-fix WP-zijde (plugin master `3cb0676`): nieuw scoped endpoint
+`POST /md/v2/dashboard/brands/{id}/media` (JWT + managed-brand-check, mime/size/
+rate-limit, `post_author` = user, response `{id,name,url}`), plus
+`post_parent`/`menu_order`-sync van gallery/featured/logo bij save zodat de
+publieke site de gallery via `?parent=<post_id>` ophaalt.
+
+Frontend (main `1169f60`, bevestigd door Claude zip `md-s13.3-upload-fix`):
+- `src/app/api/dashboard/media/route.ts` — `file` + `brand_id` + `context` uit
+  FormData; forward multipart naar scoped endpoint; `{id,name,url}` → MaterialAsset.
+- `MaterialForm.tsx` / `BrandProfileForm.tsx` — `uploadFile(file, context)` met
+  `brand_id`; gallery/logo/featured = `image`, downloads = `document`. Main
+  behoudt `logoId` op brand logo-save (niet in Claude zip).
+
+E2E na deploy (beide repos): material edit → gallery upload → save → publieke
+materialpagina toont gallery. Testaccount: e2e-dashboard-free.
