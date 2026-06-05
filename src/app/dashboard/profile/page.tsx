@@ -1,13 +1,16 @@
-import { getProfile } from '@/lib/dashboard/data'
+import { getProfile, getProfileFieldOptions } from '@/lib/dashboard/data'
 import { DashboardPageHeader } from '@/components/dashboard'
 import { ProfileForm } from '@/components/dashboard/panels/ProfileForm'
 
 export default async function ProfilePage() {
-  const profile = await getProfile()
+  const [profile, options] = await Promise.all([
+    getProfile(),
+    getProfileFieldOptions(),
+  ])
   return (
     <>
       <DashboardPageHeader title="My profile" />
-      <ProfileForm initial={profile} />
+      <ProfileForm initial={profile} options={options} />
     </>
   )
 }

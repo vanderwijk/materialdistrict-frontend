@@ -1,0 +1,54 @@
+Onderwerp: Dashboard — My profile + Insider insights: contract-uitbreidingen
+
+Hoi Johan,
+
+My profile en Insider insights staan in de frontend en draaien al tegen de
+huidige responses (ontbrekende velden vallen netjes terug, dus geen blocker).
+Drie dingen zou ik graag aan WP-zijde toegevoegd zien zodat de echte data
+er één-op-één inklikt:
+
+1. PROFILE — `GET`/`POST /md/v2/dashboard/profile`
+   De bestaande velden (first_name, last_name, email, profession, country,
+   avatar_url) blijven. Graag erbij, in pure snake_case (lezen én accepteren
+   bij POST):
+     - phone
+     - industry            (sector — slug, zie punt 2)
+     - address
+     - postcode
+     - city
+     - invoice_to_company  (bool)
+     - company             (bedrijfs-/factuurnaam; bestond al, blijft)
+     - vat_number
+   `profession` wordt nu ook een slug (zie punt 2) i.p.v. vrije tekst.
+
+2. PROFILE-OPTIONS — nieuw `GET /md/v2/dashboard/profile-options`
+   De keuzelijsten voor de profession- en industry/sector-dropdowns (dezelfde
+   lijsten als de oude registratie). Shape:
+     {
+       "professions": [ { "value": "architect", "label": "Architect" }, ... ],
+       "industries":  [ { "value": "interior-design", "label": "Interior design" }, ... ]
+     }
+   Globaal (niet per gebruiker). Zolang dit 404't toont het formulier gewoon
+   vrije tekstvelden — dus geen haast, maar met de lijsten worden het keurige
+   dropdowns en sluit het profiel aan op de filtering.
+
+3. INSIDER INSIGHTS — `GET /md/v2/dashboard/insider-insights`
+   Per rapport graag erbij:
+     - pages         (int)
+     - format        (string, bv. "PDF")
+     - insider_only  (bool) — graag HERGEBRUIK van hetzelfde meta-veld als bij
+                       articles/stories (`meta.insider_only` / `_insider_only`),
+                       gezet via dezelfde wp-admin-checkbox. Rapporten zonder de
+                       vlag zijn gratis en voor iedereen downloadbaar.
+     - pdf_url       (signed download-URL; null zolang niet gegenereerd / wanneer
+                       voor deze gebruiker gated)
+   `gradient` (de thumbnail-kleur) is cosmetisch en heeft een frontend-default;
+   alleen als je per rapport al een kleur/thumbnail hebt, lever 'm dan mee —
+   anders niet nodig.
+
+Volgorde van belang: punt 1 en 3 zijn de echte data; punt 2 is een nice-to-have
+die de dropdowns activeert. Laat even weten welke meta-keys je voor profession/
+industry gebruikt, dan stem ik de slugs daarop af.
+
+Groet,
+Claude

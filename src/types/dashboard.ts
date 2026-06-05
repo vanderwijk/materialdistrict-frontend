@@ -63,14 +63,49 @@ export interface Invoice {
  *  - write `POST /md/v2/dashboard/profile`
  */
 export interface UserProfile {
+  // --- Personal details ---
   firstName: string
   lastName: string
   email: string
+  phone: string
+  /** Profession dropdown value (slug). Options come from `getProfileFieldOptions`. */
   profession: string
-  company: string
+  /** Industry/sector dropdown value (slug). Options come from `getProfileFieldOptions`. */
+  industry: string
+  // --- Billing & address ---
+  address: string
+  postcode: string
+  city: string
   country: string
+  /**
+   * When true the next invoice is issued to a company; `company` + `vatNumber`
+   * then apply. Drives the "Invoice to a company" toggle in the form.
+   */
+  invoiceToCompany: boolean
+  /** Company (billing) name, used when `invoiceToCompany` is true. */
+  company: string
+  /** VAT number for business invoices (EU B2B). */
+  vatNumber: string
   /** Avatar upload URL, or `null` to fall back to initials. */
   avatarUrl: string | null
+}
+
+/** One option in a profile dropdown (profession / industry). */
+export interface ProfileFieldOption {
+  value: string
+  label: string
+}
+
+/**
+ * Option lists for the profile dropdowns, sourced from WordPress (the same
+ * lists the legacy registration used). Empty arrays → the form falls back to a
+ * free-text input for that field.
+ *
+ * Endpoint: `GET /md/v2/dashboard/profile-options`
+ */
+export interface ProfileFieldOptions {
+  professions: ProfileFieldOption[]
+  industries: ProfileFieldOption[]
 }
 
 // ============================================================
@@ -187,8 +222,9 @@ export interface SavedSearch {
 // ============================================================
 
 /**
- * A trend report / insight entry. Insider-only content; non-Insiders see a
- * teaser + gate.
+ * A trend report / insight entry. Reports flagged `insiderOnly` are gated for
+ * non-Insiders (shown as a locked teaser); un-flagged reports are downloadable
+ * by anyone via `pdfUrl`.
  *
  * Endpoint: `GET /md/v2/dashboard/insider-insights`
  */
@@ -196,9 +232,23 @@ export interface InsightReport {
   id: string
   title: string
   summary: string
+  /** ISO date; formatted client-side to e.g. "Apr 2026". */
   date: string
   /** e.g. "Trend report", "Material forecast". */
   category: string
+  /** Page count for the meta line ("28 pages"). */
+  pages: number
+  /** File format label, e.g. "PDF". */
+  format: string
+  /** CSS gradient for the thumbnail block (matches public card styling). */
+  gradient: string
+  /**
+   * Insider-only gating. Same `meta.insider_only` flag as articles/stories
+   * (set via the wp-admin checkbox). `false` → free, downloadable by anyone.
+   */
+  insiderOnly: boolean
+  /** Signed download URL; `null` while not generated or gated for this user. */
+  pdfUrl: string | null
   href: string
 }
 

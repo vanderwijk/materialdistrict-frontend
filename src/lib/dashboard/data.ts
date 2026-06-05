@@ -16,6 +16,7 @@
 
 import type {
   UserProfile,
+  ProfileFieldOptions,
   BookmarkItem,
   Board,
   BoardDetail,
@@ -42,6 +43,7 @@ import { findBrandMembership } from '@/lib/auth/user-helpers'
 import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import {
   mapUserProfile,
+  mapProfileFieldOptions,
   mapBrandProfile,
   mapMaterialListRows,
   mapBookmarks,
@@ -93,6 +95,25 @@ export async function getProfile(): Promise<UserProfile> {
     { method: 'GET', bearer: token },
   )
   return mapUserProfile(raw)
+}
+
+/**
+ * GET /md/v2/dashboard/profile-options — option lists for the profession and
+ * industry dropdowns (global, not per-user). Until the endpoint is live it
+ * 404s → empty lists, and the form renders free-text inputs instead.
+ */
+export async function getProfileFieldOptions(): Promise<ProfileFieldOptions> {
+  const empty: ProfileFieldOptions = { professions: [], industries: [] }
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapProfileFieldOptions>[0]>(
+      '/md/v2/dashboard/profile-options',
+      { method: 'GET', bearer: await requireToken() },
+    )
+    return mapProfileFieldOptions(raw)
+  } catch (err) {
+    if (err instanceof DashboardApiError) return empty
+    throw err
+  }
 }
 
 /** GET /md/v2/dashboard/bookmarks (batch 3 — live) */

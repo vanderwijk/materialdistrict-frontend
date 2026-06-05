@@ -11326,6 +11326,7 @@ mark.search-mark {
 .profile-avatar-row{display:flex;align-items:center;gap:16px;margin-bottom:20px}
 .profile-avatar-lg{width:64px;height:64px;font-size:18px;overflow:hidden}
 .profile-avatar-lg img{width:100%;height:100%;object-fit:cover}
+.profile-invoice-fields{margin-top:14px}
 
 /* --- Bookmarks --- */
 .bm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:16px}
@@ -11356,14 +11357,20 @@ mark.search-mark {
 .ss-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 
 /* --- Insider insights --- */
-.insight-list{display:flex;flex-direction:column;gap:12px}
-.insight-card{padding:18px;border:1px solid var(--border);border-radius:var(--radius-md);transition:border-color 0.15s}
-.insight-card a{display:block}
-.insight-card:not(.is-locked):hover{border-color:var(--navy-light)}
-.insight-card.is-locked{opacity:0.65}
-.insight-title{font-size:16px;font-weight:600;margin-top:8px}
-.insight-summary{font-size:13px;color:var(--text-muted);margin-top:4px}
-.insight-date{display:block;font-size:12px;color:var(--text-hint);margin-top:8px}
+.insights-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:var(--ct-member-pale);border:1px solid var(--ct-member);border-radius:var(--radius-md);padding:20px 22px;margin-bottom:20px}
+.insights-banner-main{display:flex;flex-direction:column;gap:8px;min-width:240px}
+.insights-banner-title{font-size:18px;font-weight:700;color:var(--text)}
+.insights-banner-sub{font-size:13px;color:var(--text-muted)}
+.insight-list{display:flex;flex-direction:column}
+.insight-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid var(--border)}
+.insight-row:first-child{padding-top:4px}
+.insight-row:last-child{border-bottom:none}
+.insight-thumb{width:54px;height:54px;border-radius:var(--radius);background:var(--cover,var(--surface2));flex-shrink:0}
+.insight-row-body{flex:1;min-width:0}
+.insight-row-title{font-size:15px;font-weight:600;color:var(--navy)}
+.insight-row-title:hover{text-decoration:underline}
+.insight-row-meta{font-size:12px;color:var(--text-hint);margin-top:4px}
+.insight-row-action{flex-shrink:0;display:flex;align-items:center;gap:8px}
 
 /* --- Reader membership --- */
 .memb-status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 16px}

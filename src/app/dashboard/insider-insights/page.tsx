@@ -9,7 +9,7 @@ export default async function InsiderInsightsPage() {
   return (
     <>
       <DashboardPageHeader title="Insider insights" />
-      <InsightsPanel insights={insights} locked={!isInsider(user)} />
+      <InsightsPanel insights={insights} isInsider={isInsider(user)} />
     </>
   )
 }

@@ -10,6 +10,8 @@
 
 import type {
   UserProfile,
+  ProfileFieldOption,
+  ProfileFieldOptions,
   BrandProfile,
   BrandSocialLinks,
   MaterialListRow,
@@ -47,10 +49,27 @@ interface RawUserProfile {
   first_name?: string
   last_name?: string
   email?: string
+  phone?: string
   profession?: string
-  company?: string
+  industry?: string
+  address?: string
+  postcode?: string
+  city?: string
   country?: string
+  invoice_to_company?: boolean
+  company?: string
+  vat_number?: string
   avatar_url?: string | null
+}
+
+interface RawProfileFieldOption {
+  value?: string
+  label?: string
+}
+
+interface RawProfileFieldOptions {
+  professions?: RawProfileFieldOption[]
+  industries?: RawProfileFieldOption[]
 }
 
 interface RawBrandProfile {
@@ -96,10 +115,29 @@ export function mapUserProfile(raw: RawUserProfile): UserProfile {
     firstName: raw.first_name ?? '',
     lastName: raw.last_name ?? '',
     email: raw.email ?? '',
+    phone: raw.phone ?? '',
     profession: raw.profession ?? '',
-    company: raw.company ?? '',
+    industry: raw.industry ?? '',
+    address: raw.address ?? '',
+    postcode: raw.postcode ?? '',
+    city: raw.city ?? '',
     country: raw.country ?? '',
+    invoiceToCompany: raw.invoice_to_company ?? false,
+    company: raw.company ?? '',
+    vatNumber: raw.vat_number ?? '',
     avatarUrl: raw.avatar_url ?? null,
+  }
+}
+
+function mapProfileFieldOption(raw: RawProfileFieldOption): ProfileFieldOption {
+  return { value: raw.value ?? '', label: raw.label ?? raw.value ?? '' }
+}
+
+/** Profile dropdown option lists. Missing/empty → form falls back to free text. */
+export function mapProfileFieldOptions(raw: RawProfileFieldOptions): ProfileFieldOptions {
+  return {
+    professions: Array.isArray(raw?.professions) ? raw.professions.map(mapProfileFieldOption) : [],
+    industries: Array.isArray(raw?.industries) ? raw.industries.map(mapProfileFieldOption) : [],
   }
 }
 
@@ -150,9 +188,16 @@ export function toWpUserProfile(p: UserProfile): Record<string, unknown> {
     first_name: p.firstName,
     last_name: p.lastName,
     email: p.email,
+    phone: p.phone,
     profession: p.profession,
-    company: p.company,
+    industry: p.industry,
+    address: p.address,
+    postcode: p.postcode,
+    city: p.city,
     country: p.country,
+    invoice_to_company: p.invoiceToCompany,
+    company: p.company,
+    vat_number: p.vatNumber,
   }
 }
 
@@ -319,6 +364,12 @@ interface RawInsight {
   summary?: string
   date?: string
   category?: string
+  pages?: number
+  format?: string
+  gradient?: string
+  /** Same flag as articles: `meta.insider_only` / `meta._insider_only`. */
+  insider_only?: boolean
+  pdf_url?: string | null
   href?: string
 }
 
@@ -328,7 +379,12 @@ export function mapInsight(raw: RawInsight): InsightReport {
     title: raw.title ?? '',
     summary: raw.summary ?? '',
     date: raw.date ?? '',
-    category: raw.category ?? 'Article',
+    category: raw.category ?? 'Report',
+    pages: typeof raw.pages === 'number' ? raw.pages : 0,
+    format: raw.format ?? 'PDF',
+    gradient: raw.gradient ?? 'linear-gradient(135deg,#d7e8b6,#eef6ff)',
+    insiderOnly: raw.insider_only ?? false,
+    pdfUrl: raw.pdf_url ?? null,
     href: raw.href ?? '#',
   }
 }
