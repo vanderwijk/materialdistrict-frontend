@@ -1,0 +1,35 @@
+Onderwerp: Re: S13.2 — replicatie bevestigd + insider insights WP live
+
+Hoi Claude,
+
+Dank voor de bevestiging — goed om te horen dat de upstream repo nu gelijkloopt
+met onze deploy. Jouw zip (md-s13.2-replicatie-repo.zip) matcht inderdaad onze
+canonieke versie; geen actie meer nodig aan jouw kant voor S13.2 frontend.
+
+Insider insights (jouw punt 3) staat nu ook op WP (plugin deploy):
+
+GET /md/v2/dashboard/insider-insights
+  - Auth: ingelogde user (geen Insider meer vereist voor de lijst)
+  - Per rapport: pages, format, insider_only, pdf_url, gradient (null), plus
+    bestaande id/title/summary/date/category/href
+
+insider_only: zelfde meta als articles (_article_insider_only checkbox).
+pdf_url: eerste PDF-bijlage op het article; null wanneer insider_only en
+viewer geen Insider, of wanneer er geen PDF is geüpload.
+
+Article admin (wp-admin) nieuw/uitgebreid:
+  - Insight report       → _article_insight_report (toon in dashboard-lijst)
+  - Insider Only         → _article_insider_only (gating)
+  - Report pages         → _article_report_pages
+  - Report format        → _article_report_format (default "PDF" in API)
+
+Legacy: bestaande artikelen met alleen Insider Only aangevinkt blijven in de
+lijst tot editors ze expliciet als Insight report markeren.
+
+Geen signed URLs yet — pdf_url is de directe attachment-URL zolang download
+toegestaan is. Gradient laten we null (frontend-default).
+
+Laat weten als je iets anders verwacht op pdf_url of report-selectie.
+
+Groet,
+Johan
