@@ -12,11 +12,10 @@
 ---
 
 ## Laatste update
-Datum: 05-06-2026 — S13.3 (Dashboard: brand- en materiaalformulieren)
-gelijkgetrokken aan de demo. Frontend klaar; type-check groen. Wacht op Johan
-voor het persisteren van de nieuwe velden (zie de S13.3-sectie + mail). Eerder
-deze ronde: S13.2 (My profile + Insider insights) live, insider-report = eigen
-CPT; Stap 12 Channels-hubs; S13.1 Bookmarks & Boards.
+Datum: 05-06-2026 — S13.3 brand/materiaalformulieren live; follow-up verwerkt
+(save-bug Free/Basis WP + forbidden-messaging frontend; filterbaar-comment
+rechtgezet). Media-upload via scoped dashboard-endpoint (`3cb0676` / `1169f60`).
+Type-check groen.
 
 ---
 
@@ -2456,3 +2455,32 @@ baseline (zelfde pad als sensorial/technical — geen apart datamodel).
   `rest_cannot_create`. Fix: scoped `POST /md/v2/dashboard/brands/{id}/media`
   (plugin `3cb0676`, frontend `1169f60`); gallery `post_parent` sync bij save.
   Handoff: `docs/email-claude-s13.3-dashboard-media-upload-done.txt`.
+
+#### S13.3 — follow-up na Johan (05-06)
+
+Twee correcties van Johan verwerkt:
+
+1. **Filterbaar/niet-filterbaar — rechtgezet.** Environmental (9) en content (3)
+   zijn géén apart datamodel: ze lopen via hetzelfde FacetWP-pad als sensorial/
+   technical (WP-taxonomie → term op material → class_list → parseMaterialProperties
+   → filter). Dat content nu nauwelijks filterbaar lijkt komt door wéinig data
+   (lege facet-choices in de baseline → verborgen filtergroepen), niet door het
+   datamodel. WP-persist voor alle 24 properties staat live (plugin 278351f) via
+   wp_set_object_terms — geen apart publiek REST-pad nodig naast class_list.
+   Johan heeft de frontend-comments hierop afgestemd (geen logica gewijzigd);
+   die comment-only-bestanden zijn NIET opnieuw uit deze kant geleverd om zijn
+   edits niet te overschrijven. **Monitoring-punt:** slug-alignment tussen de
+   form-defaults (`PROPERTY_VALUE_OPTIONS`) en de WP-term-slugs, vooral de
+   percentage-buckets — relevant zolang een facet lege baseline-choices heeft en
+   dus op de statische defaults terugvalt.
+
+2. **Save-bug (Free/Basis) — gefixt.** `toWpMaterialForm()` stuurt altijd
+   `videos: []` mee; WP deed een tier-check zodra de key `videos` aanwezig was
+   (ook leeg) → 403 `md_dashboard_forbidden` bij elke save voor brands onder
+   Basis. Root-fix WP-zijde (plugin master): tier-check alleen bij
+   `! empty($videos)`. **Frontend:** de foutweergave bij `md_dashboard_forbidden`
+   toont nu het WP-bericht (`err?.message`) met korte fallback, i.p.v. de
+   misleidende vaste Plus+/Partner-tekst — WP is source of truth voor tier-
+   messaging (videos = Basis+, keywords = Plus+, channels = Partner). Toegepast in
+   `MaterialForm.tsx` en `BrandProfileForm.tsx`. Geen wijziging aan save-payload
+   of UI-tier-gates.

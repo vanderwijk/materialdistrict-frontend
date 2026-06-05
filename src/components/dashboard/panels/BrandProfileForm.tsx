@@ -137,7 +137,7 @@ export function BrandProfileForm({
         const err = await res.json().catch(() => null)
         setSaveError(
           err?.code === 'md_dashboard_forbidden'
-            ? 'One of these fields needs a higher membership tier.'
+            ? (err?.message ?? 'One of these fields needs a higher membership tier.')
             : err?.message ?? 'Could not save the brand profile. Please try again.',
         )
         return
