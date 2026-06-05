@@ -25,18 +25,23 @@ import { InsiderGate } from '@/components/ui/InsiderGate'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useBookmarks } from '@/lib/hooks/useBookmarks'
 import { BoardPickerModal } from '@/components/ui/BoardPickerModal'
-import { useCompare } from '@/lib/hooks/useCompare'
+import { useCompare, type CompareMaterialSnapshot } from '@/lib/hooks/useCompare'
+import type { MediaImage } from '@/types/media'
 
 export interface MaterialDetailActionsProps {
   materialId: number
   materialSlug: string
   materialTitle: string
+  brandName?: string | null
+  hero?: MediaImage | null
 }
 
 export function MaterialDetailActions({
   materialId,
   materialSlug,
   materialTitle,
+  brandName = null,
+  hero = null,
 }: MaterialDetailActionsProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
@@ -67,7 +72,15 @@ export function MaterialDetailActions({
   }
 
   function handleToggleCompare() {
-    toggleCompare(materialId)
+    const snapshot: CompareMaterialSnapshot = {
+      id: materialId,
+      title: materialTitle,
+      brandName,
+      hero,
+      slug: materialSlug,
+      link: `/materials/${materialSlug}`,
+    }
+    toggleCompare(materialId, snapshot)
   }
 
   return (

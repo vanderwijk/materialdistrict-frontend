@@ -256,6 +256,8 @@ export default async function MaterialDetailPage({
               materialId={material.id}
               materialSlug={material.slug}
               materialTitle={material.title}
+              brandName={material.brandName}
+              hero={material.gallery.hero}
             />
           }
         />

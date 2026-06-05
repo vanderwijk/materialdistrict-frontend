@@ -32,6 +32,13 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import type { MaterialListItem } from '@/types/material'
+
+/** Minimale material-metadata voor CompareBar-slots. */
+export type CompareMaterialSnapshot = Pick<
+  MaterialListItem,
+  'id' | 'title' | 'brandName' | 'hero' | 'slug' | 'link'
+>
 
 // --------------------------------------------------------------------
 // Constants
@@ -62,7 +69,18 @@ interface CompareContextValue {
    *  - `'removed'` — was aanwezig, nu verwijderd
    *  - `'limit-reached'` — list was vol (>= MAX_COMPARE), geen wijziging
    */
-  toggleCompare: (id: number) => CompareToggleResult
+  toggleCompare: (
+    id: number,
+    material?: CompareMaterialSnapshot,
+  ) => CompareToggleResult
+  /**
+   * Sla material-metadata op zonder de compare-list te wijzigen. Handig
+   * om slots te verrijken wanneer een page meer context heeft dan bij de
+   * oorspronkelijke toggle (bv. detail-page hero).
+   */
+  registerCompareMaterial: (material: CompareMaterialSnapshot) => void
+  /** Metadata voor een material in de compare-list, indien bekend. */
+  getCompareMaterial: (id: number) => CompareMaterialSnapshot | undefined
   /** Verwijder een material uit de compare-list. No-op als hij er niet in zit. */
   removeFromCompare: (id: number) => void
   /** Leeg de hele compare-list. */
@@ -101,30 +119,76 @@ interface CompareProviderProps {
  * geen errors, maar `toggleCompare` is een no-op en `compareIds` is leeg.
  * Dat houdt componenten in de style-guide / tests bruikbaar zonder Provider.
  */
+interface CompareState {
+  ids: number[]
+  materials: Map<number, CompareMaterialSnapshot>
+}
+
+function createInitialCompareState(initialIds: number[]): CompareState {
+  return {
+    ids: Array.from(new Set(initialIds)).slice(0, MAX_COMPARE),
+    materials: new Map(),
+  }
+}
+
 export function CompareProvider({ children, initialIds = [] }: CompareProviderProps) {
-  const [compareIds, setCompareIds] = useState<number[]>(() =>
-    // Defensief: dedup en cap op MAX_COMPARE
-    Array.from(new Set(initialIds)).slice(0, MAX_COMPARE),
+  const [state, setState] = useState<CompareState>(() =>
+    createInitialCompareState(initialIds),
   )
+  const { ids: compareIds, materials: compareMaterials } = state
 
   const isInCompare = useCallback(
     (id: number) => compareIds.includes(id),
     [compareIds],
   )
 
+  const getCompareMaterial = useCallback(
+    (id: number) => compareMaterials.get(id),
+    [compareMaterials],
+  )
+
+  const registerCompareMaterial = useCallback((material: CompareMaterialSnapshot) => {
+    setState((prev) => {
+      const existing = prev.materials.get(material.id)
+      if (
+        existing &&
+        existing.title === material.title &&
+        existing.brandName === material.brandName &&
+        existing.hero === material.hero
+      ) {
+        return prev
+      }
+      const materials = new Map(prev.materials)
+      materials.set(material.id, material)
+      return { ...prev, materials }
+    })
+  }, [])
+
   const toggleCompare = useCallback<CompareContextValue['toggleCompare']>(
-    (id) => {
+    (id, material) => {
       let result: CompareToggleResult = 'added'
-      setCompareIds((prev) => {
-        if (prev.includes(id)) {
+      setState((prev) => {
+        if (prev.ids.includes(id)) {
           result = 'removed'
-          return prev.filter((x) => x !== id)
+          const materials = new Map(prev.materials)
+          materials.delete(id)
+          return {
+            ids: prev.ids.filter((x) => x !== id),
+            materials,
+          }
         }
-        if (prev.length >= MAX_COMPARE) {
+        if (prev.ids.length >= MAX_COMPARE) {
           result = 'limit-reached'
           return prev
         }
-        return [...prev, id]
+        const materials = new Map(prev.materials)
+        if (material) {
+          materials.set(id, material)
+        }
+        return {
+          ids: [...prev.ids, id],
+          materials,
+        }
       })
       return result
     },
@@ -132,11 +196,19 @@ export function CompareProvider({ children, initialIds = [] }: CompareProviderPr
   )
 
   const removeFromCompare = useCallback((id: number) => {
-    setCompareIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : prev))
+    setState((prev) => {
+      if (!prev.ids.includes(id)) return prev
+      const materials = new Map(prev.materials)
+      materials.delete(id)
+      return {
+        ids: prev.ids.filter((x) => x !== id),
+        materials,
+      }
+    })
   }, [])
 
   const clearCompare = useCallback(() => {
-    setCompareIds([])
+    setState(createInitialCompareState([]))
   }, [])
 
   const value = useMemo<CompareContextValue>(
@@ -144,12 +216,22 @@ export function CompareProvider({ children, initialIds = [] }: CompareProviderPr
       compareIds,
       isInCompare,
       toggleCompare,
+      registerCompareMaterial,
+      getCompareMaterial,
       removeFromCompare,
       clearCompare,
       count: compareIds.length,
       isFull: compareIds.length >= MAX_COMPARE,
     }),
-    [compareIds, isInCompare, toggleCompare, removeFromCompare, clearCompare],
+    [
+      compareIds,
+      isInCompare,
+      toggleCompare,
+      registerCompareMaterial,
+      getCompareMaterial,
+      removeFromCompare,
+      clearCompare,
+    ],
   )
 
   return <CompareContext.Provider value={value}>{children}</CompareContext.Provider>
@@ -168,6 +250,8 @@ const NOOP_VALUE: CompareContextValue = {
   compareIds: [],
   isInCompare: () => false,
   toggleCompare: () => 'added',
+  registerCompareMaterial: () => {},
+  getCompareMaterial: () => undefined,
   removeFromCompare: () => {},
   clearCompare: () => {},
   count: 0,

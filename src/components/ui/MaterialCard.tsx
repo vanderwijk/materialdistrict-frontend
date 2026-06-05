@@ -168,7 +168,16 @@ export function MaterialCard({
         onRequireInsider?.()
         return
       }
-      const result = toggleCompare(material.id)
+      const result = toggleCompare(material.id, {
+        id: material.id,
+        title: material.title,
+        brandName: material.brandName,
+        hero: material.hero,
+        slug: material.slug,
+        link: material.link.startsWith('/')
+          ? material.link
+          : `/materials/${material.slug}`,
+      })
       if (result === 'limit-reached') {
         onCompareLimitReached?.()
       }

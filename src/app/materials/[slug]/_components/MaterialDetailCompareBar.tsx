@@ -4,12 +4,13 @@
  * CompareBar voor material-detail — deelt compare-state met het overzicht
  * via CompareProvider in materials/layout.tsx.
  *
- * materialsById bevat minimaal het huidige material zodat thumb + titel
- * kloppen. Overige ids in de lijst vallen terug op CompareBar-fallbacks.
+ * Registreert het huidige material zodat titel/thumb in de bar kloppen,
+ * ook wanneer het al eerder vanuit het overzicht was toegevoegd.
  */
 
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { CompareBar } from '@/components/ui'
+import { useCompare, type CompareMaterialSnapshot } from '@/lib/hooks/useCompare'
 import type { MaterialListItem } from '@/types/material'
 
 export interface MaterialDetailCompareBarProps {
@@ -22,11 +23,19 @@ export interface MaterialDetailCompareBarProps {
 export function MaterialDetailCompareBar({
   material,
 }: MaterialDetailCompareBarProps) {
-  const materialsById = useMemo(() => {
-    const map = new Map<number, MaterialListItem>()
-    map.set(material.id, material as MaterialListItem)
-    return map
-  }, [material])
+  const { registerCompareMaterial } = useCompare()
 
-  return <CompareBar materialsById={materialsById} />
+  useEffect(() => {
+    const snapshot: CompareMaterialSnapshot = {
+      id: material.id,
+      title: material.title,
+      brandName: material.brandName,
+      hero: material.hero,
+      slug: material.slug,
+      link: material.link,
+    }
+    registerCompareMaterial(snapshot)
+  }, [material, registerCompareMaterial])
+
+  return <CompareBar />
 }

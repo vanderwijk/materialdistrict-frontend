@@ -77,17 +77,18 @@ export function CompareBar({
   compareHref,
   className,
 }: CompareBarProps) {
-  const { compareIds, count, removeFromCompare, clearCompare } = useCompare()
+  const { compareIds, count, removeFromCompare, clearCompare, getCompareMaterial } =
+    useCompare()
 
   // Bouw de slots: gevulde slots eerst, dan lege placeholders tot MAX_COMPARE
   const slots = useMemo(() => {
     const filled = compareIds.map((id) => ({
       id,
-      material: materialsById?.get(id) ?? null,
+      material: materialsById?.get(id) ?? getCompareMaterial(id) ?? null,
     }))
     const empty = Array.from({ length: MAX_COMPARE - filled.length }, () => null)
     return [...filled, ...empty]
-  }, [compareIds, materialsById])
+  }, [compareIds, materialsById, getCompareMaterial])
 
   // Hidden bij lege list
   if (count === 0) {

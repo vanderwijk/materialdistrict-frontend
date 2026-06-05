@@ -30,11 +30,12 @@
  * vallen — fallback in CompareBar toont dan "Material #id".
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CompareBar, MaterialCard, InsiderGate } from '@/components/ui'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useBookmarks } from '@/lib/hooks/useBookmarks'
+import { useCompare } from '@/lib/hooks/useCompare'
 import type { MaterialListItem } from '@/types/material'
 
 // --------------------------------------------------------------------
@@ -54,6 +55,7 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
   const { isSaved, toggleBookmark } = useBookmarks()
+  const { compareIds, registerCompareMaterial } = useCompare()
 
   // Modal-state: één gate voor de hele grid
   const [insiderGateOpen, setInsiderGateOpen] = useState(false)
@@ -69,6 +71,22 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
     }
     return map
   }, [items])
+
+  // Verrijk compare-slots voor materials op de huidige grid-pagina.
+  useEffect(() => {
+    const compareSet = new Set(compareIds)
+    for (const item of items) {
+      if (!compareSet.has(item.id)) continue
+      registerCompareMaterial({
+        id: item.id,
+        title: item.title,
+        brandName: item.brandName,
+        hero: item.hero,
+        slug: item.slug,
+        link: item.link.startsWith('/') ? item.link : `/materials/${item.slug}`,
+      })
+    }
+  }, [items, compareIds, registerCompareMaterial])
 
   const handleRequireSignIn = () => {
     // Sign-in flow zit in sessie 11. Voor nu navigeren naar /sign-in
