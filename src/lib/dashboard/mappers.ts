@@ -369,7 +369,7 @@ interface RawInsight {
   gradient?: string
   /** Own checkbox on the insider-report CPT (not the article meta). */
   insider_only?: boolean
-  pdf_url?: string | null
+  has_pdf?: boolean
   href?: string
 }
 
@@ -384,7 +384,7 @@ export function mapInsight(raw: RawInsight): InsightReport {
     thumbnailUrl: raw.thumbnail_url ?? null,
     gradient: raw.gradient ?? 'linear-gradient(135deg,#d7e8b6,#eef6ff)',
     insiderOnly: raw.insider_only ?? false,
-    pdfUrl: raw.pdf_url ?? null,
+    hasPdf: raw.has_pdf ?? false,
     href: raw.href ?? '#',
   }
 }

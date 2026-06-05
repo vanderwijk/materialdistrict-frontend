@@ -245,8 +245,12 @@ export interface InsightReport {
   gradient: string
   /** Insider-only gating — its OWN checkbox on the insider-report CPT. */
   insiderOnly: boolean
-  /** Signed download URL for the PDF; `null` while gated/ungenerated. */
-  pdfUrl: string | null
+  /**
+   * Whether a PDF lives in the media library for this report. The file itself
+   * is NEVER exposed as a URL — downloads run through the gated, per-user
+   * endpoint `/api/dashboard/insider-insights/{id}/download`.
+   */
+  hasPdf: boolean
   href: string
 }
 

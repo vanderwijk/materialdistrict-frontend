@@ -71,17 +71,17 @@ export function InsightsPanel({
                   </div>
                 </div>
                 <div className="insight-row-action">
-                  {canDownload ? (
+                  {canDownload && report.hasPdf ? (
                     <a
-                      href={report.pdfUrl ?? '#'}
+                      href={`/api/dashboard/insider-insights/${report.id}/download`}
                       className="btn btn-outline btn-sm"
                       download
                     >
                       <IconDownload size={15} /> Download PDF
                     </a>
-                  ) : (
+                  ) : !canDownload ? (
                     <InsiderBadge size="sm" padded>Insider only</InsiderBadge>
-                  )}
+                  ) : null}
                 </div>
               </li>
             )
