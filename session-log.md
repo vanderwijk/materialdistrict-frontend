@@ -12,10 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 05-06-2026 — S13.3 brand/materiaalformulieren live; follow-up verwerkt
-(save-bug Free/Basis WP + forbidden-messaging frontend; filterbaar-comment
-rechtgezet). Media-upload via scoped dashboard-endpoint (`3cb0676` / `1169f60`).
-Type-check groen.
+Datum: 08-06-2026 — Fase 3 / F1.0: design-system-refresh (Schibsted Grotesk +
+paper-achtergrond) als token-only wijziging. Puur frontend; deploy pending.
 
 ---
 
@@ -2592,3 +2590,21 @@ Pure frontend overlay `md-s13.5-tier-preview.zip`:
   bevatte stale partner-grid; §S13.5 CSS handmatig op huidige main)
 
 Geen WP-wijziging. Deploy naar Vercel test.
+
+---
+
+## F1.0 — Typografie + paper-canvas (Fase 3) — 08-06-2026
+
+Start van **Fase 3** (consolidatie/fine-tuning). Bewust beperkte, chirurgische
+wijziging: alleen design-tokens, geen layout-herziening (die volgt in F2/F3/F5).
+
+**Gewijzigd:**
+- `src/app/layout.tsx` — DM Sans/DM Serif Display → **Schibsted_Grotesk** (next/font)
+- `src/styles/globals.css` — `--font-display`/`--font-body` → Schibsted Grotesk;
+  `--bg` `#ffffff` → `#fbfaf7` (paper). `--surface` wit, dark-mode ongemoeid.
+- `design-tokens.md` — font + paper tokens bijgewerkt
+
+**Verifieren na deploy:** paywall-fade op gated artikelen/talks vervaagt naar paper
+i.p.v. wit (correct zolang artikeltekst op pagina-achtergrond staat).
+
+Zip: `md-f1-fonts-paper-2026-06-08.zip`. Deploy pending.

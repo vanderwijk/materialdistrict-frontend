@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { cache, Suspense } from 'react'
-import { DM_Sans, DM_Serif_Display } from 'next/font/google'
+import { Schibsted_Grotesk } from 'next/font/google'
 import { HeaderShell } from '@/components/layout/HeaderShell'
 import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
@@ -18,18 +18,18 @@ import '@/styles/globals.css'
 
 /**
  * Fonts loaded via next/font/google — self-hosted, no external requests.
+ * Eén grotesk-familie (Schibsted Grotesk) voor zowel body als display.
  */
-const dmSans = DM_Sans({
+const groteskBody = Schibsted_Grotesk({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-body',
   display: 'swap',
 })
 
-const dmSerifDisplay = DM_Serif_Display({
+const groteskDisplay = Schibsted_Grotesk({
   subsets: ['latin'],
-  weight: ['400'],
-  style: ['normal', 'italic'],
+  weight: ['500', '600', '700'],
   variable: '--font-display',
   display: 'swap',
 })
@@ -121,7 +121,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${dmSerifDisplay.variable}`}
+      className={`${groteskBody.variable} ${groteskDisplay.variable}`}
       suppressHydrationWarning
     >
       <head>

@@ -110,7 +110,7 @@ ol {
   --ct-member-dark: var(--ct-insider-dark);
 
   /* Surfaces & tekst (light) */
-  --bg: #ffffff;
+  --bg: #fbfaf7;          /* paper canvas — tegels/panels staan op --surface (wit) */
   --surface: #ffffff;
   --surface2: #f5f7f8;
   --border: #e2e8ef;
@@ -125,8 +125,8 @@ ol {
   --link-hover: var(--navy-mid);
 
   /* Typografie */
-  --font-display: 'DM Serif Display', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+  --font-body: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
 
   /* Type-schaal */
   --text-eyebrow: 0.6875rem; /* 11px */

@@ -23,7 +23,7 @@
 
 ### Neutrale kleuren (light mode)
 ```css
---bg:           #FFFFFF;   /* Pagina-achtergrond — wit (paper-feel optioneel via #FBFAF7) */
+--bg:           #FBFAF7;   /* Pagina-achtergrond — paper canvas; tegels/panels op --surface (wit) */
 --surface:      #FFFFFF;   /* Cards, panels */
 --surface2:     #F5F7F8;   /* Subtiele achtergronden binnen surfaces, hover-states */
 --border:       #E2E8EF;   /* Lijnen, dividers */
@@ -100,12 +100,12 @@ Elke content-sectie heeft een eigen kleuridentiteit. Gebruikt voor tags (`.ct-ta
 
 ### Font families
 ```css
---font-display: 'Space Grotesk', system-ui, sans-serif;
---font-body:    'Inter', system-ui, -apple-system, sans-serif;
+--font-display: 'Schibsted Grotesk', system-ui, sans-serif;
+--font-body:    'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
 ```
 
-> **Geladen via Google Fonts:** Inter (300, 400, 500, 600, 700) en Space Grotesk (400, 500, 600, 700).
-> In productie: laden via `next/font/google` voor zelfhosting en geen externe requests.
+> **Eén grotesk-familie:** Schibsted Grotesk (400, 500, 600, 700) voor zowel body als display.
+> Geladen via `next/font/google` (self-hosted, geen externe requests) in `src/app/layout.tsx`.
 
 ### Body baseline
 ```css
@@ -119,7 +119,7 @@ html, body {
 ```
 
 ### Display-typografie (kopstijlen)
-Alle display-elementen gebruiken `var(--font-display)` (Space Grotesk) met strakke tracking.
+Alle display-elementen gebruiken `var(--font-display)` (Schibsted Grotesk) met strakke tracking.
 
 ```css
 /* Gemeenschappelijk voor alle display-koppen */
@@ -547,3 +547,23 @@ Voor de volledigheid — dit zijn de afwijkingen van het oude design-tokens docu
 | Card hover | `translateY(-2px)` + shadow | **alleen shadow**, geen translate |
 
 > Het document is volledig herschreven op basis van de actieve waarden in de definitieve mockup (`MaterialDistrict_MockUp_DEF.html`). Alle waarden zijn rechtstreeks uit de stylesheet overgenomen.
+
+---
+
+## Wijzigingen — F1.0 (Fase 3, 08-06-2026)
+
+Bijgewerkt n.a.v. de design-keuze in de F1-verkenning. Dit zijn de enige
+afwijkingen t.o.v. de tabel hierboven:
+
+| Token | Was | Nu |
+|---|---|---|
+| `--font-display` | Space Grotesk¹ | **Schibsted Grotesk** |
+| `--font-body` | Inter¹ | **Schibsted Grotesk** |
+| `--bg` (light) | `#FFFFFF` | **`#FBFAF7`** (paper canvas) |
+
+> ¹ Let op: de productiecode stond op het moment van wijzigen feitelijk op
+> **DM Sans + DM Serif Display** (een eerdere stap die nooit in dit doc was
+> verwerkt). Dit doc is daarmee twee stappen bijgewerkt en staat nu gelijk aan de
+> code. `--surface` blijft `#FFFFFF` — witte tegels op de paper-achtergrond.
+> Dark-mode `--bg` (`#0D1117`) ongewijzigd. Token-only wijziging; geen
+> layout-herziening (die volgt in F2/F3/F5).
