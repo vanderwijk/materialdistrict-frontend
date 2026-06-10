@@ -25,7 +25,6 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
@@ -33,9 +32,10 @@ import { JsonLd, buildEvent, buildBreadcrumbList } from '@/lib/seo'
 import { eventTypeLabel } from '@/lib/config/event-types'
 import type { Event } from '@/types/event'
 import type { MediaImage } from '@/types/media'
+import { MaterialGallery } from '@/components/materials'
+import { VideoEmbed } from '@/components/ui'
 import { sortEventsByDate } from '../_lib/events-order'
 import { EventDetailActions } from './_components/EventDetailActions'
-import { EventMediaViewer } from './_components/EventMediaViewer'
 import { EventPrevNext, type EventPrevNextNeighbour } from './_components/EventPrevNext'
 
 const NEIGHBOUR_SCAN = 100
@@ -152,11 +152,13 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const endRef = event.endsAt ?? event.startsAt
   const isPast = endRef !== null && new Date(endRef).getTime() < Date.now()
 
-  // Media: hero (featured) + gallery, ontdubbeld op id.
-  const seen = new Set<number>()
-  const images = [event.hero, event.gallery.hero, ...event.gallery.thumbs]
-    .filter((img): img is MediaImage => Boolean(img))
-    .filter((img) => (seen.has(img.id) ? false : (seen.add(img.id), true)))
+  // §F2.8 punt 4: gallery zoals materials; val terug op de losse hero.
+  const eventGallery =
+    event.gallery.total > 0
+      ? event.gallery
+      : event.hero
+        ? { hero: event.hero, thumbs: [] as MediaImage[], total: 1 }
+        : event.gallery
 
   // Meta-regel: type · [Past event] · datum · locatie.
   const metaParts = [
@@ -176,14 +178,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   return (
     <>
-      <RecentlyViewedTracker
-        type="events"
-        slug={event.slug}
-        title={event.title}
-        subtitle={locationLabel(event)}
-        thumbnailUrl={event.hero?.sourceUrl ?? null}
-        href={`/events/${event.slug}`}
-      />
       <article className="pub-wrap">
         <div className="pub-layout">
           <div className="detail-back-row">
@@ -193,7 +187,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           </div>
           <div className="detail-sheet">
         <DetailHeader
-          tags={[{ type: 'content', contentType: 'event' }]}
+          tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
+          channels={event.channels.map((c) => ({ slug: c.slug, label: c.label }))}
           title={event.title}
           meta={metaParts.join(' · ')}
           actions={
@@ -208,7 +203,17 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
           {/* Main column */}
           <div>
-            <EventMediaViewer images={images} videos={event.videos} title={event.title} />
+            {/* §F2.8 punt 4: zelfde gallery als materials + losse video's */}
+            {eventGallery.total > 0 && (
+              <MaterialGallery gallery={eventGallery} title={event.title} />
+            )}
+            {event.videos.length > 0 && (
+              <section className="event-videos">
+                {event.videos.map((v, i) => (
+                  <VideoEmbed key={i} url={v.url} title={v.title ?? event.title} />
+                ))}
+              </section>
+            )}
 
             {bodyHtml && (
               <div
@@ -217,7 +222,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               />
             )}
 
-            <EventPrevNext prev={prev} next={next} />
           </div>
           </div>
 
@@ -294,6 +298,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               </div>
             )}
           </aside>
+                  <div className="detail-prevnext-row">
+            <EventPrevNext prev={prev} next={next} />
+          </div>
+
         </div>
       </article>
 

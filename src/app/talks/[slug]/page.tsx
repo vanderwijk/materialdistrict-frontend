@@ -25,7 +25,6 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
@@ -153,21 +152,13 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
   const speakerNames = talk.speakers.map((s) => s.name)
   const bodyHtml = talk.contentHtml || talk.excerptHtml
 
+  // §F2.8 punt 1: content-type-badge weg; alleen nog de insider-badge.
   const headerTags = [
-    { type: 'content' as const, contentType: 'talk' as const },
     ...(talk.insiderOnly ? [{ type: 'insider' as const }] : []),
   ]
 
   return (
     <>
-      <RecentlyViewedTracker
-        type="talks"
-        slug={talk.slug}
-        title={talk.title}
-        subtitle={talk.speakers[0]?.name ?? null}
-        thumbnailUrl={talk.hero?.sourceUrl ?? null}
-        href={`/talks/${talk.slug}`}
-      />
       <article className="pub-wrap">
         <div className="pub-layout">
           <div className="detail-back-row">
@@ -178,6 +169,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
           <div className="detail-sheet">
         <DetailHeader
           tags={headerTags}
+          channels={talk.channels.map((c) => ({ slug: c.slug, label: c.label }))}
           title={talk.title}
           meta={
             <>
@@ -211,7 +203,6 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
               </section>
             )}
 
-            <TalkPrevNext prev={prev} next={next} />
           </div>
           </div>
 
@@ -245,6 +236,10 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
               </section>
             )}
           </div>
+                  <div className="detail-prevnext-row">
+            <TalkPrevNext prev={prev} next={next} />
+          </div>
+
         </div>
       </article>
 

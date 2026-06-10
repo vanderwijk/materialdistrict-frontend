@@ -12426,3 +12426,226 @@ mark.search-mark {
 }
 .uf-show-more:hover { opacity: 0.8; }
 /* ============================ einde §F2.7 batch C/D ============================ */
+/* ============================================================
+   §F2.8 — Detailpagina-finetuning (10-06-2026)
+   Additief blok. Geen bestaande regel gewijzigd of verwijderd.
+   Volgt de goedgekeurde previews. Scoped op .detail-sheet waar
+   mogelijk zodat alleen de detail-koppen meebewegen.
+   ============================================================ */
+
+/* --- Punt 1: detailkop terug naar EEN kolom -----------------------
+   - content-type-badge weg = de pagina's geven 'm niet meer mee, dus
+     .detail-header-tags toont hooguit nog een insider-badge;
+   - acties als rij ONDER de titel i.p.v. rechts;
+   - titel vet (700);
+   - productcode (ONA1223) als platte tekst i.p.v. pill. */
+.detail-sheet .detail-header-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+}
+.detail-sheet .detail-header-actions {
+  margin-top: 18px;
+  justify-content: flex-start;
+}
+.detail-sheet .detail-header-title {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.detail-sheet .mat-detail-meta-code {
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* --- Punt 9: prev/next uit het witte vel naar de paper eronder -----
+   Zelfde full-width paper-rij als .detail-related-row. De pagina's
+   verplaatsen de <...PrevNext> nu buiten .detail-sheet. */
+.detail-prevnext-row { grid-column: 1 / -1; margin-top: 20px; }
+
+/* --- Punt 6: property-pills wit + klikbaar -------------------------
+   Neutrale/negatieve pills worden wit (i.p.v. surface2-grijs); groen
+   blijft het positieve accent. Ingevulde pills met een filterbare facet
+   worden een <a> met .is-clickable: hover toont rand-ink + een pijltje
+   en linkt naar het bijbehorende filter in de catalog. "Not specified"
+   en niet-filterbare percentages worden in de pagina al weggelaten /
+   statisch gehouden. */
+.detail-sheet .mat-property-tag.is-neutral,
+.detail-sheet .mat-property-tag.is-negative {
+  background: var(--surface);
+}
+.detail-sheet a.mat-property-tag.is-clickable {
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.detail-sheet a.mat-property-tag.is-clickable::after {
+  content: '\2197';
+  margin-left: 2px;
+  opacity: 0;
+  color: var(--ink);
+  font-weight: 600;
+  transition: opacity 120ms ease;
+}
+.detail-sheet a.mat-property-tag.is-clickable:hover {
+  border-color: var(--ink);
+}
+.detail-sheet a.mat-property-tag.is-positive.is-clickable:hover {
+  border-color: var(--green-mid);
+}
+.detail-sheet a.mat-property-tag.is-clickable:hover::after {
+  opacity: 1;
+}
+.detail-sheet a.mat-property-tag.is-clickable:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+/* --- Punt 7: keyword-pills gelijk aan de property-pill-button -------
+   Zelfde witte-button-look + hover-pijl. Gedrag (link naar
+   /materials?q=) stond al in KeywordsSection. */
+.mat-keywords-pill { color: var(--text); }
+.mat-keywords-pill::after {
+  content: '\2197';
+  margin-left: 4px;
+  opacity: 0;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  transition: opacity 120ms ease;
+}
+.mat-keywords-pill:hover {
+  border-color: var(--ink);
+  color: var(--text);
+}
+.mat-keywords-pill:hover::after { opacity: 1; }
+.mat-keywords-pill:focus-visible { outline: 2px solid var(--ink); }
+
+/* --- Punt 4: losse video's onder de event-gallery (zoals materials) --- */
+.event-videos { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+
+/* --- Punt 8: channel-pill(s) in de detailkop ----------------------
+   Filled hub-pill met grid-icoon + hover-pijl, linkt naar de
+   channel-homepage (/channels/<slug>). Visueel onderscheiden van de
+   witte taxonomie-pills. Brand volgt zodra de themes in de brand-REST
+   zitten (WF-3). */
+.detail-header-channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.detail-header-channel svg { color: var(--text-muted); flex-shrink: 0; }
+.detail-header-channel::after {
+  content: '\2197';
+  margin-left: 1px;
+  opacity: 0;
+  color: var(--ink);
+  font-weight: 600;
+  transition: opacity 120ms ease;
+}
+.detail-header-channel:hover { border-color: var(--ink); background: var(--surface); }
+.detail-header-channel:hover::after { opacity: 1; }
+.detail-header-channel:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+/* --- Punt 10: leeshulpmiddelen (tekstgrootte + print + back-to-top) -
+   Eén gedeelde <DetailReadingTools> gemount via DetailHeader. Share zat
+   al in DetailActions (navigator.share + clipboard-fallback). */
+.detail-tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.detail-tools-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.detail-tools-btn:hover:not(:disabled) { border-color: var(--ink); color: var(--text); }
+.detail-tools-btn:disabled { opacity: 0.4; cursor: default; }
+.detail-tools-sub { font-size: 10px; line-height: 1; }
+
+.detail-backtotop {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: var(--z-sticky);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 160ms ease, transform 160ms ease, border-color 120ms ease;
+}
+.detail-backtotop.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+.detail-backtotop:hover { border-color: var(--ink); }
+
+/* Tekstgrootte: schaalt de prose-containers (material/article/talk via
+   .mat-body; article-lead; event-body). 'md' = ongewijzigd. */
+:root[data-reading-size='lg'] .mat-body,
+:root[data-reading-size='lg'] .article-detail-lead,
+:root[data-reading-size='lg'] .event-detail-body { font-size: 17px; line-height: 1.78; }
+:root[data-reading-size='sm'] .mat-body,
+:root[data-reading-size='sm'] .article-detail-lead,
+:root[data-reading-size='sm'] .event-detail-body { font-size: 13.5px; }
+
+/* --- Punt 10: print-versie. Strip chrome, houd titel + meta + tekst.
+   Sidebars zijn <aside> en verdwijnen generiek. --- */
+@media print {
+  .site-header,
+  .site-footer,
+  .channel-bar,
+  .compare-bar,
+  .detail-back-row,
+  .detail-related-row,
+  .detail-prevnext-row,
+  .detail-header-actions,
+  .mat-detail-actions-grouped,
+  .detail-tools,
+  .detail-backtotop,
+  aside {
+    display: none !important;
+  }
+  .detail-sheet {
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+  }
+  .mat-gallery-thumbs,
+  .mat-gallery-thumb { display: none !important; }
+  a { color: inherit !important; text-decoration: none !important; }
+  body { background: #fff !important; }
+}

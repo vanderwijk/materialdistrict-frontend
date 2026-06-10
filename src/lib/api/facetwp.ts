@@ -436,3 +436,16 @@ export function facetSelectionToSearchParams(
  * @deprecated Gebruik `fetchMaterialsFiltered`.
  */
 export const fetchMaterials = fetchMaterialsFiltered
+
+
+/**
+ * §F2.8 punt 6 — bouwt een deep-link naar de materials-catalog met EEN
+ * facet voorgeselecteerd. Returnt `null` als de facet niet door de
+ * URL-parser wordt opgepikt (FILTER_FACET_KEYS_SET) of als de waarde leeg
+ * is — dan blijft de property-pill statisch i.p.v. een dode link.
+ */
+export function materialFilterHref(facet: string, value: string): string | null {
+  if (!value) return null
+  if (!FILTER_FACET_KEYS_SET.has(facet)) return null
+  return `/materials?${facet}=${encodeURIComponent(value)}`
+}

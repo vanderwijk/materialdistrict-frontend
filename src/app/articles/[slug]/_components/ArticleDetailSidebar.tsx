@@ -36,29 +36,16 @@ export interface ArticleSidebarMaterial {
 }
 
 export interface ArticleDetailSidebarProps {
-  readTimeLabel: string
   latestMaterials: ArticleSidebarMaterial[]
 }
 
 export function ArticleDetailSidebar({
-  readTimeLabel,
   latestMaterials,
 }: ArticleDetailSidebarProps) {
   const { isMember } = useAuth()
 
   return (
     <aside className="article-detail-sidebar">
-      {/* Reading progress (statisch in v1) */}
-      <div className="article-side-card">
-        <div className="article-side-eyebrow">Reading progress</div>
-        <div className="progress-track">
-          <div className="progress-fill" style={{ width: '35%' }} />
-        </div>
-        <div className="article-side-progress-label">
-          {readTimeLabel} · About 35% through
-        </div>
-      </div>
-
       {/* Latest materials */}
       {latestMaterials.length > 0 && (
         <div className="article-side-card is-list">
@@ -101,10 +88,10 @@ export function ArticleDetailSidebar({
       <div className="article-side-newsletter">
         <div className="article-side-newsletter-eyebrow">Newsletter</div>
         <div className="article-side-newsletter-title">
-          Weekly materials digest
+          Twice-weekly materials digest
         </div>
         <p className="article-side-newsletter-body">
-          New materials and articles every week. No spam.
+          New materials and articles twice a week. No spam.
         </p>
         <div className="article-side-newsletter-row">
           <label

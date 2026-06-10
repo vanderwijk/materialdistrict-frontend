@@ -39,9 +39,11 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { getChannelCatalog } from '@/lib/api'
 import { MaterialGallery } from '@/components/materials'
 import { getMaterial, getMaterialDetail } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct } from '@/lib/seo'
+import { materialFilterHref } from '@/lib/api/facetwp'
 import {
   getActiveSustainabilityFacets,
   getAllPropertyGroups,
@@ -142,6 +144,16 @@ export default async function MaterialDetailPage({
 
   // Alle 24 properties in 4 groepen — lege waarden tonen "Not specified"
   const propertyGroups = getAllPropertyGroups(material.properties)
+  // §F2.8 punt 6: alleen ingevulde properties tonen op de publieke pagina.
+  const hasAnyProperties = propertyGroups.some((g) =>
+    g.entries.some((e) => e.rawValue !== ''),
+  )
+  // §F2.8 punt 8: material's theme-IDs resolven naar channel-pills.
+  const channelCatalog = await getChannelCatalog()
+  const materialChannels = material.taxonomies.theme
+    .map((id) => channelCatalog.find((c) => c.id === id))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c))
+    .map((c) => ({ slug: c.slug, label: c.label }))
 
   return (
     <>
@@ -207,7 +219,8 @@ export default async function MaterialDetailPage({
         )}
 
         <DetailHeader
-          tags={[{ type: 'content', contentType: 'material' }]}
+          tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
+          channels={materialChannels}
           title={material.title}
           meta={
             // Sessie 7 Punt 13 + sessie 5 (Johan-handoff 27-05-2026):
@@ -284,6 +297,7 @@ export default async function MaterialDetailPage({
                 Toont ALLE 24 properties. Lege waarden krijgen "Not
                 specified" + grijze pill zodat brands zien wat ze nog
                 kunnen invullen. */}
+            {hasAnyProperties && (
             <section className="mat-properties" aria-labelledby="properties-title">
               <h2 id="properties-title" className="mat-section-title">
                 Material properties
@@ -293,26 +307,54 @@ export default async function MaterialDetailPage({
                   flex-wrap container met pills [label: value]. Semantische
                   kleuren komen via `is-{semantic}` op de pill zelf. */}
               <div className="mat-properties-grid">
-                {propertyGroups.map((group) => (
-                  <div key={group.group} className="mat-property-group">
-                    <p className="mat-property-group-label">{group.label}</p>
-                    <div className="mat-property-group-tags">
-                      {group.entries.map((entry) => (
-                        <span
-                          key={entry.facet}
-                          className={`mat-property-tag is-${entry.semantic}`}
-                        >
-                          <span className="mat-property-tag-key">
-                            {entry.facetLabel}:
-                          </span>
-                          {entry.displayValue}
-                        </span>
-                      ))}
+                {propertyGroups.map((group) => {
+                  // §F2.8 punt 6: lege ("Not specified") waarden weglaten;
+                  // groep met 0 ingevulde properties verdwijnt volledig.
+                  const specified = group.entries.filter(
+                    (e) => e.rawValue !== '',
+                  )
+                  if (specified.length === 0) return null
+                  return (
+                    <div key={group.group} className="mat-property-group">
+                      <p className="mat-property-group-label">{group.label}</p>
+                      <div className="mat-property-group-tags">
+                        {specified.map((entry) => {
+                          const href = materialFilterHref(
+                            entry.facet,
+                            entry.rawValue,
+                          )
+                          const inner = (
+                            <>
+                              <span className="mat-property-tag-key">
+                                {entry.facetLabel}:
+                              </span>
+                              {entry.displayValue}
+                            </>
+                          )
+                          return href ? (
+                            <Link
+                              key={entry.facet}
+                              href={href}
+                              className={`mat-property-tag is-${entry.semantic} is-clickable`}
+                            >
+                              {inner}
+                            </Link>
+                          ) : (
+                            <span
+                              key={entry.facet}
+                              className={`mat-property-tag is-${entry.semantic}`}
+                            >
+                              {inner}
+                            </span>
+                          )
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </section>
+            )}
 
             <VideosSection
               videoUrl={material.videoUrl}
@@ -321,7 +363,6 @@ export default async function MaterialDetailPage({
 
             <KeywordsSection keywords={keywords} />
 
-            <PrevNextNavigation currentSlug={material.slug} />
           </div>
           </div>
 
@@ -358,6 +399,10 @@ export default async function MaterialDetailPage({
               productUrl={material.productUrl}
             />
           </aside>
+                  <div className="detail-prevnext-row">
+            <PrevNextNavigation currentSlug={material.slug} />
+          </div>
+
         </div>
       </article>
 

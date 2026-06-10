@@ -1,6 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { IconChevronLeft } from '@/components/ui/icons'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
@@ -60,6 +62,8 @@ interface DetailHeaderProps {
   meta?: ReactNode
   /** Action-knoppen rechts (Save, Compare, Share, etc.) — typisch via <DetailActions />. */
   actions?: ReactNode
+  /** §F2.8 punt 8: channel-pills boven de titel; linken naar /channels/<slug>. */
+  channels?: Array<{ slug: string; label: string }>
   className?: string
 }
 
@@ -89,6 +93,7 @@ export function DetailHeader({
   title,
   meta,
   actions,
+  channels,
   className,
 }: DetailHeaderProps) {
   const router = useRouter()
@@ -96,6 +101,7 @@ export function DetailHeader({
   return (
     <div className={cn('detail-header', className)}>
       <div className="detail-header-inner">
+        <DetailReadingTools />
         {backNode
           ? backNode
           : back && (
@@ -111,9 +117,33 @@ export function DetailHeader({
 
         <div className="detail-header-row">
           <div className="detail-header-main">
-            {tags && tags.length > 0 && (
+            {((tags && tags.length > 0) ||
+              (channels && channels.length > 0)) && (
               <div className="detail-header-tags">
-                {tags.map((t, i) =>
+                {channels?.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/channels/${c.slug}`}
+                    className="detail-header-channel"
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="3" width="7" height="7" rx="1" />
+                      <rect x="14" y="3" width="7" height="7" rx="1" />
+                      <rect x="3" y="14" width="7" height="7" rx="1" />
+                      <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    {c.label}
+                  </Link>
+                ))}
+                {tags?.map((t, i) =>
                   t.type === 'insider' ? (
                     <InsiderBadge key={i} />
                   ) : t.contentType ? (

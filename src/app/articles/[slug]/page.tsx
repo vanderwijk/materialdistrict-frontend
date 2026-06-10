@@ -40,8 +40,8 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { MaterialGallery } from '@/components/materials'
 import {
   getArticle,
   getRelatedContent,
@@ -177,7 +177,6 @@ export default async function ArticleDetailPage({
   const article = await getArticle(slug)
   if (!article) notFound()
 
-
   const [{ prev, next }, related, sidebarMaterials] = await Promise.all([
     getNeighbours(slug),
     getRelatedContent(slug),
@@ -190,23 +189,13 @@ export default async function ArticleDetailPage({
   const readLabel = readTimeLabel(bodyHtml)
 
   // Tags in de header: content-type-tag + (conditioneel) Insider-tag.
+  // §F2.8 punt 1: content-type-badge weg; alleen nog de insider-badge.
   const headerTags = [
-    { type: 'content' as const, contentType: 'article' as const },
-    ...(article.insiderOnly
-      ? [{ type: 'insider' as const }]
-      : []),
+    ...(article.insiderOnly ? [{ type: 'insider' as const }] : []),
   ]
 
   return (
     <>
-      <RecentlyViewedTracker
-        type="articles"
-        slug={article.slug}
-        title={article.title}
-        subtitle={publishedLabel}
-        thumbnailUrl={article.hero?.sourceUrl ?? null}
-        href={`/articles/${article.slug}`}
-      />
       <article className="pub-wrap">
         <div className="pub-layout">
           <div className="detail-back-row">
@@ -217,6 +206,7 @@ export default async function ArticleDetailPage({
           <div className="detail-sheet">
         <DetailHeader
           tags={headerTags}
+          channels={article.channels.map((c) => ({ slug: c.slug, label: c.label }))}
           title={article.title}
           meta={
             <>
@@ -236,8 +226,11 @@ export default async function ArticleDetailPage({
 
           {/* Main column */}
           <div>
-            {/* Hero */}
-            {article.hero?.sourceUrl ? (
+            {/* §F2.8 punt 4: gallery (thumbs + lightbox) zoals materials;
+                valt terug op losse hero/placeholder als er geen set is. */}
+            {article.gallery.total > 0 ? (
+              <MaterialGallery gallery={article.gallery} title={article.title} />
+            ) : article.hero?.sourceUrl ? (
               <img
                 className="article-detail-hero"
                 src={article.hero.sizes?.large?.url ?? article.hero.sourceUrl}
@@ -279,19 +272,21 @@ export default async function ArticleDetailPage({
               </div>
             </footer>
 
-            <ArticlePrevNext prev={prev} next={next} />
           </div>
           </div>
 
           {/* Sidebar */}
           <ArticleDetailSidebar
-            readTimeLabel={`${readLabel} read`}
             latestMaterials={sidebarMaterials}
           />
 
           <div className="detail-related-row">
             <ArticleRelated items={related} />
           </div>
+                  <div className="detail-prevnext-row">
+            <ArticlePrevNext prev={prev} next={next} />
+          </div>
+
         </div>
       </article>
 

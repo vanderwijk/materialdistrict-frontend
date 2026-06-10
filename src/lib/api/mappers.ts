@@ -436,6 +436,7 @@ export function mapArticle(
   raw: WPArticleRawResponse,
   hero?: MediaImage | null,
   authorName?: string | null,
+  gallery?: Gallery,
 ): Article {
   const m = raw.meta ?? {}
   return {
@@ -446,6 +447,8 @@ export function mapArticle(
     contentHtml: wpRenderedHtml(raw.content),
     excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
+    // §F2.8 punt 4: gallery uit aan-de-post-gehangen media.
+    gallery: gallery ?? { hero: null, thumbs: [], total: 0 },
     authorId: raw.author,
     authorName: authorName ?? null,
     categoryIds: raw.categories ?? [],

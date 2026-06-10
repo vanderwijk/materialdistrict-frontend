@@ -28,7 +28,6 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { MaterialGallery } from '@/components/materials'
 import { MaterialBody } from '@/app/materials/[slug]/_components/MaterialBody'
@@ -126,23 +125,11 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
 
   return (
     <>
-      <RecentlyViewedTracker
-        type="brands"
-        slug={brand.slug}
-        title={brand.name}
-        subtitle={place || null}
-        thumbnailUrl={
-          brand.gallery?.hero?.sizes?.large?.url ??
-          brand.gallery?.hero?.sourceUrl ??
-          null
-        }
-        href={`/brands/${brand.slug}`}
-      />
       <article className="pub-wrap">
         <div className="pub-layout-inner">
           <div className="detail-sheet">
         <DetailHeader
-          tags={[{ type: 'content', contentType: 'brand' }]}
+          tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
           title={brand.name}
           meta={metaParts.length > 0 ? <>{metaParts.join(' · ')}</> : undefined}
         />
@@ -167,7 +154,6 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
               maxVisible={3}
             />
 
-            <BrandPrevNext prev={neighbours.prev} next={neighbours.next} />
           </div>
           </div>
 
@@ -196,6 +182,10 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
               />
             </div>
           </aside>
+                  <div className="detail-prevnext-row">
+            <BrandPrevNext prev={neighbours.prev} next={neighbours.next} />
+          </div>
+
         </div>
       </article>
 

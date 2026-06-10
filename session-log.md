@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 10-06-2026 — §F2.7 overzicht-finetuning (chrome, bookmarks, filters,
-recently viewed). Puur frontend; deploy pending.
+Datum: 10-06-2026 — §F2.8 detailpagina-finetuning (kop, gallery, pills,
+leeshulp). Puur frontend; deploy pending.
 
 ---
 
@@ -2693,5 +2693,20 @@ login-redirect; board-popover; brands country op aantal; events Upcoming/Past + 
 `globals.css`: additief §F2.7 batch A/B/C-D na §HOME-F2.
 
 **Apart:** talks-filter (8.1) en stories-tellingen (5.2) volgen los.
+
+Zip deployed (`29c96aa`).
+
+---
+
+## §F2.8 — Detailpagina-finetuning — 10-06-2026
+
+Zip `material-district-f2-8.zip`. Vijf detailtypes + gedeelde DetailHeader.
+
+**Kern:** kop één kolom; prev/next op paper; property-pills wit+klikbaar; gallery
+op article/event; channel-pills; DetailReadingTools (tekstgrootte, print, back-to-top).
+
+**Nieuw:** `DetailReadingTools.tsx`. Article gallery via attachments; `materialFilterHref`.
+
+**Open (niet in zip):** brand channel-pill (WF-3: themes in brand REST); article comments.
 
 Zip deployed pending.

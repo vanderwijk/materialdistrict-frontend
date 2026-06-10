@@ -25,7 +25,7 @@
  */
 
 import type { StoryType } from '@/lib/config/story-types'
-import type { MediaImage } from './media'
+import type { Gallery, MediaImage } from './media'
 
 /**
  * Een taxonomy-term zoals WP die exposeert op `meta.<taxonomy>`:
@@ -76,6 +76,8 @@ export interface Article {
   contentHtml: string
   excerptHtml: string
   hero: MediaImage | null
+  /** §F2.8 punt 4: foto-set uit de aan-de-post-gehangen media (hero + thumbs). */
+  gallery: Gallery
   authorId: number
   authorName: string | null
   categoryIds: number[]

@@ -701,10 +701,18 @@ export async function getBrandCountryOptions(
 export async function getArticle(slug: string): Promise<Article | null> {
   const raw = await fetchArticleBySlugRaw(slug)
   if (!raw) return null
+  // §F2.8 punt 4: gallery uit de aan-de-post-gehangen media (zelfde
+  // mechanisme als material/brand): featured = hero, rest = thumbs.
+  const attachmentsRaw = await getAttachmentsForPost(raw.id)
+  const attachments = attachmentsRaw
+    .filter((a) => a.media_type === 'image')
+    .map(mapMedia)
+  const gallery = splitGallery(attachments, raw.featured_media)
   const hero =
-    raw.featured_media > 0 ? await getMediaImage(raw.featured_media) : null
+    gallery.hero ??
+    (raw.featured_media > 0 ? await getMediaImage(raw.featured_media) : null)
   // Author-naam-resolve: TODO sessie 2-vervolg via /wp/v2/users/<id>
-  return mapArticle(raw, hero, null)
+  return mapArticle(raw, hero, null, gallery)
 }
 
 // --------------------------------------------------------------------
