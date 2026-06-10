@@ -1322,6 +1322,9 @@ export interface WPTalkMetaRaw {
   /** C14 — Insider-only (talk-default true). Canoniek + underscore-alias. */
   insider_only?: boolean
   _insider_only?: boolean
+  /** Featured-oormerk (talk-CPT checkbox). Canoniek + underscore-alias. */
+  featured?: boolean | string | null
+  _featured?: boolean | string | null
   /** C10 — Vimeo-id voor de embed. */
   vimeo_id?: string
   /** C10 — duur als "mm:ss" (2 segmenten) of "h:mm:ss" (3 segmenten). */

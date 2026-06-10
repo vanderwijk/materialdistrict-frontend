@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 09-06-2026 — Fase 3 / F2.5: detail-chrome (wit op canvas, alle vijf
-detailtypes). Puur frontend; deploy pending.
+Datum: 10-06-2026 — Homepage F2 (wit op canvas) + featured-talk-band.
+Puur frontend; deploy pending.
 
 ---
 
@@ -2658,5 +2658,22 @@ Zip `md-f2-detail-2026-06-09.zip`. Alle detailtypes in wit-op-canvas-stijl.
 
 **Verifiëren na deploy:** wit vel + sidebar op paper; back/related buiten vel; ink CTA's;
 subtiele pills; gallery-thumb zwart. Alle vijf detailtypes.
+
+Zip deployed (`2918806`).
+
+---
+
+## Homepage F2 — wit op canvas + featured talk — 10-06-2026
+
+Zip `md-home-f2-2026-06-10.zip`. Homepage-restyle in productie-stijl.
+
+**Gewijzigd:** `globals.css` (additief §HOME-F2), `(home)/page.tsx`, `PromoHero.tsx`,
+`talk.ts`, `wordpress.ts`, `mappers.ts` (featured-veld op talks).
+
+**Nieuw:** `FeaturedTalkBand.tsx` — featured talk eerst, terugval nieuwste talk.
+
+**Backend:** `meta.featured` staat al in talk REST (`md_extend_talk_rest_meta`).
+
+**Open:** GAM ad-slots uit tot GPT-script + ad-unit-ids er zijn.
 
 Zip deployed pending.

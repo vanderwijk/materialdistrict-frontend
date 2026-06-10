@@ -647,6 +647,7 @@ export function mapTalkListItem(
     companyName: m.company_name ?? null,
     speakers: mapTalkSpeakers(raw.speakers),
     channels: mapChannels(m.channels),
+    featured: truthyFlag(m.featured, m._featured),
   }
 }
 
@@ -669,6 +670,7 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     companyName: m.company_name ?? null,
     speakers: mapTalkSpeakers(raw.speakers),
     channels: mapChannels(m.channels),
+    featured: truthyFlag(m.featured, m._featured),
   }
 }
 

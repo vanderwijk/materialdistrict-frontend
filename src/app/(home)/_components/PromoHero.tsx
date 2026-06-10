@@ -1,9 +1,14 @@
 'use client'
 
 /**
- * PromoHero — de blauw/groene promoband bovenaan, alleen voor uitgelogde
- * bezoekers (sessie 10). Zichtbaarheid + dismiss lopen via HomeHeroProvider,
- * zodat wegklikken direct de FeaturedArticleHero toont.
+ * PromoHero — de split-hero bovenaan, alleen voor uitgelogde bezoekers
+ * (sessie 10, herstijld in F2 naar "wit op canvas"). Eén bordered blok met
+ * twee gelijkwaardige helften (50/50): links de discover-pitch (wit), rechts
+ * de manufacturer-pitch (ink). Zichtbaarheid + dismiss lopen via
+ * HomeHeroProvider, zodat wegklikken direct de FeaturedArticleHero toont.
+ *
+ * Concept (F2): twee groepen samengebracht, gelijke typografie aan beide
+ * kanten; de koppen vormen een keten ideas -> materials -> specifiers.
  *
  * De canonieke <h1> van de pagina staat (visueel verborgen) in page.tsx; de
  * zichtbare hero-titel is daarom een <h2>.
@@ -26,44 +31,46 @@ export function PromoHero({ materialCount }: PromoHeroProps) {
   if (!showPromo) return null
 
   return (
-    <section className="hero" aria-label="MaterialDistrict introduction">
-      <div className="hero-inner">
+    <section className="hp-hero" aria-label="MaterialDistrict introduction">
+      <div className="hp-hero-block">
+        <button
+          type="button"
+          className="hero-dismiss"
+          onClick={dismissPromo}
+          aria-label="Dismiss introduction"
+        >
+          ×
+        </button>
+
         <div className="hero-left">
           <p className="hero-eyebrow">Discover materials</p>
-          <h2 className="hero-title">Where materials meet ideas.</h2>
+          <h2 className="hero-title">Where ideas meet materials.</h2>
           <p className="hero-desc">
             {formatCount(materialCount)}+ innovative and sustainable materials
             for architecture and interior design. Free to explore.
           </p>
           <div className="hero-actions">
-            <Link href="/materials" className="btn btn-green btn-lg">
-              Browse materials
-            </Link>
-            <Link href="/register" className="btn btn-lg btn-hero-ghost">
+            <Link href="/register" className="btn btn-lg btn-ink">
               Create free account
+            </Link>
+            <Link href="/materials" className="btn btn-lg btn-outline">
+              Browse materials
             </Link>
           </div>
         </div>
-        <div className="hero-right">
-          <button
-            type="button"
-            className="hero-dismiss"
-            onClick={dismissPromo}
-            aria-label="Dismiss manufacturer message"
-          >
-            ×
-          </button>
-          <p className="hero-eyebrow hero-eyebrow-muted">For manufacturers</p>
-          <p className="hero-right-title">
-            List your materials. Reach 80,000+ specifiers.
+
+        <div className="hero-mf">
+          <p className="eyebrow">For manufacturers</p>
+          <p className="t">Where materials meet specifiers.</p>
+          <p>
+            List your materials and connect with 80,000+ architects and
+            designers.
           </p>
-          <p className="hero-desc">
-            Add your materials, connect with architects and designers, and track
-            every interaction.
-          </p>
-          <Link href="/register" className="btn btn-lg btn-hero-ghost">
-            List your materials →
-          </Link>
+          <div className="hero-actions">
+            <Link href="/register" className="btn btn-lg btn-on-ink">
+              List your materials →
+            </Link>
+          </div>
         </div>
       </div>
     </section>

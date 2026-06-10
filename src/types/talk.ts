@@ -46,6 +46,8 @@ export interface TalkListItem {
   speakers: TalkSpeaker[]
   /** C13 — channel-tags; gemapt maar zichtbare UI volgt later. */
   channels: TaxonomyTerm[]
+  /** Featured-oormerk (WP talk-CPT checkbox). Voedt o.a. de homepage talk-band. */
+  featured: boolean
 }
 
 export interface Talk {
@@ -70,4 +72,6 @@ export interface Talk {
   speakers: TalkSpeaker[]
   /** C13 — channel-tags; gemapt maar zichtbare UI volgt later. */
   channels: TaxonomyTerm[]
+  /** Featured-oormerk (WP talk-CPT checkbox). Voedt o.a. de homepage talk-band. */
+  featured: boolean
 }
