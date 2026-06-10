@@ -158,6 +158,11 @@ export default async function MaterialDetailPage({
       />
 
       <article className="pub-wrap">
+        <div className="mat-detail-wrap">
+          <div className="detail-back-row">
+            <MaterialDetailBackLink />
+          </div>
+          <div className="detail-sheet">
         {/* Sessie 7 Punt 13: tags-rij boven de h1 met
               - material-category termen (resolved via getTerms)
               - sustainability "Yes"-properties (groen check-icoontje)
@@ -202,7 +207,6 @@ export default async function MaterialDetailPage({
         )}
 
         <DetailHeader
-          backNode={<MaterialDetailBackLink />}
           tags={[{ type: 'content', contentType: 'material' }]}
           title={material.title}
           meta={
@@ -262,7 +266,6 @@ export default async function MaterialDetailPage({
           }
         />
 
-        <div className="mat-detail-wrap">
           {/* Main column */}
           <div className="mat-main">
             <MaterialGallery gallery={material.gallery} title={material.title} />
@@ -319,6 +322,7 @@ export default async function MaterialDetailPage({
             <KeywordsSection keywords={keywords} />
 
             <PrevNextNavigation currentSlug={material.slug} />
+          </div>
           </div>
 
           {/* Sidebar */}

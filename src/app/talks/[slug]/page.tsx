@@ -160,12 +160,14 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
   return (
     <>
       <article className="pub-wrap">
-        <DetailHeader
-          backNode={
+        <div className="pub-layout">
+          <div className="detail-back-row">
             <a href="/talks" className="article-detail-back">
               ← Talks
             </a>
-          }
+          </div>
+          <div className="detail-sheet">
+        <DetailHeader
           tags={headerTags}
           title={talk.title}
           meta={
@@ -183,7 +185,6 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
           }
         />
 
-        <div className="pub-layout">
           {/* Main column */}
           <div>
             <TalkVideoGate
@@ -202,8 +203,18 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
             )}
 
             <TalkPrevNext prev={prev} next={next} />
+          </div>
+          </div>
 
-            {/* More talks */}
+          {/* Sidebar */}
+          <TalkDetailSidebar
+            speakerNames={speakerNames}
+            companyName={talk.companyName}
+            dateLabel={publishedLabel}
+            durationLabel={durationLabel}
+          />
+
+          <div className="detail-related-row">
             {more.length > 0 && (
               <section className="talk-more" aria-label="More talks">
                 <h2 className="talk-more-head t-display-md">More talks</h2>
@@ -225,14 +236,6 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
               </section>
             )}
           </div>
-
-          {/* Sidebar */}
-          <TalkDetailSidebar
-            speakerNames={speakerNames}
-            companyName={talk.companyName}
-            dateLabel={publishedLabel}
-            durationLabel={durationLabel}
-          />
         </div>
       </article>
 

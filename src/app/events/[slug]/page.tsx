@@ -176,12 +176,14 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   return (
     <>
       <article className="pub-wrap">
-        <DetailHeader
-          backNode={
+        <div className="pub-layout">
+          <div className="detail-back-row">
             <a href="/events" className="detail-header-back">
               ← Events
             </a>
-          }
+          </div>
+          <div className="detail-sheet">
+        <DetailHeader
           tags={[{ type: 'content', contentType: 'event' }]}
           title={event.title}
           meta={metaParts.join(' · ')}
@@ -195,7 +197,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           }
         />
 
-        <div className="pub-layout">
           {/* Main column */}
           <div>
             <EventMediaViewer images={images} videos={event.videos} title={event.title} />
@@ -208,6 +209,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             )}
 
             <EventPrevNext prev={prev} next={next} />
+          </div>
           </div>
 
           {/* Sidebar */}

@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 09-06-2026 — Fase 3 / F2.4: dashboard-chrome (wit op canvas, sidebar +
-primaire knoppen zwart). Puur frontend; deploy pending.
+Datum: 09-06-2026 — Fase 3 / F2.5: detail-chrome (wit op canvas, alle vijf
+detailtypes). Puur frontend; deploy pending.
 
 ---
 
@@ -2641,5 +2641,22 @@ Zip `md-f2-dashboard-2026-06-09.zip`. Dashboard in dezelfde taal als catalogus-c
 
 **Verifiëren na deploy:** sidebar op paper (geen witte box), actief item zwart; panels wit op
 paper; primaire/save-knoppen zwart; teal/rood ongemoeid; mobiele nav zwart-actief.
+
+Zip deployed (`d49da56`).
+
+---
+
+## F2.5 — Detail-chrome (wit op canvas) batch 5 — 09-06-2026
+
+Zip `md-f2-detail-2026-06-09.zip`. Alle detailtypes in wit-op-canvas-stijl.
+
+**Gewijzigd:**
+- `src/styles/globals.css` — additief `§F2.5`: `.detail-sheet` wit vel, ink-chrome,
+  subtiele property-pills, donkere CTA-blokken, `.detail-back-row`/`.detail-related-row`.
+- Vijf `[slug]/page.tsx` — structureel: header + hoofdkolom in `.detail-sheet`; back-link
+  boven vel; related-blokken onder vel (article/talk). Geen logica gewijzigd.
+
+**Verifiëren na deploy:** wit vel + sidebar op paper; back/related buiten vel; ink CTA's;
+subtiele pills; gallery-thumb zwart. Alle vijf detailtypes.
 
 Zip deployed pending.

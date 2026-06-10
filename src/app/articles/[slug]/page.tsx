@@ -198,12 +198,14 @@ export default async function ArticleDetailPage({
   return (
     <>
       <article className="pub-wrap">
-        <DetailHeader
-          backNode={
+        <div className="pub-layout">
+          <div className="detail-back-row">
             <a href="/articles" className="article-detail-back">
               ← Stories
             </a>
-          }
+          </div>
+          <div className="detail-sheet">
+        <DetailHeader
           tags={headerTags}
           title={article.title}
           meta={
@@ -222,7 +224,6 @@ export default async function ArticleDetailPage({
           }
         />
 
-        <div className="pub-layout">
           {/* Main column */}
           <div>
             {/* Hero */}
@@ -269,8 +270,7 @@ export default async function ArticleDetailPage({
             </footer>
 
             <ArticlePrevNext prev={prev} next={next} />
-
-            <ArticleRelated items={related} />
+          </div>
           </div>
 
           {/* Sidebar */}
@@ -278,6 +278,10 @@ export default async function ArticleDetailPage({
             readTimeLabel={`${readLabel} read`}
             latestMaterials={sidebarMaterials}
           />
+
+          <div className="detail-related-row">
+            <ArticleRelated items={related} />
+          </div>
         </div>
       </article>
 

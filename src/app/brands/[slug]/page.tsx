@@ -126,13 +126,14 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
   return (
     <>
       <article className="pub-wrap">
+        <div className="pub-layout-inner">
+          <div className="detail-sheet">
         <DetailHeader
           tags={[{ type: 'content', contentType: 'brand' }]}
           title={brand.name}
           meta={metaParts.length > 0 ? <>{metaParts.join(' · ')}</> : undefined}
         />
 
-        <div className="pub-layout-inner">
           {/* Main column */}
           <div>
             {hasGallery && (
@@ -154,6 +155,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
             />
 
             <BrandPrevNext prev={neighbours.prev} next={neighbours.next} />
+          </div>
           </div>
 
           {/* Sidebar */}

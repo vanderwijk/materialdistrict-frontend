@@ -11980,3 +11980,114 @@ mark.search-mark {
 [data-theme="dark"] .sb-nav-item.active { background: var(--ink); color: var(--on-ink); }
 [data-theme="dark"] .dash-mob-nav { background: var(--bg); }
 [data-theme="dark"] .dash-mob-nav-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+/* ============================================================
+   §F2.5 — Detail-chrome (wit op canvas, batch 5). Brengt alle vijf de
+   detailtypes (material, article/story, talk, event, brand) in dezelfde
+   taal: het hoofdonderwerp staat op één wit "artikel"-vel (`.detail-sheet`,
+   kolom 1 van het bestaande detail-grid, met de DetailHeader + acties erin),
+   de secundaire kolom staat op de paper-canvas. Zwart (--ink) is het enige
+   chrome-accent; de vier prominente CTA-blokken (get-in-touch, event-register,
+   brand-contact, sidebar-upsell) worden donker ink zodat ze eruit springen,
+   met een groene actie-knop. Property-pills subtieler. Additief; geen
+   bestaande regel verwijderd. Volgt de goedgekeurde material-detail-preview.
+   ------------------------------------------------------------ */
+
+/* --- 1. Wit artikel-vel (kolom 1). Wrapt DetailHeader + hoofdkolom; de
+   sidebar blijft kolom 2 op paper. --- */
+.detail-sheet {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px 30px 32px;
+  min-width: 0;
+}
+@media (max-width: 768px) {
+  .detail-sheet { padding: 18px 16px 22px; }
+}
+
+/* DetailHeader binnen het vel: witte band-styling weg, flush in de
+   vel-padding; rustigere (kleinere) titel — minder druk aan de top. */
+.detail-sheet .detail-header { background: transparent; }
+.detail-sheet .detail-header-inner { max-width: none; margin: 0; padding: 0 0 22px; }
+.detail-sheet .detail-header-title { font-size: 32px; }
+.detail-sheet .mat-detail-tags-row { max-width: none; margin: 0 0 14px; padding: 0; }
+@media (max-width: 768px) {
+  .detail-sheet .detail-header-title { font-size: 26px; }
+}
+
+/* --- 2. Chrome → ink: back-links, sectietitels (navy verdwijnt) --- */
+.detail-header-back { color: var(--text-muted); }
+.detail-header-back:hover { color: var(--text); opacity: 1; }
+.article-detail-back:hover { color: var(--text); }
+.mat-section-title { color: var(--text); }
+
+/* --- 3. Gallery: actieve thumbnail zwart i.p.v. olijf --- */
+.mat-gallery-thumb.active { border-color: var(--ink); }
+
+/* --- 4. Brand-avatar in de sidebar-info-card: neutraal i.p.v. navy --- */
+.mat-brand-card-mark { background: var(--surface2); color: var(--text); }
+
+/* --- 5. Property-pills subtieler: alleen 'good' krijgt een zachte kleur,
+   medium/moderate worden neutraal (geen amber), 'poor' is een fluistering
+   (neutrale pill, gedempte waarde) i.p.v. alarmrood. --- */
+.mat-property-tag.is-positive { background: #eef6ec; color: #357a39; border-color: #dbe9d9; }
+.mat-property-tag.is-positive .mat-property-tag-key { color: #357a39; opacity: 0.7; }
+.mat-property-tag.is-neutral { background: var(--surface2); color: var(--text); border-color: var(--border); }
+.mat-property-tag.is-neutral .mat-property-tag-key { color: var(--text-muted); }
+.mat-property-tag.is-negative { background: var(--surface2); color: #7d6e6b; border-color: var(--border); }
+.mat-property-tag.is-negative .mat-property-tag-key { color: var(--text-muted); }
+
+/* --- 6. Prominente CTA-blokken → donker ink (springt eruit op paper; keert in
+   dark mode vanzelf om via --ink/--on-ink). De actie-knop blijft/wordt groen.
+   Geldt voor: material get-in-touch, event-register, brand-contact en de
+   article/talk sidebar-upsell. --- */
+.mat-getintouch,
+.event-register-card,
+.brand-contact-card,
+.sidebar-cta {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+/* sub-tekst op de donkere kaart (de oude hardcoded witte tinten vervangen
+   door --on-ink zodat dark mode klopt) */
+.mat-getintouch-eyebrow,
+.event-register-eyebrow,
+.brand-contact-eyebrow,
+.brand-contact-head-country,
+.sidebar-cta-eyebrow { color: var(--on-ink); opacity: 0.55; }
+.mat-getintouch-title,
+.event-register-title,
+.brand-contact-title,
+.brand-contact-head-name { color: var(--on-ink); }
+.mat-getintouch-body,
+.event-register-meta,
+.brand-contact-body,
+.sidebar-cta-desc { color: var(--on-ink); opacity: 0.7; }
+.mat-getintouch-secondary { color: var(--on-ink); opacity: 0.55; }
+/* event-register-knop was navy (.btn-blue) → groen, gelijk aan de andere CTA's */
+.event-register-card .btn-blue { background: var(--green-mid); }
+.event-register-card .btn-blue:hover { background: var(--green); }
+
+/* §F2.5 — dark mode: neutraal/poor ook hier neutraal (de bestaande dark-pill-
+   regels hierboven zijn amber/rood; deze overrides hebben gelijke specificiteit
+   maar staan later, dus winnen. 'good' blijft groen, consistent met light). */
+[data-theme="dark"] .mat-property-tag.is-neutral { background: var(--surface2); color: var(--text); border-color: var(--border); }
+[data-theme="dark"] .mat-property-tag.is-neutral .mat-property-tag-key { color: var(--text-muted); }
+[data-theme="dark"] .mat-property-tag.is-negative { background: var(--surface2); color: var(--text-muted); border-color: var(--border); }
+[data-theme="dark"] .mat-property-tag.is-negative .mat-property-tag-key { color: var(--text-muted); }
+
+/* §F2.5 — back-link + "related/more" op de paper (buiten het witte vel).
+   Beide zijn volle-breedte grid-rijen (`grid-column: 1 / -1`) zodat ze links
+   uitlijnen met het vel. De back-link staat als eerste rij boven het vel; de
+   related-rij onderaan onder het vel. Op desktop iets strakkere rij-gap zodat
+   de back-link dicht op het vel zit (kolom-gap tussen vel en sidebar blijft). */
+@media (min-width: 1025px) {
+  .pub-layout,
+  .pub-layout-inner,
+  .mat-detail-wrap { row-gap: 20px; }
+}
+.detail-back-row { grid-column: 1 / -1; }
+.detail-back-row .detail-header-back,
+.detail-back-row .article-detail-back { margin-bottom: 0; }
+.detail-related-row { grid-column: 1 / -1; margin-top: 20px; }
