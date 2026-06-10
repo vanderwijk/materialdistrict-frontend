@@ -80,16 +80,23 @@ export function BrandsFilterSidebar({
     })
   }
 
+  // §F2.7 (6.1): landen op aantal aflopend (i.p.v. alfabetisch); bij gelijk
+  // aantal alfabetisch. Lange lijst wordt ingeklapt via `collapseAfter`.
+  const sortedCountryOptions = [...countryOptions].sort(
+    (a, b) => (b.count ?? 0) - (a.count ?? 0) || a.label.localeCompare(b.label),
+  )
+
   return (
     <FilterSidebar
       sections={[
         {
           key: 'country',
           title: 'Country',
-          options: countryOptions,
+          options: sortedCountryOptions,
           searchable: true,
           defaultOpen: true,
           selectMode: 'multi',
+          collapseAfter: 10,
         },
       ]}
       selected={selected}

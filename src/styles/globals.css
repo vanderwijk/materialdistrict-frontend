@@ -12226,3 +12226,203 @@ mark.search-mark {
   .ad-leaderboard{display:none}
 }
 /* ============================ einde §HOME-F2 ============================ */
+
+/* ============================================================
+   §F2.7 — Overzicht-finetuning (batch A): cross-cutting chrome
+   + gedeelde overzicht-componenten. Additief op §F2.1–F2.5 en
+   §HOME-F2; raakt uitsluitend de overzicht-/cataloguspagina's en
+   hun gedeelde chrome. Property-pills (subtiel, geen amber/rood,
+   manufacturer-bescherming) worden hier NIET aangeraakt.
+
+   Punten in deze batch:
+     1.1  witregel onder de channelbar (stond te dicht op de tegels)
+     2.1  filterblok: witte surfaces eruit (PROPERTIES-band + property-
+          groepen plat op de paper, conform demo)
+     3.2  recently-viewed: verwijder-knop per tile
+     3.3  witregel onder de paginering
+   N.B. 3.1 (actief paginanummer = ink) zit al in main (§F2.1,
+   `.pagination-btn.is-active`); geen extra regel — verschijnt zodra
+   deze main op productie/test draait.
+   ------------------------------------------------------------ */
+
+/* 1.1 — Channelbar: lucht eronder zodat de bar niet op de tegels plakt. */
+.channel-bar { padding-bottom: 14px; margin-bottom: 6px; }
+
+/* 3.3 — Witregel onder de paginering (geldt op elk overzicht). */
+.pagination { margin-bottom: 28px; }
+
+/* 2.1 — Filterblok plat op de paper: weg met de witte/grijze surfaces.
+   De PROPERTIES-strook wordt een kale eyebrow (alleen een hairline erboven);
+   de property-groepen en geneste facet-bodies verliezen hun witte vulling.
+   Een actieve geneste sectie krijgt ink-accent i.p.v. navy (chrome-regel:
+   geen navy in de interface-chrome). */
+.uf-properties-separator {
+  background: transparent;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+}
+.uf-group-toggle { background: transparent; }
+.uf-group-body { background: transparent; }
+.uf-section.is-nested .uf-section-body { background: transparent; }
+.uf-section.is-nested:has(.filter-count.is-active) .uf-section-toggle {
+  color: var(--ink);
+  background: transparent;
+  font-weight: 600;
+}
+
+/* 3.2 — Recently-viewed: tile-wrapper + verwijder-knop (prullenbak).
+   De knop staat als sibling náást de tile-Link, rechtsboven op de thumb.
+   Verschijnt op hover/focus van de tile; op touch-devices altijd zichtbaar. */
+.recently-viewed-item { position: relative; min-width: 0; }
+.recently-viewed-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-base), background var(--transition-base),
+    color var(--transition-base), border-color var(--transition-base);
+}
+.recently-viewed-item:hover .recently-viewed-remove,
+.recently-viewed-item:focus-within .recently-viewed-remove,
+.recently-viewed-remove:focus-visible { opacity: 1; }
+.recently-viewed-remove:hover {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+@media (hover: none) {
+  .recently-viewed-remove { opacity: 1; }
+}
+@media (max-width: 720px) {
+  .recently-viewed-item { scroll-snap-align: start; }
+}
+/* ============================ einde §F2.7 batch A ============================ */
+
+/* ============================================================
+   §F2.7 — Overzicht-finetuning (batch B): bookmark-acties op alle
+   overzicht-kaarten + gating-melding (punt 4). Additief op batch A
+   (en op §F2.1–F2.5 / §HOME-F2). Batch A eerst toepassen.
+   ------------------------------------------------------------ */
+
+/* Gate-notice — niet-blokkerende toast, onderaan gecentreerd. Komt op bij
+   een Save-klik door een niet-ingelogde bezoeker (i.p.v. directe redirect). */
+.gate-notice {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(92vw, 460px);
+  padding: 10px 12px 10px 16px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: var(--shadow-lg);
+  font-size: 13px;
+  animation: gate-notice-in var(--transition-base) ease-out;
+}
+@keyframes gate-notice-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.gate-notice-text { line-height: 1.35; }
+.gate-notice-action {
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.gate-notice-action:hover { opacity: 0.8; }
+.gate-notice-close {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-hint);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.gate-notice-close:hover { color: var(--text); background: var(--surface2); }
+
+/* Bespoke-card bookmark-overlay: de event-band en brand-banner zijn al
+   position:relative, dus de gedeelde .card-thumb-overlay valt rechtsboven,
+   vrij van datum-badge (linksonder) en past-pill (linksboven). */
+.event-card .card-thumb-overlay,
+.brand-tile .card-thumb-overlay { top: 8px; right: 8px; }
+/* ============================ einde §F2.7 batch B ============================ */
+
+/* ============================================================
+   §F2.7 — Overzicht-finetuning (batch C/D): events upcoming/past-
+   segment + cap-20-paginering, filter "show all/less"-toggle, en de
+   generieke recently-viewed-rail (hergebruikt de bestaande
+   .recently-viewed* classes uit §F2.7 batch A). Additief op A/B.
+   ------------------------------------------------------------ */
+
+/* Events (7.2): segmented Upcoming / Past control, op de paper, ink-actief. */
+.events-segment {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 18px;
+  padding: 3px;
+  background: var(--surface2);
+  border-radius: 999px;
+}
+.events-segment-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: none;
+  background: transparent;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.events-segment-btn:hover:not(.is-active) { color: var(--text); }
+.events-segment-btn.is-active { background: var(--ink); color: var(--on-ink); }
+.events-segment-count { font-size: 11px; font-weight: 700; opacity: 0.7; }
+
+/* FilterSidebar (6.1): "Show all (N)" / "Show less"-toggle bij ingeklapte
+   secties (o.a. de lange country-lijst op /brands). */
+.uf-show-more {
+  margin-top: 4px;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.uf-show-more:hover { opacity: 0.8; }
+/* ============================ einde §F2.7 batch C/D ============================ */

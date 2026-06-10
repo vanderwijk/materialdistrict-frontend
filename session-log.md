@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 10-06-2026 — Homepage F2 (wit op canvas) + featured-talk-band.
-Puur frontend; deploy pending.
+Datum: 10-06-2026 — §F2.7 overzicht-finetuning (chrome, bookmarks, filters,
+recently viewed). Puur frontend; deploy pending.
 
 ---
 
@@ -2675,5 +2675,23 @@ Zip `md-home-f2-2026-06-10.zip`. Homepage-restyle in productie-stijl.
 **Backend:** `meta.featured` staat al in talk REST (`md_extend_talk_rest_meta`).
 
 **Open:** GAM ad-slots uit tot GPT-script + ad-unit-ids er zijn.
+
+Zip deployed (`4fed46c`).
+
+---
+
+## §F2.7 — Overzicht-finetuning — 10-06-2026
+
+Zip `materialdistrict-f2_7-TOTAAL.zip` (samengevoegde eindstand A+B+B2+C/D).
+
+**Kern:** channelbar-witregel; filterblok op paper; ×/Save alleen bij actief filter;
+recently-viewed verwijderbaar + uitgerold; bookmark op alle kaarten; melding i.p.v.
+login-redirect; board-popover; brands country op aantal; events Upcoming/Past + cap 20.
+
+**Nieuw:** `useRecentlyViewed.tsx`, `RecentlyViewedRail`, `CardBookmarkButton`, `GateNotice`.
+
+`globals.css`: additief §F2.7 batch A/B/C-D na §HOME-F2.
+
+**Apart:** talks-filter (8.1) en stories-tellingen (5.2) volgen los.
 
 Zip deployed pending.

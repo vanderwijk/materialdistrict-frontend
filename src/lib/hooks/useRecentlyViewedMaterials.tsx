@@ -16,7 +16,7 @@
  * Privacy: alles staat in localStorage. Geen server-tracking.
  */
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 // --------------------------------------------------------------------
 // Constants
@@ -86,6 +86,17 @@ export function addToRecentlyViewed(item: Omit<RecentlyViewedMaterial, 'viewedAt
   writeList(next)
 }
 
+/**
+ * Verwijder één material uit de recently-viewed lijst (op slug). Geeft de
+ * nieuwe lijst terug. Stil als de slug er niet in staat of localStorage
+ * niet beschikbaar is.
+ */
+export function removeFromRecentlyViewed(slug: string): RecentlyViewedMaterial[] {
+  const next = readList().filter((x) => x.slug !== slug)
+  writeList(next)
+  return next
+}
+
 // --------------------------------------------------------------------
 // Hook (SSR-safe)
 // --------------------------------------------------------------------
@@ -97,6 +108,8 @@ export function addToRecentlyViewed(item: Omit<RecentlyViewedMaterial, 'viewedAt
 export function useRecentlyViewedMaterials(): {
   items: RecentlyViewedMaterial[]
   ready: boolean
+  /** Verwijder een tile uit de lijst (op slug). Update direct in deze tab. */
+  remove: (slug: string) => void
 } {
   const [items, setItems] = useState<RecentlyViewedMaterial[]>([])
   const [ready, setReady] = useState(false)
@@ -106,7 +119,11 @@ export function useRecentlyViewedMaterials(): {
     setReady(true)
   }, [])
 
-  return { items, ready }
+  const remove = useCallback((slug: string) => {
+    setItems(removeFromRecentlyViewed(slug))
+  }, [])
+
+  return { items, ready, remove }
 }
 
 // --------------------------------------------------------------------

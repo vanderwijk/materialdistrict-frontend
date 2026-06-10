@@ -28,6 +28,7 @@ import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState, BrandTile } from '@/components/ui'
 import { getBrandCountryOptions, listBrands, getChannelCatalog, resolveChannelId } from '@/lib/api'
+import { RecentlyViewedRail } from '@/components/ui'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { BrandsFilterSidebar } from './_components/BrandsFilterSidebar'
 import { BrandsPagination } from './_components/BrandsPagination'
@@ -161,6 +162,8 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
               )}
             </>
           )}
+
+          <RecentlyViewedRail entity="brands" variant="inline" />
         </div>
       </div>
 

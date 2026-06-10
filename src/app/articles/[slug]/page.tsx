@@ -40,6 +40,7 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import {
   getArticle,
@@ -176,6 +177,7 @@ export default async function ArticleDetailPage({
   const article = await getArticle(slug)
   if (!article) notFound()
 
+
   const [{ prev, next }, related, sidebarMaterials] = await Promise.all([
     getNeighbours(slug),
     getRelatedContent(slug),
@@ -197,6 +199,14 @@ export default async function ArticleDetailPage({
 
   return (
     <>
+      <RecentlyViewedTracker
+        type="articles"
+        slug={article.slug}
+        title={article.title}
+        subtitle={publishedLabel}
+        thumbnailUrl={article.hero?.sourceUrl ?? null}
+        href={`/articles/${article.slug}`}
+      />
       <article className="pub-wrap">
         <div className="pub-layout">
           <div className="detail-back-row">

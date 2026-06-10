@@ -33,6 +33,11 @@ export interface FilterSection {
   /** Sectie standaard open. Default: false. */
   defaultOpen?: boolean
   /**
+   * §F2.7: toon maximaal N opties; daarboven een "Show all (N)"-toggle.
+   * Niet actief tijdens zoeken binnen de sectie (dan alle matches tonen).
+   */
+  collapseAfter?: number
+  /**
    * 'multi' (default) — checkboxes, meerdere waarden tegelijk
    * 'single' — radio-style (ronde indicator), één waarde tegelijk, klik vervangt
    *
@@ -100,6 +105,7 @@ export function FilterSidebar({
   })
 
   const [sectionSearch, setSectionSearch] = useState<Record<string, string>>({})
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set())
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
@@ -145,6 +151,15 @@ export function FilterSidebar({
     setSectionSearch((prev) => ({ ...prev, [key]: value }))
   }
 
+  function toggleExpanded(key: string) {
+    setExpandedSections((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
+
   const totalSelected = Object.values(selected).reduce((sum, arr) => sum + arr.length, 0)
 
   return (
@@ -186,7 +201,7 @@ export function FilterSidebar({
             )}
           </span>
           <div className="uf-header-actions">
-            {onSaveSearch && (
+            {onSaveSearch && totalSelected > 0 && (
               <button
                 type="button"
                 className="uf-header-save"
@@ -232,11 +247,21 @@ export function FilterSidebar({
           const sectionActiveCount = selectedValues.length
           const isSingle = section.selectMode === 'single'
 
-          const visibleOptions = search
+          const matchedOptions = search
             ? section.options.filter((o) =>
                 o.label.toLowerCase().includes(search.toLowerCase()),
               )
             : section.options
+          // §F2.7: inklappen tot `collapseAfter` (niet tijdens zoeken).
+          const collapsible =
+            !search &&
+            section.collapseAfter !== undefined &&
+            matchedOptions.length > section.collapseAfter
+          const isExpanded = expandedSections.has(section.key)
+          const visibleOptions =
+            collapsible && !isExpanded
+              ? matchedOptions.slice(0, section.collapseAfter)
+              : matchedOptions
 
           return (
             <div className="uf-section" key={section.key}>
@@ -318,6 +343,19 @@ export function FilterSidebar({
                         </label>
                       )
                     })
+                  )}
+
+                  {collapsible && (
+                    <button
+                      type="button"
+                      className="uf-show-more"
+                      onClick={() => toggleExpanded(section.key)}
+                      aria-expanded={isExpanded}
+                    >
+                      {isExpanded
+                        ? 'Show less'
+                        : `Show all (${matchedOptions.length})`}
+                    </button>
                   )}
                 </div>
               )}

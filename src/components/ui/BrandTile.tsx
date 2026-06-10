@@ -34,6 +34,7 @@
  */
 
 import { HoverPrefetchLink } from './HoverPrefetchLink'
+import { CardBookmarkButton } from './CardBookmarkButton'
 import type { BrandListItem } from '@/types/brand'
 
 export interface BrandTileProps {
@@ -86,7 +87,8 @@ export function BrandTile({ brand }: BrandTileProps) {
       className="brand-tile"
       ariaLabel={brand.name}
     >
-      <div className="brand-tile-banner" aria-hidden="true">
+      <div className="brand-tile-banner">
+        <CardBookmarkButton type="brands" itemId={brand.id} withOverlay />
         {!hasLogo && (
           <span className="brand-tile-banner-placeholder">
             <PlaceholderIcon size={24} />

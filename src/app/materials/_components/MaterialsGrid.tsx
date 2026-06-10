@@ -31,10 +31,10 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { CompareBar, MaterialCard, InsiderGate } from '@/components/ui'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useBookmarks } from '@/lib/hooks/useBookmarks'
+import { useGateNotice } from '@/components/ui'
 import { useCompare } from '@/lib/hooks/useCompare'
 import type { MaterialListItem } from '@/types/material'
 
@@ -52,9 +52,9 @@ export interface MaterialsGridProps {
 // --------------------------------------------------------------------
 
 export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
-  const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
   const { isSaved, toggleBookmark } = useBookmarks()
+  const { notifyLogin, notifySaved } = useGateNotice()
   const { compareIds, registerCompareMaterial } = useCompare()
 
   // Modal-state: één gate voor de hele grid
@@ -89,13 +89,9 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
   }, [items, compareIds, registerCompareMaterial])
 
   const handleRequireSignIn = () => {
-    // Sign-in flow zit in sessie 11. Voor nu navigeren naar /sign-in
-    // met de huidige path als `next` zodat de user na inloggen terugkomt.
-    const path =
-      typeof window !== 'undefined'
-        ? window.location.pathname + window.location.search
-        : '/materials'
-    router.push(`/sign-in?next=${encodeURIComponent(path)}`)
+    // §F2.7 (punt 4): geen directe redirect meer naar /sign-in. Toon een
+    // korte melding met "Sign in"-link; de bezoeker blijft op het overzicht.
+    notifyLogin('Sign in to save materials to your account.')
   }
 
   const handleRequireInsider = () => {
@@ -134,7 +130,11 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
             isSaved={isSaved('materials', material.id)}
             onRequireSignIn={handleRequireSignIn}
             onRequireInsider={handleRequireInsider}
-            onToggleSave={(id) => toggleBookmark('materials', id)}
+            onToggleSave={(id) => {
+              const willAdd = !isSaved('materials', id)
+              toggleBookmark('materials', id)
+              if (willAdd) notifySaved({ type: 'materials', itemId: id })
+            }}
             onCompareLimitReached={handleCompareLimitReached}
             searchTerm={searchTerm}
           />

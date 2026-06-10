@@ -16,6 +16,7 @@
 import Link from 'next/link'
 import type { EventListItem } from '@/types/event'
 import { eventTypeLabel } from '@/lib/config/event-types'
+import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
 
 const MONTHS_SHORT = [
   'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
@@ -70,6 +71,8 @@ export function EventCard({ event }: EventCardProps) {
         )}
 
         {event.isPast && <span className="event-card-past">Past</span>}
+
+        <CardBookmarkButton type="events" itemId={event.id} withOverlay />
 
         {badge && (
           <span className="event-card-date" aria-hidden="true">

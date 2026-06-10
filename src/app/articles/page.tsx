@@ -49,6 +49,8 @@ import {
   type StoryType,
 } from '@/lib/config/story-types'
 import { ArticlesTypeFilter } from './_components/ArticlesTypeFilter'
+import { RecentlyViewedRail } from '@/components/ui'
+import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
 import { ArticlesPagination } from './_components/ArticlesPagination'
 
 const ARTICLES_PER_PAGE = 12
@@ -287,6 +289,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                       channelTags={featured.channels.map((c) => c.label)}
                       isInsiderOnly={featured.insiderOnly}
                       titleAs="h2"
+                      actions={<CardBookmarkButton type="articles" itemId={featured.id} />}
                     />
                   </div>
                 )}
@@ -307,6 +310,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         tagLabel={STORY_TYPE_META[article.type].label}
                         channelTags={article.channels.map((c) => c.label)}
                         isInsiderOnly={article.insiderOnly}
+                        actions={<CardBookmarkButton type="articles" itemId={article.id} />}
                       />
                     ))}
                   </div>
@@ -323,6 +327,8 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               )}
             </>
           )}
+
+          <RecentlyViewedRail entity="articles" variant="inline" />
 
           {/* Nominate-sectie (mockup-patroon). Statisch in v1 — de submit
               is nog niet aan een endpoint gekoppeld; zie open-issues. */}

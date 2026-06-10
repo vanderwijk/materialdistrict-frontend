@@ -24,9 +24,11 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, ContentCard, EmptyState } from '@/components/ui'
+import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
 import { listTalks, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { TalksPagination } from './_components/TalksPagination'
+import { RecentlyViewedRail } from '@/components/ui'
 
 const TALKS_PER_PAGE = 12
 
@@ -143,6 +145,7 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
                         : undefined
                     }
                     isInsiderOnly={talk.insiderOnly}
+                    actions={<CardBookmarkButton type="talks" itemId={talk.id} />}
                   />
                 ))}
               </div>
@@ -156,6 +159,8 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
                 />
               </div>
             )}
+
+            <RecentlyViewedRail entity="talks" variant="inline" />
           </>
         )}
       </div>

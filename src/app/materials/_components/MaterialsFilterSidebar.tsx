@@ -500,22 +500,26 @@ export function MaterialsFilterSidebar({
         <div className="uf-header">
           <span className="uf-header-title">Filters</span>
           <div className="uf-header-actions">
-            <button
-              type="button"
-              className="uf-header-save"
-              onClick={handleSaveSearch}
-              title="Save this search"
-              disabled={savingSearch || !canSaveSearch}
-              aria-busy={savingSearch || undefined}
-            >
-              {savingSearch ? (
-                <IconLoading size={10} strokeWidth={2.5} />
-              ) : (
-                <IconSaveSearch size={10} strokeWidth={2.5} />
-              )}
-              Save
-              {!member && <InsiderIcon size={12} />}
-            </button>
+            {/* §F2.7 (2.2): Save verschijnt pas zodra er iets op te slaan is
+                (filter, zoekterm of actief channel) — niet in rust. */}
+            {canSaveSearch && (
+              <button
+                type="button"
+                className="uf-header-save"
+                onClick={handleSaveSearch}
+                title="Save this search"
+                disabled={savingSearch}
+                aria-busy={savingSearch || undefined}
+              >
+                {savingSearch ? (
+                  <IconLoading size={10} strokeWidth={2.5} />
+                ) : (
+                  <IconSaveSearch size={10} strokeWidth={2.5} />
+                )}
+                Save
+                {!member && <InsiderIcon size={12} />}
+              </button>
+            )}
             {totalSelected > 0 && (
               <button type="button" className="uf-header-clear" onClick={clearAll}>
                 Clear {totalSelected}

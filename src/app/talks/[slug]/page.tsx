@@ -25,6 +25,7 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
@@ -159,6 +160,14 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
 
   return (
     <>
+      <RecentlyViewedTracker
+        type="talks"
+        slug={talk.slug}
+        title={talk.title}
+        subtitle={talk.speakers[0]?.name ?? null}
+        thumbnailUrl={talk.hero?.sourceUrl ?? null}
+        href={`/talks/${talk.slug}`}
+      />
       <article className="pub-wrap">
         <div className="pub-layout">
           <div className="detail-back-row">

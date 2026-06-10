@@ -13,6 +13,7 @@
  */
 
 import { wpFetch, getTerms, getTerm } from './wordpress'
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 export interface Channel {
   id: number
@@ -58,12 +59,16 @@ function toChannel(raw: unknown): Channel | null {
   const id = Number(c.id ?? c.term_id)
   const slug = typeof c.slug === 'string' ? c.slug : ''
   if (!Number.isFinite(id) || id <= 0 || slug.length === 0) return null
-  const label =
+  const rawLabel =
     typeof c.label === 'string'
       ? c.label
       : typeof c.name === 'string'
         ? c.name
         : slug
+  // WP term-names komen HTML-encoded terug (bv. `Leisure &amp; Hospitality`).
+  // Decoderen bij de bron zodat de ChannelBar nette tekens toont én de
+  // label↔label-matching (active tab + slug-lookup) consistent blijft.
+  const label = decodeHtmlEntities(rawLabel)
   const count = Number(c.count ?? 0)
   return { id, slug, label, count: Number.isFinite(count) ? count : 0 }
 }
@@ -186,7 +191,7 @@ export async function getChannelTerm(
   return {
     id: term.id,
     slug: term.slug,
-    label: term.name,
+    label: decodeHtmlEntities(term.name),
     description: typeof term.description === 'string' ? term.description : '',
     thumbnailUrl: term.theme_thumbnail?.url ?? null,
   }

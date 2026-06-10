@@ -161,10 +161,8 @@ export function MaterialCard({
     (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault()
       e.stopPropagation()
-      if (!isLoggedIn) {
-        onRequireSignIn?.()
-        return
-      }
+      // §F2.7 (punt 4): Compare is een Insider-feature. Niet-members
+      // (incl. niet-ingelogd) krijgen de Insider-gate, geen login-redirect.
       if (!isMember) {
         onRequireInsider?.()
         return
@@ -184,9 +182,7 @@ export function MaterialCard({
       }
     },
     [
-      isLoggedIn,
       isMember,
-      onRequireSignIn,
       onRequireInsider,
       toggleCompare,
       material.id,

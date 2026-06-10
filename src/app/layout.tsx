@@ -7,6 +7,7 @@ import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { AuthProvider } from '@/components/providers/AuthContext'
 import { BookmarksProvider } from '@/lib/hooks/useBookmarks'
+import { GateNoticeProvider } from '@/components/ui'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
 import {
   getCurrentUser,
@@ -134,6 +135,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <AuthProvider initialUser={initialUser}>
             <BookmarksProvider>
+              <GateNoticeProvider>
               {/* Sessie 7 fix Punt 17: ScrollToTop reset window-scroll
                   bij elke client-side route-change (PUSH/REPLACE).
                   Bij browser back/forward laat hij het over aan de
@@ -147,6 +149,7 @@ export default async function RootLayout({
               <HeaderShell />
               <main id="main">{children}</main>
               <Footer />
+              </GateNoticeProvider>
             </BookmarksProvider>
           </AuthProvider>
         </ThemeProvider>
