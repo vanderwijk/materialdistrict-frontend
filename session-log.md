@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 09-06-2026 — Fase 3 / F2.1–F2.3: catalog-chrome (header, overzichten,
-cards + view-toggle). Puur frontend; deploy pending.
+Datum: 09-06-2026 — Fase 3 / F2.4: dashboard-chrome (wit op canvas, sidebar +
+primaire knoppen zwart). Puur frontend; deploy pending.
 
 ---
 
@@ -2625,5 +2625,21 @@ articles op standaard channelbar-shell.
 `globals.css`: additief §F2.1–§F2.3 + ink tokens (niet blind overschreven).
 
 Duurzaamheids-badges wachten op gevulde environmental-properties in WP (frontend klaar).
+
+Zip deployed (`09cb085`).
+
+---
+
+## F2.4 — Dashboard-chrome (wit op canvas) batch 4 — 09-06-2026
+
+Zip `md-f2-dashboard-2026-06-09.zip`. Dashboard in dezelfde taal als catalogus-chrome.
+
+**Gewijzigd:**
+- `src/styles/globals.css` — additief `§F2.4`: sidebar op paper, zwart actief nav-item,
+  mobiele nav op paper, scoped `.btn-primary` ink in dashboard + sticky-footer.
+- `src/components/dashboard/DashboardStickyFooter.tsx` — save-knop `btn-green` → `btn-primary`.
+
+**Verifiëren na deploy:** sidebar op paper (geen witte box), actief item zwart; panels wit op
+paper; primaire/save-knoppen zwart; teal/rood ongemoeid; mobiele nav zwart-actief.
 
 Zip deployed pending.

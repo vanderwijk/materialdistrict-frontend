@@ -11875,3 +11875,108 @@ mark.search-mark {
   [data-cols="4"] .ov-grid-3,
   [data-cols="4"] .ov-grid-brands { grid-template-columns: repeat(4, 1fr); }
 }
+
+/* ============================================================
+   §F2.4 — Dashboard-chrome (wit op canvas, batch 4). Brengt het
+   account- en brand-dashboard in dezelfde taal als de catalogus-
+   chrome (§F2.1–F2.3): de sidebar-nav staat op de paper-canvas i.p.v.
+   in een witte box, zwart (--ink) is het enige actief- en primair-
+   accent, en de content-panels zijn witte tegels op paper. Additief;
+   geen bestaande regel verwijderd. Navy en per-content-type-kleuren
+   verdwijnen ook hier uit de chrome; teal (--ct-insider) en rood
+   (--danger) blijven voor Insider- resp. destructieve acties. De
+   forms erven de §14- en §form-conventies plus Schibsted globaal,
+   dus de form-componenten blijven ongewijzigd. Content-panels
+   (.dash-panel) waren al witte tegels en drijven met --bg op paper;
+   daarom hier geen panel-override nodig. Volgt het F2-prototype.
+   ------------------------------------------------------------ */
+
+/* --- Sidebar: van witte box naar paper-canvas (spiegelt .uf-sidebar) --- */
+.sb-section {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+  margin-bottom: 8px;
+}
+.sb-section-hd {
+  background: transparent;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-hint);
+  padding: 2px 12px 9px;
+}
+.sb-section-hd--brands {
+  border-top: none;
+  margin-top: 16px;
+}
+
+/* Scope-groepen zonder eigen box; hover en het ▾-chevron markeren de
+   open scope. Het actieve nav-item draagt het accent (zie onder). */
+.sb-scope {
+  border: none;
+  border-radius: var(--radius);
+  margin: 2px 0;
+}
+.sb-scope.active {
+  background: transparent;
+  border: none;
+}
+.sb-scope-btn { padding: 9px 10px; }
+.sb-scope-btn:hover { background: var(--surface2); }
+
+/* Avatars neutraal — geen navy of green-tint in de chrome. */
+.sb-avatar.is-brand {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* Actief nav-item → zwart, zoals de actieve channel-pill (.channel-tab.active)
+   en de filterselectie (.uf-checkbox.checked / .filter-count.is-active). */
+.sb-nav-item.active,
+.sb-nav-item.active:hover {
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 600;
+}
+
+/* Add-brand blijft als gestippelde actie op paper. */
+.sb-add-brand { margin: 6px 0 0; width: 100%; }
+
+/* --- Mobiele dashboard-nav: op paper, zwart-actief (spiegelt .header-nav) --- */
+.dash-mob-nav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.dash-mob-nav-btn.active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* --- Knoppen: zwart als primair in het hele dashboard (spiegelt
+   .header-actions .btn-primary uit §F2.1). De save-knop in de sticky-
+   footer gebruikt nu .btn-primary i.p.v. .btn-green en wordt hierdoor
+   ink. Teal (.btn-insider) en rood (.btn-danger) blijven hun eigen
+   accent houden — die markeren bewust iets aparts. --- */
+.dash-content .btn-primary,
+.dash-sidebar-wrap .btn-primary,
+.sticky-footer .btn-primary {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.dash-content .btn-primary:hover:not(:disabled),
+.dash-sidebar-wrap .btn-primary:hover:not(:disabled),
+.sticky-footer .btn-primary:hover:not(:disabled) {
+  background: var(--ink);
+  opacity: 0.88;
+}
+
+/* --- Dark-mode: neutraliseer de oude navy-actief-overrides uit de
+   dashboard-basis (gelijke specificiteit, later in de bron → wint).
+   --ink en --on-ink keren in dark mode vanzelf om naar licht-op-donker. --- */
+[data-theme="dark"] .sb-section { background: transparent; border-color: transparent; }
+[data-theme="dark"] .sb-section-hd { background: transparent; }
+[data-theme="dark"] .sb-scope.active { background: transparent; border-color: transparent; }
+[data-theme="dark"] .sb-nav-item.active { background: var(--ink); color: var(--on-ink); }
+[data-theme="dark"] .dash-mob-nav { background: var(--bg); }
+[data-theme="dark"] .dash-mob-nav-btn.active { color: var(--ink); border-bottom-color: var(--ink); }

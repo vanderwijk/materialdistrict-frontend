@@ -49,7 +49,7 @@ export function DashboardStickyFooter({
             )}
             <button
               type="button"
-              className="btn btn-green"
+              className="btn btn-primary"
               onClick={onSave}
               disabled={saving || disabled}
             >
