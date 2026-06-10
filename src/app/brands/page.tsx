@@ -105,12 +105,6 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Brands' }]} />
           <h1 className="t-display-lg">Brands</h1>
-          {total > 0 && (
-            <p className="t-body">
-              {total.toLocaleString('en-US')} {total === 1 ? 'brand' : 'brands'}
-              {hasActiveFilters ? ' matching your filters' : ''}
-            </p>
-          )}
         </div>
       </header>
 
@@ -118,7 +112,9 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
         channels={channels}
         activeSlug={channelSlug}
         initialSearch={search ?? ''}
-        searchPlaceholder="Search brands…"
+        searchPlaceholder={
+          total > 0 ? `Search ${total.toLocaleString('en-US')} brands` : 'Search brands…'
+        }
       />
 
       <div className="ov-wrap">

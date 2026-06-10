@@ -120,13 +120,6 @@ export default async function MaterialsPage({
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Materials' }]} />
           <h1 className="t-display-lg">Materials</h1>
-          {totalRows > 0 && (
-            <p className="t-body">
-              {totalRows.toLocaleString('en-US')}{' '}
-              {totalRows === 1 ? 'material' : 'materials'}
-              {hasActiveFilters ? ' matching your filters' : ''}
-            </p>
-          )}
         </div>
       </header>
 
@@ -134,7 +127,11 @@ export default async function MaterialsPage({
         channels={channels}
         activeSlug={channelSlug}
         initialSearch={search ?? ''}
-        searchPlaceholder="Search materials…"
+        searchPlaceholder={
+          totalRows > 0
+            ? `Search ${totalRows.toLocaleString('en-US')} materials`
+            : 'Search materials…'
+        }
       />
 
       {/* Mobile filter-trigger rij — sessie 6 fix voor Punt 22.

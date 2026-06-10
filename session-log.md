@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 08-06-2026 — Fase 3 / F1.0: design-system-refresh (Schibsted Grotesk +
-paper-achtergrond) als token-only wijziging. Puur frontend; deploy pending.
+Datum: 09-06-2026 — Fase 3 / F2.1–F2.3: catalog-chrome (header, overzichten,
+cards + view-toggle). Puur frontend; deploy pending.
 
 ---
 
@@ -2607,4 +2607,23 @@ wijziging: alleen design-tokens, geen layout-herziening (die volgt in F2/F3/F5).
 **Verifieren na deploy:** paywall-fade op gated artikelen/talks vervaagt naar paper
 i.p.v. wit (correct zolang artikeltekst op pagina-achtergrond staat).
 
-Zip: `md-f1-fonts-paper-2026-06-08.zip`. Deploy pending.
+Zip: `md-f1-fonts-paper-2026-06-08.zip`. Deployed (`f6c995c`).
+
+---
+
+## F2.1–F2.3 — Catalog-chrome (batch 1+2+3) — 09-06-2026
+
+Gecombineerde zip `md-f2-chrome-batch1-2-3-2026-06-09.zip`. Eén deploy voor volledige
+F2 catalogus-look. Puur frontend.
+
+**Batch 1:** `--ink`/`--on-ink` tokens; §F2.1 header/nav/paginatie zwart; Header sign-out icoon.
+**Batch 2:** §F2.2 channelbar/filter/footer op paper; compacte page-header; telling in zoekbox;
+articles op standaard channelbar-shell.
+**Batch 3:** §F2.3 cards (FEATURED pill, sustainability badges, view-toggle 2/3/4 koloms);
+`ViewToggle.tsx` nieuw; ContentCard/MaterialCard/ChannelBar updates.
+
+`globals.css`: additief §F2.1–§F2.3 + ink tokens (niet blind overschreven).
+
+Duurzaamheids-badges wachten op gevulde environmental-properties in WP (frontend klaar).
+
+Zip deployed pending.

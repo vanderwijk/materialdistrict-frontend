@@ -34,11 +34,13 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, ContentCard, EmptyState } from '@/components/ui'
+import { Button, ChannelBarNav, ContentCard, EmptyState } from '@/components/ui'
 import {
   getArticleStoryTypeOptions,
   getArticleTotalCount,
+  getChannelCatalog,
   listArticles,
+  resolveChannelId,
 } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import {
@@ -48,7 +50,6 @@ import {
 } from '@/lib/config/story-types'
 import { ArticlesTypeFilter } from './_components/ArticlesTypeFilter'
 import { ArticlesPagination } from './_components/ArticlesPagination'
-import { ArticlesSearchInput } from './_components/ArticlesSearchInput'
 
 const ARTICLES_PER_PAGE = 12
 
@@ -105,7 +106,13 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const search =
     (Array.isArray(params.q) ? params.q[0] : params.q)?.trim() || undefined
   const selectedType = parseStoryType(params.story_type)
+  const channelSlug =
+    (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() ||
+    undefined
   const page = parsePage(params.page)
+
+  const channels = await getChannelCatalog()
+  const themeId = resolveChannelId(channels, channelSlug) ?? undefined
 
   // Articles + story-type-opties + totaal-count parallel. De type-opties
   // komen uit het lichte WP-term-endpoint (`getStoryTypeCounts`) — exacte
@@ -119,12 +126,14 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
       page,
       search,
       storyType: selectedType ?? undefined,
+      theme: themeId,
     }),
     getArticleStoryTypeOptions(),
     getArticleTotalCount(),
   ])
 
-  const hasActiveFilters = selectedType !== null || Boolean(search)
+  const hasActiveFilters =
+    selectedType !== null || Boolean(search) || Boolean(channelSlug)
   const total = result.total
   const activeMeta = selectedType ? STORY_TYPE_META[selectedType] : null
 
@@ -137,17 +146,17 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Stories' }]} />
           <h1 className="t-display-lg">Stories</h1>
-          {total > 0 && (
-            <p className="t-body">
-              {total.toLocaleString('en-US')} {total === 1 ? 'story' : 'stories'}
-              {hasActiveFilters ? ' matching your filters' : ''}
-            </p>
-          )}
-        </div>
-        <div className="ov-page-header-aside">
-          <ArticlesSearchInput initialValue={search ?? ''} />
         </div>
       </header>
+
+      <ChannelBarNav
+        channels={channels}
+        activeSlug={channelSlug}
+        initialSearch={search ?? ''}
+        searchPlaceholder={
+          total > 0 ? `Search ${total.toLocaleString('en-US')} stories` : 'Search stories…'
+        }
+      />
 
       <div className="ov-wrap">
         <div className="articles-sidebar-col">
@@ -267,6 +276,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                     <ContentCard
                       href={`/articles/${featured.slug}`}
                       contentType="article"
+                      showTypeBadge={false}
                       thumbSrc={featured.hero?.sourceUrl}
                       thumbAlt={featured.hero?.alt ?? featured.title}
                       thumbRatio="landscape"
@@ -288,6 +298,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         key={article.id}
                         href={`/articles/${article.slug}`}
                         contentType="article"
+                        showTypeBadge={false}
                         thumbSrc={article.hero?.sourceUrl}
                         thumbAlt={article.hero?.alt ?? article.title}
                         eyebrow={formatDate(article.date)}

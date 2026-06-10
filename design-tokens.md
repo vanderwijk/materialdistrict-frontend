@@ -30,6 +30,8 @@
 --text:         #0D1F2D;   /* Primaire tekst */
 --text-muted:   #5A6A7A;   /* Secundaire tekst */
 --text-hint:    #9AABB8;   /* Placeholder, labels, eyebrows */
+--ink:          #16202B;   /* Interface-chrome accent (near-black) — F2.1: nav-actief, header-Dashboard, paginatie-actief */
+--on-ink:       #FFFFFF;   /* Tekst/icoon op --ink */
 ```
 
 ### Dark mode (via `[data-theme="dark"]`)
@@ -41,6 +43,8 @@
 --text:         #F0F6FC;
 --text-muted:   #8B9EB8;
 --text-hint:    #4D6278;
+--ink:          #F0F6FC;   /* Inverteert in dark: lichte pill, donkere tekst */
+--on-ink:       #0D1117;
 
 /* Donkere varianten van content-type pales (tonal swap) */
 --green-pale:        #0D2318;
@@ -216,7 +220,7 @@ text-transform: uppercase;
   color: var(--text);
   height: 62px;
 }
-.header-nav button.active { color: var(--navy); border-bottom: 2px solid var(--navy); }
+.header-nav button.active { color: var(--ink); border-bottom: 2px solid var(--ink); }  /* F2.1: zwart i.p.v. navy */
 ```
 
 ### Logo
@@ -567,3 +571,80 @@ afwijkingen t.o.v. de tabel hierboven:
 > code. `--surface` blijft `#FFFFFF` — witte tegels op de paper-achtergrond.
 > Dark-mode `--bg` (`#0D1117`) ongewijzigd. Token-only wijziging; geen
 > layout-herziening (die volgt in F2/F3/F5).
+
+---
+
+## Wijzigingen — F2.1 (Fase 3, catalog-chrome batch 1, 09-06-2026)
+
+Eerste productie-batch van de F2-catalogstyling. Interface-chrome verliest navy
+en de per-content-type-kleuren; zwart (`--ink`) is voortaan het enige
+chrome-accent. Toegevoegd in `globals.css` als één additief `§F2.1`-blok plus de
+tokens hieronder; in `Header.tsx` is de desktop *Sign out* een icoon-knop geworden.
+
+| Token / regel | Was | Nu |
+|---|---|---|
+| `--ink` (light) | — | **`#16202B`** (nieuw) |
+| `--on-ink` (light) | — | **`#FFFFFF`** (nieuw) |
+| `--ink` (dark) | — | **`#F0F6FC`** (inverteert) |
+| `--on-ink` (dark) | — | **`#0D1117`** |
+| Hoofdnav actief | per-content-type-kleur + navy | **`--ink`** (zwart), font-size 14 |
+| Header-Dashboard-knop | `--navy` (`.btn-primary`) | **`--ink`** (alleen in `.header-actions`) |
+| Header-iconen hover | `--surface2` | **invert naar `--ink`** |
+| Paginatie actief | `--navy` | **`--ink`** (beide modi) |
+| Breadcrumb `margin-bottom` | 8px | **22px** |
+| Desktop *Sign out* | tekstknop (`.btn-outline`) | **icoon-knop** (`.icon-btn`) |
+
+> `.btn-primary` buiten de header blijft navy — alleen de header-Dashboard is
+> gescoped naar zwart. Olijf (`--ct-material`) blijft de content-type-accent voor
+> materials; het verdwijnt alleen uit de interface-chrome.
+
+---
+
+## Wijzigingen — F2.2 (Fase 3, overzicht-chrome batch 2, 09-06-2026)
+
+Geen nieuwe tokens. De bestaande `--ink`/`--on-ink` (zwart-chrome) en
+`--ct-insider` (teal) sturen nu ook de overzicht-chrome. Toegevoegd in
+`globals.css` als één additief `§F2.2`-blok; markup-wijziging in
+`FilterSidebar.tsx`. Geleverd samen met F2.1 in één zip.
+
+| Regel | Was | Nu |
+|---|---|---|
+| Channelbar achtergrond | `--surface` (wit) + onderlijn | **`--bg`** (paper), geen lijn |
+| Channel actief | navy onderstreping | **`--ink`** zwarte pill (30px) |
+| Channel scroll-pijl hover | `--navy` | **invert naar `--ink`** |
+| Channelbar-zoekveld | `--surface2` | **`--surface`** (wit) |
+| Filterpaneel | wit paneel + navy header | **op paper**, geen box/navy |
+| `.filter-count.is-active` | `--navy` | **`--ink`** |
+| `.uf-checkbox.checked` | `--navy` | **`--ink`** (+ check `currentColor`) |
+| Filter Save-knop | tekst + icoon | **rond icoon**, `--ct-insider` (teal) |
+| Filter Clear-knop | "Clear N"-tekst | **ronde prullenbak**, hover-invert `--ink` |
+| Overzicht-`h1` (`.t-display-lg`) | zichtbaar groot | **sr-only** (blijft in DOM voor SEO) |
+| Overzicht-telling | regel onder de titel | **in de channelbar-zoekbox** |
+| Footer | navy (`#0E2E78`), witte tekst | **licht-neutraal** op paper, donkere tekst |
+
+> Telling-in-de-zoekbox geldt voor álle overzichten (materials, brands, events,
+> talks, articles). Articles is rechtgetrokken: channelbar toegevoegd (server-side
+> theme-filtering), zoekveld uit de header-aside naar de channelbar verhuisd. De
+> story-type-filter + CTA's blijven articles' eigen linkerkolom. Footer dark-mode
+> ongemoeid.
+
+---
+
+## Wijzigingen — F2.3 (Fase 3, card-systeem + kolomkeuze batch 3, 09-06-2026)
+
+Geen nieuwe tokens. Card-tegels worden compacter; FEATURED gebruikt `--navy`,
+duurzaamheids-badges `--green-mid`, de view-toggle-actief `--ink`. Eén additief
+`§F2.3`-blok + props op `ContentCard`/`MaterialCard` + nieuwe `ViewToggle`.
+
+| Regel | Was | Nu |
+|---|---|---|
+| `.content-card-title` | 28px (mobile 22) | **16px** (mobile 15) |
+| Card linksboven | altijd content-type Tag | **FEATURED-pill** (`--navy`) of niets op single-type |
+| Card linksonder | channel-tags (donker) | **duurzaamheids-badges** wit/`--green-mid`, max 2 + "+N" (materials) |
+| Kolommen overzicht | vast 3 (responsief 2/1) | **view-toggle 2/3/4** via `[data-cols]` op desktop |
+| View-toggle actief | — | `--ink` / `--on-ink` |
+
+> Kolomkeuze geldt voor alle catalogus-grids (`.ov-grid-3` + `.ov-grid-brands`) en
+> wordt onthouden in localStorage. Smalle schermen houden de responsieve val
+> (2 dan 1 kolom). Events- en brand-tegels volgen alleen de kolomkeuze; hun
+> kaart-inhoud verandert niet.

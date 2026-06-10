@@ -72,9 +72,6 @@ export default async function EventsPage({
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Events' }]} />
           <h1 className="t-display-lg">Events</h1>
-          <p className="t-body">
-            MaterialDistrict events, tradeshows and talks worldwide.
-          </p>
         </div>
       </header>
 
@@ -82,7 +79,9 @@ export default async function EventsPage({
         channels={channels}
         activeSlug={channelSlug}
         initialSearch={search ?? ''}
-        searchPlaceholder="Search events…"
+        searchPlaceholder={
+          events.length > 0 ? `Search ${events.length} events` : 'Search events…'
+        }
       />
 
       <EventsBrowser events={events} channelSlug={channelSlug} search={search} />

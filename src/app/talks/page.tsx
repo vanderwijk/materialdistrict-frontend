@@ -93,12 +93,6 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Talks' }]} />
           <h1 className="t-display-lg">Talks</h1>
-          {total > 0 && (
-            <p className="t-body">
-              {total.toLocaleString('en-US')} {total === 1 ? 'talk' : 'talks'}
-              {hasActiveFilters ? ' matching your search' : ''}
-            </p>
-          )}
         </div>
       </header>
 
@@ -106,7 +100,9 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
         channels={channels}
         activeSlug={channelSlug}
         initialSearch={search ?? ''}
-        searchPlaceholder="Search talks…"
+        searchPlaceholder={
+          total > 0 ? `Search ${total.toLocaleString('en-US')} talks` : 'Search talks…'
+        }
       />
 
       <div className="ov-wrap-single">
@@ -136,6 +132,7 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
                     key={talk.id}
                     href={`/talks/${talk.slug}`}
                     contentType="talk"
+                    showTypeBadge={false}
                     thumbSrc={talk.hero?.sourceUrl}
                     thumbAlt={talk.hero?.alt ?? talk.title}
                     eyebrow={formatDate(talk.date)}

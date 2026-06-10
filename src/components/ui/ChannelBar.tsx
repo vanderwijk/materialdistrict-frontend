@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { IconChevronLeft, IconChevronRight, IconSearch } from './icons'
+import { ViewToggle } from './ViewToggle'
 import { cn } from '@/lib/utils/cn'
 
 /** Default channels — uit MaterialDistrict_MockUp_DEF.html */
@@ -167,6 +168,8 @@ export function ChannelBar({
             </div>
           </div>
         )}
+
+        <ViewToggle />
       </div>
     </div>
   )

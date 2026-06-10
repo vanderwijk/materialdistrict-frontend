@@ -5,6 +5,7 @@ import {
   IconChevronDown,
   IconCheck,
   IconClose,
+  IconDelete,
   IconFilter,
   IconSaveSearch,
   InsiderIcon,
@@ -173,7 +174,17 @@ export function FilterSidebar({
         aria-label="Filters"
       >
         <div className="uf-header">
-          <span className="uf-header-title">Filters</span>
+          <span className="uf-header-title">
+            Filters
+            {totalSelected > 0 && (
+              <span
+                className="filter-count is-active is-inline"
+                aria-label={`${totalSelected} active filter${totalSelected === 1 ? '' : 's'}`}
+              >
+                {totalSelected}
+              </span>
+            )}
+          </span>
           <div className="uf-header-actions">
             {onSaveSearch && (
               <button
@@ -181,15 +192,25 @@ export function FilterSidebar({
                 className="uf-header-save"
                 onClick={onSaveSearch}
                 title="Save this search"
+                aria-label="Save this search"
               >
-                <IconSaveSearch size={10} strokeWidth={2.5} />
-                Save
-                {!isMember && <InsiderIcon size={12} />}
+                <IconSaveSearch size={13} strokeWidth={2} />
+                {!isMember && (
+                  <span className="uf-save-insider" aria-hidden="true">
+                    <InsiderIcon size={9} />
+                  </span>
+                )}
               </button>
             )}
             {onClearAll && totalSelected > 0 && (
-              <button type="button" className="uf-header-clear" onClick={onClearAll}>
-                Clear {totalSelected}
+              <button
+                type="button"
+                className="uf-header-clear"
+                onClick={onClearAll}
+                title="Clear all filters"
+                aria-label={`Clear all ${totalSelected} filters`}
+              >
+                <IconDelete size={13} strokeWidth={2} />
               </button>
             )}
             <button
@@ -285,7 +306,7 @@ export function FilterSidebar({
                             aria-hidden="true"
                           >
                             {isSelected && !isSingle && (
-                              <IconCheck size={10} strokeWidth={3} color="white" />
+                              <IconCheck size={10} strokeWidth={3} />
                             )}
                           </span>
                           <span className="uf-option-label">{option.label}</span>

@@ -68,6 +68,23 @@ interface ContentCardProps {
   /** Custom tag-label. Default = nette versie van contentType. */
   tagLabel?: string
   /**
+   * Markeer als featured — toont een navy "Featured"-pill linksboven op de
+   * thumb, in plaats van de content-type Tag. Default: false.
+   */
+  featured?: boolean
+  /**
+   * Toon de content-type Tag linksboven. Default: true. Zet op `false` op
+   * single-type overzichten (materials, stories, talks, events) waar het
+   * type al uit de context blijkt; in gemengde contexten (channel-hub) aan
+   * laten. Een actieve `featured` overrulet dit (toont dan de Featured-pill).
+   */
+  showTypeBadge?: boolean
+  /**
+   * Duurzaamheids-badges (linksonder op de thumb) — witte pills met groen
+   * blad-icoon. Max 2 zichtbaar + "+N"-overflow. Materials-only in de praktijk.
+   */
+  sustainabilityBadges?: string[]
+  /**
    * HTML-element voor de titel, voor correct heading-niveau in de page-context.
    *
    * Een card-titel is meestal `h3` (op een page met h1 hero + h2 sections).
@@ -165,6 +182,9 @@ export function ContentCard({
   isInsiderOnly,
   insiderOnly,
   tagLabel,
+  featured = false,
+  showTypeBadge = true,
+  sustainabilityBadges,
   titleAs = 'h3',
   ariaLabel,
   prefetch,
@@ -182,6 +202,11 @@ export function ContentCard({
 
   // Channel-tags: max 2 stuks (rest afkappen — geen layout-overflow op de thumb)
   const visibleChannelTags = channelTags ? channelTags.slice(0, 2) : null
+
+  // Duurzaamheids-badges: max 2 zichtbaar + "+N"-overflow
+  const allSustainability = sustainabilityBadges ?? []
+  const visibleSustainability = allSustainability.slice(0, 2)
+  const sustainabilityOverflow = allSustainability.length - visibleSustainability.length
 
   // Meta wordt array van segments — string krijgt array van 1
   const metaSegments = meta === undefined ? null : Array.isArray(meta) ? meta : [meta]
@@ -203,22 +228,68 @@ export function ContentCard({
         background={thumbBackground}
         className={thumbRatioClass}
       >
-        {/* Tag — linksboven overlay (sessie 3A batch 3) */}
-        <div className="card-thumb-overlay is-top-left">
-          <Tag contentType={contentType} label={tagLabel} />
-        </div>
+        {/* Linksboven: FEATURED-pill (navy) of de content-type Tag. Op
+            single-type overzichten wordt de Tag onderdrukt (showTypeBadge=false);
+            een actieve `featured` toont altijd de Featured-pill. */}
+        {(featured || showTypeBadge) && (
+          <div className="card-thumb-overlay is-top-left">
+            {featured ? (
+              <span className="card-featured-badge">
+                <svg
+                  width="9"
+                  height="9"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" />
+                </svg>
+                Featured
+              </span>
+            ) : (
+              <Tag contentType={contentType} label={tagLabel} />
+            )}
+          </div>
+        )}
 
         {/* Action-buttons — rechtsboven (positie ongewijzigd) */}
         {actions && <div className="card-thumb-overlay">{actions}</div>}
 
-        {/* Channel-tags — linksonder, max 2 (sessie 3A batch 3) */}
-        {visibleChannelTags && visibleChannelTags.length > 0 && (
+        {/* Linksonder: duurzaamheids-badges (wit/groen, max 2 + "+N") en/of
+            channel-tags. In de praktijk sluiten ze elkaar uit per content-type. */}
+        {(visibleSustainability.length > 0 ||
+          (visibleChannelTags && visibleChannelTags.length > 0)) && (
           <div className="card-thumb-overlay is-bottom-left">
-            {visibleChannelTags.map((channel) => (
-              <span key={channel} className="channel-tag-overlay">
-                {channel}
+            {visibleSustainability.map((label) => (
+              <span key={`sustain-${label}`} className="sustainability-badge">
+                <svg
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                  <path d="M2 21c0-3 1.85-5.36 5.08-6" />
+                </svg>
+                {label}
               </span>
             ))}
+            {sustainabilityOverflow > 0 && (
+              <span className="sustainability-badge is-more">
+                +{sustainabilityOverflow}
+              </span>
+            )}
+            {visibleChannelTags &&
+              visibleChannelTags.map((channel) => (
+                <span key={channel} className="channel-tag-overlay">
+                  {channel}
+                </span>
+              ))}
           </div>
         )}
       </Card.Thumb>

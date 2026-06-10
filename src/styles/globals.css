@@ -124,6 +124,12 @@ ol {
   --link: var(--navy);
   --link-hover: var(--navy-mid);
 
+  /* Interface-ink (F2 chrome) — neutraal near-black accent voor interface-chrome
+     (hoofdnav-actief, header-Dashboard, actieve paginatie). Vervangt navy/olijf
+     in de chrome. Dark-mode inverteert naar licht (zie sectie 3). */
+  --ink: #16202B;
+  --on-ink: #FFFFFF;
+
   /* Typografie */
   --font-display: 'Schibsted Grotesk', system-ui, sans-serif;
   --font-body: 'Schibsted Grotesk', system-ui, -apple-system, sans-serif;
@@ -234,6 +240,10 @@ ol {
      Breadcrumb-links, Tabs actief. Primary-button blijft navy-fill (witte tekst). */
   --link: var(--navy-light);
   --link-hover: #6090d0;
+
+  /* Interface-ink inverteert in dark: lichte pill met donkere tekst. */
+  --ink: #f0f6fc;
+  --on-ink: #0d1117;
 
   --shadow: 0 1px 4px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
   --shadow-lg: 0 6px 28px rgba(0,0,0,0.7), 0 2px 12px rgba(0,0,0,0.5);
@@ -11601,3 +11611,267 @@ mark.search-mark {
 
 /* --- Insights-banner: Preview + Become naast elkaar --- */
 .insights-banner-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/* ============================================================
+   §F2.1 — Catalog-chrome (batch 1): hoofdnav, header-acties,
+   zwarte accenten (Dashboard, paginatie) en breadcrumb-ruimte.
+   Additieve overrides; geen bestaande regels verwijderd.
+   Besluit: navy en per-content-type-kleuren verdwijnen uit de
+   interface-chrome; zwart (--ink) is het enige chrome-accent.
+   ============================================================ */
+
+/* Hoofdnav — normale schrijfwijze, hoger contrast, zwart-actief
+   (vervangt de per-content-type-kleur in de actieve staat). */
+.header-nav a,
+.header-nav button { text-transform: none; letter-spacing: 0; font-size: 14px; }
+.header-nav a:hover,
+.header-nav button:hover { color: var(--text); border-bottom-color: var(--border); }
+.header-nav a.active,
+.header-nav button.active,
+.header-nav .active.nav-materials,
+.header-nav .active.nav-articles,
+.header-nav .active.nav-events,
+.header-nav .active.nav-books,
+.header-nav .active.nav-brands,
+.header-nav .active.nav-talks { color: var(--ink); border-bottom-color: var(--ink); font-weight: 700; }
+
+/* Header-actie-iconen — donkerder icoon; hover inverteert naar zwart,
+   zodat ze duidelijk als knop lezen. (Scoped op de header-rij.) */
+.header-actions .icon-btn { color: var(--text); }
+.header-actions .icon-btn:hover { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+
+/* Dashboard-knop in de header → zwart i.p.v. navy (chrome, geen marketing-CTA).
+   Alleen binnen .header-actions; .btn-primary elders blijft ongewijzigd. */
+.header-actions .btn-primary { background: var(--ink); color: var(--on-ink); }
+.header-actions .btn-primary:hover:not(:disabled) { background: var(--ink); opacity: 0.88; }
+
+/* Actieve paginatie → zwart i.p.v. navy (beide modi expliciet). */
+.pagination-btn.is-active { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+[data-theme="dark"] .pagination-btn.is-active { background: var(--ink); border-color: var(--ink); color: var(--on-ink); }
+
+/* Meer lucht onder de breadcrumb. */
+.breadcrumbs { margin-bottom: 22px; }
+
+/* ============================================================
+   §F2.2 — Overzicht-chrome (batch 2): channelbar, filterpaneel,
+   footer en compacte page-header. Additief op §F2.1. Channelbar en
+   filters staan op de paper-canvas (geen witte box, geen navy paneel);
+   zwart (--ink) is het selectie-accent, teal (--ct-insider) markeert
+   de Insider-save. Footer wordt licht-neutraal. Volgt het F2-prototype.
+   ------------------------------------------------------------ */
+
+/* --- Channelbar: op paper, zwarte pill voor actief kanaal --- */
+.channel-bar { background: var(--bg); border-bottom: none; }
+.channel-tabs-viewport { align-items: center; }
+.channel-tab {
+  height: 30px;
+  border-bottom: none;
+  border-radius: 999px;
+  animation: none;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.channel-tab:hover:not(.active) {
+  color: var(--text);
+  background: var(--surface2);
+  border-bottom-color: transparent;
+}
+.channel-tab.active {
+  color: var(--on-ink);
+  background: var(--ink);
+  border-bottom-color: transparent;
+}
+.channel-search { background: var(--surface); }
+.channel-page-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+[data-theme="dark"] .channel-page-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+
+/* --- Filterpaneel: op paper, ink-selectie, ronde icoon-acties --- */
+.uf-sidebar { background: transparent; border: none; border-radius: 0; }
+.uf-header {
+  background: transparent;
+  min-height: 0;
+  padding: 2px 14px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.uf-header-title {
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+}
+.filter-count.is-active {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+.uf-checkbox.checked {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.uf-header-actions { gap: 6px; }
+.uf-header-save,
+.uf-header-clear {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+}
+.uf-header-save { color: var(--ct-insider); }
+.uf-header-save:hover {
+  background: var(--ct-insider);
+  color: #ffffff;
+  border-color: var(--ct-insider);
+}
+.uf-header-clear { color: var(--text-muted); }
+.uf-header-clear:hover {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+.uf-save-insider {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  display: inline-flex;
+  color: var(--ct-insider);
+}
+
+/* --- Compacte page-header: grote titel visueel weg (blijft sr-only in de DOM
+   voor SEO en screenreaders), telling verhuist naar de zoekbox --- */
+.ov-page-header { padding-top: 16px; padding-bottom: 8px; }
+.ov-page-header-main > .t-display-lg {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Footer: licht-neutraal op de paper-canvas --- */
+.site-footer {
+  background: rgba(22, 32, 43, 0.045);
+  color: var(--text);
+  border-top: 1px solid var(--border);
+}
+.site-footer input::placeholder { color: var(--text-hint); }
+.footer-tagline,
+.footer-eyebrow,
+.footer-newsletter-note,
+.footer-address,
+.footer-contact { color: var(--text-muted); }
+.footer-link { color: var(--text-muted); }
+.footer-link:hover { color: var(--text); }
+.footer-newsletter { border-color: var(--border); }
+.footer-newsletter input { background: var(--surface); color: var(--text); }
+.footer-social-btn { color: var(--text-hint); border-color: var(--border); }
+.footer-social-btn:hover { color: var(--text); border-color: var(--text-muted); }
+.footer-bottom { border-top-color: var(--border); color: var(--text-muted); }
+.footer-legal-links button { color: var(--text-muted); }
+.footer-legal-links button:hover { color: var(--text); }
+
+/* ============================================================
+   §F2.3 — Card-systeem + kolomkeuze (batch 3). Compactere content-
+   cards, FEATURED-pill (navy) en duurzaamheids-badges (wit met groen),
+   plus een view-toggle (2/3/4 koloms) die op álle catalogus-grids werkt
+   via een data-attribuut op de document-root. Volgt het F2-prototype.
+   ------------------------------------------------------------ */
+
+/* --- Compactere card-titel --- */
+.content-card-title { font-size: 16px; line-height: 1.3; letter-spacing: 0; }
+@media (max-width: 768px) {
+  .content-card-title { font-size: 15px; }
+}
+
+/* --- FEATURED-pill (navy) — linksboven op de thumb i.p.v. type-badge --- */
+.card-featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 9px;
+  background: var(--navy);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 100px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.card-featured-badge svg { flex-shrink: 0; }
+
+/* --- Duurzaamheids-badges (wit met groen icoon en tekst) — linksonder --- */
+.sustainability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--green-mid);
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 100px;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+.sustainability-badge svg { flex-shrink: 0; color: var(--green-mid); }
+.sustainability-badge.is-more { color: var(--text-muted); }
+
+/* --- View-toggle (2/3/4 koloms) — rechts in de channelbar, alle overzichten --- */
+.view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.view-toggle-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-hint);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.view-toggle-btn:hover { color: var(--text); background: var(--surface2); }
+.view-toggle-btn.is-active { color: var(--on-ink); background: var(--ink); }
+@media (max-width: 768px) {
+  .view-toggle { display: none; }
+}
+
+/* --- Kolomkeuze: alleen op desktop; smalle schermen houden de
+   responsieve val (2 dan 1 kolom) uit de basis-grids --- */
+@media (min-width: 1025px) {
+  [data-cols="2"] .ov-grid-3,
+  [data-cols="2"] .ov-grid-brands { grid-template-columns: repeat(2, 1fr); }
+  [data-cols="4"] .ov-grid-3,
+  [data-cols="4"] .ov-grid-brands { grid-template-columns: repeat(4, 1fr); }
+}

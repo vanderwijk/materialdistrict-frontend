@@ -58,6 +58,7 @@ import { useCallback } from 'react'
 import type { MouseEvent } from 'react'
 import type { MaterialListItem } from '@/types/material'
 import { useCompare } from '@/lib/hooks/useCompare'
+import { getActiveSustainabilityFacets } from '@/lib/utils/material-properties'
 import { ActionButton } from './ActionButton'
 import { ContentCard } from './ContentCard'
 import { HighlightedText } from './HighlightedText'
@@ -235,10 +236,19 @@ export function MaterialCard({
     material.title
   )
 
+  // Duurzaamheids-badges uit de "Yes"-environmental properties. ContentCard
+  // toont max 2 + "+N". Leeg zolang Johan de environmental-velden nog niet vult.
+  const sustainabilityBadges = getActiveSustainabilityFacets(
+    material.properties,
+  ).map((f) => f.label)
+
   return (
     <ContentCard
       href={material.link.startsWith('/') ? material.link : `/materials/${material.slug}`}
       contentType="material"
+      featured={material.featured}
+      showTypeBadge={false}
+      sustainabilityBadges={sustainabilityBadges}
       thumbSrc={thumbSrc}
       thumbAlt={thumbAlt}
       eyebrow={eyebrowNode}

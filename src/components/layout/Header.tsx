@@ -269,12 +269,11 @@ export function Header({
             <>
               <button
                 type="button"
-                className="btn btn-outline btn-sm hide-mobile"
+                className="icon-btn hide-mobile"
                 onClick={onSignOut}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
+                aria-label="Sign out"
               >
                 <IconLogout size={16} />
-                Sign out
               </button>
               <button
                 type="button"
