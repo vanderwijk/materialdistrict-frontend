@@ -25,6 +25,7 @@
  * Zie session-log sessie 2.
  */
 
+import type { TaxonomyTerm } from './article'
 import type { Gallery, MediaImage } from './media'
 
 /**
@@ -154,6 +155,9 @@ export interface Brand {
   /** Status-vlaggen. */
   partner: boolean
   featured: boolean
+
+  /** Editorial channels (theme taxonomy) — `{ id, slug, label }[]`. */
+  channels: TaxonomyTerm[]
 
   date: string
   modified: string

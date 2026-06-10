@@ -384,6 +384,7 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
 
     partner: truthyFlag(m.partner, m._partner),
     featured: truthyFlag(m.featured, m._featured),
+    channels: mapChannels(m.channels),
 
     date: raw.date,
     modified: raw.modified,

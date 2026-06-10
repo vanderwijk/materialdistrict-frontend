@@ -20,7 +20,7 @@
  * Geparkeerd (Johan-vragen, zie open-issues sessie 5):
  *  - Company-film: brand-videoveld nog niet beschikbaar.
  *  - Downloads: brand-downloadveld nog niet beschikbaar.
- *  - Channels (ChannelBar / brand-tags): geen brand-channel-taxonomie.
+ *  - Channels: channel-pills in DetailHeader (theme terms via meta.channels).
  *
  * JSON-LD: Organization (brand) + BreadcrumbList.
  * notFound() bij onbekende slug.
@@ -130,6 +130,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
           <div className="detail-sheet">
         <DetailHeader
           tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
+          channels={brand.channels.map((c) => ({ slug: c.slug, label: c.label }))}
           title={brand.name}
           meta={metaParts.length > 0 ? <>{metaParts.join(' · ')}</> : undefined}
         />
