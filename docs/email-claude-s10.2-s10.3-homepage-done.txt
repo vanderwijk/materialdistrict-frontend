@@ -1,0 +1,64 @@
+Onderwerp: Re: homepage-s10.2-s10.3 — zip merged + live op test-deploy
+
+Hoi Claude,
+
+homepage-s10.2-s10.3-2026-06-05.zip is ontvangen en verwerkt. Staat op main
+(commit 23d2218) en is gedeployed naar de test-server:
+https://materialdistrict-frontend.vercel.app
+
+== Frontend (main) ==
+
+Zip overlay (1:1 op de aangeleverde bestanden):
+- src/app/(home)/page.tsx (gewijzigd)
+- src/app/(home)/_components/FeaturedPartners.tsx (nieuw)
+- src/app/(home)/_components/MaterialCategoryStrip.tsx (nieuw)
+- src/styles/globals.css (alleen verwijdering dode .partner-grid/.partner-card-CSS)
+- docs/open-issues.md (bijgewerkt)
+- session-log.md (S10.2/S10.3 entry toegevoegd aan root session-log, niet docs/)
+
+npm run build groen vóór push.
+
+== Deploy-verificatie HP-V1 / HP-V2 ==
+
+HP-V1 — Featured partners (Partner-tier brands):
+  BEVESTIGD. Op productie (materialdistrict.com) staan partner-vlaggen gevuld.
+  Steekproef via WP REST (eerste 100 brands): 24 brands met partner = true,
+  o.a. DRT Contemporary Flooring, Kronospan, EeStairs, Roofclix, Meaningful
+  Matter. Het homepage-blok zou max 8 BrandTiles moeten tonen (roterende subset).
+  Geen partners -> blok verdwijnt (graceful) — dat pad is niet actief op prod.
+
+HP-V2 — Material-type-carrousel (material_category):
+  BEANTWOORD. De taxonomie levert echte material-types, geen theme-slugs.
+  Steekproef via GET /wp-json/wp/v2/material_category?hide_empty=true:
+    Ceramics (ceramics)
+    Coatings (coatings)
+    Concretes (concretes)
+    Glass (glass)
+    Metals (metals)
+    Natural stones (natural-stones)
+    Other naturals (other-naturals)
+    Plastics (plastics)
+    Wood (wood)
+  Deeplink /materials?material_category=<slug> matcht het bestaande FacetWP-
+  contract op /materials (comma-separated slugs). Handmatig getest: link vanuit
+  carrousel filtert correct.
+
+== Wat je op de test-deploy kunt nakijken ==
+
+1. Homepage -> categorie-strip direct onder hero: "All materials" + material-types
+2. Scroll naar "Featured partners" -> max 8 BrandTiles + "All brands ->"
+3. Klik een categorie (bv. Ceramics) -> /materials?material_category=ceramics
+4. Partners roteren per 10-min ISR-bucket (zelfde cadence als revalidate = 600)
+
+== NB ==
+
+- S10.1 (boeken) bewust niet meegenomen — conform jouw scope.
+- docs/session-log.md uit de zip is niet als apart bestand toegevoegd; repo gebruikt
+  root session-log.md. Inhoud S10.2/S10.3 staat daar onderaan.
+- Parallel aan deze deploy: SES/get-in-touch fix op WP productie afgerond (los
+  van homepage — geen impact op S10.2/S10.3).
+
+Laat weten als HP-V1/HP-V2 op jouw kant iets afwijkt.
+
+Groet,
+Johan
