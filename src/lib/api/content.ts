@@ -589,16 +589,21 @@ export async function getBrand(
   const resolveGallery = options.resolve?.gallery ?? true
 
   if (!resolveGallery) {
-    return mapBrand(raw, { hero: null, thumbs: [], total: 0 })
+    return mapBrand(raw, { hero: null, thumbs: [], total: 0 }, null)
   }
 
   const attachmentsRaw = await getAttachmentsForPost(raw.id)
   const attachments = attachmentsRaw
     .filter((a) => a.media_type === 'image')
     .map(mapMedia)
-  const gallery = splitGallery(attachments, raw.featured_media)
+  // §F2.9 P7c: het logo (featured_media) NIET als gallery-hero tonen. Logo
+  // apart; gallery = alleen de echte foto's (zonder het logo). Heeft de brand
+  // enkel een logo, dan blijft de gallery leeg → geen grote hero.
+  const logo = attachments.find((a) => a.id === raw.featured_media) ?? null
+  const photos = attachments.filter((a) => a.id !== raw.featured_media)
+  const gallery = splitGallery(photos, undefined)
 
-  return mapBrand(raw, gallery)
+  return mapBrand(raw, gallery, logo)
 }
 
 export async function listBrands(

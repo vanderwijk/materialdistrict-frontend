@@ -351,7 +351,11 @@ export function mapBrandListItem(
   }
 }
 
-export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
+export function mapBrand(
+  raw: WPBrandRawResponse,
+  gallery: Gallery,
+  logo?: MediaImage | null,
+): Brand {
   const m = raw.meta ?? {}
   return {
     id: raw.id,
@@ -362,6 +366,12 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
     excerptHtml: wpRenderedHtml(raw.excerpt),
 
     gallery,
+    // §F2.9 P7c: logo apart van de gallery. P7: channel-pills uit meta.channels.
+    // De brand-raw-meta typeert `channels` nog niet (wél article/event/talk);
+    // Johan levert het veld inmiddels wel op de REST. Lokale cast houdt de
+    // wijziging binnen mappers.ts (geen wordpress.ts-aanpassing nodig).
+    logo: logo ?? null,
+    channels: mapChannels((m as { channels?: WPMetaTermRaw[] }).channels),
 
     country: m.country_detail?.label ?? stringOrNull(m._brand_country),
     city: stringOrNull(m.city),
@@ -384,7 +394,6 @@ export function mapBrand(raw: WPBrandRawResponse, gallery: Gallery): Brand {
 
     partner: truthyFlag(m.partner, m._partner),
     featured: truthyFlag(m.featured, m._featured),
-    channels: mapChannels(m.channels),
 
     date: raw.date,
     modified: raw.modified,

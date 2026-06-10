@@ -12649,3 +12649,108 @@ mark.search-mark {
   a { color: inherit !important; text-decoration: none !important; }
   body { background: #fff !important; }
 }
+
+/* ============================================================
+   §F2.9 — Detailpagina-finetuning ronde 2 (10-06-2026)
+   Additief op §F2.8. Negen punten:
+     P1 taxonomie- + channel-pills op EEN rij (dunne scheiding);
+        leeshulp links BOVEN de body i.p.v. rechtsboven in de
+        header; bredere tekstgrootte-stappen.
+     P2 taxonomie-pills klikbaar (link-variant) wanneer filterbaar.
+     P3 property-pills nog maar twee smaken: wit (alles) of groen
+        (positief); property- en keyword-pills schalen mee met de
+        leesgrootte.
+     P4 prev/next op contentbreedte (kolom 1).
+     P5 + P7b ruimte tussen gallery/beeld en de body-tekst.
+     P9 generieke "About this [entiteit]"-eyebrow; talk-body normaal.
+   ============================================================ */
+
+/* P1 — taxonomie- + channel-pills op EEN rij, dunne verticale scheiding. */
+.detail-header-tags { align-items: center; }
+.detail-header-tagsep {
+  display: inline-block;
+  align-self: stretch;
+  width: 1px;
+  min-height: 18px;
+  margin: 0 4px;
+  background: var(--border);
+}
+
+/* P1 — leeshulp links boven de body (was justify-content flex-end in de header). */
+.detail-tools { justify-content: flex-start; margin: 0 0 14px; }
+
+/* P1 — bredere tekstgrootte-stappen (override §F2.8 sm 13.5 en lg 17). */
+:root[data-reading-size='lg'] .mat-body,
+:root[data-reading-size='lg'] .article-detail-lead,
+:root[data-reading-size='lg'] .article-detail-body,
+:root[data-reading-size='lg'] .event-detail-body { font-size: 19px; line-height: 1.8; }
+:root[data-reading-size='sm'] .mat-body,
+:root[data-reading-size='sm'] .article-detail-lead,
+:root[data-reading-size='sm'] .article-detail-body,
+:root[data-reading-size='sm'] .event-detail-body { font-size: 14px; line-height: 1.65; }
+
+/* P2 — taxonomie-pills klikbaar (link-variant): button-look + hover. */
+a.mat-detail-tag { text-decoration: none; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+a.mat-detail-tag:hover { border-color: var(--ink); }
+a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--green)); }
+
+/* P3 — property-pills twee smaken: wit (default, unknown, neutraal, negatief)
+   of groen (positief). Heft de §F2.8/§F2.5 grijs- en amber/rood-varianten op. */
+.mat-property-tag.is-default,
+.mat-property-tag.is-unknown,
+.mat-property-tag.is-neutral,
+.mat-property-tag.is-negative {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+  font-style: normal;
+}
+.mat-property-tag.is-default .mat-property-tag-key,
+.mat-property-tag.is-unknown .mat-property-tag-key,
+.mat-property-tag.is-neutral .mat-property-tag-key,
+.mat-property-tag.is-negative .mat-property-tag-key {
+  color: var(--text-muted);
+  opacity: 1;
+}
+[data-theme="dark"] .mat-property-tag.is-default,
+[data-theme="dark"] .mat-property-tag.is-unknown,
+[data-theme="dark"] .mat-property-tag.is-neutral,
+[data-theme="dark"] .mat-property-tag.is-negative {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+[data-theme="dark"] .mat-property-tag.is-default .mat-property-tag-key,
+[data-theme="dark"] .mat-property-tag.is-unknown .mat-property-tag-key,
+[data-theme="dark"] .mat-property-tag.is-neutral .mat-property-tag-key,
+[data-theme="dark"] .mat-property-tag.is-negative .mat-property-tag-key {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+/* P3 — property- + keyword-pills schalen mee met de leesgrootte. */
+:root[data-reading-size='lg'] .mat-property-tag,
+:root[data-reading-size='lg'] .mat-keywords-pill { font-size: 14px; }
+:root[data-reading-size='sm'] .mat-property-tag,
+:root[data-reading-size='sm'] .mat-keywords-pill { font-size: 11.5px; }
+
+/* P4 — prev/next op contentbreedte (kolom 1) i.p.v. over de volle grid. */
+.detail-prevnext-row { grid-column: 1; }
+
+/* P5 + P7b — ruimte tussen de gallery/het beeld en de body-tekst. */
+.detail-sheet .mat-gallery { margin-bottom: 22px; }
+
+/* P9 — generieke "About this [entiteit]"-eyebrow (1:1 met .talk-about-eyebrow). */
+.detail-about-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-hint);
+  margin-bottom: 10px;
+}
+/* P9 — talk-body niet langer italic (block-level normaal; echte <em> blijft). */
+.talk-about .mat-body,
+.talk-about .mat-body p { font-style: normal; }
+
+/* ============================ einde §F2.9 ============================ */

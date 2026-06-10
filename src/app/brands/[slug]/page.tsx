@@ -20,7 +20,7 @@
  * Geparkeerd (Johan-vragen, zie open-issues sessie 5):
  *  - Company-film: brand-videoveld nog niet beschikbaar.
  *  - Downloads: brand-downloadveld nog niet beschikbaar.
- *  - Channels: channel-pills in DetailHeader (theme terms via meta.channels).
+ *  - Channels (ChannelBar / brand-tags): geen brand-channel-taxonomie.
  *
  * JSON-LD: Organization (brand) + BreadcrumbList.
  * notFound() bij onbekende slug.
@@ -29,10 +29,12 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { MaterialGallery } from '@/components/materials'
 import { MaterialBody } from '@/app/materials/[slug]/_components/MaterialBody'
 import { getBrand, listBrands, listMaterialsByBrand } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildBrandOrganization } from '@/lib/seo'
+import { BrandDetailActions } from './_components/BrandDetailActions'
 import { BrandDetailContactCard } from './_components/BrandDetailContactCard'
 import { BrandDetailInfoCard } from './_components/BrandDetailInfoCard'
 import { BrandMaterialsGrid } from './_components/BrandMaterialsGrid'
@@ -114,6 +116,8 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
   ])
 
   const hasGallery = brand.gallery.total > 0
+  // §F2.9 P9: eyebrow alleen tonen als er body-tekst is.
+  const hasBody = Boolean(brand.contentHtml || brand.excerptHtml)
 
   // Meta-regel: "City, Country · Est. Founded · N employees" — alleen de
   // ingevulde delen.
@@ -133,12 +137,27 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
           channels={brand.channels.map((c) => ({ slug: c.slug, label: c.label }))}
           title={brand.name}
           meta={metaParts.length > 0 ? <>{metaParts.join(' · ')}</> : undefined}
+          actions={
+            <BrandDetailActions
+              brandId={brand.id}
+              brandSlug={brand.slug}
+              brandName={brand.name}
+            />
+          }
         />
 
           {/* Main column */}
           <div>
             {hasGallery && (
               <MaterialGallery gallery={brand.gallery} title={brand.name} />
+            )}
+
+            {/* §F2.9 P1: leeshulp links boven de body. */}
+            <DetailReadingTools />
+
+            {/* §F2.9 P9: consistente eyebrow boven de body. */}
+            {hasBody && (
+              <div className="detail-about-eyebrow">About this brand</div>
             )}
 
             {brand.contentHtml ? (
@@ -196,7 +215,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
             slug: brand.slug,
             name: brand.name,
             description: stripHtml(brand.excerptHtml) || undefined,
-            logo: brand.gallery.hero?.sizes?.large?.url ?? brand.gallery.hero?.sourceUrl,
+            logo: brand.logo?.sizes?.large?.url ?? brand.logo?.sourceUrl,
             website: brand.website,
             socials: brand.socials,
           }),

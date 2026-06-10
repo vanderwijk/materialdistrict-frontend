@@ -26,6 +26,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
 import { JsonLd, buildEvent, buildBreadcrumbList } from '@/lib/seo'
@@ -170,11 +171,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
 
   const ctaLabel = event.isMdEvent ? 'Register →' : 'Visit website →'
   const showCta = Boolean(event.externalWebsite) && !isPast
-  const registerBtn = showCta ? (
-    <Button as="link" href={event.externalWebsite as string} variant="blue" size="sm">
-      {ctaLabel}
-    </Button>
-  ) : undefined
 
   return (
     <>
@@ -196,7 +192,6 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               eventId={event.id}
               eventSlug={slug}
               eventTitle={event.title}
-              customPrimary={registerBtn}
             />
           }
         />
@@ -216,10 +211,16 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             )}
 
             {bodyHtml && (
-              <div
-                className="event-detail-body"
-                dangerouslySetInnerHTML={{ __html: bodyHtml }}
-              />
+              <>
+                {/* §F2.9 P1: leeshulp links boven de body. */}
+                <DetailReadingTools />
+                {/* §F2.9 P9: consistente eyebrow boven de body. */}
+                <div className="detail-about-eyebrow">About this event</div>
+                <div
+                  className="event-detail-body"
+                  dangerouslySetInnerHTML={{ __html: bodyHtml }}
+                />
+              </>
             )}
 
           </div>

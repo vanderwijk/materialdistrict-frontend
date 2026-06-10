@@ -39,6 +39,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { getChannelCatalog } from '@/lib/api'
 import { MaterialGallery } from '@/components/materials'
 import { getMaterial, getMaterialDetail } from '@/lib/api'
@@ -155,6 +156,67 @@ export default async function MaterialDetailPage({
     .filter((c): c is NonNullable<typeof c> => Boolean(c))
     .map((c) => ({ slug: c.slug, label: c.label }))
 
+  // §F2.9 P1 + P2: taxonomie-pills (category + sustainability) verhuizen naar
+  // de header-pill-rij (vóór de channels) en worden klikbaar zodra het facet
+  // filterbaar is. `materialFilterHref` geeft null voor niet-filterbare facets
+  // → dan blijft de pill een statische <span>.
+  const hasTaxonomyPills =
+    materialCategoryTerms.length > 0 || sustainabilityTags.length > 0
+  const taxonomyPills = hasTaxonomyPills ? (
+    <>
+      {materialCategoryTerms.map((term) => {
+        const href = materialFilterHref('material_category', term.slug)
+        const cls = 'mat-detail-tag mat-detail-tag--category'
+        return href ? (
+          <Link key={`cat-${term.slug}`} href={href} className={cls}>
+            {term.name}
+          </Link>
+        ) : (
+          <span key={`cat-${term.slug}`} className={cls}>
+            {term.name}
+          </span>
+        )
+      })}
+      {sustainabilityTags.map((t) => {
+        const href = materialFilterHref(t.facet, 'yes')
+        const cls = 'mat-detail-tag mat-detail-tag--sustainability'
+        const inner = (
+          <>
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className="mat-detail-tag-icon"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            {t.label}
+          </>
+        )
+        return href ? (
+          <Link key={`sus-${t.facet}`} href={href} className={cls}>
+            {inner}
+          </Link>
+        ) : (
+          <span key={`sus-${t.facet}`} className={cls}>
+            {inner}
+          </span>
+        )
+      })}
+    </>
+  ) : undefined
+
+  // §F2.9 P9: "About this material"-eyebrow alleen tonen als er body is.
+  const hasBody = Boolean(
+    material.shortDescription || material.contentHtml || material.excerptHtml,
+  )
+
   return (
     <>
       <RecentlyViewedWriter
@@ -175,51 +237,9 @@ export default async function MaterialDetailPage({
             <MaterialDetailBackLink />
           </div>
           <div className="detail-sheet">
-        {/* Sessie 7 Punt 13: tags-rij boven de h1 met
-              - material-category termen (resolved via getTerms)
-              - sustainability "Yes"-properties (groen check-icoontje)
-            DetailHeader's eigen `tags`-prop blijft staan met de
-            content-type pill, maar deze rij komt visueel eerst doordat
-            ze hier vóór de DetailHeader gerenderd wordt. CSS-class
-            `mat-detail-tags-row` aligneert met de detail-header-inner
-            padding/max-width. */}
-        {(materialCategoryTerms.length > 0 || sustainabilityTags.length > 0) && (
-          <div className="mat-detail-tags-row">
-            {materialCategoryTerms.map((term) => (
-              <span
-                key={`cat-${term.slug}`}
-                className="mat-detail-tag mat-detail-tag--category"
-              >
-                {term.name}
-              </span>
-            ))}
-            {sustainabilityTags.map((t) => (
-              <span
-                key={`sus-${t.facet}`}
-                className="mat-detail-tag mat-detail-tag--sustainability"
-              >
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  className="mat-detail-tag-icon"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                {t.label}
-              </span>
-            ))}
-          </div>
-        )}
-
         <DetailHeader
           tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
+          leadingTags={taxonomyPills}
           channels={materialChannels}
           title={material.title}
           meta={
@@ -282,6 +302,14 @@ export default async function MaterialDetailPage({
           {/* Main column */}
           <div className="mat-main">
             <MaterialGallery gallery={material.gallery} title={material.title} />
+
+            {/* §F2.9 P1: leeshulp links boven de body. */}
+            <DetailReadingTools />
+
+            {/* §F2.9 P9: consistente eyebrow boven de body. */}
+            {hasBody && (
+              <div className="detail-about-eyebrow">About this material</div>
+            )}
 
             {material.shortDescription && (
               <p className="mat-info-excerpt">{material.shortDescription}</p>

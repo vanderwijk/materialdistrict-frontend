@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { IconChevronLeft } from '@/components/ui/icons'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
@@ -64,6 +63,13 @@ interface DetailHeaderProps {
   actions?: ReactNode
   /** §F2.8 punt 8: channel-pills boven de titel; linken naar /channels/<slug>. */
   channels?: Array<{ slug: string; label: string }>
+  /**
+   * §F2.9 P1: extra pills (bv. material-taxonomie) die VOOR de channels op
+   * dezelfde rij verschijnen, met een dunne scheiding ertussen. Door de
+   * pagina aangeleverd als kant-en-klare nodes (zodat ze klikbaar kunnen
+   * zijn). Leeg = geen leading-pills, geen scheiding.
+   */
+  leadingTags?: ReactNode
   className?: string
 }
 
@@ -94,6 +100,7 @@ export function DetailHeader({
   meta,
   actions,
   channels,
+  leadingTags,
   className,
 }: DetailHeaderProps) {
   const router = useRouter()
@@ -101,7 +108,6 @@ export function DetailHeader({
   return (
     <div className={cn('detail-header', className)}>
       <div className="detail-header-inner">
-        <DetailReadingTools />
         {backNode
           ? backNode
           : back && (
@@ -117,9 +123,14 @@ export function DetailHeader({
 
         <div className="detail-header-row">
           <div className="detail-header-main">
-            {((tags && tags.length > 0) ||
+            {(leadingTags ||
+              (tags && tags.length > 0) ||
               (channels && channels.length > 0)) && (
               <div className="detail-header-tags">
+                {leadingTags}
+                {leadingTags && channels && channels.length > 0 && (
+                  <span className="detail-header-tagsep" aria-hidden="true" />
+                )}
                 {channels?.map((c) => (
                   <Link
                     key={c.slug}

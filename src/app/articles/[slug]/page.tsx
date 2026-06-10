@@ -41,6 +41,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { MaterialGallery } from '@/components/materials'
 import {
   getArticle,
@@ -239,6 +240,9 @@ export default async function ArticleDetailPage({
             ) : (
               <div className="article-detail-hero is-placeholder" aria-hidden="true" />
             )}
+
+            {/* §F2.9 P1: leeshulp links boven de body. */}
+            <DetailReadingTools />
 
             {/* Summary lead */}
             {article.excerptHtml && (

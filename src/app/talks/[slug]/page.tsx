@@ -26,6 +26,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildVideoObject } from '@/lib/seo'
@@ -197,10 +198,14 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
 
             {/* About this talk */}
             {bodyHtml && (
-              <section className="talk-about">
-                <div className="talk-about-eyebrow">About this talk</div>
-                <MaterialBody html={bodyHtml} />
-              </section>
+              <>
+                {/* §F2.9 P1: leeshulp links boven de body. */}
+                <DetailReadingTools />
+                <section className="talk-about">
+                  <div className="talk-about-eyebrow">About this talk</div>
+                  <MaterialBody html={bodyHtml} />
+                </section>
+              </>
             )}
 
           </div>

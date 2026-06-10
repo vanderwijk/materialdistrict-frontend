@@ -24,6 +24,12 @@ interface DetailActionsProps {
   shareTitle?: string
   /** Toon Compare-knop — alleen voor materials. Default: false. */
   includeCompare?: boolean
+  /**
+   * §F2.9 P7a: toon de "Add to board"-knop. Default true (article/event/
+   * talk/material). Brand zet dit op false — daar bestaan alleen Save +
+   * Share (geen boards/compare).
+   */
+  includeBoard?: boolean
   /** Of het item al in de compare-lijst staat. */
   isInCompareList?: boolean
   /** Of de gebruiker is ingelogd. */
@@ -85,6 +91,7 @@ export function DetailActions({
   itemId,
   shareTitle,
   includeCompare = false,
+  includeBoard = true,
   isInCompareList = false,
   isLoggedIn = false,
   isMember = false,
@@ -217,9 +224,9 @@ export function DetailActions({
     )
   }
 
-  // Default — bestaande ordening voor article/event/book/talk/brand:
-  // customPrimary · Save · Add to board · Compare · Share, allemaal
-  // in één rij.
+  // §F2.9 P6 — vrije acties eerst, Insider-acties erna:
+  // customPrimary · Save · Share · Add to board · Compare. Board valt weg
+  // wanneer includeBoard=false (brand). Eén rij.
   return (
     <div className={className ? `u-row ${className}` : 'u-row'}>
       {customPrimary}
@@ -234,13 +241,22 @@ export function DetailActions({
 
       <ActionButton
         size="md"
-        icon={<IconBoard size={13} strokeWidth={2} />}
-        label="Add to board"
-        trailing={insiderMark}
-        isInsiderFeature
-        isInsiderUnlocked={isMember}
-        onClick={handleBoard}
+        icon={<IconShare size={13} strokeWidth={2} />}
+        label="Share"
+        onClick={handleShare}
       />
+
+      {includeBoard && (
+        <ActionButton
+          size="md"
+          icon={<IconBoard size={13} strokeWidth={2} />}
+          label="Add to board"
+          trailing={insiderMark}
+          isInsiderFeature
+          isInsiderUnlocked={isMember}
+          onClick={handleBoard}
+        />
+      )}
 
       {includeCompare && itemId !== undefined && (
         <ActionButton
@@ -254,13 +270,6 @@ export function DetailActions({
           onClick={handleCompare}
         />
       )}
-
-      <ActionButton
-        size="md"
-        icon={<IconShare size={13} strokeWidth={2} />}
-        label="Share"
-        onClick={handleShare}
-      />
     </div>
   )
 }

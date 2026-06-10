@@ -25,8 +25,8 @@
  * Zie session-log sessie 2.
  */
 
-import type { TaxonomyTerm } from './article'
 import type { Gallery, MediaImage } from './media'
+import type { TaxonomyTerm } from './article'
 
 /**
  * Land-detail-object zoals de plugin het levert: ISO-code + leesbare
@@ -121,8 +121,21 @@ export interface Brand {
   contentHtml: string
   excerptHtml: string
 
-  /** Hero + thumbs uit attachments. */
+  /** Hero + thumbs uit attachments. §F2.9 P7c: ZONDER het logo. */
   gallery: Gallery
+
+  /**
+   * §F2.9 P7c: het brand-logo (uit `featured_media`), apart van de gallery
+   * zodat het niet als grote gallery-hero verschijnt. Gebruikt voor JSON-LD
+   * en (optioneel) een logo-weergave. Null als er geen logo is.
+   */
+  logo: MediaImage | null
+
+  /**
+   * §F2.9 P7: channel-pills uit `meta.channels` (theme-terms). Leeg als de
+   * brand geen channels heeft gekoppeld.
+   */
+  channels: TaxonomyTerm[]
 
   /** Contact + locatie. */
   /** Leesbare landnaam (uit `country_detail.label`). Null als onbekend. */
@@ -155,9 +168,6 @@ export interface Brand {
   /** Status-vlaggen. */
   partner: boolean
   featured: boolean
-
-  /** Editorial channels (theme taxonomy) — `{ id, slug, label }[]`. */
-  channels: TaxonomyTerm[]
 
   date: string
   modified: string

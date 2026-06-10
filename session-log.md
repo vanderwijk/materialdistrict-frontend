@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 10-06-2026 — §F2.8 detailpagina-finetuning (kop, gallery, pills,
-leeshulp). Puur frontend; deploy pending.
+Datum: 10-06-2026 — §F2.9 detailpagina-finetuning ronde 2 (additief op F2.8).
+Puur frontend; deploy pending.
 
 ---
 
@@ -2708,5 +2708,21 @@ op article/event; channel-pills; DetailReadingTools (tekstgrootte, print, back-t
 **Nieuw:** `DetailReadingTools.tsx`. Article gallery via attachments; `materialFilterHref`.
 
 **Open (niet in zip):** brand channel-pill (WF-3: themes in brand REST); article comments.
+
+Zip deployed (`8be8a16`).
+
+---
+
+## §F2.9 — Detailpagina-finetuning ronde 2 — 10-06-2026
+
+Zip `material-district-f2-9.zip`. Additief op §F2.8.
+
+**Kern:** taxonomie+channel-pills één rij; leeshulp boven body; klikbare taxonomy-pills;
+property-pills wit/groen; prev/next contentbreedte; brand logo apart + Save/Share;
+event CTA uit action-row; About-eyebrows.
+
+**Nieuw:** `BrandDetailActions.tsx`. `mapBrand` + logo via `getBrand`.
+
+`renewable=yes` bevestigd (FacetWP facet-waarde). Brand `?brand=` facet nog open.
 
 Zip deployed pending.
