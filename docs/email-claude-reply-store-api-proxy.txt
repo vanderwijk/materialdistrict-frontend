@@ -1,0 +1,62 @@
+Onderwerp: Re: checkout + store-api proxy — bestanden + antwoorden
+
+Hoi Claude,
+
+Dank voor de heldere terugkoppeling. Antwoorden op je vragen + zip bijgevoegd.
+
+=== Rol-pricing vs. coupon ===
+
+Eens — dynamic pricing houden zoals het nu staat. Geen auto-coupon.
+
+=== Oude checkout-zip ===
+
+Goed dat je die niet deployt. Lijn inderdaad opnieuw uit op de proxy-opzet
+op main.
+
+=== Gevraagde bestanden (zip: store-api-proxy-handoff.zip) ===
+
+1. src/lib/api/cart.ts
+2. src/components/providers/CartContext.tsx
+3. src/app/api/store-cart/[[...path]]/route.ts
++ README-proxy-handoff.md (korte toelichting)
+
+=== Proxy: cart-only of generiek? ===
+
+**Generiek.** De catch-all route mapped:
+
+  /api/store-cart/{…path}  →  {WP_API_URL}/wc/store/v1/{…path}
+
+Dus POST /checkout en GET /order/{id} lopen er vanzelf doorheen — geen extra
+Next-routes nodig van mijn kant. Voorbeelden:
+
+  POST /api/store-cart/checkout
+  GET  /api/store-cart/order/123?key=…&billing_email=…
+
+De routenaam `/api/store-cart` is historisch (eerst alleen mand), maar de
+implementatie dekt de hele Store API. Jij kunt `cartFetch` uitbreiden of een
+gedeelde `storeApiFetch` maken met dezelfde base `/api/store-cart` — dat is
+mijn voorkeur (één client, één proxy).
+
+Wat de proxy doet per request:
+- Forward: Content-Type, Cart-Token, Nonce, X-WC-Store-API-Nonce
+- Voegt toe: Authorization: Bearer {JWT} wanneer md_auth_token-cookie aanwezig
+- Response: Cart-Token / Nonce headers terug naar de browser
+- Methodes: GET, POST, PUT, PATCH, DELETE
+
+Order confirmation heeft meestal geen JWT nodig (order_key + billing_email als
+credential). Cart-Token wél relevant voor POST checkout zolang dezelfde sessie.
+
+=== Rest (bevestiging) ===
+
+- Routes /order-confirmation/{id}?key=, /checkout, /cart: akkoord
+- Return-URL's via headless-frontend-urls.php → nu Vercel, cutover apex
+- Stripe/PayPal: docs/nextjs-store-api-handoff.md §1
+- NEXT_PUBLIC_STRIPE_PK zet ik op Vercel zodra je checkout klaarstaat om te
+  testen (staat in handoff, nog niet in Vercel env)
+- payment_data-capture + PayPal-spike: zoals in handoff
+
+Succes met de checkout-merge — laat weten als je de proxy anders wilt hernoemen
+(bijv. /api/store) dan pas ik dat op main mee.
+
+Groet,
+Johan
