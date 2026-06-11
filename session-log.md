@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — Books-frontend (overzicht + detail) op mock; §BOOKS CSS additief.
-Live data via `BOOKS_LIVE=true` zodra WP product-endpoint klaar is.
+Datum: 11-06-2026 — §F2.11 catalogus-finetuning ronde 2 (overzichtspagina's).
+Additief op §F2.10/b/c + §BOOKS; deployed via Git → Vercel.
 
 ---
 
@@ -2740,3 +2740,18 @@ Docs: `docs/books-datacontract.md` (v0.3), `docs/MANIFEST-books.md`.
 **Beslissingen:** bron = WC-product (`/wp/v2/product?product_cat=books`); Insider-prijs
 frontend-only; `buy_url` via Johan (nooit cms.); show-catalogues child mee in v1.
 Swap live = `BOOKS_LIVE=true`. Vertical geïsoleerd (mappers/content/barrel ongemoeid).
+
+---
+
+## §F2.11 — Catalogus-finetuning ronde 2 (overzichtspagina's) · 11-06-2026
+
+Additief op §F2.10/b/c. Zes punten geleverd; twee backend-pending; P3 geen frontend-fix.
+
+**Geleverd:** P1 story-type-dots weg; P2 facet-counts wit pill; P4 brand-banner 4:1;
+P5 recently-viewed brands initialen; P7 talks-filter linker sidebar; P8 talks Insider only.
+
+**globals.css:** §F2.11 additief + ontbrekende F2.10c uf-header-regels uit zip-base.
+
+**P3 pagination:** frontend-keten OK; check stale Vercel build + backend pager page>1.
+
+**Backend-pending:** P6 brands applicatie-filter; P8-stories insider_only filter.

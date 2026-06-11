@@ -13126,6 +13126,21 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   display: block;
 }
 
+/* P1 (vervolg): filter-header groepeert titel + acties links, exact als de
+   demo (i.p.v. de acties naar rechts te duwen via space-between). In de
+   mobiele drawer blijft de sluit-x rechts. */
+.uf-header {
+  justify-content: flex-start;
+  gap: 16px;
+}
+.uf-header-actions {
+  gap: 8px;
+}
+.uf-sidebar.mob-open .uf-header {
+  justify-content: space-between;
+  gap: 0;
+}
+
 /* ============================ einde §F2.10c ============================ */
 /* ============================================================
    §BOOKS — books-overzicht toolbar (additief)
@@ -13351,3 +13366,60 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 .book-more-head {
   margin-bottom: 16px;
 }
+
+/* ============================================================
+   §F2.11 — Catalogus-finetuning ronde 2 (overzichtspagina's)
+   Additief blok. Niets erboven wijzigen.
+   ============================================================ */
+
+/* --- P1: kleurbolletjes vóór de story-types weg in het TYPE-filter.
+   De bolletjes zijn .articles-type-dot (8px cirkel); we verbergen ze.
+   display:none haalt ze volledig uit de flex-flow, dus geen restgap. --- */
+.articles-type-dot {
+  display: none;
+}
+
+/* --- P2: facet-tellingen overal als wit pill (zoals de stories-telling
+   .filter-count) i.p.v. de kale grijze .uf-option-count. De generieke
+   FilterSidebar én MaterialsFilterSidebar renderen <span class="uf-option-count">,
+   dus dit dekt materials, brands, events en talks in één klap. --- */
+.uf-option-count {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+  border-radius: 100px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  flex-shrink: 0;
+}
+
+/* --- P4: brand-tile montagebanner naar 4:1, zodat bij 4 thumbnails elke
+   thumbnail vierkant is (bannerbreedte / 4 = bannerhoogte). --- */
+.brand-tile-banner {
+  height: auto;
+  aspect-ratio: 4 / 1;
+}
+
+/* --- P5: brand-tile in recently-viewed is image-free — initialen-blok i.p.v.
+   een (vaak lege) thumbnail. Zacht getint (surface2) met ink-initialen, zodat
+   elke brand-tile er gelijk en bewust uitziet. --- */
+.recently-viewed-thumb-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: var(--surface2);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+}
+
+/* ============================ einde §F2.11 ============================ */

@@ -1,18 +1,18 @@
 /**
- * `/talks` — talks-overzichtspagina met channel/zoek (server) + jaar/spreker-
- * filter (client) en client-side paginatie.
+ * `/talks` — talks-overzichtspagina met channel/zoek (server) + een LINKER
+ * filter-sidebar voor jaar/spreker/insider (client) en client-side paginatie.
  *
  * Sessie 7; §F2.10 P14.1: van server-paginatie naar load-all + <TalksBrowser>.
+ * §F2.11 P7: de jaar/spreker-filter (voorheen een bovenbalk) verhuist naar een
+ * linker sidebar, consistent met materials/brands — de twee-koloms .ov-wrap.
+ * §F2.11 P8: er komt een "Insider only"-optie bij in dezelfde sidebar.
+ *
  * Channel (`?channel=`) en zoekterm (`?q=`) blijven server-/URL-gedreven via de
  * gedeelde ChannelBarNav; de volledige matchende set wordt in één keer geladen
- * en client-side gefilterd op jaar + spreker (de twee zinvolle talks-filters)
- * en gepagineerd. Gespiegeld op het events-overzicht (EventsBrowser).
+ * en client-side gefilterd (jaar + spreker + insider) en gepagineerd.
  *
- * Insider-only (C14): `talk.insiderOnly` → InsiderMark op de card.
- * Speakers (C11): `talk.speakers` voedt de card-meta én het spreker-filter.
- *
- * EmptyState bij 0 resultaten op channel/zoek — geen 404. Het jaar/spreker-
- * filter heeft zijn eigen lege-staat binnen TalksBrowser.
+ * EmptyState bij 0 server-resultaten op channel/zoek (single-column) — geen
+ * 404. Het sidebar-filter heeft zijn eigen lege-staat binnen TalksBrowser.
  */
 
 import type { Metadata } from 'next'
@@ -96,9 +96,9 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
         }
       />
 
-      <div className="ov-wrap-single">
-        {result.items.length === 0 ? (
-          hasActiveFilters ? (
+      {result.items.length === 0 ? (
+        <div className="ov-wrap-single">
+          {hasActiveFilters ? (
             <EmptyState
               title="No talks match your search"
               description="Try a different search term to see more."
@@ -113,11 +113,13 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
               title="No talks available"
               description="There are currently no talks to show. Please check back later."
             />
-          )
-        ) : (
+          )}
+        </div>
+      ) : (
+        <div className="ov-wrap">
           <TalksBrowser talks={browserTalks} />
-        )}
-      </div>
+        </div>
+      )}
 
       <JsonLd
         data={[

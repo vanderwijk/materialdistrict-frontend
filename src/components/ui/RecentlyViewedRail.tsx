@@ -8,6 +8,11 @@
  * classes (incl. de verwijder-knop uit §F2.7 batch A), maar entity-generiek
  * via `useRecentlyViewed(entity)`. Rendert niets tot gehydrateerd of bij een
  * lege lijst.
+ *
+ * §F2.11 P5 — brands hebben vaak geen bruikbare foto/logo, dus de brand-tile
+ * is hier image-free: i.p.v. een (vaak lege) thumbnail tonen we een
+ * initialen-blok (zacht getint), zodat elke brand-tile er gelijk en bewust
+ * uitziet. Voor de overige entities blijft het thumbnail-gedrag ongewijzigd.
  */
 
 import Link from 'next/link'
@@ -16,6 +21,14 @@ import {
   useRecentlyViewed,
   type RecentlyViewedEntity,
 } from '@/lib/hooks/useRecentlyViewed'
+
+/** Eerste twee initialen uit een naam (gelijk aan BrandTile). */
+function getInitials(name: string): string {
+  const words = name.trim().split(/\s+/).filter(Boolean)
+  if (words.length === 0) return '?'
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return (words[0][0] + words[1][0]).toUpperCase()
+}
 
 export interface RecentlyViewedRailProps {
   entity: RecentlyViewedEntity
@@ -44,7 +57,14 @@ export function RecentlyViewedRail({
           <div key={item.slug} className="recently-viewed-item">
             <Link href={item.href} className="recently-viewed-tile">
               <span className="recently-viewed-thumb">
-                {item.thumbnailUrl ? (
+                {entity === 'brands' ? (
+                  <span
+                    className="recently-viewed-thumb-initials"
+                    aria-hidden="true"
+                  >
+                    {getInitials(item.title)}
+                  </span>
+                ) : item.thumbnailUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={item.thumbnailUrl} alt="" />
                 ) : (
