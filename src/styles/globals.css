@@ -13749,19 +13749,32 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 
 /* ============================ einde §F2.11 ============================ */
 /* ============================================================
-   §Logo — dark-mode woordmerk (nieuw horizontaal logo).
+   §Logo — nieuw horizontaal logo: dark-mode woordmerk + hoogte.
 
-   Het nieuwe MaterialDistrict-logo (Logo.tsx) heeft een woordmerk dat
-   bestaat uit gemengde shape-types (path, rect en polygon). De bestaande
-   dark-mode-regel `.logo .wordmark path { fill: white }` raakt alleen de
-   path-letters; de polygon/rect-letters (M, T, E, L, T en de I's, plus de
-   punt) zouden zwart-op-donker blijven en dus onzichtbaar zijn.
+   1) Dark-mode woordmerk
+      Het nieuwe MaterialDistrict-logo (Logo.tsx) heeft een woordmerk dat
+      bestaat uit gemengde shape-types (path, rect en polygon). De bestaande
+      dark-mode-regel `.logo .wordmark path { fill: white }` raakt alleen de
+      path-letters; de polygon/rect-letters (M, T, E, L, T en de I's, plus de
+      punt) zouden zwart-op-donker blijven en dus onzichtbaar zijn. Daarom de
+      fill op groepsniveau omzetten zodat ALLE shapes meekleuren.
 
-   Daarom de fill op groepsniveau omzetten zodat ALLE shapes meekleuren.
-   Additief op de bestaande logo-regels.
-
-   >> Johan: dit blok onderaan src/styles/globals.css plakken. <<
+   2) Logo-hoogte
+      38px (regel ~866) was te fors naast de nav bij dit twee-regelige
+      woordmerk. Teruggebracht naar 30px op desktop. Komt ná de bestaande
+      `.logo svg { height: 38px }` en wint dus op bron-volgorde. Mobiel toont
+      alleen de mark en blijft op 32px (ongewijzigd).
    ============================================================ */
 [data-theme="dark"] .logo .wordmark {
   fill: #fff;
+}
+
+.logo svg {
+  height: 30px;
+}
+
+@media (max-width: 768px) {
+  .logo svg {
+    height: 32px;
+  }
 }
