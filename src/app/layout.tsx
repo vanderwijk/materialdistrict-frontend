@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { AuthProvider } from '@/components/providers/AuthContext'
+import { CartProvider } from '@/components/providers/CartContext'
 import { BookmarksProvider } from '@/lib/hooks/useBookmarks'
 import { GateNoticeProvider } from '@/components/ui'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
@@ -133,6 +134,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <AuthProvider initialUser={initialUser}>
             <BookmarksProvider>
+              <CartProvider>
               <GateNoticeProvider>
               {/* Sessie 7 fix Punt 17: ScrollToTop reset window-scroll
                   bij elke client-side route-change (PUSH/REPLACE).
@@ -148,6 +150,7 @@ export default async function RootLayout({
               <main id="main">{children}</main>
               <Footer />
               </GateNoticeProvider>
+              </CartProvider>
             </BookmarksProvider>
           </AuthProvider>
         </ThemeProvider>

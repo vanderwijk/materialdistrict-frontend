@@ -13368,6 +13368,331 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 }
 
 /* ============================================================
+   §BOOKS — Add-to-cart (koop-card knop-states, additief)
+   ============================================================ */
+
+/* Groene CTA als button (zelfde look als .book-buy-btn-link). */
+.book-buy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--green-mid);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-base);
+}
+
+.book-buy-btn:hover:not(:disabled) {
+  background: var(--green);
+}
+
+.book-buy-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.book-buy-btn:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.book-buy-added {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.book-buy-added-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-light);
+}
+
+.book-buy-error {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: #ffb4b4;
+}
+
+/* ============================================================
+   §BOOKS — winkelmand (/cart), additief
+   ============================================================ */
+
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.cart-item {
+  display: grid;
+  grid-template-columns: 56px 1fr auto;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-thumb {
+  width: 56px;
+  height: 76px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.cart-item-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cart-item-title {
+  display: inline-block;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+.cart-item-title:hover {
+  text-decoration: underline;
+}
+
+.cart-item-unit {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.cart-qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.cart-qty button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.cart-qty button:hover:not(:disabled) {
+  background: var(--paper);
+}
+
+.cart-qty button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cart-qty-value {
+  min-width: 34px;
+  text-align: center;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cart-item-remove {
+  border: none;
+  background: none;
+  padding: 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cart-item-remove:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.cart-item-linetotal {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --- Samenvatting --- */
+.cart-summary {
+  position: sticky;
+  top: 90px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.cart-summary-head {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cart-coupon {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cart-coupon-form {
+  display: flex;
+  gap: 8px;
+}
+
+.cart-coupon-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.cart-coupon-form button,
+.cart-coupon-applied button {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cart-coupon-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.cart-coupon-applied button {
+  height: auto;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  text-decoration: underline;
+}
+
+.cart-coupon-error {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--red, #c0392b);
+}
+
+.cart-totals {
+  margin: 0 0 18px;
+}
+
+.cart-totals-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.cart-totals-row dt {
+  margin: 0;
+}
+
+.cart-totals-row dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.cart-totals-grand {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cart-totals-grand dd {
+  color: var(--ink);
+}
+
+.cart-checkout-btn {
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cart-checkout-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.cart-checkout-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--text-hint);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+  .cart-summary {
+    position: static;
+  }
+}
+/* ============================================================
    §F2.11 — Catalogus-finetuning ronde 2 (overzichtspagina's)
    Additief blok. Niets erboven wijzigen.
    ============================================================ */

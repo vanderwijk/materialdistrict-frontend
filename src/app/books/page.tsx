@@ -16,8 +16,8 @@
  * URL-structuur:
  *   /books?q=biobased&sort=title&page=2
  *
- * Draait nu op mock (`BOOKS_LIVE !== 'true'`); de swap naar de live endpoint is
- * één env-variabele (zie `lib/api/books.ts`). Géén component-wijziging nodig.
+ * Catalogus via WooCommerce Store API (`/wc/store/v1/products`, server-side).
+ * Winkelmand: client-side Store API-cart (`NEXT_PUBLIC_WP_URL`).
  */
 
 import type { Metadata } from 'next'
@@ -141,7 +141,7 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
                   contentType="book"
                   showTypeBadge={false}
                   thumbRatio="portrait"
-                  thumbSrc={book.cover?.sizes.medium?.url ?? book.cover?.sourceUrl}
+                  thumbSrc={book.cover?.thumbnailUrl ?? book.cover?.url}
                   thumbAlt={book.cover?.alt || book.title}
                   eyebrow={
                     book.author ??

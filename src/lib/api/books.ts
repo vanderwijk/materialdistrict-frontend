@@ -1,191 +1,214 @@
 /**
- * Books API (geïsoleerde vertical)
+ * Books API — WooCommerce Store API (headless storefront)
  * ----------------------------------------------------------------------
- * Eén module voor de books-shop: de rauwe WP-shape, de raw→domain mappers,
- * de publieke fetchers (`listBooks`, `getBook`) én een mock-seam.
+ * Bron: de WooCommerce **Store API** (`/wc/store/v1/products`) op de
+ * env-geconfigureerde WP-basis (`WP_API_URL`). Dit vervangt de eerdere
+ * `/wp/v2/product`-aanpak: de hele storefront (catalogus → cart → checkout)
+ * draait headless in Next.js. Zie `docs/nextjs-store-api-handoff.md`.
  *
- * Waarom geïsoleerd (i.p.v. verspreid over wordpress.ts / content.ts /
- * mappers.ts zoals de andere content-types): het WP-endpoint bestaat nog
- * niet, dus we bouwen tegen mock. Door alles hier te houden blijven de
- * gedeelde, hoog-churn bestanden ongemoeid tot het contract met Johan
- * vastligt. Zodra dat zo is, kan de mapper alsnog naar `mappers.ts`
- * verhuizen — de domeintypes (`src/types/book.ts`) veranderen daarbij niet.
+ * Stap 1 dekt alleen de **catalogus** (read-only, ISR). Cart/checkout volgen.
  *
- * Mock-seam: zolang `BOOKS_LIVE !== 'true'` draaien de fetchers op de
- * fixtures uit `books-mock.ts`. Die fixtures hebben de RAUWE shape en lopen
- * door dezelfde mapper als live-data — de UI ziet dus exact de live-output.
- * Swap naar live = `BOOKS_LIVE=true` in de env zetten; geen codewijziging.
+ * Mapping-bijzonderheden:
+ *  - prijs: `prices.price` staat in minor-units als string ("2350" = €23,50)
+ *    → gedeeld door 10^currency_minor_unit.
+ *  - cover: uit `images[0]` (geen WP-media/`_embed` meer).
+ *  - isbn ← `sku`; publisher ← het `pa_publisher`-attribuut.
+ *  - auteur/pagina's/jaar: niet in de Store API → voorlopig leeg.
+ *  - geen `buy_url`/permalink user-facing: kopen gaat via Add-to-cart (stap 2);
+ *    de permalink wordt na cutover een backend/cms-URL.
+ *  - de Store API levert geen `date_created`; sorteren op datum gebeurt
+ *    server-side, per item tonen we geen datum.
  *
- * Prijs: deze module leest alleen de reguliere `price` (uit WooCommerce). De
- * Insider-prijs is geen veld in de payload — die leidt de UI af via
- * `getBookPrice(price, isInsider)` met de centrale `BOOK_DISCOUNT`-constante.
- *
- * Bron (bevestigd door Johan, 11-06): een boek is een WooCommerce-PRODUCT
- * (`post_type=product`), géén `book`-CPT en géén ACF. De endpoint is
- * `/wp/v2/product?product_cat=books`; de boek-metadata (isbn←sku,
- * publisher←pa_publisher, price, in_stock, …) komt top-level via
- * `register_rest_field`. Onze domeintypes blijven identiek — alleen de
- * mapper-input is een product.
- *
- * Contract: `docs/books-datacontract.md` (v0.3).
+ * Insider-prijs blijft een UI-afleiding via `getBookPrice()`.
  */
 
-import type { Book, BookListItem, BooksListParams } from '@/types/book'
-import type { MediaImage } from '@/types/media'
+import type {
+  Book,
+  BookCover,
+  BookListItem,
+  BooksListParams,
+} from '@/types/book'
 
-import { mapMedia } from './mappers'
-import {
-  getMedia,
-  wpFetch,
-  wpFetchPaginated,
-  type WPMediaResponse,
-} from './wordpress'
-
-import { MOCK_BOOKS } from './books-mock'
+import { wpFetch, wpFetchOrNull, wpFetchPaginated } from './wordpress'
 
 // --------------------------------------------------------------------
-// Rauwe WP-shape (snake_case) — WooCommerce-product op /wp/v2/product
+// Rauwe Store-API-shape (subset die we gebruiken)
 // --------------------------------------------------------------------
-// Native product-velden + de top-level velden die Johan via
-// register_rest_field toevoegt. Geen `acf`-blok: dat was puur een
-// naamgevingsconventie; de werkelijke bron is SKU + product attributes.
-// Zie het mapping-overzicht in docs/books-datacontract.md.
 
-export interface WPBookRawResponse {
+interface WCStorePrices {
+  price: string
+  regular_price: string
+  sale_price: string
+  currency_code: string
+  currency_minor_unit: number
+  currency_symbol: string
+}
+
+interface WCStoreImage {
   id: number
-  date: string
-  modified: string
+  src: string
+  thumbnail?: string
+  srcset?: string
+  name?: string
+  alt?: string
+}
+
+interface WCStoreAttributeTerm {
+  id: number
+  name: string
   slug: string
-  status: 'publish' | 'draft' | 'private'
-  /** Permalink. NB: na cutover een backend/cms-URL — niet user-facing tonen. */
-  link: string
-  title: { rendered: string }
-  excerpt: { rendered: string }
-  content: { rendered: string }
-  featured_media: number
-  /** Boek-metadata, top-level via register_rest_field. */
-  isbn?: string
-  publisher?: string
-  /** Nu leeg; later optionele product attributes. */
-  author_name?: string
-  pages?: number
-  publication_year?: number
-  /** Server-velden: reguliere WC-prijs (number, EUR) + voorraad. */
-  price?: number
-  in_stock?: boolean
-  /** Fase-afhankelijke koop-URL, door Johan geleverd. Nooit een cms-URL. */
-  buy_url?: string
-  _embedded?: {
-    'wp:featuredmedia'?: WPMediaResponse[]
-  }
+}
+
+interface WCStoreAttribute {
+  id: number
+  name: string
+  taxonomy: string | null
+  terms: WCStoreAttributeTerm[]
+}
+
+interface WCStoreCategory {
+  id: number
+  name: string
+  slug: string
+  link?: string
+}
+
+export interface WCStoreProduct {
+  id: number
+  name: string
+  slug: string
+  parent: number
+  type: string
+  permalink: string
+  sku: string
+  short_description: string
+  description: string
+  on_sale: boolean
+  prices: WCStorePrices
+  images: WCStoreImage[]
+  categories: WCStoreCategory[]
+  attributes: WCStoreAttribute[]
+  is_purchasable: boolean
+  is_in_stock: boolean
 }
 
 // --------------------------------------------------------------------
 // Config
 // --------------------------------------------------------------------
 
-/** Prijzen kunnen wijzigen → 30 min revalidate, conform `woocommerce.ts`. */
+const STORE_PRODUCTS = '/wc/store/v1/products'
+const STORE_CATEGORIES = '/wc/store/v1/products/categories'
+const BOOKS_CATEGORY_SLUG = 'books'
+
+/** Prijzen/voorraad kunnen wijzigen → 30 min. */
 const BOOK_REVALIDATE = 1800
-
-/**
- * Mock-seam. Default: mock (endpoint bestaat nog niet). Zet `BOOKS_LIVE=true`
- * in de env zodra Johans endpoint op de testserver staat — dan lopen dezelfde
- * mappers over live-data.
- */
-const BOOKS_LIVE = process.env.BOOKS_LIVE === 'true'
-
-/**
- * Endpoint + categorie. Een boek is een WC-product; we filteren op de
- * `books`-productcategorie (`show-catalogues` is een child daarvan en valt er
- * dus vanzelf onder — v1 toont beide).
- */
-const BOOK_ENDPOINT = '/wp/v2/product'
-const BOOK_PRODUCT_CAT = 'books'
-
 const DEFAULT_PER_PAGE = 24
 
 // --------------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------------
 
-/** Veilige rendered-HTML-extractie (zelfde semantiek als `mappers.wpRenderedHtml`). */
-function renderedHtml(field: { rendered?: string } | undefined | null): string {
-  return field?.rendered ?? ''
-}
-
 function nullableString(value: string | undefined | null): string | null {
   const v = value?.trim()
   return v ? v : null
 }
 
-function nullableNumber(value: number | undefined | null): number | null {
-  return typeof value === 'number' && !Number.isNaN(value) ? value : null
+/** Store-API-prijs (minor-units string) → euro's als getal. */
+function priceToEuros(prices: WCStorePrices | undefined): number {
+  if (!prices?.price) return 0
+  const minor = prices.currency_minor_unit ?? 2
+  const n = Number(prices.price)
+  return Number.isFinite(n) ? n / 10 ** minor : 0
 }
 
-/** Prijzen zijn nooit `null` in het domein: ontbreekt een waarde, dan 0. */
-function toPrice(value: number | undefined | null): number {
-  return typeof value === 'number' && !Number.isNaN(value) ? value : 0
-}
-
-/**
- * Cover uit embedded media (via `?_embed`). `null` als afwezig of als WP een
- * error-stub embed (geen `id`/`media_details`) teruggeeft.
- */
-function coverFromEmbedded(raw: WPBookRawResponse): MediaImage | null {
-  const media = raw._embedded?.['wp:featuredmedia']?.[0]
-  if (!media || typeof media.id !== 'number' || !media.media_details) {
-    return null
-  }
-  return mapMedia(media)
-}
-
-// --------------------------------------------------------------------
-// Mappers (raw → domain)
-// --------------------------------------------------------------------
-
-export function mapBookListItem(
-  raw: WPBookRawResponse,
-  cover: MediaImage | null = coverFromEmbedded(raw),
-): BookListItem {
+function mapCover(images: WCStoreImage[] | undefined): BookCover | null {
+  const img = images?.[0]
+  if (!img?.src) return null
   return {
-    id: raw.id,
-    slug: raw.slug,
-    link: raw.link,
-    title: renderedHtml(raw.title),
-    excerptHtml: renderedHtml(raw.excerpt),
-    cover,
-    author: nullableString(raw.author_name),
-    publicationYear: nullableNumber(raw.publication_year),
-    price: toPrice(raw.price),
-    inStock: raw.in_stock ?? true,
-    date: raw.date,
+    url: img.src,
+    thumbnailUrl: img.thumbnail || null,
+    alt: img.alt || img.name || '',
   }
 }
 
-export function mapBook(
-  raw: WPBookRawResponse,
-  cover: MediaImage | null = coverFromEmbedded(raw),
-): Book {
+/** Publisher uit het `pa_publisher`-attribuut (eerste term). */
+function pickPublisher(attributes: WCStoreAttribute[] | undefined): string | null {
+  const attr = attributes?.find((a) => a.taxonomy === 'pa_publisher')
+  return nullableString(attr?.terms?.[0]?.name)
+}
+
+// --------------------------------------------------------------------
+// Categorie-resolver (slug → id), gememoïseerd. Cutover-proof: we hardcoden
+// geen term-id. Override mogelijk via env `BOOKS_CATEGORY_ID`.
+// --------------------------------------------------------------------
+
+let booksCategoryIdPromise: Promise<number | null> | null = null
+
+async function getBooksCategoryId(): Promise<number | null> {
+  const override = process.env.BOOKS_CATEGORY_ID
+  if (override) {
+    const n = Number(override)
+    if (Number.isFinite(n)) return n
+  }
+  if (!booksCategoryIdPromise) {
+    booksCategoryIdPromise = (async () => {
+      try {
+        const cats = await wpFetch<WCStoreCategory[]>(STORE_CATEGORIES, {
+          revalidate: 3600,
+          params: { per_page: 100 },
+        })
+        return cats.find((c) => c.slug === BOOKS_CATEGORY_SLUG)?.id ?? null
+      } catch {
+        return null
+      }
+    })()
+  }
+  return booksCategoryIdPromise
+}
+
+// --------------------------------------------------------------------
+// Mappers (Store-API-product → domein)
+// --------------------------------------------------------------------
+
+export function mapBookListItem(p: WCStoreProduct): BookListItem {
   return {
-    id: raw.id,
-    slug: raw.slug,
-    link: raw.link,
-    title: renderedHtml(raw.title),
-    contentHtml: renderedHtml(raw.content),
-    excerptHtml: renderedHtml(raw.excerpt),
-    cover,
-    author: nullableString(raw.author_name),
-    isbn: nullableString(raw.isbn),
-    publisher: nullableString(raw.publisher),
-    pages: nullableNumber(raw.pages),
-    publicationYear: nullableNumber(raw.publication_year),
-    // Een boek IS het WC-product → product-id is de wc_product_id.
-    wcProductId: raw.id,
-    buyUrl: nullableString(raw.buy_url),
-    price: toPrice(raw.price),
-    inStock: raw.in_stock ?? true,
-    date: raw.date,
-    modified: raw.modified,
+    id: p.id,
+    slug: p.slug,
+    link: p.permalink,
+    title: p.name,
+    excerptHtml: p.short_description ?? '',
+    cover: mapCover(p.images),
+    // Niet in de Store API; later evt. als product attribute.
+    author: null,
+    publicationYear: null,
+    price: priceToEuros(p.prices),
+    inStock: p.is_in_stock ?? true,
+    // Store API levert geen date_created; sorteren gebeurt server-side.
+    date: '',
+  }
+}
+
+export function mapBook(p: WCStoreProduct): Book {
+  return {
+    id: p.id,
+    slug: p.slug,
+    link: p.permalink,
+    title: p.name,
+    contentHtml: p.description ?? '',
+    excerptHtml: p.short_description ?? '',
+    cover: mapCover(p.images),
+    author: null,
+    isbn: nullableString(p.sku),
+    publisher: pickPublisher(p.attributes),
+    pages: null,
+    publicationYear: null,
+    wcProductId: p.id,
+    // Kopen gaat via Add-to-cart (stap 2). Geen permalink user-facing.
+    buyUrl: null,
+    price: priceToEuros(p.prices),
+    inStock: p.is_in_stock ?? true,
+    date: '',
+    modified: '',
   }
 }
 
@@ -208,105 +231,31 @@ export async function listBooks(
   const order = params.order ?? 'desc'
   const search = params.search?.trim() ?? ''
 
-  if (!BOOKS_LIVE) {
-    return listBooksMock({ page, perPage, orderby, order, search })
-  }
+  const categoryId = await getBooksCategoryId()
 
-  const { items, total, totalPages } = await wpFetchPaginated<
-    WPBookRawResponse[]
-  >(BOOK_ENDPOINT, {
-    revalidate: BOOK_REVALIDATE,
-    params: {
-      product_cat: BOOK_PRODUCT_CAT,
-      _embed: true,
-      per_page: perPage,
-      page,
-      orderby,
-      order,
-      search: search || undefined,
+  const { items, total, totalPages } = await wpFetchPaginated<WCStoreProduct[]>(
+    STORE_PRODUCTS,
+    {
+      revalidate: BOOK_REVALIDATE,
+      params: {
+        ...(categoryId ? { category: categoryId } : {}),
+        per_page: perPage,
+        page,
+        orderby,
+        order,
+        search: search || undefined,
+      },
     },
-  })
+  )
 
-  return {
-    items: items.map((raw) => mapBookListItem(raw)),
-    total,
-    totalPages,
-  }
+  return { items: items.map(mapBookListItem), total, totalPages }
 }
 
 export async function getBook(slug: string): Promise<Book | null> {
-  if (!BOOKS_LIVE) {
-    return getBookMock(slug)
-  }
-
-  const matches = await wpFetch<WPBookRawResponse[]>(BOOK_ENDPOINT, {
-    revalidate: BOOK_REVALIDATE,
-    params: { product_cat: BOOK_PRODUCT_CAT, slug, per_page: 1, _embed: true },
-  })
-  const raw = matches[0]
-  if (!raw) return null
-
-  // `?_embed` levert de cover meestal mee; val anders terug op een losse fetch.
-  let cover = coverFromEmbedded(raw)
-  if (!cover && raw.featured_media > 0) {
-    const media = await getMedia(raw.featured_media)
-    cover = media ? mapMedia(media) : null
-  }
-  return mapBook(raw, cover)
-}
-
-// --------------------------------------------------------------------
-// Mock-implementatie
-// --------------------------------------------------------------------
-// In-memory equivalent van wat het endpoint straks doet: filteren op zoek,
-// sorteren, pagineren. Verwijderbaar zodra `BOOKS_LIVE=true` standaard is en
-// de fixtures niet meer nodig zijn.
-
-function listBooksMock(args: {
-  page: number
-  perPage: number
-  orderby: 'date' | 'title'
-  order: 'asc' | 'desc'
-  search: string
-}): ListBooksResult {
-  const { page, perPage, orderby, order, search } = args
-
-  let rows = MOCK_BOOKS.filter((b) => b.status === 'publish')
-
-  if (search) {
-    const q = search.toLowerCase()
-    rows = rows.filter((b) =>
-      [
-        b.title.rendered,
-        b.author_name ?? '',
-        b.isbn ?? '',
-        b.publisher ?? '',
-      ]
-        .join(' ')
-        .toLowerCase()
-        .includes(q),
-    )
-  }
-
-  rows = [...rows].sort((a, b) => {
-    const cmp =
-      orderby === 'title'
-        ? a.title.rendered.localeCompare(b.title.rendered)
-        : a.date.localeCompare(b.date)
-    return order === 'asc' ? cmp : -cmp
-  })
-
-  const total = rows.length
-  const totalPages = Math.max(1, Math.ceil(total / perPage))
-  const start = (page - 1) * perPage
-  const items = rows
-    .slice(start, start + perPage)
-    .map((raw) => mapBookListItem(raw))
-
-  return { items, total, totalPages }
-}
-
-function getBookMock(slug: string): Book | null {
-  const raw = MOCK_BOOKS.find((b) => b.slug === slug)
-  return raw ? mapBook(raw) : null
+  // Single-product endpoint: /wc/store/v1/products/{id-or-slug}.
+  const product = await wpFetchOrNull<WCStoreProduct>(
+    `${STORE_PRODUCTS}/${encodeURIComponent(slug)}`,
+    { revalidate: BOOK_REVALIDATE },
+  )
+  return product ? mapBook(product) : null
 }

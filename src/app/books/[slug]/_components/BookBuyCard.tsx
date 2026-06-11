@@ -3,42 +3,56 @@
 /**
  * BookBuyCard
  * ----------------------------------------------------------------------
- * Auth-aware koop-card voor de book-detail-sidebar. Ink-paneel met een groene
- * koop-CTA (F2 CTA-taal). De Insider-prijs is een UI-afleiding via
- * `getBookPrice(price, isInsider)` — WordPress levert alleen de reguliere
- * prijs. Client-component omdat de weergave van `useAuth().isMember` afhangt:
+ * Auth-aware koop-card in de book-detail-sidebar. Ink-paneel met prijs +
+ * "Add to cart" (headless, via de Store-API-cart). De Insider-prijs is een
+ * UI-afleiding via `getBookPrice(price, isInsider)`:
  *
- *  - Insider           → de Insider-prijs groot, reguliere prijs doorgehaald.
- *  - Niet-member       → reguliere prijs groot + upsell ("Insiders pay …").
- *  - Uitverkocht       → "Sold out" i.p.v. de koopknop.
- *  - Geen prijs bekend  → val terug op een neutrale "View"-link.
+ *  - Insider      → Insider-prijs groot, reguliere prijs doorgehaald.
+ *  - Niet-member  → reguliere prijs groot + upsell.
+ *  - Uitverkocht  → "Sold out" i.p.v. de knop.
  *
- * De koop-CTA linkt naar de bestaande WooCommerce-flow (`buyUrl`); checkout
- * bouwen we niet opnieuw in Next.js.
+ * Na toevoegen tonen we "Added" + een link naar /cart. Kopen blijft volledig
+ * op het apex-domein (geen redirect naar WooCommerce/cms).
  */
 
+import { useState } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
+import { useCart } from '@/components/providers/CartContext'
 import { getBookPrice } from '@/lib/config/membership'
 import { formatEur } from '@/lib/utils/format-price'
 
 export interface BookBuyCardProps {
   title: string
+  /** WooCommerce-product-id, voor add-to-cart. */
+  productId: number
   price: number
   inStock: boolean
-  /**
-   * WooCommerce-koop-URL, fase-afhankelijk door Johan geleverd (nooit een
-   * cms-URL). `null` als nog niet bekend — dan tonen we geen koopknop i.p.v.
-   * een gokje, zodat we gebruikers nooit naar een backend-URL sturen.
-   */
-  buyUrl: string | null
 }
 
-export function BookBuyCard({ title, price, inStock, buyUrl }: BookBuyCardProps) {
+export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardProps) {
   const { isMember } = useAuth()
+  const { addItem, loading } = useCart()
+
+  const [added, setAdded] = useState(false)
+  const [pending, setPending] = useState(false)
+  const [localError, setLocalError] = useState<string | null>(null)
 
   const priceKnown = price > 0
   const insiderPrice = getBookPrice(price, true)
   const hasDiscount = priceKnown && insiderPrice < price
+
+  async function handleAdd() {
+    setLocalError(null)
+    setPending(true)
+    try {
+      await addItem(productId, 1)
+      setAdded(true)
+    } catch {
+      setLocalError('Could not add to cart. Please try again.')
+    } finally {
+      setPending(false)
+    }
+  }
 
   return (
     <aside className="book-buy-card" aria-label={`Buy ${title}`}>
@@ -72,12 +86,29 @@ export function BookBuyCard({ title, price, inStock, buyUrl }: BookBuyCardProps)
 
       {!inStock ? (
         <span className="book-buy-soldout">Sold out</span>
-      ) : buyUrl ? (
-        <a className="book-buy-btn-link" href={buyUrl}>
-          {priceKnown ? 'Buy this book' : 'View in shop'}
-          <span aria-hidden="true"> →</span>
-        </a>
-      ) : null}
+      ) : added ? (
+        <div className="book-buy-added">
+          <span className="book-buy-added-label">✓ Added to cart</span>
+          <a className="book-buy-btn-link" href="/cart">
+            View cart<span aria-hidden="true"> →</span>
+          </a>
+        </div>
+      ) : (
+        <button
+          type="button"
+          className="book-buy-btn"
+          onClick={handleAdd}
+          disabled={pending || loading}
+        >
+          {pending ? 'Adding…' : 'Add to cart'}
+        </button>
+      )}
+
+      {localError && (
+        <p className="book-buy-error" role="alert">
+          {localError}
+        </p>
+      )}
     </aside>
   )
 }

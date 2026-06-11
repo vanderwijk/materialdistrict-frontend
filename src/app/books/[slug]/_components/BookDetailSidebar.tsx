@@ -31,9 +31,9 @@ export function BookDetailSidebar({ book }: BookDetailSidebarProps) {
     <aside className="article-detail-sidebar">
       <BookBuyCard
         title={book.title}
+        productId={book.wcProductId ?? book.id}
         price={book.price}
         inStock={book.inStock}
-        buyUrl={book.buyUrl}
       />
 
       {rows.length > 0 && (

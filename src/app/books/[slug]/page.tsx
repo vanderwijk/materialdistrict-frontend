@@ -12,10 +12,9 @@
  *     detail-related-row (More books)
  *
  * Prijs/Insider: de koop-card in de sidebar is auth-aware (zie BookBuyCard).
- * Cart/checkout bouwen we niet opnieuw — de CTA linkt naar de WooCommerce-flow.
+ * Add-to-cart via Store API-cart; checkout volgt in een latere fase.
  *
- * JSON-LD: Book + BreadcrumbList. notFound() bij onbekende slug. Draait op mock
- * tot `BOOKS_LIVE=true`.
+ * JSON-LD: Book + BreadcrumbList. notFound() bij onbekende slug.
  */
 
 import type { Metadata } from 'next'
@@ -60,7 +59,7 @@ export async function generateMetadata({
       description,
       type: 'website',
       url: `/books/${book.slug}`,
-      ...(book.cover?.sourceUrl ? { images: [book.cover.sourceUrl] } : {}),
+      ...(book.cover?.url ? { images: [book.cover.url] } : {}),
     },
   }
 }
@@ -99,11 +98,11 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
     slug: book.slug,
     title: book.title,
     description: stripHtml(book.excerptHtml) || undefined,
-    coverImage: book.cover?.sourceUrl,
+    coverImage: book.cover?.url,
     author: book.author ? { name: book.author } : undefined,
     isbn: book.isbn ?? undefined,
     pages: book.pages ?? undefined,
-    publishedAt: book.date,
+    publishedAt: book.date || undefined,
     publisher: book.publisher ? { name: book.publisher } : undefined,
   })
 
@@ -129,7 +128,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
               {book.cover && (
                 <div className="book-detail-cover">
                   <img
-                    src={book.cover.sizes.large?.url ?? book.cover.sourceUrl}
+                    src={book.cover.url}
                     alt={book.cover.alt || book.title}
                   />
                 </div>
@@ -159,7 +158,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
                       contentType="book"
                       showTypeBadge={false}
                       thumbRatio="portrait"
-                      thumbSrc={b.cover?.sizes.medium?.url ?? b.cover?.sourceUrl}
+                      thumbSrc={b.cover?.thumbnailUrl ?? b.cover?.url}
                       thumbAlt={b.cover?.alt || b.title}
                       eyebrow={b.author ?? undefined}
                       title={b.title}
