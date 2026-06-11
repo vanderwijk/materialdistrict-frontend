@@ -35,7 +35,8 @@ wp option get woocommerce_custom_orders_table_enabled --url=books.materialdistri
 ### Audit results (10 June 2026) ✅
 
 - WooCommerce **10.8.1**, **legacy order storage** (HPOS off). Blog 1's fresh install will default to HPOS — fine; any future order-migration script reads legacy posts and writes via the CRUD API, which is storage-agnostic.
-- **4,627 products** (all with ISBN/SKU ✓), **3,497 orders**, 5 shipping zones. ✅ Duplicate "Netherlands" (zone 5) had 0 orders ever and was shadowed by zone 1 — **deleted from blog 2 on 2026-06-10**; source data is now clean.
+- **46 products** (corrected 2026-06-11 via direct SQL; the earlier 4,627 figure from the audit was wrong), **3,497 orders**, 5 shipping zones. ✅ Duplicate "Netherlands" (zone 5) had 0 orders ever and was shadowed by zone 1 — **deleted from blog 2 on 2026-06-10**; source data is now clean. CSV product import is trivial at this scale (no batching concerns).
+- **Blog 3 exists: dashboard.materialdistrict.com** — a test site, can be ignored; remove it during the multisite→single-site conversion (Phase 7).
 - No subscriptions, no multilingual/multi-currency, reviews ignored, backend subdomain = **cms.materialdistrict.com**, DNS at **OpenProvider**.
 - Extensions needing their own migration handling:
   - **Table Rate Shipping** — rates live in dedicated tables; folded into the shipping-zone copy script.
@@ -47,7 +48,7 @@ wp option get woocommerce_custom_orders_table_enabled --url=books.materialdistri
   - **One Page Checkout, YITH added-to-cart popup** — frontend-only; irrelevant for headless. Skip on blog 1.
   - **Google Analytics integration** — measurement moves to the NextJS frontend; decide whether server-side purchase events are still wanted.
   - **Yoast product meta** — NextJS owns SEO on the new site; only migrate Yoast meta if the frontend will read it.
-  - **Postmark** is network-active → transactional email already works for blog 1. ✓
+  - **Postmark** is network-active → transactional email works for blog 1 *for now*. ⚠️ Will be retired in favour of Amazon SES — see Phase 2 §5 for the migration order.
   - **SearchWP** — product search for the NextJS frontend is a separate decision (Store API search vs SearchWP over REST vs external).
 - Image note: 4,627 products means the CSV import sideloads thousands of images — run on staging first to time it, then production off-peak, importer in batches.
 
@@ -59,15 +60,9 @@ wp option get woocommerce_custom_orders_table_enabled --url=books.materialdistri
 
 The V1 plugin (2.4.5) is unmaintained, requires the Legacy REST API, and is a liability on blog 1's HPOS-default install. Sendcloud supports running V1 and V2 side by side with V1 as instant rollback, so this is safe to do on the live store. Bonus: the books zones contain no Sendcloud service-point checkout methods (only table_rate + free_shipping), so the fiddly service-point migration doesn't apply — Sendcloud only does order sync + labels here.
 
-**Status: V2 installed and connected on books, 2026-06-10.** Pending: verify an order syncs via V2 + print a label, then disconnect/uninstall V1 and run the legacy cleanup (steps 4–5).
+**Status: ✅ COMPLETED 2026-06-11.** V2 installed, connected, and verified via test order; V1 integration disconnected and plugin removed; Legacy REST API plugin deactivated/removed; stale "SendCloud API" keys revoked. The "Webhook feedback" fields in the Sendcloud panel were deliberately left empty (custom-API-integration feature; tracking/status feedback runs through the V2 integration itself).
 
-**Johan:**
-
-1. ~~Install the new "Sendcloud Shipping" (V2) plugin alongside V1; activate on the books subsite.~~ ✅
-2. ~~WooCommerce → Sendcloud Shipping → enable + Connect (redirects to Sendcloud panel, creates the V2 integration).~~ ✅
-3. Verify: new order (or a manual test order set to Processing) appears in Sendcloud via V2; create one label.
-4. Uninstall V1 (prevents duplicate order imports), deactivate the **Legacy REST API** plugin, and delete the two stale "SendCloud API" legacy keys. (✅ Verified 2026-06-10: `wc_webhooks` is empty and the only legacy API keys are SendCloud's — nothing else depends on the legacy API.)
-5. Note for blog 1 later: Sendcloud docs state HPOS **compatibility mode** must be enabled for V2 to retrieve orders — verify on staging; alternatively start blog 1 on legacy order storage.
+Remaining note for blog 1 later: Sendcloud docs state HPOS **compatibility mode** must be enabled for V2 to retrieve orders — verify on staging; alternatively start blog 1 on legacy order storage.
 
 Refs: [V2 Migration guide](https://support.sendcloud.com/hc/en-us/articles/29252845840401-WooCommerce-V2-Migration-guide), [V2 Integration](https://support.sendcloud.com/hc/en-us/articles/34955558577297-WooCommerce-V2-Integration), [V2 Troubleshooter](https://support.sendcloud.com/hc/en-us/articles/34953204906385-WooCommerce-V2-Troubleshooter).
 
@@ -77,16 +72,18 @@ Refs: [V2 Migration guide](https://support.sendcloud.com/hc/en-us/articles/29252
 
 **Johan (wp-admin / WP-CLI):**
 
-1. Activate WooCommerce on blog 1: `wp plugin activate woocommerce --url=materialdistrict.com` (plugin files are already in the network; only activation needed).
-2. Skip the setup wizard; enable **Coming soon mode → "Store pages only"** so the live content site is unaffected and no shop pages get indexed.
+1. ~~Activate WooCommerce on blog 1.~~ ✅ done 2026-06-11
+2. ~~Enable Coming soon mode → "Store pages only".~~ ✅ done 2026-06-11 — verified logged-out: homepage normal, /shop/ shows coming-soon. Shop/Cart/Checkout/My account set to noindex via Yoast (undo at launch — covered in runbook).
 3. Let WooCommerce create its pages (shop/cart/checkout/my-account). For a headless build these are mostly placeholders, but the Store API and account endpoints rely on some of them existing.
-4. Activate the same WooCommerce extensions the audit found, on blog 1.
+4. ~~Activate the same WooCommerce extensions the audit found, on blog 1.~~ ✅ done 2026-06-11 (One Page Checkout & YITH popup skipped).
 
 **Claude:** provide a settings-diff checklist (currency, base country, tax options, account & privacy settings, email settings) — or better, the options-copy script in Phase 2 handles this wholesale.
 
 ---
 
 ## Phase 2 — Configuration migration (settings, shipping, tax, gateways)
+
+**Status: ✅ COMPLETED 2026-06-11 (directly on production — staging copy failed; WP Engine backup-point taken first).** Config tables copied via `copy-config-tables.php` (tax classes/rates, 3 attributes, shipping classes bbp/pkt remapped, 4 zones + fallback, 8 methods, 11 table rates). Options copied via `copy-options.php` (219 options; Stripe forced to test mode; PayPal/SendCloud/Mailchimp/HPOS/page-IDs excluded). PayPal re-onboarded manually by Johan.
 
 Almost all WooCommerce configuration lives in the options table; shipping zones and tax rates live in dedicated tables. Because blog 1's WooCommerce is brand-new (empty zones, empty rates), these can be copied directly.
 
@@ -98,11 +95,13 @@ Almost all WooCommerce configuration lives in the options table; shipping zones 
 4. **Payment gateways — special care:**
    - **Stripe:** the settings option (incl. keys) can be copied, but the main store runs in **test mode** until cutover. The live keys belong to the existing account `acct_15875kLbBd2st6kq`. Webhooks are per-endpoint-URL: a *new* webhook endpoint for the main site gets added in the Stripe dashboard (can be created ahead of cutover, pointing at the future `cms.materialdistrict.com` URL). The books-site webhook is never touched.
    - **PayPal:** the PayPal Payments plugin stores site-bound onboarding tokens — copying the option usually does **not** work. Plan for Johan to re-run PayPal onboarding (Connect flow) on blog 1, sandbox first, live credentials at cutover.
-5. **Emails:** transactional mail will now originate from the main site. Verify SMTP/sending configuration (SPF/DKIM for materialdistrict.com presumably already valid since it's the same domain) and copy the WooCommerce email templates/settings (covered by the options script).
+5. **Emails:** templates/settings copied by the options script. ⚠️ **Mail transport changes (decided 2026-06-11): Postmark will be retired; transactional mail moves to Amazon SES.** Order of operations: (a) verify the SES domain identity for materialdistrict.com (DKIM CNAMEs + SPF in OpenProvider, DMARC alignment — Sendy already uses SES, check if the domain identity covers wp_mail sending too); (b) **Gravity SMTP** (chosen 2026-06-11) with the SES integration, network-wide — never run it alongside Postmark on the same site (both intercept wp_mail); (c) test mail on BOTH sites + a full order email cycle; (d) only THEN deactivate Postmark network-wide. IAM key needs `ses:SendRawEmail`; check the SES identity isn't in sandbox mode.
 
 ---
 
 ## Phase 3 — Catalog migration (products, coupons)
+
+**Status: ✅ COMPLETED 2026-06-11.** Products via CSV export/import (31 published + drafts; `csv` had to be added to the network upload-filetypes). SKU map: 46 mapped (SKU + slug + title fallbacks — note: the WC CSV exporter does NOT preserve slugs; 18 products had no SKU despite the earlier audit answer). 27 coupons migrated with product-ID remap. Bundles: 2 bundled items copied for bundle #42→#137404; 3 orphan rows of a deleted bundle (#1925) correctly skipped. Unmappable leftovers: 3 nameless S/M/L variations (nothing references them).
 
 **Products — recommended: WooCommerce built-in CSV exporter/importer.**
 
@@ -158,6 +157,8 @@ The books store keeps selling, so stock, prices, new titles, and coupons drift.
 | Fiscal retention (NL, 7 yr) | ✅ | ✅ (DB archive suffices) |
 | Effort/risk | Medium (scripted, testable) | Zero |
 
+**✅ DECISION (2026-06-11): orders are NOT migrated.** Books' database remains the read-only archive (satisfies fiscal retention); the new store starts clean. Revisitable later — the dataset freezes at cutover. Original recommendation below for context.
+
 **Recommendation:** launch **without** migrating orders. Keep blog 2 intact (read-only) after cutover. Decide within the following weeks whether customer-facing history matters enough; if yes, Claude writes the migration script and it runs against the frozen dataset. Either way, take a final full export/dump of blog 2 before the multisite conversion (Phase 7).
 
 ---
@@ -175,7 +176,8 @@ books.materialdistrict.com  →  WP Engine (redirects)   unchanged, until decomm
 
 - **WordPress doesn't disappear — it moves to a subdomain.** `cms.materialdistrict.com` (or `cms.`/`admin.`) serves wp-admin, the REST/Store API, and all media (`/wp-content/uploads/...`). Add the domain in the WP Engine portal (SSL is auto-provisioned), and in Vercel add the apex + www domains to the project.
 - **Multisite URL-change pitfall:** changing the primary site's domain means updating `DOMAIN_CURRENT_SITE` in wp-config, `wp_site`/`wp_blogs` rows, and `home`/`siteurl`, plus a `wp search-replace`. ⚠️ A naive search-replace of `materialdistrict.com` → `cms.materialdistrict.com` would also corrupt every `books.materialdistrict.com` string (it contains the search term). Use protocol-anchored patterns (`//materialdistrict.com`, `//www.materialdistrict.com`) and verify on staging. WP Engine support can assist with multisite primary-domain changes.
-- **Media & old image URLs:** after the apex points to Vercel, previously indexed `materialdistrict.com/wp-content/uploads/...` URLs would 404. Fix in NextJS config: permanent redirect `/wp-content/:path*` → `https://cms.materialdistrict.com/wp-content/:path*` (308). Same for `/wp-admin` and `/wp-login.php` as a convenience. New pages reference `wp.` URLs directly; `next.config` gets `images.remotePatterns` for `cms.materialdistrict.com`.
+- **Media & old image URLs:** after the apex points to Vercel, previously indexed `materialdistrict.com/wp-content/uploads/...` URLs would 404. Fix in NextJS config: permanent redirect `/wp-content/:path*` → `https://cms.materialdistrict.com/wp-content/:path*` (308). Same for `/wp-admin` and `/wp-login.php` as a convenience. New pages reference `cms.` URLs directly; `next.config` gets `images.remotePatterns` for `cms.materialdistrict.com`.
+- **Backend stays noindex after go-live:** all HTML pages on `cms.materialdistrict.com` must be noindexed permanently (duplicate-content risk vs the NextJS site) — but media files (`/wp-content/uploads/`) stay crawlable for image SEO.
 - **Content URL parity:** the NextJS site should mirror existing permalinks or ship a redirect map, and the books store URLs (`books.materialdistrict.com/product/...`) get a **301 map to the new product URLs** — those pages carry years of link equity. The subsite keeps running purely as a redirect/archive host for 6–12 months.
 - **Headless Store API specifics (NextJS workstream):**
   - **CORS:** the Store API on `cms.materialdistrict.com` must allow origin `https://materialdistrict.com` and expose the `Cart-Token` / `Nonce` headers. Claude writes a small mu-plugin for this.
@@ -209,7 +211,7 @@ Rehearse end-to-end on staging first. On the day:
 
 After the redirects have matured and (if chosen) orders are migrated:
 
-1. Final full archive of blog 2: DB tables `wp_2_*` + `wp-content/uploads/sites/2` + a `wp export`. Store offline.
+1. Final full archive of blog 2: DB tables `wp_2_*` + `wp-content/uploads/sites/2` + a `wp export`. Store offline. Also remove test blog 3 (dashboard.materialdistrict.com) and its `wp_3_*` tables.
 2. Keep books.materialdistrict.com redirects alive ≥6–12 months (can later be served by a tiny redirect config instead of the subsite).
 3. Convert to single site (on a staging copy first; WP Engine support can assist): remove `MULTISITE`/`SUBDOMAIN_INSTALL`/`DOMAIN_CURRENT_SITE` etc. from wp-config; drop `wp_2_*` tables and network tables (`wp_blogs`, `wp_site`, `wp_blogmeta`, `wp_registration_log`, `wp_signups`); port any needed `wp_sitemeta` values into `wp_options`; clean `wp_2_capabilities` usermeta; update rewrite rules.
 4. Verify users, roles, media, WooCommerce all intact; then repeat on production.
@@ -244,14 +246,15 @@ After the redirects have matured and (if chosen) orders are migrated:
 - [ ] Run product CSV export/import (first full + delta re-runs)
 - [ ] Stripe dashboard: create main-site webhook endpoint (test now, live at cutover) on `acct_15875kLbBd2st6kq`
 - [ ] PayPal: re-onboard plugin on blog 1 (sandbox now, live at cutover)
-- [ ] SendCloud V1→V2 upgrade on books (Phase 0.5), then connect V2 on blog 1 pre-cutover
+- [x] ~~SendCloud V1→V2 upgrade on books (Phase 0.5)~~ ✅ done 2026-06-11; still to do: connect V2 on blog 1 pre-cutover
 - [ ] Product Feed PRO: re-create feeds on blog 1; update Google Merchant Center at cutover
 - [ ] Mailchimp for WooCommerce: connect blog 1 at cutover, disconnect books
 - [ ] PDF invoices: set continuing invoice number sequence at cutover
 - [ ] Add `cms.materialdistrict.com` in WP Engine portal; add apex/www in Vercel
 - [ ] OpenProvider DNS: lower TTLs at T-7d, flip records at cutover
+- [ ] SES via Gravity SMTP: verify domain identity (DKIM/SPF in OpenProvider), configure Gravity SMTP network-wide, test mail on both sites + order email cycle, then retire Postmark (not before — and never both active on one site)
 - [ ] Place live test orders at cutover; refund them
-- [ ] Decide: order history migration yes/no
+- [x] ~~Decide: order history migration~~ ✅ 2026-06-11: NOT migrating; books DB = archive
 
 ---
 
