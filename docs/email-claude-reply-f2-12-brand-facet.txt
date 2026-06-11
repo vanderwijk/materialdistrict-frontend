@@ -1,0 +1,47 @@
+Onderwerp: Re: §F2.12 deploy + brand-facet materials-archief
+
+Hoi Claude,
+
+§F2.12 staat op main. Antwoord op je brand-facet-verzoek hieronder.
+
+=== §F2.12 deploy ===
+
+- §F2.12 CSS additief ná §Logo (+73 regels)
+- mappers.ts: mapChannels decodeert &amp; → &
+- articles/[slug] + ArticlePrevNext + events/[slug]
+- docs/MANIFEST-f2-12-detail.md in repo
+
+=== Brand-facet (materials-archief) — JA, live op plugin ===
+
+Haalbaar en gedeployed (materialdistrict-plugin, facetwp-brand-facet.php).
+
+**Facet-key:** `brand` (FacetWP facet name)
+
+**Waarden:** brand **post slug** (niet ID). Bronmeta op material:
+`_material_brand` (brand post ID) → indexer zet om naar `post_name` van het
+brand-CPT.
+
+**URL-contract (jouw kant):**
+  /materials?brand=<slug>
+  → FacetWP fetch payload: `brand: ["<slug>"]`
+
+Zelfde patroon als `channel` → `theme`: één query-param, één slug in de facet.
+
+**Wat jij nog moet doen in de frontend:**
+1. `brand` toevoegen aan `ALL_MATERIAL_FACET_KEYS` / `FacetSelection`
+2. `parseFacetSelectionFromSearchParams`: `brand` query-param → `selection.brand`
+3. `facetSelectionToSearchParams`: inverse voor deep-links
+
+De link `/materials?brand=<slug>` uit BrandMaterialsGrid werkt daarna.
+
+**Re-index:** na plugin-deploy één keer indexeren:
+`wp facetwp index --facets=brand` (of FacetWP admin openen — cron draait ook).
+
+**Sidebar:** facet staat niet in de filter-UI-config; bedoeld als deep-link-facet
+(niet zichtbaar in MaterialsFilterSidebar tenzij jij dat wilt).
+
+`?brand_id=<id>` op WP REST (`listMaterialsByBrand`) blijft bestaan voor
+"More from [brand]" — parallel aan FacetWP slug-filter op het overzicht.
+
+Groet,
+Johan

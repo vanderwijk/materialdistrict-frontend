@@ -244,11 +244,15 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                 <div className="event-register-meta">
                   {[dateRange, location].filter(Boolean).join(' · ')}
                 </div>
+                {/* §F2.12 P7: externe registratie/website opent in een
+                    nieuw tabblad (laat de detailpagina open staan). */}
                 <Button
                   as="link"
                   href={event.externalWebsite as string}
                   variant="blue"
                   className="event-register-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {ctaLabel}
                 </Button>

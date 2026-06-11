@@ -424,7 +424,9 @@ export function mapBrand(
  */
 function mapChannels(raw: WPMetaTermRaw[] | undefined): TaxonomyTerm[] {
   if (!Array.isArray(raw)) return []
-  return raw.map((t) => ({ id: t.id, slug: t.slug, label: t.label }))
+  // §F2.12 P8: label decoderen — WordPress levert entities (bv. "&amp;"),
+  // die anders letterlijk in de channel-pill verschijnen.
+  return raw.map((t) => ({ id: t.id, slug: t.slug, label: decodeHtmlEntities(t.label) }))
 }
 
 export function mapArticleListItem(

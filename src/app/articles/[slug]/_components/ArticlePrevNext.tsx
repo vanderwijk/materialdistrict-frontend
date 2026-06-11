@@ -1,12 +1,17 @@
 /**
  * ArticlePrevNext
  * ----------------------------------------------------------------------
- * "Vorige / volgende article"-navigatie onderaan de article-detail-page.
- * Parallel aan BrandPrevNext: server-vriendelijk en stateless — de page
- * berekent de buren uit de (datum-gesorteerde) article-lijst en geeft ze
- * als props mee. Geen client-fetch, geen context.
+ * "Vorige / volgende article"-navigatie op de article-detail-page.
+ * Server-vriendelijk en stateless — de page berekent de buren uit de
+ * (datum-gesorteerde) article-lijst en geeft ze (incl. thumbnail) als
+ * props mee. Geen client-fetch, geen context.
  *
- * Sessie 6. Rendert niets als er geen enkele buur is.
+ * §F2.12 P2: zelfde thumbnail-kaartstijl als material-detail
+ * (PrevNextNavigation) — hergebruikt de gedeelde `.mat-prevnext-*`-CSS,
+ * zodat article/material identiek ogen. Toont een placeholder-tile als
+ * een buur geen hero heeft.
+ *
+ * Rendert niets als er geen enkele buur is.
  */
 
 import Link from 'next/link'
@@ -14,6 +19,7 @@ import Link from 'next/link'
 export interface ArticlePrevNextNeighbour {
   slug: string
   title: string
+  thumbnailUrl: string | null
 }
 
 export interface ArticlePrevNextProps {
@@ -25,33 +31,52 @@ export function ArticlePrevNext({ prev, next }: ArticlePrevNextProps) {
   if (!prev && !next) return null
 
   return (
-    <nav className="article-prevnext" aria-label="Article navigation">
+    <nav className="mat-prevnext" aria-label="Article navigation">
       {prev ? (
-        <Link
-          href={`/articles/${prev.slug}`}
-          className="article-prevnext-link is-prev"
-        >
-          <span className="article-prevnext-dir" aria-hidden="true">
-            ← Previous article
+        <Link href={`/articles/${prev.slug}`} className="mat-prevnext-link">
+          <span className="mat-prevnext-arrow" aria-hidden="true">
+            ←
           </span>
-          <span className="article-prevnext-title">{prev.title}</span>
+          <span className="mat-prevnext-thumb" aria-hidden="true">
+            {prev.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={prev.thumbnailUrl} alt="" />
+            ) : (
+              <span className="mat-prevnext-thumb-placeholder" />
+            )}
+          </span>
+          <span className="mat-prevnext-label">
+            <span className="mat-prevnext-eyebrow">Previous</span>
+            <span className="mat-prevnext-title">{prev.title}</span>
+          </span>
         </Link>
       ) : (
-        <span className="article-prevnext-link is-disabled" aria-hidden="true" />
+        <span className="mat-prevnext-spacer" aria-hidden="true" />
       )}
 
       {next ? (
         <Link
           href={`/articles/${next.slug}`}
-          className="article-prevnext-link is-next"
+          className="mat-prevnext-link mat-prevnext-link--right"
         >
-          <span className="article-prevnext-dir" aria-hidden="true">
-            Next article →
+          <span className="mat-prevnext-label">
+            <span className="mat-prevnext-eyebrow">Next</span>
+            <span className="mat-prevnext-title">{next.title}</span>
           </span>
-          <span className="article-prevnext-title">{next.title}</span>
+          <span className="mat-prevnext-thumb" aria-hidden="true">
+            {next.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={next.thumbnailUrl} alt="" />
+            ) : (
+              <span className="mat-prevnext-thumb-placeholder" />
+            )}
+          </span>
+          <span className="mat-prevnext-arrow" aria-hidden="true">
+            →
+          </span>
         </Link>
       ) : (
-        <span className="article-prevnext-link is-disabled" aria-hidden="true" />
+        <span className="mat-prevnext-spacer" aria-hidden="true" />
       )}
     </nav>
   )

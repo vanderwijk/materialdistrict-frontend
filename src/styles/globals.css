@@ -13778,3 +13778,76 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
     height: 32px;
   }
 }
+
+/* ============================================================
+   §F2.12 — Detailpagina-finetuning ronde 3 (11-06-2026)
+   Additief ná §F2.9/§F2.10/§F2.11/§Logo. Detail-only; raakt de
+   overzichts-/catalogusrondes niet. CSS-deel van:
+     P1 pijltje op klikbare pills van schuin-omhoog (exit-gevoel)
+        naar rechts; taxonomie-pills krijgen hetzelfde bij hover.
+     P4 body vult de volle kolombreedte (geen ch-measure die met de
+        leesgrootte meekrimpt).
+     P5 talk-body definitief rechtop (ook authored <em> uit content).
+     P6 body-koppen schalen mee met de leesgrootte (em i.p.v. vaste px)
+        en houden hiërarchie t.o.v. de body.
+     P9 alle detail-wrappers gelijke maatvoering (volle breedte,
+        sidebar 320, gelijke gap) — article was smaller door een eigen
+        max-width + dubbele padding op .pub-layout.
+   ============================================================ */
+
+/* --- P1: → i.p.v. ↗ op klikbare pills; taxonomie-pills idem (hover) --- */
+.detail-sheet a.mat-property-tag.is-clickable::after,
+.mat-keywords-pill::after,
+.detail-header-channel::after {
+  content: '\2192';
+}
+a.mat-detail-tag {
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+a.mat-detail-tag::after {
+  content: '\2192';
+  margin-left: 4px;
+  opacity: 0;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--text-xs);
+  transition: opacity 120ms ease;
+}
+a.mat-detail-tag:hover { border-color: var(--ink); }
+a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--green)); }
+a.mat-detail-tag:hover::after { opacity: 1; }
+
+/* --- P4: body vult de volle kolombreedte, ongeacht de leesgrootte --- */
+.mat-body,
+.article-detail-lead,
+.article-detail-body,
+.event-detail-body {
+  max-width: none;
+}
+
+/* --- P5: talk-body definitief rechtop (wint van authored <em> + inline) --- */
+.talk-about .mat-body,
+.talk-about .mat-body * {
+  font-style: normal !important;
+}
+
+/* --- P6: body-koppen schalen mee (em) + houden hiërarchie --- */
+.mat-body h2 { font-size: 1.25em; }
+.mat-body h3 { font-size: 1.1em; }
+
+/* --- P9: alle detail-wrappers gelijke maatvoering (= .mat-detail-wrap) ---
+   .pub-layout had een eigen max-width + margin auto + padding bovenop
+   .pub-wrap (dubbele inset) waardoor article/event/talk smaller waren.
+   Hier teruggebracht tot puur het grid, met sidebar 320 en gelijke gap. */
+.pub-layout,
+.pub-layout-inner {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-10);
+}
+
+/* ============================ einde §F2.12 ============================ */

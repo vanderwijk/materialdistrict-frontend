@@ -123,7 +123,10 @@ export async function generateMetadata({
 /**
  * Prev/next-buren, berekend uit één datum-gesorteerde article-lijst.
  * Faalbestendig: bij een fout geen buren (de component rendert dan niets).
- * Lichte fetch (geen hero-resolve voor de buren-scan).
+ *
+ * §F2.12 P2: de buren krijgen nu een thumbnail (zoals material-detail).
+ * `listArticles` resolvet de hero default ON (één batched media-fetch),
+ * dus de hero is hier al beschikbaar — we geven 'm door als `thumbnailUrl`.
  *
  * Sessie 6b (D5): related zit NIET langer hier — dat komt nu via het
  * SearchWP-endpoint (`getRelatedContent`), parallel opgehaald in de page.
@@ -144,8 +147,26 @@ async function getNeighbours(currentSlug: string): Promise<{
     const nextItem = idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
 
     return {
-      prev: prevItem ? { slug: prevItem.slug, title: prevItem.title } : null,
-      next: nextItem ? { slug: nextItem.slug, title: nextItem.title } : null,
+      prev: prevItem
+        ? {
+            slug: prevItem.slug,
+            title: prevItem.title,
+            thumbnailUrl:
+              prevItem.hero?.sizes?.medium?.url ??
+              prevItem.hero?.sourceUrl ??
+              null,
+          }
+        : null,
+      next: nextItem
+        ? {
+            slug: nextItem.slug,
+            title: nextItem.title,
+            thumbnailUrl:
+              nextItem.hero?.sizes?.medium?.url ??
+              nextItem.hero?.sourceUrl ??
+              null,
+          }
+        : null,
     }
   } catch {
     return { prev: null, next: null }
@@ -293,11 +314,13 @@ export default async function ArticleDetailPage({
             latestMaterials={sidebarMaterials}
           />
 
+          {/* §F2.12 P2: prev/next BOVEN related (was eronder), met thumbnails. */}
+          <div className="detail-prevnext-row">
+            <ArticlePrevNext prev={prev} next={next} />
+          </div>
+
           <div className="detail-related-row">
             <ArticleRelated items={related} />
-          </div>
-                  <div className="detail-prevnext-row">
-            <ArticlePrevNext prev={prev} next={next} />
           </div>
 
         </div>

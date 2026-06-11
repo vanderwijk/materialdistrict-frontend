@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — Insider 10%-boekenkorting server-side (WC plugin + cart-proxy).
-Cart via `/api/store-cart` met JWT; deployed via Git.
+Datum: 11-06-2026 — §F2.12 detail-finetuning + FacetWP `brand`-facet (materials deep-link).
+Deployed via Git.
 
 ---
 
@@ -2755,3 +2755,12 @@ P5 recently-viewed brands initialen; P7 talks-filter linker sidebar; P8 talks In
 **P3 pagination:** frontend-keten OK; check stale Vercel build + backend pager page>1.
 
 **Backend-pending:** P6 brands applicatie-filter; P8-stories insider_only filter.
+
+## §F2.12 — Detailpagina-finetuning ronde 3 (11-06-2026)
+
+Additieve detail-ronde. §F2.12 ná §Logo (§F2.10/§F2.11 al bezet).
+
+**Gewijzigd:** globals.css (§F2.12 +73) · mappers.ts (mapChannels decode) ·
+articles/[slug] + ArticlePrevNext · events/[slug].
+
+**WP:** FacetWP `brand`-facet (`facetwp-brand-facet.php`) — slug-keyed via `_material_brand`.
