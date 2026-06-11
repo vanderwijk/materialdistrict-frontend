@@ -50,7 +50,12 @@ wp eval-file $SCRIPTS/copy-bundles.php /tmp/sku-map.json apply --url=materialdis
 wp cache flush --url=materialdistrict.com
 ```
 
-## Delta sync (repeat until cutover; books remains source of truth)
+## Delta sync — NOT USED (decision 2026-06-11)
+
+The catalog is small and changes rarely; catalog edits are applied manually on
+the main site, with a manual stock correction at cutover. Books is hands-off.
+The procedure below remains as **fallback only**, should a bulk re-sync ever
+be needed:
 
 1. Re-run product CSV export/import with "update existing products"
 2. `build-sku-map.php` (new products get new IDs)

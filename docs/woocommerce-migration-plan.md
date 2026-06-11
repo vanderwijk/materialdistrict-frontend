@@ -125,12 +125,20 @@ Almost all WooCommerce configuration lives in the options table; shipping zones 
 
 ## Phase 4 — Keeping the stores in sync until go-live
 
-The books store keeps selling, so stock, prices, new titles, and coupons drift.
+**✅ DECISION (2026-06-11): no automated delta-sync.** Product changes are rare
+and the catalog is small (46 products). Approach instead:
 
-- **Products:** the CSV import supports "update existing products" matched by SKU/ID → the export/import is simply **re-run** periodically and once more during cutover. Claude can wrap export+import into a single WP-CLI command so a delta sync is one command.
-- **Coupons:** re-run the idempotent coupon script.
-- **Stock accuracy at cutover:** final sync happens inside a short order freeze (Phase 6).
-- **Process rule:** no manual catalog edits on blog 1 — they'd be overwritten by the next sync.
+- Books is **completely hands-off** for the development of the new site from
+  now on — no scripts read from it, no tooling touches it. It just keeps
+  selling until cutover.
+- Catalog changes on books between now and cutover (price/title/stock) are
+  applied **manually on the main site** as they happen, or at the latest
+  during the cutover freeze.
+- **At cutover:** manual stock correction on the main site (compare against
+  books' stock report, ~15 min at this scale) inside the order freeze.
+- The sync scripts (`build-sku-map.php`, `migrate-coupons.php`,
+  `copy-bundles.php`) remain available as fallback should a bulk re-sync ever
+  be needed, but are not part of the process.
 
 ---
 
@@ -194,7 +202,7 @@ Rehearse end-to-end on staging first. On the day:
 
 1. T-7d: TTLs lowered at OpenProvider; staging rehearsal signed off; Stripe live webhook endpoint for `cms.materialdistrict.com` created; PayPal live onboarding completed on blog 1 (gateways still disabled); SendCloud connected to blog 1; Product Feed PRO feeds created on blog 1; NextJS production deploy ready on Vercel preview domain.
 2. Announce/start a short checkout freeze on books (notice bar or pause new orders, ~30–60 min).
-3. Final delta sync: products/stock + coupons (one command each). Set PDF invoice number sequence on blog 1 to continue from books' last invoice.
+3. Manual stock correction on the main site against books' stock report (no scripted sync — decision 2026-06-11). Check for any price/coupon changes since migration. Set PDF invoice number sequence on blog 1 to continue from books' last invoice.
 4. Switch blog 1 gateways to live mode; place one real Stripe and one real PayPal test order against the wp backend (refund after).
 5. Change WordPress primary domain to `cms.materialdistrict.com` (wp-config + DB, per Phase 5). WP Engine still serves the old domain at this moment, so nothing is down.
 6. Point apex + www DNS to Vercel. Disable Coming-soon mode flags as needed. NextJS goes live.
