@@ -13,7 +13,7 @@ De mock-up (HTML-prototype) is de visuele en functionele referentie. Pixel-perfe
 | Frontend framework | Next.js (React), App Router, TypeScript |
 | Content & data | WordPress REST API |
 | Webshop | WooCommerce REST API |
-| Filters | FacetWP REST endpoint (al geconfigureerd) |
+| Filters (materials, legacy) | FacetWP REST — wordt uitgefaseerd; nieuw werk via eigen WP REST (`docs/facetwp-phase-out-policy.md`) |
 | CMS | WordPress + WooCommerce (blijft intact) |
 | Authenticatie | WordPress applicatiewachtwoorden of JWT |
 | Deployment | TBD (Vercel of eigen server) |

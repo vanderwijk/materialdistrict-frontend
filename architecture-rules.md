@@ -155,10 +155,13 @@ export async function getMaterials(params?: MaterialsParams) {
 }
 ```
 
-### FacetWP
+### FacetWP (legacy — alleen `/materials` property-filters)
+
+FacetWP wordt **niet uitgebreid** voor nieuwe features; zie `docs/facetwp-phase-out-policy.md`.
+Nieuwe filters, relatie-queries en archieven: **eigen WP REST** of **`/md/v2/`-endpoints**.
+
 ```ts
-// lib/api/facetwp.ts
-// Altijd via FacetWP REST endpoint — nooit eigen filterlogica
+// lib/api/facetwp.ts — alleen voor bestaand /materials-filtergrid + channel→theme
 export async function getFacetedMaterials(facets: Record<string, string[]>) {
   const res = await fetch(`${WP_BASE}/facetwp/v1/fetch`, {
     method: 'POST',
@@ -166,6 +169,9 @@ export async function getFacetedMaterials(facets: Record<string, string[]>) {
   })
   return res.json()
 }
+
+// Voorbeeld nieuw werk (geen FacetWP): brand-materials
+// GET /wp/v2/material?brand_id=<id> — zie listMaterials() / listMaterialsByBrand()
 ```
 
 ### Credentials

@@ -1,0 +1,83 @@
+Onderwerp: Re: §F2.12b brand + FacetWP-beleid (deploy + richting)
+
+Hoi Claude,
+
+Hier het update op §F2.12b en je brand-facet-vragen, plus een belangrijk
+architectuur-besluit over FacetWP.
+
+=== Wat is gedeployed (juni 2026) ===
+
+We hebben de kortstondige FacetWP-brand-aanpak teruggedraaid en vervangen
+door REST — conform mijn voorkeur om FacetWP niet verder uit te breiden.
+
+**Plugin** (master, commit 3f820e1):
+- `facetwp-brand-facet.php` verwijderd
+- Geen locked Brand-facet meer in FacetWP admin
+
+**Frontend** (main, commit 057a8a8):
+- `?brand=<slug>` op /materials loopt via `listMaterialsForBrandArchive()`
+- Flow: slug → `getBrand(slug)` → `listMaterials({ brand_id })`
+- Zelfde REST als MoreFromBrand en de brand-detail-grid (`rest-post-meta.php`)
+- FacetWP-types: `brand` weer uit `ALL_MATERIAL_FACET_KEYS` / `FacetSelection`
+
+Build + typecheck groen; gepusht via GitHub → Vercel / WP Engine.
+
+=== Antwoorden op je §F2.12b / brand-facet-vragen ===
+
+**1. Moet ik nog `brand` in FacetWP-types/fetch wiring?**
+Nee — dat is weer verwijderd. Geen `selection.brand` meer naar `/facetwp/v1/fetch`.
+
+**2. Werkt `/materials?brand=<slug>` nog?**
+Ja. URL-contract blijft hetzelfde (BrandMaterialsGrid linkt daar al naartoe).
+Implementatie is nu REST, niet FacetWP. Test na deploy:
+  /materials?brand=<bekende-brand-slug>
+
+**3. FacetWP re-index voor brand?**
+Niet meer nodig — facet bestaat niet meer. Je eerdere mails over
+`wp facetwp index --facets=brand` en admin-trigger zijn obsolete.
+
+**4. Sidebar / zichtbare brand-facet?**
+Ongewijzigd: geen brand in MaterialsFilterSidebar. Bij brand-only view
+toont de sidebar nog wel de FacetWP-baseline (property-facets), maar counts
+zijn niet brand-gescoped — bewuste trade-off.
+
+**5. `?brand_id=` op REST (More from [brand])?**
+Blijft parallel bestaan; dat was al de production-verified route.
+
+**6. Combinatie `?brand=` + andere filters?**
+Niet ondersteund: zodra iemand een FacetWP-filter of `?channel=` zet, valt
+/materials terug op het normale FacetWP-pad zonder brand-filter. Voor nu
+voldoende — brand-deep-link is de use-case.
+
+=== FacetWP-beleid vanaf nu ===
+
+**Kort:** FacetWP liever niet gebruiken voor nieuw werk; plugin wordt op
+termijn uitgefaseerd.
+
+**Nog legacy (niet breken):**
+- /materials property-filters (~20 facets) → FacetWP fetch
+- Channel op materials → FacetWP `theme`-facet (`?channel=` → theme slug)
+
+**Nieuw / relatie / archief → eigen queries:**
+- Brand-materials: REST `?brand_id=` (live)
+- Brands filters: `/md/v2/brands/country-facets` etc. (geen FacetWP)
+- Talks/articles/events/brands channel-bar: `?theme=<term_id>` op WP REST
+
+Volledige richtlijnen: `docs/facetwp-phase-out-policy.md` (frontend-repo).
+
+Als je een filter of archief nodig hebt: vraag liever een REST-param of
+/md/v2-endpoint aan Johan — niet een nieuwe FacetWP-facet.
+
+=== Overige open punten (kort) ===
+
+**Checkout** — staat op main (cb87b65); Stripe PK op Vercel. Ik moet nog
+payment_data uit LocalWP block-checkout capturen voor `buildStripePaymentData()`.
+PayPal-spike blijft bij jou.
+
+**Store API proxy** — `/api/store-cart` + JWT voor Insider-pricing in cart/
+checkout; zie eerdere mail `email-claude-reply-store-api-proxy.txt`.
+
+Laat weten als je op /materials?brand= iets anders ziet dan verwacht na deploy.
+
+Groet,
+Johan

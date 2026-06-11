@@ -20,6 +20,8 @@ Bron van waarheid voor **gedrag/API** blijft code + onderstaande docs; dit besta
 | Board detail (dashboard) | `MANIFEST-board-detail-2026-06-04.md` |
 | Channels hubs (sessie 12) | `MANIFEST-channels-sessie12.md` |
 | Maildraft Claude channels | `email-claude-channels-sessie12-done.txt` |
+| **FacetWP-beleid (geen nieuw werk)** | `facetwp-phase-out-policy.md` |
+| Brand op /materials (`?brand=`) | REST `brand_id`, geen FacetWP — `email-claude-reply-brand-rest-no-facetwp.txt` |
 
 ## Infra
 

@@ -1,5 +1,9 @@
 # MANIFEST — §F2.12b · Brand-facet frontend-wiring (afronding punt 3)
 
+> **⚠️ SUPERSEDED (juni 2026):** FacetWP-brand-aanpak is teruggedraaid.  
+> `/materials?brand=<slug>` gebruikt nu REST (`listMaterialsForBrandArchive`).  
+> Zie `facetwp-phase-out-policy.md` en `email-claude-reply-brand-rest-no-facetwp.txt`.
+
 **Datum:** 11-06-2026
 **Batch:** §F2.12b (TS-only; geen globals)
 **Basis:** live `main` — `lib/api/facetwp.ts` + `types/facetwp.ts` opgevraagd en
