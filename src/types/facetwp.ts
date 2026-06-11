@@ -81,14 +81,6 @@ export type MaterialSortFacetName = 'order'
 export type MaterialChannelFacetName = 'theme'
 
 /**
- * Brand-facet — FacetWP-facet `brand`, gekeyed op de brand-post-slug
- * (Johan 11-06-2026, plugin `facetwp-brand-facet.php`). Gevuld via
- * `?brand=<slug>` (deep-link vanaf "Materials by [brand]"), niet via de
- * FilterSidebar — puur een deep-link-facet.
- */
-export type MaterialBrandFacetName = 'brand'
-
-/**
  * Sort-opties — exact zoals door FacetWP geretourneerd in
  * `facets.order.choices[].value` (Johan's voorbeeld-response).
  */
@@ -100,7 +92,6 @@ export type AnyMaterialFacetName =
   | MaterialSearchFacetName
   | MaterialSortFacetName
   | MaterialChannelFacetName
-  | MaterialBrandFacetName
 
 /**
  * Volledige lijst van alle facet-keys die ALTIJD in de request worden
@@ -116,7 +107,6 @@ export const ALL_MATERIAL_FACET_KEYS: readonly AnyMaterialFacetName[] = [
   'search_materials',
   'order',
   'theme',
-  'brand',
   'material_category',
   // Sensorial
   'glossiness',
@@ -300,8 +290,6 @@ export type FacetSelection = {
   order?: MaterialSortValue[]
   /** Channel (theme-taxonomie), één slug. Gevuld via `?channel=`. */
   theme?: string[]
-  /** Brand (FacetWP `brand`-facet, brand-slug), één slug. Gevuld via `?brand=`. */
-  brand?: string[]
 }
 
 // --------------------------------------------------------------------

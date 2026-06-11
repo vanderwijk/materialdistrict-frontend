@@ -31,8 +31,13 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
-import { getChannelCatalog, listMaterialsWithFacets } from '@/lib/api'
-import { parseFacetSelectionFromSearchParams } from '@/lib/api'
+import {
+  getChannelCatalog,
+  listMaterialsForBrandArchive,
+  listMaterialsWithFacets,
+  parseBrandSlugFromSearchParams,
+  parseFacetSelectionFromSearchParams,
+} from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
 import { MaterialsContextWriter } from '@/lib/hooks/useMaterialsContext'
 import {
@@ -93,18 +98,31 @@ export default async function MaterialsPage({
     (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() ||
     undefined
 
+  const brandSlug = parseBrandSlugFromSearchParams(params)
+  const useBrandArchive =
+    Boolean(brandSlug) &&
+    Object.keys(filterSelection).length === 0 &&
+    !channelSlug
+
   const [result, channels] = await Promise.all([
-    listMaterialsWithFacets({
-      selection: filterSelection,
-      page,
-      sort,
-      search,
-    }),
+    useBrandArchive
+      ? listMaterialsForBrandArchive({
+          brandSlug: brandSlug as string,
+          page,
+          sort,
+          search,
+        })
+      : listMaterialsWithFacets({
+          selection: filterSelection,
+          page,
+          sort,
+          search,
+        }),
     getChannelCatalog(),
   ])
 
   const hasActiveFilters =
-    Object.keys(filterSelection).length > 0 || Boolean(search)
+    Object.keys(filterSelection).length > 0 || Boolean(search) || Boolean(brandSlug)
   const totalRows = result.pager.totalRows
 
   // Reconstrueer de raw search-params string voor de filter-context.

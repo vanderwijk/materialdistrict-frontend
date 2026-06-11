@@ -32,6 +32,7 @@ export {
   listEvents,
   listMaterials,
   listMaterialsByBrand,
+  listMaterialsForBrandArchive,
   listMaterialsWithFacets,
   listTalks,
 } from './content'
@@ -40,6 +41,7 @@ export type {
   ChannelHub,
   ChannelHubStrip,
   ListMaterialsByBrandParams,
+  ListMaterialsForBrandArchiveParams,
   ListMaterialsResult,
   ListMaterialsWithFacetsParams,
   ListMaterialsWithFacetsResult,
@@ -66,6 +68,7 @@ export {
   fetchMaterials,
   fetchMaterialsFiltered,
   fetchMaterialFacetsBaseline,
+  parseBrandSlugFromSearchParams,
   parseFacetSelectionFromSearchParams,
   facetSelectionToSearchParams,
 } from './facetwp'

@@ -35,6 +35,7 @@ import {
 import {
   fetchMaterialFacetsBaseline,
   fetchMaterialsFiltered,
+  materialSortToWpOrder,
 } from './facetwp'
 
 import {
@@ -568,11 +569,70 @@ export async function listMaterialsByBrand(
     brand_id: brandId,
     exclude: exclude ? [exclude] : undefined,
     perPage,
-    orderby: 'date',
-    order: 'desc',
+    ...materialSortToWpOrder('newest'),
     resolveHero,
     resolveBrandName,
   })
+}
+
+export interface ListMaterialsForBrandArchiveParams {
+  brandSlug: string
+  page?: number
+  perPage?: number
+  sort?: MaterialSortValue
+  search?: string
+}
+
+/**
+ * `/materials?brand=<slug>` — REST-relatie-query, geen FacetWP.
+ *
+ * Zelfde `?brand_id=<id>`-mechaniek als `listMaterialsByBrand`, maar met
+ * slug-resolutie, paging, sort en zoek. Filter-sidebar krijgt alleen de
+ * FacetWP-baseline (ongefilterde facet-set); counts zijn niet brand-
+ * gescoped — bewuste trade-off om FacetWP uit nieuwe flows te houden.
+ */
+export async function listMaterialsForBrandArchive(
+  params: ListMaterialsForBrandArchiveParams,
+): Promise<ListMaterialsWithFacetsResult> {
+  const perPage = params.perPage ?? 12
+  const page = params.page ?? 1
+
+  const [brand, baselineResponse] = await Promise.all([
+    getBrand(params.brandSlug, { resolve: { gallery: false } }),
+    fetchMaterialFacetsBaseline(),
+  ])
+
+  const filterSections = mapFacetWPToFilterSections(
+    baselineResponse,
+    baselineResponse,
+  )
+
+  if (!brand) {
+    return {
+      items: [],
+      pager: { page, perPage, totalRows: 0, totalPages: 0 },
+      filterSections,
+    }
+  }
+
+  const listResult = await listMaterials({
+    brand_id: brand.id,
+    page,
+    perPage,
+    search: params.search,
+    ...materialSortToWpOrder(params.sort),
+  })
+
+  return {
+    items: listResult.items,
+    pager: {
+      page,
+      perPage,
+      totalRows: listResult.total,
+      totalPages: listResult.totalPages,
+    },
+    filterSections,
+  }
 }
 
 // --------------------------------------------------------------------

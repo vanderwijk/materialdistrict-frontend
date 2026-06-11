@@ -341,10 +341,20 @@ export function MaterialsFilterSidebar({
       }
       if (preservedParams?.q) params.set('q', preservedParams.q)
       if (preservedParams?.sort) params.set('sort', preservedParams.sort)
+
+      const hasFacetFilters = (Object.keys(next) as MaterialFacetName[]).some(
+        (key) => FILTER_KEYS.has(key) && (next[key]?.length ?? 0) > 0,
+      )
+      const brand = searchParams.get('brand')
+      if (brand && !hasFacetFilters) params.set('brand', brand)
+
+      const channel = searchParams.get('channel')
+      if (channel) params.set('channel', channel)
+
       const query = params.toString()
       return query ? `${pathname}?${query}` : pathname
     },
-    [pathname, preservedParams],
+    [pathname, preservedParams, searchParams],
   )
 
   const navigate = useCallback(
