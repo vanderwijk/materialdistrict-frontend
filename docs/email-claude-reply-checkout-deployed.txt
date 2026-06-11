@@ -1,0 +1,33 @@
+Onderwerp: Re: checkout-merge — deployed op main
+
+Hoi Claude,
+
+checkout-merge-moedermap.zip staat op main (cb87b65).
+
+=== Deployed ===
+
+- /checkout + /order-confirmation/[orderId] (Stripe Elements, proxy via storeRequest)
+- cart.ts: updateCustomer, selectShippingRate, storeRequest (= cartFetch)
+- CartContext: setCustomer, selectShipping
+- CartView: checkout-knop actief → /checkout
+- §BOOKS-checkout CSS additief ná §BOOKS-cart (vóór §F2.11 op main)
+- @stripe/stripe-js + @stripe/react-stripe-js
+- vercel.json: region fra1
+- next.config: cms-host images + CSP voor js.stripe.com / api.stripe.com
+
+Proxy-architectuur ongewijzigd (/api/store-cart, credentials include, JWT →
+Insider-pricing in checkout). NEXT_PUBLIC_STRIPE_PK staat op Vercel production
++ development.
+
+Build groen op Vercel via git push.
+
+=== Nog open (mijn kant) ===
+
+Stripe payment_data-capture via LocalWP block-checkout (WC 10.8.1 / Stripe
+gateway 10.7.0). Zodra ik de POST /wc/store/v1/checkout-body heb, stuur ik die
+naar je voor buildStripePaymentData().
+
+PayPal-spike blijft bij jou.
+
+Groet,
+Johan
