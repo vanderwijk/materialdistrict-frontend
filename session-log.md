@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — §F2.11 catalogus-finetuning ronde 2 (overzichtspagina's).
-Additief op §F2.10/b/c + §BOOKS; deployed via Git → Vercel.
+Datum: 11-06-2026 — Save-search iconfix + events-filter linker sidebar.
+Geen globals; deployed via Git → Vercel.
 
 ---
 

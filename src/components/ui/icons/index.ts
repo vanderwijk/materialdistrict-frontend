@@ -33,7 +33,6 @@
 export {
   Bookmark as IconSave,
   BookmarkCheck as IconSaved,
-  Save as IconSaveSearch,
   Share2 as IconShare,
   Folder as IconBoard,
   FolderPlus as IconBoardAdd,
@@ -57,6 +56,12 @@ export {
 // (cards, detail-headers, compare-bar) en moet visueel stabiel zijn.
 // Zie ./CompareIcon.tsx voor de geometrie.
 export { CompareIcon as IconCompare } from './CompareIcon'
+
+// IconSaveSearch is óók een custom SVG, om dezelfde reden als IconCompare:
+// lucide heeft hun `Save`-glyph in een recente versie hertekend, waardoor de
+// filter-header een afwijkend save-icoon kreeg. Geometrie 1-op-1 uit de
+// catalogus-demo. Zie ./SaveSearchIcon.tsx.
+export { SaveSearchIcon as IconSaveSearch } from './SaveSearchIcon'
 
 // ============================================================
 // 2. Navigatie
@@ -198,7 +203,7 @@ export const ICON_REGISTRY: IconCategory[] = [
     items: [
       { name: 'IconSave', source: 'lucide-react/Bookmark', description: 'Bookmark/save-actie' },
       { name: 'IconSaved', source: 'lucide-react/BookmarkCheck', description: 'Geactiveerde save-state' },
-      { name: 'IconSaveSearch', source: 'lucide-react/Save', description: 'Save search (floppy disk — andere semantiek dan Save material)' },
+      { name: 'IconSaveSearch', source: 'custom/SaveSearchIcon', description: 'Save search (klassieke diskette — custom SVG, versie-stabiel; demo-geometrie)' },
       { name: 'IconCompare', source: 'custom/CompareIcon', description: 'Compare materials — drie staafjes oplopend (custom SVG, versie-stabiel)' },
       { name: 'IconShare', source: 'lucide-react/Share2', description: 'Share-actie' },
       { name: 'IconBoard', source: 'lucide-react/Folder', description: 'Add to board' },
