@@ -207,10 +207,9 @@ export function CartView() {
           </div>
         </dl>
 
-        <button className="cart-checkout-btn" type="button" disabled>
+        <a className="cart-checkout-btn" href="/checkout">
           Checkout
-        </button>
-        <p className="cart-checkout-note">Checkout is coming soon.</p>
+        </a>
       </aside>
     </div>
   )

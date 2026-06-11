@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — §F2.12 detail-finetuning + FacetWP `brand`-facet (materials deep-link).
-Deployed via Git.
+Datum: 11-06-2026 — Checkout-merge (Store API proxy, Stripe Elements, order-confirmation).
+Deployed via Git; NEXT_PUBLIC_STRIPE_PK op Vercel.
 
 ---
 

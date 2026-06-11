@@ -28,7 +28,10 @@ import {
   hasCartToken,
   removeCartItem,
   removeCoupon,
+  selectShippingRate,
   updateCartItem,
+  updateCustomer,
+  type StoreAddress,
   type StoreCart,
 } from '@/lib/api/cart'
 
@@ -42,6 +45,8 @@ interface CartContextValue {
   removeItem: (key: string) => Promise<void>
   applyCouponCode: (code: string) => Promise<void>
   removeCouponCode: (code: string) => Promise<void>
+  setCustomer: (shipping: StoreAddress, billing?: StoreAddress) => Promise<void>
+  selectShipping: (rateId: string) => Promise<void>
   refresh: () => Promise<void>
 }
 
@@ -94,6 +99,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (code: string) => run(() => removeCoupon(code)),
     [run],
   )
+  const setCustomer = useCallback(
+    (shipping: StoreAddress, billing?: StoreAddress) =>
+      run(() => updateCustomer(shipping, billing)),
+    [run],
+  )
+  const selectShipping = useCallback(
+    (rateId: string) => run(() => selectShippingRate(rateId)),
+    [run],
+  )
   const refresh = useCallback(() => run(fetchCart), [run])
 
   const itemCount = cart?.items_count ?? 0
@@ -109,6 +123,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       applyCouponCode,
       removeCouponCode,
+      setCustomer,
+      selectShipping,
       refresh,
     }),
     [
@@ -121,6 +137,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem,
       applyCouponCode,
       removeCouponCode,
+      setCustomer,
+      selectShipping,
       refresh,
     ],
   )

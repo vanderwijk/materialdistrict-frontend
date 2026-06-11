@@ -203,6 +203,57 @@ export function removeCoupon(code: string): Promise<StoreCart> {
   })
 }
 
+/**
+ * Adres-shape voor `update-customer` en de checkout. `email`/`phone` horen bij
+ * het billing-adres in de checkout-body.
+ */
+export interface StoreAddress {
+  first_name: string
+  last_name: string
+  company?: string
+  address_1: string
+  address_2?: string
+  city: string
+  state?: string
+  postcode: string
+  country: string
+  email?: string
+  phone?: string
+}
+
+/**
+ * Zet het (verzend)adres → de Store API rekent verzendtarieven per zone uit en
+ * geeft ze terug in `shipping_rates`. Optioneel ook het billing-adres meesturen.
+ */
+export function updateCustomer(
+  shippingAddress: StoreAddress,
+  billingAddress?: StoreAddress,
+): Promise<StoreCart> {
+  return cartFetch<StoreCart>('/cart/update-customer', {
+    method: 'POST',
+    body: JSON.stringify({
+      shipping_address: shippingAddress,
+      ...(billingAddress ? { billing_address: billingAddress } : {}),
+    }),
+  })
+}
+
+export function selectShippingRate(rateId: string): Promise<StoreCart> {
+  return cartFetch<StoreCart>('/cart/select-shipping-rate', {
+    method: 'POST',
+    body: JSON.stringify({ rate_id: rateId }),
+  })
+}
+
+/**
+ * Herbruikbare authed Store-API-call via dezelfde proxy + sessie (Cart-Token +
+ * Nonce + JWT). De checkout-module gebruikt dit voor `/checkout` en `/order/*`
+ * — één client, één proxy (conform Johans voorkeur).
+ */
+export function storeRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  return cartFetch<T>(path, init)
+}
+
 /** Minor-units string ("2350") → euro-getal (23.5). */
 export function storeMinorToNumber(
   value: string | undefined,

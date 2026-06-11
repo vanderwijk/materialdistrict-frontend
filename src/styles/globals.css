@@ -13693,6 +13693,329 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   }
 }
 /* ============================================================
+   §BOOKS-checkout — additief blok (checkout + orderbevestiging)
+   Append ná het bestaande §BOOKS-blok in globals.css (niet opnieuw
+   het hele §BOOKS-blok plakken — dat staat al op main).
+   ============================================================ */
+
+/* cart-checkout-btn werkt nu als link → flex-centreren + geen underline. */
+.cart-checkout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 28px;
+  align-items: start;
+}
+
+.checkout-main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.checkout-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.checkout-section-head {
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Adresvelden */
+.addr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.addr-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.addr-field-wide {
+  grid-column: 1 / -1;
+}
+
+.addr-field label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.addr-field input,
+.addr-field select {
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.addr-field input:focus,
+.addr-field select:focus {
+  outline: 2px solid var(--green-mid);
+  outline-offset: -1px;
+  border-color: transparent;
+}
+
+.checkout-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* Verzendmethode */
+.checkout-secondary-btn {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout-secondary-btn:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+.checkout-rates {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.checkout-rate {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.checkout-rate-price {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Betaalmethoden */
+.checkout-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.checkout-method {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.checkout-card-element {
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.checkout-hint {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.checkout-error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: rgba(192, 57, 43, 0.08);
+  font-size: 13px;
+  color: var(--red, #c0392b);
+}
+
+.checkout-place-btn {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--green-mid);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout-place-btn:hover:not(:disabled) {
+  background: var(--green);
+}
+
+.checkout-place-btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.checkout-empty {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* Checkout-samenvatting */
+.checkout-summary {
+  position: sticky;
+  top: 90px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.checkout-summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.checkout-summary-item,
+.confirm-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.checkout-summary-qty,
+.confirm-item-qty {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.checkout-summary-amount,
+.confirm-item-amount {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Orderbevestiging */
+.confirm-card {
+  max-width: 540px;
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+}
+
+.confirm-check {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--green-mid);
+  color: #ffffff;
+  font-size: 24px;
+}
+
+.confirm-title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.confirm-lead {
+  margin: 0 0 22px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.confirm-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+}
+
+.confirm-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.confirm-link {
+  display: inline-block;
+  margin-top: 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+  text-decoration: none;
+}
+
+.confirm-loading {
+  padding: 60px 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+  .checkout-summary {
+    position: static;
+  }
+  .addr-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* ============================================================
    §F2.11 — Catalogus-finetuning ronde 2 (overzichtspagina's)
    Additief blok. Niets erboven wijzigen.
    ============================================================ */
