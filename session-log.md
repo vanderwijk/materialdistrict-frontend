@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — Books storefront (Store API catalogus + /cart winkelmand).
-Vereist `NEXT_PUBLIC_WP_URL` op Vercel; deployed via Git.
+Datum: 11-06-2026 — Insider 10%-boekenkorting server-side (WC plugin + cart-proxy).
+Cart via `/api/store-cart` met JWT; deployed via Git.
 
 ---
 

@@ -7,8 +7,9 @@
  * token + nonce mee op elke volgende call. Geverifieerd tegen productie
  * (GET cart → 200 + token/nonce; POST add-item → 201).
  *
- * Base-URL uit `NEXT_PUBLIC_WP_URL` (client-side, env-driven → cutover = env).
- * Valt terug op same-origin `/wp-json/...` als de env (nog) niet gezet is.
+ * Requests lopen via de same-origin proxy `/api/store-cart` zodat de HttpOnly
+ * JWT wordt meegestuurd (Insider-korting in de mand). Cart-Token blijft
+ * client-side in localStorage.
  *
  * Bedragen komen uit de Store API in minor-units (string). Nooit zelf prijzen
  * herberekenen — render de totalen/tax/shipping uit de response.
@@ -20,11 +21,7 @@ const TOKEN_KEY = 'md_cart_token'
 let nonce: string | null = null
 
 function storeBase(): string {
-  const raw = (process.env.NEXT_PUBLIC_WP_URL ?? '').replace(/\/+$/, '')
-  if (!raw) return '/wp-json/wc/store/v1'
-  return raw.endsWith('/wp-json')
-    ? `${raw}/wc/store/v1`
-    : `${raw}/wp-json/wc/store/v1`
+  return '/api/store-cart'
 }
 
 function getToken(): string | null {
@@ -86,7 +83,7 @@ async function cartFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${storeBase()}${path}`, {
     ...init,
     headers: { ...headers, ...((init?.headers as Record<string, string>) ?? {}) },
-    credentials: 'omit',
+    credentials: 'include',
   })
 
   captureHeaders(res)
