@@ -13423,3 +13423,20 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 }
 
 /* ============================ einde §F2.11 ============================ */
+/* ============================================================
+   §Logo — dark-mode woordmerk (nieuw horizontaal logo).
+
+   Het nieuwe MaterialDistrict-logo (Logo.tsx) heeft een woordmerk dat
+   bestaat uit gemengde shape-types (path, rect en polygon). De bestaande
+   dark-mode-regel `.logo .wordmark path { fill: white }` raakt alleen de
+   path-letters; de polygon/rect-letters (M, T, E, L, T en de I's, plus de
+   punt) zouden zwart-op-donker blijven en dus onzichtbaar zijn.
+
+   Daarom de fill op groepsniveau omzetten zodat ALLE shapes meekleuren.
+   Additief op de bestaande logo-regels.
+
+   >> Johan: dit blok onderaan src/styles/globals.css plakken. <<
+   ============================================================ */
+[data-theme="dark"] .logo .wordmark {
+  fill: #fff;
+}

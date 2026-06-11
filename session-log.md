@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — Save-search iconfix + events-filter linker sidebar.
-Geen globals; deployed via Git → Vercel.
+Datum: 11-06-2026 — Nieuw horizontaal logo + favicon-set (icon.svg, favicon.ico, apple-icon).
+§Logo CSS additief; deployed via Git → Vercel.
 
 ---
 

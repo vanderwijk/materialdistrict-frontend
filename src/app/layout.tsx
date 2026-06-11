@@ -52,9 +52,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  icons: {
-    icon: '/favicon.ico',
-  },
+  // Favicons via App Router file convention: icon.svg, favicon.ico, apple-icon.png.
 }
 
 /**
