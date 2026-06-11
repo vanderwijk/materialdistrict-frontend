@@ -17,7 +17,7 @@
  *   /books?q=biobased&sort=title&page=2
  *
  * Catalogus via WooCommerce Store API (`/wc/store/v1/products`, server-side).
- * Winkelmand: client-side Store API-cart (`NEXT_PUBLIC_WP_URL`).
+ * Winkelmand: Store API-cart via `/api/store-cart` (JWT-proxy).
  */
 
 import type { Metadata } from 'next'
