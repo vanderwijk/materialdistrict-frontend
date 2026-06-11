@@ -13080,3 +13080,50 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 }
 
 /* ============================ einde §F2.10b ============================ */
+
+/* ============================================================
+   §F2.10c — Catalogus-correcties (11-06-2026)
+   Additief op §F2.10/§F2.10b.
+     P3   geen × op de All-pill
+     P1   sluit-× in de filter-header alleen in de mobiele drawer
+     P11.2 brand-tegel material-thumbnail-montage
+   ============================================================ */
+
+/* P3: de × hoort alleen op een echt channel, niet op "All" (deselect van
+   All slaat nergens op). De All-tab krijgt .is-all in ChannelBar. */
+.channel-tab.active.is-all::after {
+  content: none;
+}
+
+/* P1: sluit-× in de filter-header was op desktop zichtbaar doordat
+   .uf-header-clear { display: inline-flex } (later in het bestand) de
+   hide-regel overschreef. Hier gericht hersteld voor materials
+   (.uf-header-close) en brands (.uf-header-clear.u-mobile-only): alleen
+   zichtbaar wanneer de mobiele drawer open is. */
+.uf-header .uf-header-close,
+.uf-header .uf-header-clear.u-mobile-only {
+  display: none;
+}
+.uf-sidebar.mob-open .uf-header-close,
+.uf-sidebar.mob-open .uf-header-clear.u-mobile-only {
+  display: inline-flex;
+}
+
+/* P11.2: material-thumbnail-montage in de brand-tegel-banner (achter het
+   overlappende logo en de bookmark-knop). Lege/ontbrekende set → de
+   bestaande gradient/placeholder blijft. */
+.brand-tile-montage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 1px;
+}
+.brand-tile-montage-img {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============================ einde §F2.10c ============================ */

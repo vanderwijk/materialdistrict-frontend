@@ -108,6 +108,12 @@ export interface BrandListItem {
   city: string | null
   /** Aantal gepubliceerde materialen — door WP berekend (`material_count`). */
   materialCount: number
+  /**
+   * §F2.10c P11.2: tot 4 material-thumbnail-URL's voor de tegel-montage.
+   * Leeg als de brand er geen heeft, of als het endpoint het veld nog niet
+   * levert (rollout-tolerant).
+   */
+  materialThumbnails: string[]
   partner: boolean
   featured: boolean
 }

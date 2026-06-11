@@ -133,7 +133,7 @@ export function ChannelBar({
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                className={cn('channel-tab', isActive && 'active')}
+                className={cn('channel-tab', isActive && 'active', channel === ALL_CHANNELS && 'is-all')}
                 onClick={() => onChannelChange(channel)}
               >
                 {channel}

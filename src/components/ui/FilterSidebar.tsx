@@ -190,7 +190,7 @@ export function FilterSidebar({
       >
         <div className="uf-header">
           <span className="uf-header-title">
-            Filters
+            Filters{totalSelected > 0 ? ':' : ''}
             {totalSelected > 0 && (
               <span
                 className="filter-count is-active is-inline"

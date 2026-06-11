@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — §F2.10 catalogus-finetuning (§F2.10 + §F2.10b totaalzip).
-Puur frontend; deployed via Git → Vercel.
+Datum: 11-06-2026 — §F2.10c catalogus-correcties (filter-header, channel-bar, brand-montage).
+Additief op §F2.10/§F2.10b; deployed via Git → Vercel.
 
 ---
 

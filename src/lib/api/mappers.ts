@@ -331,6 +331,18 @@ export function mapMaterial(
 //    kale code. Fallback op `_brand_country` als detail ontbreekt.
 //  - socials  → genormaliseerd `socials.*`, fallback op `_brand_*`.
 
+/**
+ * §F2.10c P11.2: lees defensief de (optionele, top-level) `material_thumbnails`
+ * uit de brand-response — max 4, alleen strings, leeg bij afwezigheid. Zo is
+ * de mapper rollout-tolerant voordat het endpoint het veld levert.
+ */
+function brandMaterialThumbnails(raw: unknown): string[] {
+  const v = (raw as { material_thumbnails?: unknown }).material_thumbnails
+  return Array.isArray(v)
+    ? v.filter((u): u is string => typeof u === 'string').slice(0, 4)
+    : []
+}
+
 export function mapBrandListItem(
   raw: WPBrandRawResponse,
   logo?: MediaImage | null,
@@ -346,6 +358,7 @@ export function mapBrandListItem(
     country: m.country_detail?.label ?? stringOrNull(m._brand_country),
     city: stringOrNull(m.city),
     materialCount: typeof m.material_count === 'number' ? m.material_count : 0,
+    materialThumbnails: brandMaterialThumbnails(raw),
     partner: truthyFlag(m.partner, m._partner),
     featured: truthyFlag(m.featured, m._featured),
   }

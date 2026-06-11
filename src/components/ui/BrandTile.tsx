@@ -71,6 +71,7 @@ const PlaceholderIcon = ({ size }: { size: number }) => (
 
 export function BrandTile({ brand }: BrandTileProps) {
   const location = locationLine(brand.city, brand.country)
+  const thumbs = brand.materialThumbnails ?? []
   const hasLogo = Boolean(brand.logo)
   const logoUrl =
     brand.logo?.sizes?.thumbnail?.url ??
@@ -88,12 +89,25 @@ export function BrandTile({ brand }: BrandTileProps) {
       ariaLabel={brand.name}
     >
       <div className="brand-tile-banner">
-        <CardBookmarkButton type="brands" itemId={brand.id} withOverlay />
-        {!hasLogo && (
+        {thumbs.length > 0 ? (
+          <span className="brand-tile-montage" aria-hidden="true">
+            {thumbs.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={url}
+                alt=""
+                className="brand-tile-montage-img"
+                loading="lazy"
+              />
+            ))}
+          </span>
+        ) : !hasLogo ? (
           <span className="brand-tile-banner-placeholder">
             <PlaceholderIcon size={24} />
           </span>
-        )}
+        ) : null}
+        <CardBookmarkButton type="brands" itemId={brand.id} withOverlay />
         <span className="brand-tile-logo">
           {logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
