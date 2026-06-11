@@ -13127,3 +13127,227 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 }
 
 /* ============================ einde §F2.10c ============================ */
+/* ============================================================
+   §BOOKS — books-overzicht toolbar (additief)
+   ------------------------------------------------------------
+   Lichte toolbar boven het card-grid op /books: zoek links, sortering en
+   view-toggle rechts. Geen ChannelBar (books heeft nog geen channels of
+   taxonomie). Hergebruikt de bestaande .materials-search-styling voor het
+   zoekveld en de --tokens uit de basis. Additief; geen bestaande regel
+   gewijzigd.
+   ============================================================ */
+
+.books-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Zoekveld groeit mee maar blijft begrensd, zodat de controls rechts blijven. */
+.books-toolbar .materials-search {
+  flex: 1 1 280px;
+  max-width: 420px;
+}
+
+.books-toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+/* Sorteer-select — native arrow, in de catalogus-taal (surface, hairline). */
+.books-sort {
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--transition-base);
+}
+
+.books-sort:hover {
+  border-color: var(--text-hint);
+}
+
+.books-sort:focus-visible {
+  outline: 2px solid var(--green-mid);
+  outline-offset: 1px;
+}
+
+/* Op smalle schermen: zoek over de volle breedte, controls eronder. */
+@media (max-width: 768px) {
+  .books-toolbar .materials-search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}
+
+/* ============================================================
+   §BOOKS — book-detail (additief)
+   ------------------------------------------------------------
+   Detail-shell hergebruikt pub-wrap / pub-layout / detail-sheet /
+   detail-back-row / detail-related-row en de gedeelde article-side-cards.
+   Hieronder alleen het book-specifieke: cover, about-eyebrow, bibliografie-
+   rijen, en de ink koop-card met groene CTA (F2 CTA-taal).
+   ============================================================ */
+
+/* --- Cover in de hoofdkolom (portrait, begrensd) --- */
+.book-detail-cover {
+  max-width: 240px;
+  margin: 0 0 24px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+
+.book-detail-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --- About-sectie --- */
+.book-about-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+  margin-bottom: 10px;
+}
+
+/* --- Bibliografie-rijen in de "Book details"-card --- */
+.book-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.book-meta-row:last-child {
+  border-bottom: none;
+}
+
+.book-meta-row-key {
+  color: var(--text-muted);
+  flex: 0 0 auto;
+}
+
+.book-meta-row-value {
+  color: var(--text);
+  text-align: right;
+}
+
+/* --- Ink koop-card (auth-aware prijs + groene CTA) --- */
+.book-buy-card {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.book-buy-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 10px;
+}
+
+.book-buy-price {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.book-buy-price-now {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.book-buy-price-was {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: line-through;
+}
+
+.book-buy-insider-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green-light);
+  margin-bottom: 14px;
+}
+
+.book-buy-upsell {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.78);
+  margin: 0 0 14px;
+}
+
+.book-buy-upsell a {
+  color: var(--on-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Groene koop-CTA als link (volledige WC-navigatie, geen client-route). */
+.book-buy-btn-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  background: var(--green-mid);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition-base);
+}
+
+.book-buy-btn-link:hover {
+  background: var(--green);
+}
+
+.book-buy-btn-link:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.book-buy-soldout {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* --- "More books"-kop --- */
+.book-more-head {
+  margin-bottom: 16px;
+}

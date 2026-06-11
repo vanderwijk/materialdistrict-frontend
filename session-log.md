@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — §F2.10c catalogus-correcties (filter-header, channel-bar, brand-montage).
-Additief op §F2.10/§F2.10b; deployed via Git → Vercel.
+Datum: 11-06-2026 — Books-frontend (overzicht + detail) op mock; §BOOKS CSS additief.
+Live data via `BOOKS_LIVE=true` zodra WP product-endpoint klaar is.
 
 ---
 
@@ -2726,3 +2726,17 @@ event CTA uit action-row; About-eyebrows.
 `renewable=yes` bevestigd (FacetWP facet-waarde). Brand `?brand=` facet nog open.
 
 Zip deployed pending.
+
+---
+
+## Books-vertical (mock) — overzicht + detail — 11-06-2026
+
+Zip `books-frontend-moedermap.zip`. Complete `/books`-vertical op mock.
+
+**Opgeleverd:** `src/types/book.ts`, `src/lib/api/books.ts`, `books-mock.ts`,
+`format-price.ts`, `src/app/books/**`, §BOOKS-blok in `globals.css`.
+Docs: `docs/books-datacontract.md` (v0.3), `docs/MANIFEST-books.md`.
+
+**Beslissingen:** bron = WC-product (`/wp/v2/product?product_cat=books`); Insider-prijs
+frontend-only; `buy_url` via Johan (nooit cms.); show-catalogues child mee in v1.
+Swap live = `BOOKS_LIVE=true`. Vertical geïsoleerd (mappers/content/barrel ongemoeid).

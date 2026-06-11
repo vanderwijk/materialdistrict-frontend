@@ -1,25 +1,83 @@
-import type { WPPostBase, ListParams } from './shared'
+/**
+ * Book types
+ * ----------------------------------------------------------------------
+ * Domain-model voor de books-shop (`book`-CPT + gekoppeld WooCommerce-product).
+ *
+ * Net als bij de overige content-types zijn dit PLATTE domeintypes (`title`
+ * als string, `cover` als `MediaImage`), niet de rauwe WP-shape. De rauwe
+ * response-shape (`WPBookRawResponse`) en de raw→domain mapping staan in
+ * `src/lib/api/books.ts` — bewust geïsoleerd zolang het WP-endpoint nog niet
+ * live is, zodat de gedeelde `mappers.ts` / `content.ts` ongemoeid blijven.
+ *
+ * Prijs: alleen `price` (regulier, uit WooCommerce) zit op het domeintype. De
+ * Insider-prijs is GEEN apart veld — de korting is een centrale instelling
+ * (`BOOK_DISCOUNT.insiderDiscount` in `lib/config/membership.ts`, nu 10%) en de
+ * UI leidt de te tonen prijs af via `getBookPrice(price, isInsider)`. Wil je
+ * ooit een ander percentage, dan wijzig je die ene constante en niets anders.
+ * Zie `docs/books-datacontract.md`.
+ */
+
+import type { MediaImage } from './media'
+
+/** Sorteervelden die het overzicht ondersteunt. */
+export type BookOrderBy = 'date' | 'title'
 
 /**
- * Book — gekoppeld aan een WooCommerce product.
- * `wc_product_id` verwijst naar het bijbehorende product zodat we
- * via de WooCommerce API de actuele prijs en voorraad kunnen ophalen.
+ * Lichtgewicht boek voor lijsten/cards (overzichtspagina).
+ * Prijs zit erop zodat cards de (Insider-)prijs kunnen tonen zonder extra call.
  */
-export interface Book extends WPPostBase {
-  acf?: {
-    author_name?: string
-    isbn?: string
-    publisher?: string
-    pages?: number
-    publication_year?: number
-    wc_product_id?: number
-  }
-}
-
-export interface BookWithPrice extends Book {
+export interface BookListItem {
+  id: number
+  slug: string
+  link: string
+  title: string
+  excerptHtml: string
+  cover: MediaImage | null
+  /** ACF `author_name`; `null` als niet ingevuld. */
+  author: string | null
+  /** ACF `publication_year`; `null` als niet ingevuld. */
+  publicationYear: number | null
+  /** Reguliere prijs in EUR (getal, twee decimalen). De Insider-prijs leidt de
+   *  UI af via `getBookPrice(price, isInsider)`. */
   price: number
-  insiderPrice: number
+  /** Afgeleid van WC `stock_status`. */
   inStock: boolean
+  date: string
 }
 
-export type BooksListParams = ListParams
+/** Volledig boek voor de detailpagina. */
+export interface Book {
+  id: number
+  slug: string
+  link: string
+  title: string
+  contentHtml: string
+  excerptHtml: string
+  cover: MediaImage | null
+  author: string | null
+  isbn: string | null
+  publisher: string | null
+  pages: number | null
+  publicationYear: number | null
+  /** WooCommerce-product-ID waaraan dit boek hangt. `null` als niet gekoppeld. */
+  wcProductId: number | null
+  /**
+   * Doel-URL voor de koop-CTA: de WooCommerce-productpagina/winkelmand.
+   * Checkout bouwen we niet opnieuw in Next.js. `null` tot Johan de
+   * permalink/route bevestigt (open vraag 5 in het datacontract).
+   */
+  buyUrl: string | null
+  price: number
+  inStock: boolean
+  date: string
+  modified: string
+}
+
+/** Parameters voor `listBooks` (camelCase publieke API). */
+export interface BooksListParams {
+  page?: number
+  perPage?: number
+  search?: string
+  orderby?: BookOrderBy
+  order?: 'asc' | 'desc'
+}
