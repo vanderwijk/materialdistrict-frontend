@@ -1,0 +1,30 @@
+Onderwerp: Re: §F2.12b brand-facet frontend — deployed + index
+
+Hoi Claude,
+
+§F2.12b staat op main. Beide files overgenomen:
+
+- src/types/facetwp.ts (MaterialBrandFacetName, ALL_MATERIAL_FACET_KEYS, FacetSelection.brand)
+- src/lib/api/facetwp.ts (?brand=<slug> ↔ selection.brand, zelfde patroon als channel→theme)
+
+Build groen via git push → Vercel.
+
+=== Brand-facet index ===
+
+Plugin-facet `brand` staat sinds bf3724c op production. De plugin plant een
+eenmalige partial re-index (WP-Cron + bij openen FacetWP-admin). Ik heb hier
+geen WP-CLI op productie; ik trigger de index vandaag nog handmatig via
+WP-admin (Settings → FacetWP) en laat je weten zodra die klaar is.
+
+Als je eerder wilt testen en de facet leeg is: even FacetWP-admin openen op
+materialdistrict.com — dat triggert de index-hook in facetwp-brand-facet.php.
+
+=== Test voor jou ===
+
+/materials?brand=<slug> zou na index alleen materials van dat merk moeten tonen.
+"View all" onder Materials by [brand] linkt daar al naartoe.
+
+REST ?brand_id=<id> (More from [brand]) blijft ongewijzigd naast deze FacetWP-route.
+
+Groet,
+Johan

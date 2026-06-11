@@ -262,6 +262,8 @@ const SORT_PARAM_KEY = 'sort'
 const PAGE_PARAM_KEY = 'page'
 /** URL-param voor de ChannelBar (identiek op elke overzichtspagina). Mapt naar de `theme`-facet. */
 const CHANNEL_PARAM_KEY = 'channel'
+/** URL-param voor de brand-deeplink ("Materials by [brand]"). Mapt naar de `brand`-facet (brand-slug). */
+const BRAND_PARAM_KEY = 'brand'
 
 /**
  * Geldige sort-waarden zoals geretourneerd door FacetWP.
@@ -351,6 +353,16 @@ export function parseFacetSelectionFromSearchParams(
       continue
     }
 
+    if (key === BRAND_PARAM_KEY) {
+      // "Materials by [brand]" levert één brand-slug; de FacetWP-brandfacet
+      // verwacht die slug (Johan-contract 11-06-2026, key op brand-post_name).
+      const slug = value.trim()
+      if (slug.length > 0) {
+        selection.brand = [slug]
+      }
+      continue
+    }
+
     if (FILTER_FACET_KEYS_SET.has(key)) {
       const slugs = value
         .split(',')
@@ -410,6 +422,12 @@ export function facetSelectionToSearchParams(
     if (key === 'theme') {
       const slug = (value as string[])[0]?.trim()
       if (slug) params.set(CHANNEL_PARAM_KEY, slug)
+      continue
+    }
+
+    if (key === 'brand') {
+      const slug = (value as string[])[0]?.trim()
+      if (slug) params.set(BRAND_PARAM_KEY, slug)
       continue
     }
 

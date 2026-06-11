@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — Checkout-merge (Store API proxy, Stripe Elements, order-confirmation).
-Deployed via Git; NEXT_PUBLIC_STRIPE_PK op Vercel.
+Datum: 11-06-2026 — §F2.12b brand-facet frontend (?brand= slug ↔ FacetWP).
+Deployed via Git.
 
 ---
 
