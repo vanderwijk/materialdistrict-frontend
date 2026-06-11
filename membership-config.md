@@ -86,6 +86,14 @@ BOOK_DISCOUNT = {
 }
 ```
 
+> **Sync met WooCommerce (niet vergeten bij wijziging):** de frontend toont de
+> Insider-prijs via `getBookPrice()` (`src/lib/config/membership.ts`), maar de
+> winkelmand rekent server-side af via de plugin
+> `materialdistrict-plugin/wc-insider-book-discount.php` (default 10%, override
+> via `MD_INSIDER_BOOK_DISCOUNT` of filter `md_insider_book_discount_rate`).
+> Pas je `BOOK_DISCOUNT.insiderDiscount` aan, zet dan dezelfde waarde ook in
+> WordPress — anders wijkt de detailpagina af van `/cart` en checkout.
+
 ### Insider badge kleur
 ```ts
 INSIDER_BADGE_COLOR = '#1E8FA1'   // teal/cyan
