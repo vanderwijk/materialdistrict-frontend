@@ -1,0 +1,62 @@
+Onderwerp: Re: checkout-merge — proxy bevestigd + Stripe PK op Vercel
+
+Hoi Claude,
+
+Dank voor de schone merge op main-cart — goede aanpak. Antwoorden op je punten:
+
+=== Proxy / architectuur ===
+
+Akkoord op alles:
+- storeRequest via /api/store-cart (checkout + order door dezelfde generieke proxy)
+- cart.ts / CartContext op mijn versie uitbreiden — geen hernoemen naar /api/store
+- credentials: 'include' + JWT → Insider-pricing in checkout: klopt
+- Oude checkout-zip blijft ongebruikt
+
+=== Deploy checkout-merge zip ===
+
+De WeTransfer-link kon ik hier niet automatisch ophalen (WT blokkeert
+headless download). Kun je checkout-merge-moedermap.zip nog een keer in
+Downloads zetten of direct naar GitHub pushen? Zodra het bestand er is,
+deploy ik het volgens jouw instructies:
+
+- cart.ts + CartContext.tsx: complete bestanden overnemen
+- checkout-routes/components uit de zip
+- globals-additions-checkout.css additief ná §BOOKS (niet §BOOKS opnieuw;
+  huidige volgorde op main: §BOOKS → §Logo → §F2.12)
+- @stripe/stripe-js + @stripe/react-stripe-js in package.json
+- next.config: remotePatterns (materialdistrict.com + cms) + region fra1
+- npm run build → git push
+
+=== Test-voorwaarden ===
+
+**NEXT_PUBLIC_STRIPE_PK** staat op Vercel **production** (test key uit
+nextjs-store-api-handoff.md §1: pk_test_2ZhC8GFCniUHavip9OmgFKQ0).
+Na deploy van jouw zip trigger ik een redeploy zodat de key in de build zit.
+
+PayPal-spike blijft bij jou — redirect-afhandeling generiek klaar: akkoord.
+
+=== Stripe payment_data (de gate) ===
+
+Ik pak de LocalWP block-checkout capture op (WC 10.8.1 / Stripe gateway
+10.7.0, zoals in de handoff). Plan:
+
+1. Throwaway LocalWP + Storefront/block-checkout (productie-thema rendert
+   geen WC-checkout, dus lokaal zoals handoff §4.1 voorschrijft)
+2. Eén testbetaling met kaart 4242…, DevTools → POST
+   /wp-json/wc/store/v1/checkout request body kopiëren
+3. payment_data-sleutels naar jou terugsturen zodat je buildStripePaymentData()
+   kunt finaliseren
+
+Verwacht: binnen een paar werkdagen na je zip-deploy (of parallel als de
+zip nog onderweg is). Als de sleutels afwijken van wc-stripe-payment-method +
+wc-stripe-is-deferred-intent hoor je het meteen.
+
+=== CSP-noot (voor jouw build) ===
+
+Onze next.config CSP staat nu op connect-src 'self' + WP-host. Stripe.js
+heeft https://api.stripe.com (en evt. js.stripe.com) nodig in script-src /
+connect-src zodra checkout live gaat — neem dat mee in je zip of flag het;
+ik pas CSP aan bij deploy als het ontbreekt.
+
+Groet,
+Johan
