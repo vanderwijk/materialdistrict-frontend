@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 10-06-2026 — §F2.9 detailpagina-finetuning ronde 2 (additief op F2.8).
-Puur frontend; deploy pending.
+Datum: 11-06-2026 — §F2.10 catalogus-finetuning (§F2.10 + §F2.10b totaalzip).
+Puur frontend; deployed via Git → Vercel.
 
 ---
 

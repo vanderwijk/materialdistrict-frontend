@@ -25,11 +25,11 @@ function applyCols(cols: Cols) {
 }
 
 export function ViewToggle() {
-  const [cols, setCols] = useState<Cols>(3)
+  const [cols, setCols] = useState<Cols>(2)
 
   // Bij mount: opgeslagen keuze inlezen en toepassen.
   useEffect(() => {
-    let stored: Cols = 3
+    let stored: Cols = 2
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY)
       const n = raw ? Number.parseInt(raw, 10) : NaN

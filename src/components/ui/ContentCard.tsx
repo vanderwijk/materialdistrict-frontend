@@ -80,6 +80,12 @@ interface ContentCardProps {
    */
   showTypeBadge?: boolean
   /**
+   * Gekleurd type-badge linksboven (story-type: News/People/…). Krijgt de
+   * type-kleur via `color`. Heeft voorrang op de generieke content-type Tag,
+   * maar niet op een actieve `featured`-pill. §F2.10 P8.
+   */
+  typeBadge?: { label: string; color: string }
+  /**
    * Duurzaamheids-badges (linksonder op de thumb) — witte pills met groen
    * blad-icoon. Max 2 zichtbaar + "+N"-overflow. Materials-only in de praktijk.
    */
@@ -184,6 +190,7 @@ export function ContentCard({
   tagLabel,
   featured = false,
   showTypeBadge = true,
+  typeBadge,
   sustainabilityBadges,
   titleAs = 'h3',
   ariaLabel,
@@ -231,7 +238,7 @@ export function ContentCard({
         {/* Linksboven: FEATURED-pill (navy) of de content-type Tag. Op
             single-type overzichten wordt de Tag onderdrukt (showTypeBadge=false);
             een actieve `featured` toont altijd de Featured-pill. */}
-        {(featured || showTypeBadge) && (
+        {(featured || typeBadge || showTypeBadge) && (
           <div className="card-thumb-overlay is-top-left">
             {featured ? (
               <span className="card-featured-badge">
@@ -245,6 +252,13 @@ export function ContentCard({
                   <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" />
                 </svg>
                 Featured
+              </span>
+            ) : typeBadge ? (
+              <span
+                className="card-type-badge"
+                style={{ background: typeBadge.color }}
+              >
+                {typeBadge.label}
               </span>
             ) : (
               <Tag contentType={contentType} label={tagLabel} />

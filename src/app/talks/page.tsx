@@ -1,36 +1,31 @@
 /**
- * `/talks` — talks-overzichtspagina met search, grid en paginatie.
+ * `/talks` — talks-overzichtspagina met channel/zoek (server) + jaar/spreker-
+ * filter (client) en client-side paginatie.
  *
- * Sessie 7. Server Component. Leest searchParams (q, page), haalt talks op en
- * rendert de overzichts-shell rond een `ContentCard`-grid. Volgt dezelfde
- * page-header als /articles en /brands (design-system §6.1: `ov-page-header`),
- * maar single-column (`ov-wrap-single`): talks heeft in v1 niks om op te
- * filteren (channels vastgehouden tot de aparte channel-sessie, geen
- * story-type, datum onbetrouwbaar voor past/upcoming).
+ * Sessie 7; §F2.10 P14.1: van server-paginatie naar load-all + <TalksBrowser>.
+ * Channel (`?channel=`) en zoekterm (`?q=`) blijven server-/URL-gedreven via de
+ * gedeelde ChannelBarNav; de volledige matchende set wordt in één keer geladen
+ * en client-side gefilterd op jaar + spreker (de twee zinvolle talks-filters)
+ * en gepagineerd. Gespiegeld op het events-overzicht (EventsBrowser).
  *
- * URL-structuur:
- *   /talks?q=biobased&page=2
+ * Insider-only (C14): `talk.insiderOnly` → InsiderMark op de card.
+ * Speakers (C11): `talk.speakers` voedt de card-meta én het spreker-filter.
  *
- * Insider-only (C14): `talk.insiderOnly` komt uit `meta.insider_only`
- * (talk-default true); cards tonen de InsiderMark voor Insider-only talks.
- *
- * Speakers (C11): `talk.speakers` (persons-taxonomy) voedt de card-meta-regel.
- *
- * EmptyState bij 0 resultaten — geen 404 (een zoek met 0 matches is een
- * geldige query). Twee varianten: met of zonder actieve zoekterm.
+ * EmptyState bij 0 resultaten op channel/zoek — geen 404. Het jaar/spreker-
+ * filter heeft zijn eigen lege-staat binnen TalksBrowser.
  */
 
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, ChannelBarNav, ContentCard, EmptyState } from '@/components/ui'
-import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
+import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
 import { listTalks, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
-import { TalksPagination } from './_components/TalksPagination'
-import { RecentlyViewedRail } from '@/components/ui'
+import { TalksBrowser, type TalksBrowserItem } from './_components/TalksBrowser'
 
-const TALKS_PER_PAGE = 12
+// De volledige matchende set wordt in één keer geladen (WP-max per page),
+// daarna client-side gefilterd/gepagineerd. Talks is een bescheiden,
+// curated set; 100 dekt de catalogus ruim.
+const TALKS_LOAD_ALL = 100
 
 export const metadata: Metadata = {
   title: 'Talks',
@@ -50,22 +45,6 @@ interface TalksPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-/** Parse `?page=` naar een 1-based paginanummer (default 1). */
-function parsePage(raw: string | string[] | undefined): number {
-  const value = Array.isArray(raw) ? raw[0] : raw
-  const n = Number.parseInt(value ?? '1', 10)
-  return Number.isFinite(n) && n > 0 ? n : 1
-}
-
-/** Datumlabel — en-GB, consistent met de andere detail/overzicht-pages. */
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
 export default async function TalksPage({ searchParams }: TalksPageProps) {
   const params = await searchParams
 
@@ -74,20 +53,30 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
   const channelSlug =
     (Array.isArray(params.channel) ? params.channel[0] : params.channel)?.trim() ||
     undefined
-  const page = parsePage(params.page)
 
   const channels = await getChannelCatalog()
   const themeId = resolveChannelId(channels, channelSlug) ?? undefined
 
   const result = await listTalks({
-    perPage: TALKS_PER_PAGE,
-    page,
+    perPage: TALKS_LOAD_ALL,
+    page: 1,
     search,
     theme: themeId,
   })
 
   const total = result.total
   const hasActiveFilters = Boolean(search) || Boolean(channelSlug)
+
+  const browserTalks: TalksBrowserItem[] = result.items.map((talk) => ({
+    id: talk.id,
+    slug: talk.slug,
+    title: talk.title,
+    date: talk.date,
+    heroUrl: talk.hero?.sourceUrl,
+    heroAlt: talk.hero?.alt ?? talk.title,
+    speakerNames: talk.speakers.map((s) => s.name),
+    insiderOnly: talk.insiderOnly,
+  }))
 
   return (
     <>
@@ -126,42 +115,7 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
             />
           )
         ) : (
-          <>
-            <Suspense fallback={null}>
-              <div className="ov-grid-3">
-                {result.items.map((talk) => (
-                  <ContentCard
-                    key={talk.id}
-                    href={`/talks/${talk.slug}`}
-                    contentType="talk"
-                    showTypeBadge={false}
-                    thumbSrc={talk.hero?.sourceUrl}
-                    thumbAlt={talk.hero?.alt ?? talk.title}
-                    eyebrow={formatDate(talk.date)}
-                    title={talk.title}
-                    meta={
-                      talk.speakers.length > 0
-                        ? talk.speakers.map((s) => s.name)
-                        : undefined
-                    }
-                    isInsiderOnly={talk.insiderOnly}
-                    actions={<CardBookmarkButton type="talks" itemId={talk.id} />}
-                  />
-                ))}
-              </div>
-            </Suspense>
-
-            {result.totalPages > 1 && (
-              <div className="ov-pagination">
-                <TalksPagination
-                  currentPage={page}
-                  totalPages={result.totalPages}
-                />
-              </div>
-            )}
-
-            <RecentlyViewedRail entity="talks" variant="inline" />
-          </>
+          <TalksBrowser talks={browserTalks} />
         )}
       </div>
 

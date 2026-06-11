@@ -42,6 +42,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
+import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { MaterialGallery } from '@/components/materials'
 import {
   getArticle,
@@ -198,6 +199,14 @@ export default async function ArticleDetailPage({
   return (
     <>
       <article className="pub-wrap">
+        <RecentlyViewedTracker
+          type="articles"
+          slug={article.slug}
+          title={article.title}
+          subtitle={publishedLabel}
+          thumbnailUrl={article.hero?.sourceUrl ?? null}
+          href={`/articles/${article.slug}`}
+        />
         <div className="pub-layout">
           <div className="detail-back-row">
             <a href="/articles" className="article-detail-back">

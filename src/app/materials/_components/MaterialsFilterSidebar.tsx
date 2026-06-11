@@ -68,6 +68,7 @@ import {
   IconCheck,
   IconChevronDown,
   IconClose,
+  IconDelete,
   IconFilter,
   IconLoading,
   IconSaveSearch,
@@ -498,31 +499,52 @@ export function MaterialsFilterSidebar({
       >
         {/* Header */}
         <div className="uf-header">
-          <span className="uf-header-title">Filters</span>
+          <span className="uf-header-title">
+            Filters
+            {totalSelected > 0 && (
+              <span
+                className="filter-count is-active is-inline"
+                aria-label={`${totalSelected} active filter${totalSelected === 1 ? '' : 's'}`}
+              >
+                {totalSelected}
+              </span>
+            )}
+          </span>
           <div className="uf-header-actions">
-            {/* §F2.7 (2.2): Save verschijnt pas zodra er iets op te slaan is
-                (filter, zoekterm of actief channel) — niet in rust. */}
-            {canSaveSearch && (
+            {/* §F2.10 P1: badge + save-icoon + trash-icoon verschijnen pas
+                zodra er minstens 1 filter (facet) actief is — niet in rust.
+                Het channel telt hierin niet mee. Save is icon-only. */}
+            {totalSelected > 0 && (
               <button
                 type="button"
                 className="uf-header-save"
                 onClick={handleSaveSearch}
                 title="Save this search"
+                aria-label="Save this search"
                 disabled={savingSearch}
                 aria-busy={savingSearch || undefined}
               >
                 {savingSearch ? (
-                  <IconLoading size={10} strokeWidth={2.5} />
+                  <IconLoading size={13} strokeWidth={2.5} />
                 ) : (
-                  <IconSaveSearch size={10} strokeWidth={2.5} />
+                  <IconSaveSearch size={13} strokeWidth={2} />
                 )}
-                Save
-                {!member && <InsiderIcon size={12} />}
+                {!member && (
+                  <span className="uf-save-insider" aria-hidden="true">
+                    <InsiderIcon size={9} />
+                  </span>
+                )}
               </button>
             )}
             {totalSelected > 0 && (
-              <button type="button" className="uf-header-clear" onClick={clearAll}>
-                Clear {totalSelected}
+              <button
+                type="button"
+                className="uf-header-clear"
+                onClick={clearAll}
+                title="Clear all filters"
+                aria-label={`Clear all ${totalSelected} filters`}
+              >
+                <IconDelete size={13} strokeWidth={2} />
               </button>
             )}
             <button

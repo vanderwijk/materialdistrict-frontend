@@ -76,6 +76,13 @@ export function ChannelBarNav({
   }, [debounced])
 
   function handleChannelChange(label: string) {
+    // Punt 3: klik op het al-actieve channel → terug naar All (deselect).
+    // ChannelBar vuurt onChannelChange ook voor de actieve tab, dus we
+    // vangen die hier af.
+    if (label === activeLabel && label !== ALL_CHANNELS) {
+      pushParams((params) => params.delete('channel'))
+      return
+    }
     const slug = channels.find((c) => c.label === label)?.slug
     pushParams((params) => {
       if (slug) params.set('channel', slug)

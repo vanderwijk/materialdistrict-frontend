@@ -12754,3 +12754,329 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 .talk-about .mat-body p { font-style: normal; }
 
 /* ============================ einde §F2.9 ============================ */
+
+/* ============================================================
+   §F2.10 — Catalogus-finetuning (11-06-2026)
+
+   Correctieronde op de overzicht-/cataloguspagina's, additief op
+   §F2.7 (A/B/C-D) en NIET rakend aan de detail-rondes §F2.8/§F2.9.
+
+   Punten in dit blok (CSS-deel):
+     P4   actieve paginaknop = ink (niet uitgewassen door :disabled)
+     P13.1 event-tegel afbeeldingsratio gelijk aan de andere tegels
+     P1d  mobiel filtermenu solide achtergrond (was transparant)
+     P7a  stories story-type-filter plat op de paper (geen witte box/band)
+     P8   gekleurd story-type-badge linksboven op de story-tegel
+   ============================================================ */
+
+/* --- P4: actieve paginaknop blijft ink, ook in disabled-staat -------
+   De actieve pagina is `disabled` (niet klikbaar); de generieke
+   .pagination-btn:disabled zet opacity 0.35 en waste de ink-vulling uit
+   tot lichtgrijs. Hier pinnen we ink + volle dekking voor de actieve knop. */
+.pagination-btn.is-active,
+.pagination-btn.is-active:disabled {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+  opacity: 1;
+  cursor: default;
+  pointer-events: none;
+  font-weight: 600;
+}
+[data-theme="dark"] .pagination-btn.is-active,
+[data-theme="dark"] .pagination-btn.is-active:disabled {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+  opacity: 1;
+}
+
+/* --- P13.1: event-tegel afbeeldingsband op 16/9 (zoals .card-thumb) --
+   Voorheen vaste 120px hoogte, waardoor de event-tegel afweek van de
+   material-/story-/talk-tegels. Nu dezelfde default-ratio. */
+.event-card-band {
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+/* --- P1d: mobiel filter-drawer solide achtergrond --------------------
+   .mob-open wordt alleen in de mobiele drawer-modus gezet, dus deze
+   regel raakt de desktop-filterkolom (plat op de paper) niet. */
+.uf-sidebar.mob-open {
+  background: var(--surface);
+}
+
+/* --- P7a: stories story-type-filter plat op de paper -----------------
+   Haalt de witte panel-box en de grijze kop-band weg, in lijn met de
+   andere filterblokken (§F2.7 batch A). De actieve type-knop houdt zijn
+   inline type-kleur als achtergrond. */
+.articles-type-filter {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  padding: 0;
+}
+.articles-type-filter-head {
+  padding: 0 4px 10px;
+  background: transparent;
+  border-bottom: none;
+}
+.articles-type-list {
+  padding: 0;
+}
+
+/* --- P8: gekleurd story-type-badge linksboven op de story-tegel -------
+   Komt in de bestaande .card-thumb-overlay.is-top-left. De kleur wordt
+   per type inline meegegeven (STORY_TYPE_META.color). */
+.card-type-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--ink);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  white-space: nowrap;
+}
+
+
+/* --- P10: pagination-redesign (first/last + go-to-veld) --------------
+   Bouwt voort op de bestaande .pagination/.pagination-btn. De edge-knoppen
+   tonen een dubbele chevron (« / ») voor first/last; het go-to-veld laat
+   direct een paginanummer intypen (geen pulldown — te veel paginas). */
+.pagination {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+.pagination-btn-edge {
+  gap: 0;
+}
+.pagination-btn-edge svg:first-child {
+  margin-right: -6px;
+}
+
+.pagination-goto {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 6px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+}
+.pagination-goto-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.pagination-goto-input {
+  width: 64px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+.pagination-goto-input::-webkit-outer-spin-button,
+.pagination-goto-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.pagination-goto-input:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(22, 32, 43, 0.12);
+}
+.pagination-goto-btn {
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.pagination-goto-btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+.pagination-goto-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .pagination-goto {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+
+/* --- P1: zwart rond telling-badge in de filter-header ----------------
+   Het aantal actieve facet-filters als zwarte ronde badge achter
+   "Filters" (materials + brands, gedeeld via .uf-header-title). Save- en
+   prullenbak-icoon zijn de bestaande ronde .uf-header-save/.uf-header-clear
+   knoppen; die verschijnen al alleen bij >=1 actief filter. */
+.uf-header-title .filter-count.is-active.is-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+.uf-header-save .uf-save-insider {
+  display: inline-flex;
+  margin-left: 3px;
+}
+
+/* ============================ einde §F2.10 ============================ */
+
+/* ============================================================
+   §F2.10b — Catalogus-finetuning, afsluitende set (11-06-2026)
+
+   Additief op §F2.10. Bevat het CSS-deel van:
+     P3   × op de actieve channel-pill (klik = deselect, JS in ChannelBarNav)
+     P5   recently-viewed verwijder-knop in de bookmarks-stijl (.bm-remove)
+     P14.1 talks jaar/spreker-filterbar
+   ============================================================ */
+
+/* --- P3: × op de actieve (ink) channel-pill -------------------------
+   De hele pill is klikbaar en schakelt terug naar "All" (ChannelBarNav).
+   De × is een affordance: subtiel zichtbaar, vol bij hover. margin-left
+   reserveert de ruimte, dus geen layout-shift. */
+.channel-tab.active {
+  position: relative;
+}
+.channel-tab.active::after {
+  content: '\00d7';
+  margin-left: 7px;
+  font-size: 0.95em;
+  font-weight: 400;
+  line-height: 1;
+  opacity: 0.55;
+  transition: opacity 0.15s;
+}
+.channel-tab.active:hover::after {
+  opacity: 1;
+}
+
+/* --- P5: recently-viewed verwijder-knop = bookmarks-stijl ------------
+   Zelfde look als .bm-remove (30x30, afgerond, witte bg, icoon wordt rood
+   op hover). De reveal-op-hover van de strip blijft (base-regel zet
+   opacity 0 -> 1 bij item-hover). */
+.recently-viewed-remove {
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text-muted);
+}
+.recently-viewed-remove:hover {
+  background: #ffffff;
+  color: var(--red, #c0392b);
+  border-color: transparent;
+}
+
+/* --- P14.1: talks jaar/spreker-filterbar ----------------------------- */
+.talks-filterbar {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--border);
+}
+.talks-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.talks-filter-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+}
+.talks-filter-select {
+  height: 38px;
+  min-width: 170px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+}
+.talks-filter-select:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(22, 32, 43, 0.12);
+}
+.talks-filter-clear {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.talks-filter-clear:hover {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+.talks-filter-count {
+  margin-left: auto;
+  align-self: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+@media (max-width: 560px) {
+  .talks-filter-count {
+    margin-left: 0;
+    width: 100%;
+  }
+  .talks-filter-select {
+    min-width: 0;
+    flex: 1;
+  }
+}
+
+/* ============================ einde §F2.10b ============================ */

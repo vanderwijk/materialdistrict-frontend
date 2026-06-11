@@ -27,6 +27,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
+import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
 import { JsonLd, buildEvent, buildBreadcrumbList } from '@/lib/seo'
@@ -175,6 +176,14 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   return (
     <>
       <article className="pub-wrap">
+        <RecentlyViewedTracker
+          type="events"
+          slug={event.slug}
+          title={event.title}
+          subtitle={location}
+          thumbnailUrl={event.hero?.sourceUrl ?? null}
+          href={`/events/${event.slug}`}
+        />
         <div className="pub-layout">
           <div className="detail-back-row">
             <a href="/events" className="detail-header-back">

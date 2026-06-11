@@ -30,6 +30,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
+import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { MaterialGallery } from '@/components/materials'
 import { MaterialBody } from '@/app/materials/[slug]/_components/MaterialBody'
 import { getBrand, listBrands, listMaterialsByBrand } from '@/lib/api'
@@ -130,6 +131,18 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
   return (
     <>
       <article className="pub-wrap">
+        <RecentlyViewedTracker
+          type="brands"
+          slug={brand.slug}
+          title={brand.name}
+          subtitle={place || null}
+          thumbnailUrl={
+            brand.gallery?.hero?.sizes?.large?.url ??
+            brand.gallery?.hero?.sourceUrl ??
+            null
+          }
+          href={`/brands/${brand.slug}`}
+        />
         <div className="pub-layout-inner">
           <div className="detail-sheet">
         <DetailHeader

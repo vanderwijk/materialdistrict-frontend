@@ -25,10 +25,8 @@
  * EmptyState bij 0 resultaten — geen 404 (een filter/zoek met 0 matches is
  * een geldige query). Twee varianten: met of zonder actieve filters.
  *
- * De mockup-functie `renderArticlesOverview()` delegeert naar
- * `renderStoriesOverview()`; deze page volgt die structuur (type-sidebar
- * links, People- + Partner-CTA's, type-intro-banner, featured + grid,
- * Nominate-sectie).
+ * §F2.10 P8: story-tegels tonen een gekleurd story-type-badge linksboven
+ * (STORY_TYPE_META kleur/label) via de nieuwe ContentCard `typeBadge`-prop.
  */
 
 import type { Metadata } from 'next'
@@ -279,6 +277,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                       href={`/articles/${featured.slug}`}
                       contentType="article"
                       showTypeBadge={false}
+                      typeBadge={{
+                        label: STORY_TYPE_META[featured.type].label,
+                        color: STORY_TYPE_META[featured.type].color,
+                      }}
                       thumbSrc={featured.hero?.sourceUrl}
                       thumbAlt={featured.hero?.alt ?? featured.title}
                       thumbRatio="landscape"
@@ -302,6 +304,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         href={`/articles/${article.slug}`}
                         contentType="article"
                         showTypeBadge={false}
+                        typeBadge={{
+                          label: STORY_TYPE_META[article.type].label,
+                          color: STORY_TYPE_META[article.type].color,
+                        }}
                         thumbSrc={article.hero?.sourceUrl}
                         thumbAlt={article.hero?.alt ?? article.title}
                         eyebrow={formatDate(article.date)}

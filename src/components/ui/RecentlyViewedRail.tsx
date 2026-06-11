@@ -68,7 +68,7 @@ export function RecentlyViewedRail({
               title="Remove from recently viewed"
               onClick={() => remove(item.slug)}
             >
-              <IconDelete size={13} strokeWidth={2} aria-hidden="true" />
+              <IconDelete size={16} aria-hidden="true" />
             </button>
           </div>
         ))}

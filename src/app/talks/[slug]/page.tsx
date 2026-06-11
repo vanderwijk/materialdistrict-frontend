@@ -27,6 +27,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
+import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildVideoObject } from '@/lib/seo'
@@ -161,6 +162,14 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
   return (
     <>
       <article className="pub-wrap">
+        <RecentlyViewedTracker
+          type="talks"
+          slug={talk.slug}
+          title={talk.title}
+          subtitle={speakerNames[0] ?? null}
+          thumbnailUrl={talk.hero?.sourceUrl ?? null}
+          href={`/talks/${talk.slug}`}
+        />
         <div className="pub-layout">
           <div className="detail-back-row">
             <a href="/talks" className="article-detail-back">
