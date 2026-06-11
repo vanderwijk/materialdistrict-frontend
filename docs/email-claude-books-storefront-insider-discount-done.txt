@@ -1,0 +1,80 @@
+Onderwerp: Re: books storefront — live + Insider-korting server-side
+
+Hoi Claude,
+
+Je zip books-storefront-moedermap.zip staat op main. Hieronder wat er sindsdien
+is bijgekomen — vooral rond de Insider-korting en de cart-architectuur.
+
+=== Deploy (frontend) ===
+
+Commits: 8562aa0 (storefront), 8ddacfa + 98a1585 (cart-proxy), d904488 (docs)
+
+- Catalogus: Store API `/wc/store/v1/products` (server-side via WP_API_URL)
+- Winkelmand: `/cart` + CartProvider + BookBuyCard add-to-cart
+- §BOOKS CSS vervangen; books-mock.ts verwijderd
+- GateNoticeProvider in layout.tsx behouden
+
+=== Insider 10%-boekenkorting — AFGEHANDELD ===
+
+Je MANIFEST noemde dit als open backend-beslissing. Dat staat nu live:
+
+WP-plugin (materialdistrict-plugin, commit 726f097):
+- wc-insider-book-discount.php
+- 10% dynamic pricing op producten in product_cat "books" (incl. subcats)
+- Alleen users met membership.is_insider (zelfde Stripe/usermeta als /auth/me)
+- Override: MD_INSIDER_BOOK_DISCOUNT in wp-config of filter
+  md_insider_book_discount_rate
+
+Frontend:
+- Cart-requests lopen via /api/store-cart/* (Next proxy), niet meer direct
+  cross-origin naar WordPress
+- Proxy stuurt HttpOnly JWT (md_auth_token) mee als Authorization: Bearer
+- Cart-Token + Nonce blijven client-side (localStorage), ongewijzigd patroon
+- credentials: 'include' op cart-fetch
+
+Gevolg voor jou:
+- NEXT_PUBLIC_WP_URL is NIET meer nodig voor de winkelmand (proxy gebruikt
+  server-side WP_API_URL). Catalogus gebruikt al WP_API_URL.
+- In /cart en checkout: altijd WC-totalen uit de Store-API-response renderen,
+  nooit zelf herberekenen (was al je intentie).
+- getBookPrice() + BOOK_DISCOUNT in src/lib/config/membership.ts blijven voor
+  UI op /books en /membership (prijsweergave vóór add-to-cart).
+- Sync-notitie toegevoegd in membership-config.md: als de korting ooit
+  wijzigt, moet membership.ts én de WP-plugin dezelfde waarde krijgen.
+
+Verificatie (Insider ingelogd):
+- Detailpagina Insider-prijs ≈ regelprijs in /cart (× 0,9)
+- Uitgelogd: volle prijs in mand
+
+=== Checkout-fase ===
+
+Stripe/PayPal-testgegevens staan al in docs/nextjs-store-api-handoff.md §1:
+
+  NEXT_PUBLIC_STRIPE_PK=pk_test_2ZhC8GFCniUHavip9OmgFKQ0
+  PayPal sandbox buyer: sb-ke2yi51553774@personal.example.com / wj*6O//H
+
+Return/thank-you-URL's zijn ook al besloten (handoff §4.3 + §7.4): volledig
+NextJS-flow; WP herschrijft redirects via headless-frontend-urls.php naar
+/order-confirmation/{id}?key=… en /checkout (nu nog Vercel-URL, cutover → apex).
+
+Wat nog open is vóór je checkout bouwt:
+- NEXT_PUBLIC_STRIPE_PK op Vercel zetten (staat in handoff, nog niet in Vercel env)
+- payment_data-sleutels vastleggen via de discovery-techniek uit handoff §4.1
+  (lokaal LocalWP + block-checkout + DevTools; pluginversies in handoff §7.3)
+- PayPal-spike (handoff §4.2 / open item §7.2) — time-boxen
+
+Geen haast van mijn kant; je had de credentials al, dit is alleen ter bevestiging
+dat ik ze niet opnieuw hoef te sturen.
+
+=== Geparkeerd (jouw MANIFEST) ===
+
+- Header cart-badge
+- Homepage books-blok + sidebar-widget
+
+=== Tip voor je volgende zip ===
+
+Als je cart.ts of layout aanraakt: merge met main — CartProvider zit in de
+provider-tree; cart base URL is /api/store-cart, niet NEXT_PUBLIC_WP_URL.
+
+Groet,
+Johan
