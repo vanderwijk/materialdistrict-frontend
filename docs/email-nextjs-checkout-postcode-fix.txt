@@ -1,0 +1,120 @@
+Onderwerp: Checkout — foutmelding "Postcode is onvolledig" (diagnose + fix)
+
+Hoi,
+
+Ik heb op https://materialdistrict-frontend.vercel.app/checkout geprobeerd een
+testorder te plaatsen en kreeg de melding **"Postcode is onvolledig"** (NL).
+Hieronder diagnose uit de huidige code op main + concrete fix-voorstellen.
+Geen WP/plugin-wijziging nodig aan onze kant — dit zit in de checkout-UI/Stripe-
+integratie.
+
+=== Wat het waarschijnlijk níet is ===
+
+- **Geen Next.js copy** — client-validatie in CheckoutForm.tsx is Engels
+  ("Please complete all required address fields."). De NL-tekst komt ergens
+  anders vandaan.
+- **Waarschijnlijk geen Stripe "verzendadres"** — we sturen bij createPaymentMethod
+  alleen name + email mee, geen volledig adres.
+
+=== Meest waarschijnlijke oorzaak: dubbele postcode (Stripe CardElement) ===
+
+Op /checkout zijn er in de praktijk **twee postcodevelden**:
+
+1. **Postcode *** in AddressFields (billing/shipping) → gaat naar WooCommerce
+   Store API (update-customer + POST /checkout).
+2. **Postcode in het Stripe CardElement** (standaard zichtbaar; hidePostalCode
+   staat niet in CARD_OPTIONS) → wordt gevalideerd door stripe.createPaymentMethod.
+
+Als veld (2) leeg of half is, geeft Stripe een **gelokaliseerde** fout
+(pmError.message) — in NL vaak iets als "Postcode is onvolledig". Die wordt
+direct in checkout-error getoond:
+
+  CheckoutForm.tsx → createPaymentMethod → setError(pmError.message)
+
+Relevante bestanden:
+  - src/app/checkout/_components/CheckoutForm.tsx (CARD_OPTIONS, createPaymentMethod)
+  - src/app/checkout/_components/AddressFields.tsx (WC-adres)
+  - src/lib/api/cart.ts (WC-fouten via body.message)
+
+=== Hoe bevestigen (2 min) ===
+
+DevTools → Network, opnieuw "Place order":
+
+- Fout **zonder** (of vóór) POST /api/store-cart/checkout → **Stripe**
+  (createPaymentMethod faalt client-side).
+- Fout **met** failed POST /api/store-cart/cart/update-customer → **WooCommerce**
+  (vaak bij "Calculate shipping").
+- Fout **met** failed POST /api/store-cart/checkout → **WooCommerce**
+  (adresvalidatie bij order plaatsen).
+
+=== Aanbevolen fix (Stripe-pad) ===
+
+**Doel:** één postcode — die uit het adresformulier — en geen verwarrend
+dubbel veld.
+
+1. In CheckoutForm.tsx, CardElement-options uitbreiden:
+     hidePostalCode: true
+
+2. Bij createPaymentMethod billing_details aanvullen met het ingevulde
+   WC-adres, minimaal:
+     billing_details: {
+       name: '…',
+       email: '…',
+       address: {
+         line1: billing.address_1,
+         line2: billing.address_2 || undefined,
+         city: billing.city,
+         postal_code: billing.postcode,
+         country: billing.country,
+       },
+     }
+
+3. Optioneel: postcode trimmen/normaliseren vóór API-calls (NL: hoofdletters,
+   spatie tussen cijfers en letters — zie hieronder).
+
+Daarmee zou "Postcode is onvolledig" van Stripe moeten verdwijnen zolang het
+adresformulier goed is ingevuld.
+
+=== Secundair: WooCommerce NL-postcode (als Network WC toont) ===
+
+WC valideert NL-postcodes strikt (historisch: 1234 AB vs 1234AB). Fouten komen
+binnen via cart.ts → body.message (ook NL).
+
+Als update-customer of checkout faalt op postcode:
+
+- Normaliseer in de client vóór setCustomer/submitCheckout, bv. NL:
+  trim, uppercase letters, spatie invoegen (regex / simpele helper).
+- Toon bij WC-fouten eventueel veld-specifieke hint bij het adresformulier
+  (nu alleen generieke checkout-error).
+
+Referentie: WooCommerce NL-postcode-gedrag (o.a. GitHub woocommerce#23901).
+
+=== UX (klein, maar voorkomt verwarring) ===
+
+- Testflow: eerst boek in mand (/books) → /checkout (lege mand toont alleen
+  "Your cart is empty").
+- Flow: **Calculate shipping** + tarief kiezen vóór **Place order** (validate()
+  vereist selectedRate; niet overal visueel uitgelegd).
+- Overweeg label/tooltip: "Postcode voor verzending" in AddressFields vs. geen
+  tweede postcode bij de kaart na hidePostalCode.
+
+=== Wat ik níet hoef te doen (tenzij WC-response anders zegt) ===
+
+- Geen plugin-change voor Stripe postcode.
+- payment_data-capture (buildStripePaymentData) blijft apart — dit blokkeert
+  die test niet per se; eerst dit postcode-issue oplossen maakt e2e-test
+  makkelijker.
+
+=== Verificatie na fix ===
+
+1. Mand met testboek, NL-adres (bv. 1016 DW Amsterdam).
+2. Calculate shipping → tarief geselecteerd.
+3. Stripe testkaart 4242… → Place order.
+4. Geen "Postcode is onvolledig"; order of duidelijke volgende fout
+   (payment_data / 3DS) in Network.
+
+Laat weten als de Network-tab een WC-fout laat zien — dan kijk ik mee aan
+WP-kant (zeldzaam voor deze exacte NL-tekst bij kaart-flow).
+
+Groet,
+Johan
