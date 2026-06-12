@@ -79,7 +79,7 @@ function withNormalizedPostcode(addr: StoreAddress): StoreAddress {
 
 export function CheckoutForm() {
   const router = useRouter()
-  const { cart, setCustomer, selectShipping, loading } = useCart()
+  const { cart, setCustomer, selectShipping, loading, initialized, clearCart } = useCart()
   const stripe = useStripe()
   const elements = useElements()
 
@@ -90,6 +90,7 @@ export function CheckoutForm() {
   const [ratesLoaded, setRatesLoaded] = useState(false)
   const [method, setMethod] = useState<PayMethod>('card')
   const [submitting, setSubmitting] = useState(false)
+  const [placed, setPlaced] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const shipAddr = shipSame ? billing : shipping
@@ -205,11 +206,16 @@ export function CheckoutForm() {
       const status = result.payment_result?.payment_status
 
       if (redirectUrl) {
-        // 3DS / iDEAL / andere redirect-gateways.
+        // 3DS / iDEAL / andere redirect-gateways. Order is aangemaakt → de
+        // server-side mand is verbruikt; client-mand legen vóór de redirect.
+        setPlaced(true)
+        clearCart()
         window.location.href = redirectUrl
         return
       }
       if (status === 'success' || status === 'pending') {
+        setPlaced(true)
+        clearCart()
         router.push(
           `/order-confirmation/${result.order_id}?key=${encodeURIComponent(result.order_key)}`,
         )
@@ -221,6 +227,16 @@ export function CheckoutForm() {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  // Order net geplaatst → navigatie loopt; toon geen "leeg"-flits.
+  if (placed) {
+    return <p className="checkout-empty">Order placed — redirecting…</p>
+  }
+
+  // Nog aan het initialiseren (mand-fetch in flight) → toon geen "leeg".
+  if (!initialized) {
+    return <p className="checkout-empty">Loading your cart…</p>
   }
 
   if (!cart || cart.items.length === 0) {

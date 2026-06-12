@@ -24,6 +24,7 @@ import {
 import {
   addToCart,
   applyCoupon,
+  clearCartSession,
   fetchCart,
   hasCartToken,
   removeCartItem,
@@ -39,6 +40,8 @@ interface CartContextValue {
   cart: StoreCart | null
   itemCount: number
   loading: boolean
+  /** False tot de eerste mand-bootstrap klaar is (token-fetch óf "geen token"). */
+  initialized: boolean
   error: string | null
   addItem: (id: number, quantity?: number) => Promise<void>
   updateItem: (key: string, quantity: number) => Promise<void>
@@ -48,6 +51,8 @@ interface CartContextValue {
   setCustomer: (shipping: StoreAddress, billing?: StoreAddress) => Promise<void>
   selectShipping: (rateId: string) => Promise<void>
   refresh: () => Promise<void>
+  /** Leegt de mand-sessie (token) + state ná een geplaatste order. */
+  clearCart: () => void
 }
 
 const CartContext = createContext<CartContextValue | null>(null)
@@ -55,6 +60,7 @@ const CartContext = createContext<CartContextValue | null>(null)
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<StoreCart | null>(null)
   const [loading, setLoading] = useState(false)
+  const [initialized, setInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const run = useCallback(async (op: () => Promise<StoreCart>) => {
@@ -72,12 +78,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Lazy bootstrap: alleen voor terugkerende shoppers met een bestaand token.
+  // `initialized` gaat altijd op true zodra de bootstrap-beslissing rond is —
+  // ook zonder token — zodat de checkout de laad-staat van de leeg-staat kan
+  // onderscheiden (geen "mandje is leeg"-flits tijdens het ophalen).
   useEffect(() => {
-    if (!hasCartToken()) return
-    run(fetchCart).catch(() => {
-      /* stille mislukking — lege mand is een prima beginstaat */
-    })
+    if (!hasCartToken()) {
+      setInitialized(true)
+      return
+    }
+    run(fetchCart)
+      .catch(() => {
+        /* stille mislukking — lege mand is een prima beginstaat */
+      })
+      .finally(() => setInitialized(true))
   }, [run])
+
+  const clearCart = useCallback(() => {
+    // Ná een geplaatste order: de server-side mand is de order geworden.
+    // Token + nonce wissen en de client-state legen; een volgende add-to-cart
+    // bootstrapt vanzelf een verse sessie.
+    clearCartSession()
+    setCart(null)
+    setError(null)
+  }, [])
 
   const addItem = useCallback(
     (id: number, quantity = 1) => run(() => addToCart(id, quantity)),
@@ -117,6 +140,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       cart,
       itemCount,
       loading,
+      initialized,
       error,
       addItem,
       updateItem,
@@ -126,11 +150,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setCustomer,
       selectShipping,
       refresh,
+      clearCart,
     }),
     [
       cart,
       itemCount,
       loading,
+      initialized,
       error,
       addItem,
       updateItem,
@@ -140,6 +166,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setCustomer,
       selectShipping,
       refresh,
+      clearCart,
     ],
   )
 

@@ -1,0 +1,29 @@
+Onderwerp: Re: checkout-bugs (blok 1) — deployed op main
+
+Hoi Claude,
+
+Zip `material-district-checkout-bugs.zip` staat op main. Diff t.o.v. vorige deploy:
+
+- src/components/providers/CartContext.tsx (clearCart + initialized)
+- src/app/checkout/_components/CheckoutForm.tsx (succes-paden + render-guards)
+- docs/MANIFEST-checkout-bugs.md + session-log
+
+CheckoutForm is als compleet bestand toegepast (bevat postcode-fix + cart-bugs).
+
+=== Build ===
+
+`npm run build` lokaal geslaagd. Vercel volgt via git push.
+
+=== Verificatie (mijn kant) ===
+
+Ik test op materialdistrict-frontend.vercel.app:
+1. boek in mand → testorder → badge op 0 na afronding
+2. /checkout direct + via "Go to checkout" → geen leeg-flits
+
+=== Parallel ===
+
+Ik pak WC-config (gratis verzending verbergen, btw incl.) + punt 4 scopen
+zoals in mijn vorige mail. address_2 API staat al live.
+
+Groet,
+Johan
