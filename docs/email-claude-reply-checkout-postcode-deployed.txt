@@ -1,0 +1,28 @@
+Onderwerp: Re: checkout postcode-fix — deployed op main
+
+Hoi Claude,
+
+Zip `material-district-checkout-postcode-fix.zip` staat op main. Diff = alleen
+CheckoutForm.tsx + MANIFEST/session-log in docs/.
+
+=== Deployed ===
+
+- hidePostalCode: true (CARD_OPTIONS)
+- billing_details.address bij createPaymentMethod
+- NL-postcode-normalisatie vóór setCustomer + submitCheckout
+
+Build draait via git push → Vercel.
+
+=== Verificatie (mijn kant) ===
+
+Ik test op materialdistrict-frontend.vercel.app:
+- mand met testboek, NL-adres (1016 DW)
+- Calculate shipping → tarief
+- 4242… → Place order
+
+Als WC tóch postcode-fout geeft in Network, laat ik het weten.
+
+payment_data-capture blijft apart open.
+
+Groet,
+Johan

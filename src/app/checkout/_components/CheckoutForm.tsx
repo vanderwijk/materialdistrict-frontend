@@ -46,6 +46,10 @@ const EMPTY_ADDRESS: StoreAddress = {
 }
 
 const CARD_OPTIONS = {
+  // Checkout-fix: verberg Stripe's eigen postcodeveld. De postcode komt uit
+  // het adresformulier; dit voorkomt het dubbele veld én de losse Stripe-
+  // melding "Postcode is onvolledig" wanneer dat tweede veld leeg blijft.
+  hidePostalCode: true,
   style: {
     base: {
       fontSize: '15px',
@@ -53,6 +57,24 @@ const CARD_OPTIONS = {
       '::placeholder': { color: '#9a9a9a' },
     },
   },
+}
+
+/**
+ * Postcode-normalisatie vóór verzending naar Stripe/WooCommerce. NL valideert
+ * strikt ("1234 AB"); we canonicaliseren naar 4 cijfers + spatie + 2 hoofd-
+ * letters. Andere landen: alleen trimmen (uiteenlopende formats, niet forceren).
+ */
+function normalizePostcode(country: string, postcode: string): string {
+  const trimmed = postcode.trim()
+  if (country === 'NL') {
+    const m = /^(\d{4})\s*([A-Za-z]{2})$/.exec(trimmed)
+    if (m) return `${m[1]} ${m[2].toUpperCase()}`
+  }
+  return trimmed
+}
+
+function withNormalizedPostcode(addr: StoreAddress): StoreAddress {
+  return { ...addr, postcode: normalizePostcode(addr.country, addr.postcode) }
 }
 
 export function CheckoutForm() {
@@ -80,7 +102,7 @@ export function CheckoutForm() {
   async function handleCalculateShipping() {
     setError(null)
     try {
-      await setCustomer(shipAddr, billing)
+      await setCustomer(withNormalizedPostcode(shipAddr), withNormalizedPostcode(billing))
       setRatesLoaded(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not calculate shipping.')
@@ -122,7 +144,8 @@ export function CheckoutForm() {
     setSubmitting(true)
 
     try {
-      const billingWithContact: StoreAddress = { ...billing, email: email.trim() }
+      const normBilling = withNormalizedPostcode(billing)
+      const billingWithContact: StoreAddress = { ...normBilling, email: email.trim() }
       let paymentMethod = STRIPE_CARD_METHOD
       let paymentData: PaymentDataItem[] = []
 
@@ -142,8 +165,18 @@ export function CheckoutForm() {
           type: 'card',
           card: cardElement,
           billing_details: {
-            name: `${billing.first_name} ${billing.last_name}`.trim(),
+            name: `${normBilling.first_name} ${normBilling.last_name}`.trim(),
             email: email.trim(),
+            // Volledig factuuradres mee → Stripe valideert de postcode tegen
+            // het ingevulde adres i.p.v. een los (verborgen) CardElement-veld.
+            address: {
+              line1: normBilling.address_1,
+              line2: normBilling.address_2 || undefined,
+              city: normBilling.city,
+              state: normBilling.state || undefined,
+              postal_code: normBilling.postcode,
+              country: normBilling.country,
+            },
           },
         })
         if (pmError || !pm) {
@@ -161,7 +194,7 @@ export function CheckoutForm() {
 
       const result = await submitCheckout({
         billing_address: billingWithContact,
-        shipping_address: { ...shipAddr },
+        shipping_address: withNormalizedPostcode(shipAddr),
         payment_method: paymentMethod,
         payment_data: paymentData,
       })
