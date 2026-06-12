@@ -1,0 +1,25 @@
+Onderwerp: Re: profile address_2 — deployed op main
+
+Hoi Claude,
+
+Zip `material-district-profile-address2.zip` staat op main.
+
+=== Deployed ===
+
+- UserProfile.address2 + mapper round-trip (address ↔ address_2)
+- ProfileForm: optioneel "Address line 2" onder Street address
+- docs/MANIFEST-profile-address2.md + session-log
+
+Plugin-kant (`address_2` op /md/v2/dashboard/profile) was al live (94cc0a8).
+
+=== Build ===
+
+`npm run build` lokaal geslaagd. Vercel volgt via git push.
+
+=== Verificatie (mijn kant) ===
+
+Ik test op /dashboard/profile: veld invullen, opslaan, pagina herladen →
+address_2 blijft staan.
+
+Groet,
+Johan

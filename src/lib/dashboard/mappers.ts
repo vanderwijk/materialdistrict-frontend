@@ -56,6 +56,7 @@ interface RawUserProfile {
   profession?: string
   industry?: string
   address?: string
+  address_2?: string
   postcode?: string
   city?: string
   country?: string
@@ -127,6 +128,7 @@ export function mapUserProfile(raw: RawUserProfile): UserProfile {
     profession: raw.profession ?? '',
     industry: raw.industry ?? '',
     address: raw.address ?? '',
+    address2: raw.address_2 ?? '',
     postcode: raw.postcode ?? '',
     city: raw.city ?? '',
     country: raw.country ?? '',
@@ -205,6 +207,7 @@ export function toWpUserProfile(p: UserProfile): Record<string, unknown> {
     profession: p.profession,
     industry: p.industry,
     address: p.address,
+    address_2: p.address2,
     postcode: p.postcode,
     city: p.city,
     country: p.country,

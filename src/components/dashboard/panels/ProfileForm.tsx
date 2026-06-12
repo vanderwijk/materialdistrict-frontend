@@ -147,6 +147,14 @@ export function ProfileForm({
             showFilledState
           />
 
+          <Input
+            label="Address line 2"
+            optional
+            value={form.address2 ?? ''}
+            onChange={(e) => set('address2', e.target.value)}
+            showFilledState
+          />
+
           <div className="g2">
             <Input
               label="Post code"

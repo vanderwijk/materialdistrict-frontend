@@ -75,6 +75,8 @@ export interface UserProfile {
   industry: string
   // --- Billing & address ---
   address: string
+  /** Optionele tweede adresregel (suite, etage, etc.); WP user-meta `address_2`. */
+  address2?: string
   postcode: string
   city: string
   country: string
