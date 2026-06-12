@@ -151,9 +151,11 @@ Richtlijn:
 - **PHP/worker capacity** — piekload bij cold FacetWP.
 - **Regio:** Vercel draait **`fra1`**. Als WP Engine origin in **VS** staat, is **~80–150 ms extra RTT per request** normaal. Meerdere requests = opstapelend. Eventueel met WP Engine/hosting afstemmen (EU edge/origin) — infrastructuur, geen code.
 
-### 6. FacetWP uitfasering (lange termijn, strategisch)
+### 6. FacetWP uitfasering (strategisch — ook go-live)
 
-Zie `docs/facetwp-phase-out-policy.md`. FacetWP is **duurder** dan native REST voor de materials-filter. Uitfasering helpt **WP-load én** frontend-complexiteit (minder dubbele calls).
+Zie `docs/facetwp-phase-out-policy.md` en **`docs/note-go-live-facetwp-uitfaseren.md`**. Teamvoorkeur: FacetWP **uitgefaseerd vóór** productie-cutover Next.js frontend (snellere `/materials`, minder plugins). Legacy WP-theme houdt FacetWP tot die cutover; headless stack niet als eindtoestand.
+
+FacetWP is **duurder** dan native REST voor de materials-filter. Uitfasering helpt **WP-load én** frontend-complexiteit (minder dubbele calls).
 
 ### 7. Wat Johan níet hoeft te doen voor “snellere pagina’s”
 

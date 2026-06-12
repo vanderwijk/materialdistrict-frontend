@@ -12,6 +12,8 @@ We **vermijden nieuwe afhankelijkheden** op de FacetWP-plugin. Bestaande materia
 
 FacetWP wordt op **termijn uitgefaseerd** zodra de materials-property-filters zijn vervangen door native REST (of dedicated MD-endpoints).
 
+**Go-live-voorkeur:** FacetWP liever **uitgefaseerd vóór** productie-cutover van de Next.js frontend — legacy WP-theme heeft FacetWP nu nog nodig; headless stack niet. Zie `note-go-live-facetwp-uitfaseren.md`.
+
 ---
 
 ## Wat nog wél FacetWP gebruikt (legacy)
@@ -61,7 +63,7 @@ FacetWP wordt op **termijn uitgefaseerd** zodra de materials-property-filters zi
 2. **Middellang:** property-filters één voor één naar REST of `/md/v2/material-facets`-achtig endpoint; sidebar-counts uit eigen aggregator.
 3. **Eindstaat:** FacetWP-plugin deactiveren; `lib/api/facetwp.ts` verwijderen of reduceren tot shim.
 
-Geen harde deadline — wel **richting**: elke nieuwe feature mag FacetWP niet vergroten.
+Geen harde deadline — wel **richting**: elke nieuwe feature mag FacetWP niet vergroten. **Go-live Next.js:** uitfaseren heeft **voorkeur** vóór livegang (performance + minder plugins) — zie `note-go-live-facetwp-uitfaseren.md`.
 
 ---
 
@@ -87,3 +89,5 @@ Zie `email-claude-reply-brand-rest-no-facetwp.txt`.
 | Brand country facets (zonder FacetWP) | `docs/johan-spec-brand-facets.md` (plugin) |
 | Materials FacetWP client | `src/lib/api/facetwp.ts`, `architecture-rules.md` |
 | Channel materials (legacy FacetWP) | `docs/MANIFEST-channelbar-materials.md` |
+| Go-live & FacetWP-uitfasering | `docs/note-go-live-facetwp-uitfaseren.md` |
+| Performance / laadtijd | `docs/performance-load-time-analysis.md` |
