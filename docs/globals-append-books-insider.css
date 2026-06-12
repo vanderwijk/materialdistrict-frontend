@@ -1,0 +1,53 @@
+
+/* ============================================================
+   §BOOKS-INSIDER — prominente insider-prijs op de book-buy-card.
+   Additief, later-wins override van de bestaande .book-buy-regels;
+   de korting was te subtiel ("leesbril"). Grotere insider-prijs,
+   duidelijke doorhaling, een teal Insider-pill (--ct-member) en een
+   concreet spaarbedrag. Kleuren self-contained, consistent met het
+   bestaande wit-op-ink-patroon van de kaart (robuust in light en dark).
+   ============================================================ */
+
+.book-buy-price-now {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.book-buy-price-was {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration-thickness: 2px;
+}
+
+.book-buy-insider-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.book-buy-insider-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  background: var(--ct-member);
+  padding: 4px 11px;
+  border-radius: 999px;
+  margin-bottom: 0;
+}
+
+.book-buy-save {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.book-buy-upsell strong {
+  color: #fff;
+  font-weight: 700;
+}

@@ -70,12 +70,18 @@ export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardPro
           </div>
 
           {isMember && hasDiscount && (
-            <div className="book-buy-insider-tag">Insider price applied</div>
+            <div className="book-buy-insider-row">
+              <span className="book-buy-insider-tag">Insider price</span>
+              <span className="book-buy-save">
+                save {formatEur(price - insiderPrice)}
+              </span>
+            </div>
           )}
 
           {!isMember && hasDiscount && (
             <p className="book-buy-upsell">
-              Insiders pay {formatEur(insiderPrice)}.{' '}
+              Insiders pay {formatEur(insiderPrice)} —{' '}
+              <strong>save {formatEur(price - insiderPrice)}</strong>.{' '}
               <a href="/membership">Become an Insider</a>
             </p>
           )}

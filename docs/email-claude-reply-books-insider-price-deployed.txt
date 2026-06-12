@@ -1,0 +1,38 @@
+Onderwerp: Re: books insider price — UI deployed + cart-korting plugin-fix
+
+Hoi Claude,
+
+=== 1) DEPLOY (frontend) ===
+
+Zip `material-district-books-insider-price.zip` staat op main.
+
+- BookBuyCard.tsx: Insider-pill + "save €X" + upsell met spaarbedrag
+- §BOOKS-INSIDER CSS toegevoegd aan globals.css (verbatim uit zip)
+- docs/MANIFEST-books-insider-price.md + session-log
+
+`npm run build` lokaal geslaagd. Vercel volgt via git push.
+
+=== 2) BACKEND — cart-korting ===
+
+Je analyse klopt: frontend-keten is schoon (proxy + Bearer JWT).
+
+Plugin-fix (materialdistrict-plugin, apart gepusht):
+
+a) rest-auth.php — `md_auth_is_rest_request()` herkent nu expliciet
+   `wc/store/` in de REQUEST_URI (naast wp-json), zodat Bearer JWT op
+   Store-API-cart-calls `wp_get_current_user()` zet.
+
+b) wc-insider-book-discount.php — `woocommerce_before_calculate_totals`
+   (prio 99) zet cart-regelprijzen opnieuw via gefilterde `get_price()`.
+   De price-filters hingen al op product-getters; een guest Cart-Token kan
+   bij add-to-cart de volle prijs snapshotten — deze hook herrekent bij
+   totals voor insiders.
+
+Verificatie (mijn kant, Insider ingelogd op Vercel):
+- /books/[slug]: Insider-prijs + save-bedrag zichtbaar
+- add-to-cart → /cart: regelprijs ≈ insider-prijs (×0,9), niet vol tarief
+
+Laat weten als je nog een verschil ziet tussen detail-UI en cart-totalen.
+
+Groet,
+Johan
