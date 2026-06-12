@@ -27,6 +27,7 @@ export function CartView() {
   const {
     cart,
     loading,
+    initialized,
     updateItem,
     removeItem,
     applyCouponCode,
@@ -36,6 +37,10 @@ export function CartView() {
   const [couponInput, setCouponInput] = useState('')
   const [couponError, setCouponError] = useState<string | null>(null)
   const [couponPending, setCouponPending] = useState(false)
+
+  if (!initialized) {
+    return <EmptyState title="Loading your cart…" />
+  }
 
   if (!cart || cart.items.length === 0) {
     return (

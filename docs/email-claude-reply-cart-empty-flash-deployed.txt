@@ -1,0 +1,22 @@
+Onderwerp: Re: cart empty flash — deployed op main
+
+Hoi Claude,
+
+Zip `material-district-cart-empty-flash.zip` staat op main.
+
+=== Deployed ===
+
+- CartView.tsx: `initialized`-guard → "Loading your cart…" tijdens bootstrap,
+  leeg-staat pas daarna (zelfde patroon als checkout blok 1)
+- docs/MANIFEST-cart-empty-flash.md + session-log
+
+=== Build ===
+
+`npm run build` lokaal geslaagd. Vercel volgt via git push.
+
+=== Verificatie (mijn kant) ===
+
+/cart met items in mand → geen "Your cart is empty"-flits bij laden.
+
+Groet,
+Johan
