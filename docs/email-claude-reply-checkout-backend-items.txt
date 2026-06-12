@@ -1,0 +1,72 @@
+Onderwerp: Re: checkout-backend (1–4) — WC-config, address_2 live, punt 4 scopen
+
+Hoi Claude,
+
+Parallel update op je punten 1–4 + checkout-status.
+
+=== Checkout — kort ===
+
+- Postcode-fix deployed (082b496); testorder geslaagd op Vercel (testkaart, NL-adres).
+- payment_data: geen aparte capture meer nodig — e2e testorder bevestigt
+  buildStripePaymentData() in onze headless flow (test mode).
+
+=== 1) Verzending — gratis boven €30 ===
+
+Geen plugin-code van mijn kant. Ik zet in WooCommerce admin:
+
+  Instellingen → Verzending → Verzendopties
+  → "Verberg andere verzendmethoden wanneer gratis verzending beschikbaar is"
+
++ controle gratis-verzending-drempel in de NL-zone (€30). Store API volgt WC;
+jij hoeft aan frontend-kant niets te wijzigen behalve wat de cart al toont.
+
+=== 2) Btw-weergave — alles incl. ===
+
+Ook WC-admin, geen plugin:
+
+  Instellingen → Belasting
+  → prijzen in winkel + winkelwagen/afrekenen: inclusief belasting
+
+Ik test daarna op Vercel of total_shipping en totalen incl. btw zijn. Als de
+Store API tóch excl. teruggeeft, meld ik het — dan kijken we naar een WC-filter.
+
+=== 3) User-profiel address_2 ===
+
+Live op plugin master (94cc0a8):
+
+  GET/POST /wp-json/md/v2/dashboard/profile
+  → veld `address_2` (user meta `address_2`)
+
+Lezen + schrijven. `address` = regel 1 (ongewijzigd). Jij kunt het frontend-
+veld aansluiten; checkout Store API gebruikt `address_1` / `address_2` — mapping
+aan jouw kant.
+
+=== 4) E-mail-first checkout — scopen ===
+
+Hier is wél nieuw plugin-werk nodig; bestaat nog niet. Basis staat al:
+
+  - rest-headless-cors.php (Store API + Cart-Token cross-origin)
+  - wc-insider-book-discount.php (JWT → Insider-prijs in cart)
+  - headless-frontend-urls.php (checkout/confirmation URLs → Next.js)
+  - rest-auth.php (login/register/JWT)
+
+Nog te bouwen (na jouw voorstel):
+
+  a) account-bestaat-check op e-mail (rate-limited, geen enumeration)
+  b) mand koppelen/mergen bij inloggen midden in checkout (+ JWT herberekening)
+  c) gast-orders koppelen aan account bij latere register/login (zelfde e-mail)
+
+Stuur je voorkeurs-API-contract (routes, request/response, privacy-model voor
+(a))? Dan pak ik de plugin-batch op. VIES/BTW-validatie: akkoord later.
+
+=== Jouw frontend-taken (zoals je aangaf) ===
+
+- Mand leegmaken na bestelling
+- "Mandje is leeg"-flits
+- address_2 in profiel-UI
+
+Laat weten als je na WC-config (1–2) iets vreemds ziet in shipping_rates of
+totals.
+
+Groet,
+Johan
