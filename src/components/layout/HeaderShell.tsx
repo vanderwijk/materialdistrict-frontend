@@ -4,6 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Header, type HeaderSection } from '@/components/layout/Header'
 import { useTheme } from '@/components/providers/ThemeProvider'
 import { useAuth } from '@/components/providers/AuthContext'
+import { useCart } from '@/components/providers/CartContext'
 
 /**
  * Bepaal welke nav-section actief is op basis van het huidige pad.
@@ -44,6 +45,7 @@ export function HeaderShell() {
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
   const { isLoggedIn, isMember, signOut } = useAuth()
+  const { itemCount } = useCart()
 
   function handleLoginClick() {
     // Capture the current page as ?next= so the user lands back where
@@ -66,6 +68,7 @@ export function HeaderShell() {
       currentSection={getCurrentSection(pathname)}
       isLoggedIn={isLoggedIn}
       isMember={isMember}
+      cartCount={itemCount}
       theme={theme}
       onThemeToggle={toggleTheme}
       onLoginClick={handleLoginClick}
