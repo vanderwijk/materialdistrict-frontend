@@ -10,9 +10,8 @@
  * (+ optioneel `customer_note`, `create_account`); retour bevat `order_id`,
  * `order_key`, `payment_result`.
  *
- * ⚠️ Zie `buildStripePaymentData` onderaan: de exacte `payment_data`-sleutels
- * zijn plugin-versie-specifiek en moeten via de capture-techniek (handoff §4.1)
- * bevestigd worden. Alle andere checkout-logica staat los van die sleutels.
+ * Stripe `payment_data`-sleutels: zie `buildStripePaymentData` (afgeleid van
+ * block-checkout payment-processor.js).
  */
 
 import { storeRequest, type StoreAddress } from './cart'
@@ -136,23 +135,39 @@ export function recallOrderEmail(orderId: number | string): string | null {
 // --------------------------------------------------------------------
 /**
  * Bouwt de `payment_data` voor de officiële WooCommerce Stripe Gateway
- * (deferred-intent-flow, gateway 10.x). Dit zijn de **best-known** sleutels;
- * ze zijn plugin-versie-specifiek en NIET formeel gedocumenteerd.
+ * (deferred-intent UPE-flow). Keys zijn afgeleid van block-checkout
+ * (`client/blocks/upe/upe-deferred-intent-creation/payment-processor.js`).
  *
- * → Te bevestigen via de capture-techniek (handoff §4.1): doe een test-
- *   betaling op een lokale block-checkout met DevTools open en lees de
- *   `POST /checkout`-body. Wijk de echte sleutels af, dan ALLEEN deze functie
- *   aanpassen — de rest van de checkout blijft ongemoeid.
- *
- * Bekende sleutels (gevalideerd voor kaart én iDEAL in productie):
- *   - `wc-stripe-payment-method`     → de Stripe PaymentMethod-id (pm_…)
- *   - `wc-stripe-is-deferred-intent` → 'true'
+ * `payment_method` in payment_data is verplicht: Store API kopieert payment_data
+ * naar `$_POST`, en de gateway leest daar `payment_method` om het UPE-type te
+ * bepalen (`stripe` → card, `stripe_ideal` → ideal).
  */
-export function buildStripePaymentData(paymentMethodId: string): PaymentDataItem[] {
-  return [
+export function buildStripePaymentData(
+  paymentMethodId: string,
+  gatewayId: string,
+  billing?: StoreAddress,
+): PaymentDataItem[] {
+  const items: PaymentDataItem[] = [
+    { key: 'payment_method', value: gatewayId },
     { key: 'wc-stripe-payment-method', value: paymentMethodId },
-    { key: 'wc-stripe-is-deferred-intent', value: 'true' },
+    { key: 'save_payment_method', value: 'no' },
   ]
+
+  if (billing) {
+    items.push(
+      { key: 'billing_email', value: billing.email ?? '' },
+      { key: 'billing_first_name', value: billing.first_name },
+      { key: 'billing_last_name', value: billing.last_name },
+      { key: 'billing_address_1', value: billing.address_1 },
+      { key: 'billing_address_2', value: billing.address_2 ?? '' },
+      { key: 'billing_city', value: billing.city },
+      { key: 'billing_state', value: billing.state ?? '' },
+      { key: 'billing_postcode', value: billing.postcode },
+      { key: 'billing_country', value: billing.country },
+    )
+  }
+
+  return items
 }
 
 /** Stripe-gateway-id's (zoals WC ze registreert). */

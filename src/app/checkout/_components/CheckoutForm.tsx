@@ -41,6 +41,7 @@ import {
   type PaymentDataItem,
 } from '@/lib/api/checkout'
 import type { CheckoutPrefill } from '@/lib/checkout/profile-prefill'
+import { resolveStripeCheckoutRedirect } from '@/lib/stripe/confirm-redirect'
 import { getStripe } from '@/lib/stripe/client'
 import { formatEur } from '@/lib/utils/format-price'
 import { AddressFields } from './AddressFields'
@@ -318,7 +319,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           return
         }
         paymentMethod = STRIPE_CARD_METHOD
-        paymentData = buildStripePaymentData(pm.id)
+        paymentData = buildStripePaymentData(pm.id, STRIPE_CARD_METHOD, billingWithContact)
       } else {
         const stripe = stripeRef
         const elements = elementsRef
@@ -356,7 +357,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           return
         }
         paymentMethod = STRIPE_IDEAL_METHOD
-        paymentData = buildStripePaymentData(pm.id)
+        paymentData = buildStripePaymentData(pm.id, STRIPE_IDEAL_METHOD, billingWithContact)
       }
 
       const result = await submitCheckout({
@@ -370,21 +371,33 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
 
       const redirectUrl = result.payment_result?.redirect_url
       const status = result.payment_result?.payment_status
+      const confirmationUrl =
+        `/order-confirmation/${result.order_id}` +
+        `?key=${encodeURIComponent(result.order_key)}`
 
       if (redirectUrl) {
-        // 3DS / iDEAL / andere redirect-gateways. Order is aangemaakt → de
-        // server-side mand is verbruikt; client-mand legen vóór de redirect.
+        // 3DS / iDEAL: WC retourneert een bank-URL of een #wc-stripe-confirm-pi-hash
+        // die client-side confirmPayment vereist (zelfde flow als block-checkout).
+        const stripe = stripeRef
+        if (!stripe) {
+          setError('Payment form is still loading. Please wait a moment and try again.')
+          setSubmitting(false)
+          return
+        }
+
         setPlaced(true)
         clearCart()
-        window.location.href = redirectUrl
+
+        const finalUrl = await resolveStripeCheckoutRedirect(stripe, redirectUrl, {
+          fallbackReturnUrl: `${window.location.origin}${confirmationUrl}`,
+        })
+        window.location.href = finalUrl
         return
       }
       if (status === 'success' || status === 'pending') {
         setPlaced(true)
         clearCart()
-        router.push(
-          `/order-confirmation/${result.order_id}?key=${encodeURIComponent(result.order_key)}`,
-        )
+        router.push(confirmationUrl)
         return
       }
       const detail = result.payment_result?.payment_details
