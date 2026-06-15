@@ -29,6 +29,7 @@ import {
   STRIPE_IDEAL_METHOD,
   type PaymentDataItem,
 } from '@/lib/api/checkout'
+import type { CheckoutPrefill } from '@/lib/checkout/prefill'
 import { formatEur } from '@/lib/utils/format-price'
 import { AddressFields } from './AddressFields'
 
@@ -77,14 +78,18 @@ function withNormalizedPostcode(addr: StoreAddress): StoreAddress {
   return { ...addr, postcode: normalizePostcode(addr.country, addr.postcode) }
 }
 
-export function CheckoutForm() {
+interface CheckoutFormProps {
+  prefill?: CheckoutPrefill | null
+}
+
+export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const router = useRouter()
   const { cart, setCustomer, selectShipping, loading, initialized, clearCart } = useCart()
   const stripe = useStripe()
   const elements = useElements()
 
-  const [email, setEmail] = useState('')
-  const [billing, setBilling] = useState<StoreAddress>(EMPTY_ADDRESS)
+  const [email, setEmail] = useState(prefill?.email ?? '')
+  const [billing, setBilling] = useState<StoreAddress>(prefill?.billing ?? EMPTY_ADDRESS)
   const [shipSame, setShipSame] = useState(true)
   const [shipping, setShipping] = useState<StoreAddress>(EMPTY_ADDRESS)
   const [ratesLoaded, setRatesLoaded] = useState(false)

@@ -6,6 +6,7 @@
 
 import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { getCheckoutPrefill } from '@/lib/checkout/prefill'
 import { CheckoutView } from './_components/CheckoutView'
 
 export const metadata: Metadata = {
@@ -13,7 +14,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default function CheckoutPage() {
+export default async function CheckoutPage() {
+  const prefill = await getCheckoutPrefill()
+
   return (
     <>
       <header className="ov-page-header">
@@ -26,7 +29,7 @@ export default function CheckoutPage() {
       </header>
 
       <div className="ov-wrap-single">
-        <CheckoutView />
+        <CheckoutView prefill={prefill} />
       </div>
     </>
   )
