@@ -19,6 +19,7 @@ import { useState } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useCart } from '@/components/providers/CartContext'
 import { getBookPrice } from '@/lib/config/membership'
+import { CartError } from '@/lib/api/cart'
 import { formatEur } from '@/lib/utils/format-price'
 
 export interface BookBuyCardProps {
@@ -31,7 +32,7 @@ export interface BookBuyCardProps {
 
 export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardProps) {
   const { isMember } = useAuth()
-  const { addItem, loading } = useCart()
+  const { addItem } = useCart()
 
   const [added, setAdded] = useState(false)
   const [pending, setPending] = useState(false)
@@ -47,8 +48,12 @@ export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardPro
     try {
       await addItem(productId, 1)
       setAdded(true)
-    } catch {
-      setLocalError('Could not add to cart. Please try again.')
+    } catch (err) {
+      setLocalError(
+        err instanceof CartError
+          ? err.message
+          : 'Could not add to cart. Please try again.',
+      )
     } finally {
       setPending(false)
     }
@@ -104,7 +109,7 @@ export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardPro
           type="button"
           className="book-buy-btn"
           onClick={handleAdd}
-          disabled={pending || loading}
+          disabled={pending}
         >
           {pending ? 'Adding…' : 'Add to cart'}
         </button>

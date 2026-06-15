@@ -107,6 +107,29 @@ async function cartFetch<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T
 }
 
+/**
+ * Store API mutations need a Cart-Token. After checkout we clear the token;
+ * GET /cart bootstraps a fresh session (also recovers stale tokens on 401).
+ */
+async function ensureCartSession(): Promise<void> {
+  if (getToken()) return
+  await cartFetch<StoreCart>('/cart')
+}
+
+async function cartMutate<T>(path: string, init: RequestInit): Promise<T> {
+  await ensureCartSession()
+  try {
+    return await cartFetch<T>(path, init)
+  } catch (err) {
+    if (err instanceof CartError && err.status === 401) {
+      clearCartSession()
+      await cartFetch<StoreCart>('/cart')
+      return cartFetch<T>(path, init)
+    }
+    throw err
+  }
+}
+
 // --------------------------------------------------------------------
 // Types (subset van de Store-API-cart die we renderen)
 // --------------------------------------------------------------------
@@ -174,35 +197,35 @@ export function fetchCart(): Promise<StoreCart> {
 }
 
 export function addToCart(id: number, quantity = 1): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/add-item', {
+  return cartMutate<StoreCart>('/cart/add-item', {
     method: 'POST',
     body: JSON.stringify({ id, quantity }),
   })
 }
 
 export function updateCartItem(key: string, quantity: number): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/update-item', {
+  return cartMutate<StoreCart>('/cart/update-item', {
     method: 'POST',
     body: JSON.stringify({ key, quantity }),
   })
 }
 
 export function removeCartItem(key: string): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/remove-item', {
+  return cartMutate<StoreCart>('/cart/remove-item', {
     method: 'POST',
     body: JSON.stringify({ key }),
   })
 }
 
 export function applyCoupon(code: string): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/apply-coupon', {
+  return cartMutate<StoreCart>('/cart/apply-coupon', {
     method: 'POST',
     body: JSON.stringify({ code }),
   })
 }
 
 export function removeCoupon(code: string): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/remove-coupon', {
+  return cartMutate<StoreCart>('/cart/remove-coupon', {
     method: 'POST',
     body: JSON.stringify({ code }),
   })
@@ -234,7 +257,7 @@ export function updateCustomer(
   shippingAddress: StoreAddress,
   billingAddress?: StoreAddress,
 ): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/update-customer', {
+  return cartMutate<StoreCart>('/cart/update-customer', {
     method: 'POST',
     body: JSON.stringify({
       shipping_address: shippingAddress,
@@ -244,7 +267,7 @@ export function updateCustomer(
 }
 
 export function selectShippingRate(rateId: string): Promise<StoreCart> {
-  return cartFetch<StoreCart>('/cart/select-shipping-rate', {
+  return cartMutate<StoreCart>('/cart/select-shipping-rate', {
     method: 'POST',
     body: JSON.stringify({ rate_id: rateId }),
   })
@@ -256,7 +279,11 @@ export function selectShippingRate(rateId: string): Promise<StoreCart> {
  * — één client, één proxy (conform Johans voorkeur).
  */
 export function storeRequest<T>(path: string, init?: RequestInit): Promise<T> {
-  return cartFetch<T>(path, init)
+  const method = (init?.method ?? 'GET').toUpperCase()
+  if (method === 'GET' || method === 'HEAD') {
+    return cartFetch<T>(path, init)
+  }
+  return cartMutate<T>(path, { ...init, method })
 }
 
 /** Minor-units string ("2350") → euro-getal (23.5). */

@@ -88,7 +88,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
     run(fetchCart)
       .catch(() => {
-        /* stille mislukking — lege mand is een prima beginstaat */
+        clearCartSession()
       })
       .finally(() => setInitialized(true))
   }, [run])
