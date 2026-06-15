@@ -141,6 +141,10 @@ export function recallOrderEmail(orderId: number | string): string | null {
  * `payment_method` in payment_data is verplicht: Store API kopieert payment_data
  * naar `$_POST`, en de gateway leest daar `payment_method` om het UPE-type te
  * bepalen (`stripe` → card, `stripe_ideal` → ideal).
+ *
+ * Top-level checkout `payment_method` moet altijd `stripe` zijn (hoofd-gateway).
+ * Split UPE-id's zoals `stripe_ideal` staan alleen in payment_data — anders wordt
+ * `payment_result` leeg gelaten door WooCommerce.
  */
 export function buildStripePaymentData(
   paymentMethodId: string,

@@ -356,7 +356,9 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           setSubmitting(false)
           return
         }
-        paymentMethod = STRIPE_IDEAL_METHOD
+        // Store API: betaling loopt via de hoofd-gateway `stripe`; iDEAL-type zit in
+        // payment_data (split UPE-gateway `stripe_ideal` wordt server-side niet verwerkt).
+        paymentMethod = STRIPE_CARD_METHOD
         paymentData = buildStripePaymentData(pm.id, STRIPE_IDEAL_METHOD, billingWithContact)
       }
 
