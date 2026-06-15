@@ -8,17 +8,24 @@
  *  1. Contact (e-mail) + factuuradres (+ optioneel apart verzendadres).
  *  2. "Calculate shipping" → `update-customer` → verzendtarieven → keuze →
  *     `select-shipping-rate`. Totalen komen uit de mand-response.
- *  3. Betaling: Stripe-kaart (PaymentMethod client-side) of iDEAL (redirect).
+ *  3. Betaling: Stripe-kaart (CardElement) of iDEAL (Payment Element + redirect).
  *  4. `POST /checkout`. Bij `redirect_url` (3DS/iDEAL) → doorsturen; anders bij
  *     success/pending → /order-confirmation/{id}?key=…
  *
- * De Stripe `payment_data` komt uit `buildStripePaymentData` — de enige plek
- * die nog via capture bevestigd moet worden (handoff §4.1).
+ * iDEAL gebruikt dezelfde deferred-intent `payment_data` als kaart, maar met een
+ * PaymentMethod uit Stripe's Payment Element (bankkeuze).
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import {
+  CardElement,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js'
+import type { StripeElementsOptions } from '@stripe/stripe-js'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber, type StoreAddress } from '@/lib/api/cart'
@@ -34,9 +41,12 @@ import {
   type PaymentDataItem,
 } from '@/lib/api/checkout'
 import type { CheckoutPrefill } from '@/lib/checkout/profile-prefill'
+import { getStripe } from '@/lib/stripe/client'
 import { formatEur } from '@/lib/utils/format-price'
 import { AddressFields } from './AddressFields'
 import { CheckoutSignInPanel } from './CheckoutSignInPanel'
+
+const stripePromise = getStripe()
 
 type PayMethod = 'card' | 'ideal'
 
@@ -101,8 +111,6 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const router = useRouter()
   const { isLoggedIn } = useAuth()
   const { cart, setCustomer, selectShipping, loading, initialized, clearCart, refresh } = useCart()
-  const stripe = useStripe()
-  const elements = useElements()
 
   const [email, setEmail] = useState(prefill?.email ?? '')
   const [billing, setBilling] = useState<StoreAddress>(prefill?.billing ?? EMPTY_ADDRESS)
@@ -115,6 +123,29 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [submitting, setSubmitting] = useState(false)
   const [placed, setPlaced] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [stripeRef, setStripeRef] = useState<ReturnType<typeof useStripe>>(null)
+  const [elementsRef, setElementsRef] = useState<ReturnType<typeof useElements>>(null)
+
+  const handleStripeReady = useCallback(
+    (stripe: ReturnType<typeof useStripe>, elements: ReturnType<typeof useElements>) => {
+      setStripeRef(stripe)
+      setElementsRef(elements)
+    },
+    [],
+  )
+
+  const idealElementsOptions = useMemo((): StripeElementsOptions | undefined => {
+    if (!cart?.totals.total_price) return undefined
+    const amount = Number(cart.totals.total_price)
+    if (!Number.isFinite(amount) || amount < 1) return undefined
+    return {
+      mode: 'payment',
+      amount,
+      currency: (cart.totals.currency_code ?? 'EUR').toLowerCase(),
+      paymentMethodTypes: ['ideal'],
+      paymentMethodCreation: 'manual',
+    }
+  }, [cart?.totals.total_price, cart?.totals.currency_code])
 
   const shipAddr = shipSame ? billing : shipping
   const minor = cart?.totals.currency_minor_unit ?? 2
@@ -135,6 +166,11 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     [availablePaymentMethods],
   )
   const availablePayMethodsKey = availablePayMethods.join(',')
+
+  useEffect(() => {
+    setStripeRef(null)
+    setElementsRef(null)
+  }, [method])
 
   useEffect(() => {
     if (availablePayMethods.length === 0) return
@@ -245,6 +281,8 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
       let paymentData: PaymentDataItem[] = []
 
       if (method === 'card') {
+        const stripe = stripeRef
+        const elements = elementsRef
         if (!stripe || !elements) {
           setError('Payment form is still loading. Please wait a moment and try again.')
           setSubmitting(false)
@@ -282,9 +320,43 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         paymentMethod = STRIPE_CARD_METHOD
         paymentData = buildStripePaymentData(pm.id)
       } else {
-        // iDEAL — redirect-based; confirmation token komt in een volgende iteratie.
+        const stripe = stripeRef
+        const elements = elementsRef
+        if (!stripe || !elements) {
+          setError('Payment form is still loading. Please wait a moment and try again.')
+          setSubmitting(false)
+          return
+        }
+        const submitResult = await elements.submit()
+        if (submitResult.error) {
+          setError(submitResult.error.message ?? 'Please complete the iDEAL payment details.')
+          setSubmitting(false)
+          return
+        }
+        const { error: pmError, paymentMethod: pm } = await stripe.createPaymentMethod({
+          elements,
+          params: {
+            billing_details: {
+              name: `${normBilling.first_name} ${normBilling.last_name}`.trim(),
+              email: email.trim(),
+              address: {
+                line1: normBilling.address_1,
+                line2: normBilling.address_2 || undefined,
+                city: normBilling.city,
+                state: normBilling.state || undefined,
+                postal_code: normBilling.postcode,
+                country: normBilling.country,
+              },
+            },
+          },
+        })
+        if (pmError || !pm) {
+          setError(pmError?.message ?? 'iDEAL payment could not be validated.')
+          setSubmitting(false)
+          return
+        }
         paymentMethod = STRIPE_IDEAL_METHOD
-        paymentData = []
+        paymentData = buildStripePaymentData(pm.id)
       }
 
       const result = await submitCheckout({
@@ -315,7 +387,13 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         )
         return
       }
-      setError('The payment could not be completed. Please try another method.')
+      const detail = result.payment_result?.payment_details
+        ?.map((item) => item.value)
+        .filter(Boolean)
+        .join(' ')
+      setError(
+        detail || 'The payment could not be completed. Please try another method.',
+      )
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Checkout failed. Please try again.')
     } finally {
@@ -457,14 +535,23 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           )}
 
           {method === 'card' && availablePayMethods.includes('card') && (
-            <div className="checkout-card-element">
-              <CardElement options={CARD_OPTIONS} />
-            </div>
+            <Elements stripe={stripePromise}>
+              <StripeBridge onReady={handleStripeReady} />
+              <div className="checkout-card-element">
+                <CardElement options={CARD_OPTIONS} />
+              </div>
+            </Elements>
           )}
-          {method === 'ideal' && availablePayMethods.includes('ideal') && (
-            <p className="checkout-hint">
-              You&apos;ll be redirected to your bank to approve the payment.
-            </p>
+          {method === 'ideal' && availablePayMethods.includes('ideal') && idealElementsOptions && (
+            <Elements stripe={stripePromise} options={idealElementsOptions}>
+              <StripeBridge onReady={handleStripeReady} />
+              <div className="checkout-ideal-element">
+                <PaymentElement options={{ layout: 'tabs' }} />
+                <p className="checkout-hint">
+                  Choose your bank — you&apos;ll be redirected to approve the payment.
+                </p>
+              </div>
+            </Elements>
           )}
         </section>
 
@@ -530,4 +617,20 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
       </aside>
     </div>
   )
+}
+
+/** Publiceert stripe/elements naar de parent (buiten nested Elements-context). */
+function StripeBridge({
+  onReady,
+}: {
+  onReady: (stripe: ReturnType<typeof useStripe>, elements: ReturnType<typeof useElements>) => void
+}) {
+  const stripe = useStripe()
+  const elements = useElements()
+
+  useEffect(() => {
+    onReady(stripe, elements)
+  }, [stripe, elements, onReady])
+
+  return null
 }

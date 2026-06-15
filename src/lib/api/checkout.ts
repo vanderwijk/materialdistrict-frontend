@@ -144,7 +144,7 @@ export function recallOrderEmail(orderId: number | string): string | null {
  *   `POST /checkout`-body. Wijk de echte sleutels af, dan ALLEEN deze functie
  *   aanpassen — de rest van de checkout blijft ongemoeid.
  *
- * Bekende kandidaat-sleutels voor gateway 10.7.0:
+ * Bekende sleutels (gevalideerd voor kaart én iDEAL in productie):
  *   - `wc-stripe-payment-method`     → de Stripe PaymentMethod-id (pm_…)
  *   - `wc-stripe-is-deferred-intent` → 'true'
  */
