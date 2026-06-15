@@ -186,6 +186,8 @@ export interface StoreCart {
   totals: StoreCartTotals
   coupons: StoreCartCoupon[]
   shipping_rates: Array<{ shipping_rates: StoreShippingRate[] }>
+  /** Gateway-id's die WooCommerce voor deze mand beschikbaar acht (bv. stripe, stripe_ideal). */
+  payment_methods?: string[]
 }
 
 // --------------------------------------------------------------------

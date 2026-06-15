@@ -16,7 +16,7 @@
  * die nog via capture bevestigd moet worden (handoff §4.1).
  */
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
 import { useAuth } from '@/components/providers/AuthContext'
@@ -25,6 +25,8 @@ import { storeMinorToNumber, type StoreAddress } from '@/lib/api/cart'
 import { checkCheckoutEmail } from '@/lib/api/checkout-account'
 import {
   buildStripePaymentData,
+  isSupportedCheckoutPaymentMethod,
+  paymentMethodLabel,
   rememberOrderEmail,
   submitCheckout,
   STRIPE_CARD_METHOD,
@@ -37,6 +39,16 @@ import { AddressFields } from './AddressFields'
 import { CheckoutSignInPanel } from './CheckoutSignInPanel'
 
 type PayMethod = 'card' | 'ideal'
+
+function payMethodFromGatewayId(id: string): PayMethod | null {
+  if (id === STRIPE_CARD_METHOD) return 'card'
+  if (id === STRIPE_IDEAL_METHOD) return 'ideal'
+  return null
+}
+
+function gatewayIdFromPayMethod(method: PayMethod): string {
+  return method === 'ideal' ? STRIPE_IDEAL_METHOD : STRIPE_CARD_METHOD
+}
 
 const EMPTY_ADDRESS: StoreAddress = {
   first_name: '',
@@ -110,6 +122,26 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
 
   const rates = cart?.shipping_rates?.[0]?.shipping_rates ?? []
   const selectedRate = rates.find((r) => r.selected)
+
+  const availablePaymentMethods = useMemo(
+    () => (cart?.payment_methods ?? []).filter(isSupportedCheckoutPaymentMethod),
+    [cart?.payment_methods],
+  )
+  const availablePayMethods = useMemo(
+    () =>
+      availablePaymentMethods
+        .map((id) => payMethodFromGatewayId(id))
+        .filter((m): m is PayMethod => m !== null),
+    [availablePaymentMethods],
+  )
+  const availablePayMethodsKey = availablePayMethods.join(',')
+
+  useEffect(() => {
+    if (availablePayMethods.length === 0) return
+    if (!availablePayMethods.includes(method)) {
+      setMethod(availablePayMethods[0])
+    }
+  }, [availablePayMethodsKey, availablePayMethods, method])
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -197,7 +229,19 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     try {
       const normBilling = withNormalizedPostcode(billing)
       const billingWithContact: StoreAddress = { ...normBilling, email: email.trim() }
-      let paymentMethod = STRIPE_CARD_METHOD
+      const normShipping = withNormalizedPostcode(shipAddr)
+
+      // Zorg dat WC de klant (incl. billing country) kent vóór gateway-beschikbaarheid.
+      await setCustomer(normShipping, billingWithContact)
+
+      const paymentGatewayId = gatewayIdFromPayMethod(method)
+      if (!availablePaymentMethods.includes(paymentGatewayId)) {
+        setError('That payment method is not available for this order. Please choose another option.')
+        setSubmitting(false)
+        return
+      }
+
+      let paymentMethod = paymentGatewayId
       let paymentData: PaymentDataItem[] = []
 
       if (method === 'card') {
@@ -238,14 +282,14 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         paymentMethod = STRIPE_CARD_METHOD
         paymentData = buildStripePaymentData(pm.id)
       } else {
-        // iDEAL — redirect-based; geen kaartvelden, payment_data leeg.
+        // iDEAL — redirect-based; confirmation token komt in een volgende iteratie.
         paymentMethod = STRIPE_IDEAL_METHOD
         paymentData = []
       }
 
       const result = await submitCheckout({
         billing_address: billingWithContact,
-        shipping_address: withNormalizedPostcode(shipAddr),
+        shipping_address: normShipping,
         payment_method: paymentMethod,
         payment_data: paymentData,
       })
@@ -387,33 +431,37 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         {/* Payment */}
         <section className="checkout-section">
           <h2 className="checkout-section-head">Payment</h2>
-          <div className="checkout-methods">
-            <label className="checkout-method">
-              <input
-                type="radio"
-                name="pay-method"
-                checked={method === 'card'}
-                onChange={() => setMethod('card')}
-              />
-              Credit or debit card
-            </label>
-            <label className="checkout-method">
-              <input
-                type="radio"
-                name="pay-method"
-                checked={method === 'ideal'}
-                onChange={() => setMethod('ideal')}
-              />
-              iDEAL
-            </label>
-          </div>
+          {availablePayMethods.length === 0 ? (
+            <p className="checkout-hint">
+              No payment methods are available yet. Enter your address and calculate shipping if
+              needed, then try again.
+            </p>
+          ) : (
+            <div className="checkout-methods">
+              {availablePaymentMethods.map((id) => {
+                const payMethod = payMethodFromGatewayId(id)
+                if (!payMethod) return null
+                return (
+                  <label key={id} className="checkout-method">
+                    <input
+                      type="radio"
+                      name="pay-method"
+                      checked={method === payMethod}
+                      onChange={() => setMethod(payMethod)}
+                    />
+                    {paymentMethodLabel(id)}
+                  </label>
+                )
+              })}
+            </div>
+          )}
 
-          {method === 'card' && (
+          {method === 'card' && availablePayMethods.includes('card') && (
             <div className="checkout-card-element">
               <CardElement options={CARD_OPTIONS} />
             </div>
           )}
-          {method === 'ideal' && (
+          {method === 'ideal' && availablePayMethods.includes('ideal') && (
             <p className="checkout-hint">
               You&apos;ll be redirected to your bank to approve the payment.
             </p>
@@ -430,7 +478,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           type="button"
           className="checkout-place-btn"
           onClick={handlePlaceOrder}
-          disabled={submitting || loading}
+          disabled={submitting || loading || availablePayMethods.length === 0}
         >
           {submitting ? 'Placing order…' : 'Place order'}
         </button>

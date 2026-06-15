@@ -158,3 +158,19 @@ export function buildStripePaymentData(paymentMethodId: string): PaymentDataItem
 /** Stripe-gateway-id's (zoals WC ze registreert). */
 export const STRIPE_CARD_METHOD = 'stripe'
 export const STRIPE_IDEAL_METHOD = 'stripe_ideal'
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  [STRIPE_CARD_METHOD]: 'Credit or debit card',
+  [STRIPE_IDEAL_METHOD]: 'iDEAL',
+  'ppcp-gateway': 'PayPal',
+}
+
+/** Leesbare label voor een Store-API `payment_methods`-id. */
+export function paymentMethodLabel(id: string): string {
+  return PAYMENT_METHOD_LABELS[id] ?? id
+}
+
+/** Stripe-kaart/iDEAL/PayPal — alles wat we in checkout ondersteunen. */
+export function isSupportedCheckoutPaymentMethod(id: string): boolean {
+  return id === STRIPE_CARD_METHOD || id === STRIPE_IDEAL_METHOD || id === 'ppcp-gateway'
+}
