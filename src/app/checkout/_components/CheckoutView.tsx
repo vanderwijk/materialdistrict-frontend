@@ -9,7 +9,7 @@
 
 import { Elements } from '@stripe/react-stripe-js'
 import { getStripe } from '@/lib/stripe/client'
-import type { CheckoutPrefill } from '@/lib/checkout/prefill'
+import type { CheckoutPrefill } from '@/lib/checkout/profile-prefill'
 import { CheckoutForm } from './CheckoutForm'
 
 const stripePromise = getStripe()

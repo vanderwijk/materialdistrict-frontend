@@ -15,6 +15,33 @@ import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import { mapUserProfile, toWpUserProfile } from '@/lib/dashboard/mappers'
 import type { UserProfile } from '@/types/dashboard'
 
+export async function GET(): Promise<NextResponse> {
+  const token = await getAuthCookie()
+  if (!token) {
+    return NextResponse.json(
+      { code: 'md_auth_unauthenticated', message: 'Please sign in again.' },
+      { status: 401 },
+    )
+  }
+
+  try {
+    const raw = await wpDashboardFetch<Parameters<typeof mapUserProfile>[0]>(
+      '/md/v2/dashboard/profile',
+      { method: 'GET', bearer: token },
+    )
+    return NextResponse.json(mapUserProfile(raw), { status: 200 })
+  } catch (err) {
+    if (err instanceof DashboardApiError) {
+      return NextResponse.json({ code: err.code, message: err.message }, { status: err.status })
+    }
+    console.error('[api/dashboard/profile GET]', err)
+    return NextResponse.json(
+      { code: 'md_internal_error', message: 'Something went wrong. Please try again.' },
+      { status: 500 },
+    )
+  }
+}
+
 export async function POST(request: Request): Promise<NextResponse> {
   const token = await getAuthCookie()
   if (!token) {

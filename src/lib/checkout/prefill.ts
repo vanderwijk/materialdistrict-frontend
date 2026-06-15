@@ -1,19 +1,18 @@
 /**
- * Checkout billing prefill — maps the dashboard profile (Pad B billing meta)
- * into the WooCommerce Store API `StoreAddress` shape used by CheckoutForm.
+ * Server-side checkout billing prefill loader.
  */
 
 import { getInitialUser } from '@/lib/auth/get-current-user'
 import { resolveCountryCode } from '@/lib/config/countries'
 import { getProfile } from '@/lib/dashboard/data'
 import type { StoreAddress } from '@/lib/api/cart'
-import type { UserProfile } from '@/types/dashboard'
 import type { User } from '@/types/shared'
+import {
+  profileToCheckoutPrefill,
+  type CheckoutPrefill,
+} from '@/lib/checkout/profile-prefill'
 
-export interface CheckoutPrefill {
-  email: string
-  billing: StoreAddress
-}
+export type { CheckoutPrefill }
 
 const EMPTY_BILLING: StoreAddress = {
   first_name: '',
@@ -24,26 +23,6 @@ const EMPTY_BILLING: StoreAddress = {
   postcode: '',
   country: 'NL',
   state: '',
-}
-
-export function profileToCheckoutPrefill(profile: UserProfile): CheckoutPrefill {
-  const country = resolveCountryCode(profile.country) || 'NL'
-  return {
-    email: profile.email,
-    billing: {
-      first_name: profile.firstName,
-      last_name: profile.lastName,
-      company: profile.company || undefined,
-      address_1: profile.address,
-      address_2: profile.address2 || undefined,
-      city: profile.city,
-      postcode: profile.postcode,
-      country,
-      state: '',
-      email: profile.email,
-      phone: profile.phone || undefined,
-    },
-  }
 }
 
 function userToCheckoutPrefill(user: User): CheckoutPrefill {

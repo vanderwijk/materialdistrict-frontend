@@ -47,6 +47,11 @@ export function hasCartToken(): boolean {
   return getToken() !== null
 }
 
+/** Cart-Token voor server-side merge na inloggen op checkout. */
+export function getCartToken(): string | null {
+  return getToken()
+}
+
 export function clearCartSession(): void {
   if (typeof window !== 'undefined') {
     try {

@@ -16,11 +16,13 @@
  * die nog via capture bevestigd moet worden (handoff §4.1).
  */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { useAuth } from '@/components/providers/AuthContext'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber, type StoreAddress } from '@/lib/api/cart'
+import { checkCheckoutEmail } from '@/lib/api/checkout-account'
 import {
   buildStripePaymentData,
   rememberOrderEmail,
@@ -29,9 +31,10 @@ import {
   STRIPE_IDEAL_METHOD,
   type PaymentDataItem,
 } from '@/lib/api/checkout'
-import type { CheckoutPrefill } from '@/lib/checkout/prefill'
+import type { CheckoutPrefill } from '@/lib/checkout/profile-prefill'
 import { formatEur } from '@/lib/utils/format-price'
 import { AddressFields } from './AddressFields'
+import { CheckoutSignInPanel } from './CheckoutSignInPanel'
 
 type PayMethod = 'card' | 'ideal'
 
@@ -84,12 +87,15 @@ interface CheckoutFormProps {
 
 export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const router = useRouter()
-  const { cart, setCustomer, selectShipping, loading, initialized, clearCart } = useCart()
+  const { isLoggedIn } = useAuth()
+  const { cart, setCustomer, selectShipping, loading, initialized, clearCart, refresh } = useCart()
   const stripe = useStripe()
   const elements = useElements()
 
   const [email, setEmail] = useState(prefill?.email ?? '')
   const [billing, setBilling] = useState<StoreAddress>(prefill?.billing ?? EMPTY_ADDRESS)
+  const [emailRegistered, setEmailRegistered] = useState<boolean | null>(null)
+  const [checkingEmail, setCheckingEmail] = useState(false)
   const [shipSame, setShipSame] = useState(true)
   const [shipping, setShipping] = useState<StoreAddress>(EMPTY_ADDRESS)
   const [ratesLoaded, setRatesLoaded] = useState(false)
@@ -104,6 +110,45 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
 
   const rates = cart?.shipping_rates?.[0]?.shipping_rates ?? []
   const selectedRate = rates.find((r) => r.selected)
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setEmailRegistered(null)
+      return
+    }
+
+    const trimmed = email.trim()
+    if (!trimmed || !trimmed.includes('@')) {
+      setEmailRegistered(null)
+      return
+    }
+
+    const timer = window.setTimeout(async () => {
+      setCheckingEmail(true)
+      try {
+        const status = await checkCheckoutEmail(trimmed)
+        setEmailRegistered(status.registered)
+      } catch {
+        setEmailRegistered(null)
+      } finally {
+        setCheckingEmail(false)
+      }
+    }, 500)
+
+    return () => window.clearTimeout(timer)
+  }, [email, isLoggedIn])
+
+  async function handleCheckoutSignedIn(data: { email: string; billing: StoreAddress }) {
+    setEmail(data.email)
+    setBilling(data.billing)
+    setEmailRegistered(null)
+    setRatesLoaded(false)
+    try {
+      await refresh()
+    } catch {
+      /* cart may still render from prior state */
+    }
+  }
 
   async function handleCalculateShipping() {
     setError(null)
@@ -267,8 +312,15 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               placeholder="you@example.com"
+              readOnly={isLoggedIn}
             />
           </div>
+          {checkingEmail && !isLoggedIn && (
+            <p className="checkout-hint">Checking email…</p>
+          )}
+          {emailRegistered && !isLoggedIn && (
+            <CheckoutSignInPanel email={email.trim()} onSignedIn={handleCheckoutSignedIn} />
+          )}
         </section>
 
         {/* Billing */}

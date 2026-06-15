@@ -13859,6 +13859,21 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   color: var(--text-muted);
 }
 
+.checkout-account-panel {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.checkout-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
 .checkout-error {
   margin: 0;
   padding: 12px 14px;
