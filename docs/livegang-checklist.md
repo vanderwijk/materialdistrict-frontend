@@ -49,24 +49,24 @@
 
 ### 1.2 Offline materialen zichtbaar op publieke pagina’s
 
-**Probleem:** frontend filtert op `meta.publication.isOnline`, maar WP levert dat veld op material-REST nog niet → mapper valt terug op `isOnline: true` (placeholder).  
+**Status:** ✅ afgerond 16-06-2026  
 **Eigenaar:** Johan (REST exposure)  
 **Referentie:** `open-issues.md` §S10.2 ronde-2; `src/lib/api/mappers.ts` (`publicationFromMeta`)
 
-- [ ] `meta.publication.isOnline` (+ evt. `source`, `validUntil`) op `/wp/v2/material`
-- [ ] Homepage + `/materials` tonen geen offline materialen meer
-- [ ] Handmatige check met minstens één offline testmaterial
+- [x] `meta.publication.isOnline` (+ `source`, `validUntil`) op `/wp/v2/material` — plugin commit `54d4ebb`
+- [x] Homepage + `/materials` tonen geen offline materialen meer — frontend commit
+- [x] Handmatige check met testmaterial ID 133752 (draft → geen REST-response, publish → `isOnline: true`)
 
 ### 1.3 SEO — sitemap & metadata
 
-**Status:** `robots.ts` ✅; sitemap nog open  
+**Status:** `robots.ts` ✅; pre-DNS items ✅; post-DNS items open  
 **Referentie:** [`seo-migratieplan.md`](./seo-migratieplan.md)
 
-- [ ] Sitemap-index + per-type child-sitemaps (materials, articles, brands, events, talks, books)
-- [ ] `lastmod` uit WP `modified`, niet build-datum
-- [ ] OG-image op material-detail `generateMetadata`
-- [ ] Twitter cards op root layout + detailpagina’s
-- [ ] Soft 404: `notFound()` bij lege taxonomy-pagina (pagina 1)
+- [x] Sitemap-index + per-type child-sitemaps (materials, articles, brands, events, talks, books)
+- [x] `lastmod` uit WP `modified`, niet build-datum (books via `/wp/v2/product`)
+- [x] OG-image op material-detail `generateMetadata`
+- [x] Twitter cards op root layout + detailpagina’s
+- [x] Soft 404: `notFound()` bij lege taxonomy-pagina (pagina 1) — material-category + tag
 - [ ] Na DNS: sitemap in Google Search Console + Bing Webmaster Tools
 - [ ] `site:materialdistrict-frontend.vercel.app` → 0 resultaten in Google
 
@@ -102,11 +102,11 @@
 
 **Referentie:** [`MANIFEST-books-storefront-2026-06-16.md`](./MANIFEST-books-storefront-2026-06-16.md), [`handoff-claude-2026-06-16-books-vat-store-api.md`](./handoff-claude-2026-06-16-books-vat-store-api.md)
 
-- [ ] Globale WC-attributen: Authors, Format, ISBN, Number of pages, Year of Publishing
-- [ ] Productcategorieën (design-disciplines) + tags `new-releases`, `last-chance`
+- [x] Globale WC-attributen: Authors, Format, ISBN, Number of pages, Year of Publishing
+- [x] Productcategorieën (design-disciplines) + tags `new-releases`, `last-chance`
 - [ ] CSV-import designerbooks → MD (images moeten resolven terwijl oude shop nog live is)
-- [ ] Filter-architectuur beslissing: FacetWP-tellingen vs Store API params
-- [ ] Featured boek op homepage (WC `featured`-vlag) — H6 in `open-issues.md`
+- [x] Filter-architectuur beslissing: fetch-all + filter-in-JS (geen FacetWP, geen Store API params)
+- [x] Featured boek op homepage (WC `featured`-vlag) — `listFeaturedBooks()` actief
 - [ ] Verzendkosten in mand voor ingelogden met bekend adres (uitgesteld)
 
 ### 2.3 Auth & juridisch
@@ -143,6 +143,29 @@
 
 - [ ] `npm run lint` faalt met *Invalid project directory …/lint* — Next/ESLint-config fixen (pre-existing; `typecheck` werkt wel)
 
+### 2.8 Favorites-plugin → dashboard bookmarks (security)
+
+**Status:** open — migratie vereist vóór verwijderen  
+**Eigenaar:** Johan  
+**Motivatie:** Simple Favorites-plugin bevat een security issue; na livegang zo snel mogelijk deactiveren en verwijderen. De Next.js-site gebruikt **niet** deze plugin — bookmarks lopen via `_md_dashboard_bookmarks` (`GET/POST/DELETE /md/v2/dashboard/bookmarks`). Oude favorieten staan nog in usermeta `simplefavorites` (serialized post-ID’s) en worden niet automatisch overgezet.
+
+**Pre-check (productie):**
+
+```bash
+wp plugin list --status=active --fields=name,status | grep -i favorite
+wp user meta list --keys=simplefavorites --format=count
+```
+
+- [ ] Aantal users met `simplefavorites`-data vastleggen (besluit: migreren ja/nee bij laag volume)
+- [ ] Eenmalig migratiescript: `simplefavorites` → `_md_dashboard_bookmarks` (post type → bookmark `type`: `material`, `article`, `brand`, `talk`, `event`, `product` → `books`; alleen gepubliceerde posts; idempotent)
+- [ ] Migratie op staging + spot-check (login als gemigreerde user → `/dashboard/bookmarks`)
+- [ ] Migratie op productie
+- [ ] Rooktest Next.js: Save-knop + bookmarks-panel na migratie
+- [ ] Favorites-plugin deactiveren en verwijderen van WP Engine
+- [ ] `wp cache flush --url=materialdistrict.com`
+
+**Niet migreren:** anonieme favorieten (cookie/sessie) — vervallen bij cutover; nieuwe site vereist login voor bookmarks.
+
 ---
 
 ## 3. 🟢 Na live / tech debt
@@ -158,7 +181,7 @@
 
 ### 3.2 Database / WP ops
 
-- [ ] Verouderde postmeta `_article_type` op articles verwijderen (~16 rijen; plugin gebruikt `story_type` taxonomy)
+- [x] Verouderde postmeta `_article_type` op articles verwijderen (~16 rijen; plugin gebruikt `story_type` taxonomy)
 - [ ] Optionele bulk legacy profile-meta cleanup (productie-ops)
 - [ ] Events: admin-UI voor `videos`/`gallery` repeaters (nu via script/CLI)
 - [ ] Events: server-side meta-orderby/paginatie bij groeiende set (S8.3)
@@ -168,6 +191,7 @@
 
 - [ ] Legacy WP-theme uit traffic / redirects na Next-cutover
 - [ ] FacetWP plugin deactiveren op WP Engine (pas als theme + `/materials` niet meer afhankelijk zijn)
+- [ ] Favorites-plugin verwijderen — zie **§2.8** (eerst bookmark-migratie)
 
 ---
 
@@ -211,6 +235,7 @@
 | SEO | [`seo-migratieplan.md`](./seo-migratieplan.md) |
 | Checkout/adres | [`handoff-claude-2026-06-15-checkout-address-ideal.md`](./handoff-claude-2026-06-15-checkout-address-ideal.md) |
 | Books | [`handoff-claude-2026-06-16-books-vat-store-api.md`](./handoff-claude-2026-06-16-books-vat-store-api.md) |
+| Bookmarks (nieuw systeem) | [`dashboard-handoff-batch3-jeroen.md`](./dashboard-handoff-batch3-jeroen.md) § Bookmarks |
 | Brand deploy (Johan) | `materialdistrict-plugin/deploy-checklist-johan-brands.md` |
 | E2E-testaccounts | [`e2e-test-accounts.md`](./e2e-test-accounts.md) |
 
