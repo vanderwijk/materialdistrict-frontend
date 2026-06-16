@@ -161,6 +161,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 key={m.id}
                 href={`/material/${m.slug}`}
                 contentType="material"
+                showTypeBadge={false}
                 thumbSrc={m.hero?.sourceUrl}
                 thumbAlt={m.hero?.alt ?? m.title}
                 eyebrow={m.brandName ?? undefined}
@@ -181,11 +182,13 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 key={a.id}
                 href={`/article/${a.slug}`}
                 contentType="article"
+                showTypeBadge={false}
                 thumbSrc={a.hero?.sourceUrl}
                 thumbAlt={a.hero?.alt ?? a.title}
                 eyebrow={formatDate(a.date)}
                 title={a.title}
                 channelTags={a.channels.map((c) => c.label)}
+                currentChannel={channel.label}
                 isInsiderOnly={a.insiderOnly}
               />
             ))}
@@ -216,12 +219,14 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 key={e.id}
                 href={`/event/${e.slug}`}
                 contentType="event"
+                showTypeBadge={false}
                 thumbSrc={e.hero?.sourceUrl}
                 thumbAlt={e.hero?.alt ?? e.title}
                 eyebrow={eventDateLabel(e)}
                 title={e.title}
                 meta={eventLocationLabel(e)}
                 channelTags={e.channels.map((c) => c.label)}
+                currentChannel={channel.label}
               />
             ))}
           </ChannelStrip>
@@ -238,6 +243,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 key={t.id}
                 href={`/talk/${t.slug}`}
                 contentType="talk"
+                showTypeBadge={false}
                 thumbSrc={t.hero?.sourceUrl}
                 thumbAlt={t.hero?.alt ?? t.title}
                 eyebrow={t.speakers.length > 0 ? t.speakers[0].name : undefined}

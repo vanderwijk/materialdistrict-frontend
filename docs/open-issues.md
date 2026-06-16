@@ -605,3 +605,57 @@ boeken na.
 - **v1.x (05-06-2026, homepage-afronding)** — S10.2 + S10.3 gesloten (carrousel +
   partners). Twee deploy-verificatiepunten HP-V1/HP-V2. `globals.css` alleen dode
   partner-CSS verwijderd.
+
+---
+
+## §S10.2 — Homepage-feedbackronde (16-06-2026)
+
+> Lopende ronde. Drop 1 (categorie-strip + onder-witruimte) is geleverd.
+
+**🟡 Open / nog te bouwen in deze ronde**
+- **H1 — Tegel-/badge-fundament (site-wide):** geen content-type-badge op
+  per-type opgedeelde pagina's; channel als herkenbare detail-stijl body-pill
+  (huidig kanaal weggelaten, max 1 + "+N"); duurzaamheids-pills op materialen
+  (theme-ID's → labels resolven); story-type in één kleur; sterke Insider-pill,
+  óók op talks. Eén canonieke tegel per type, hergebruikt op homepage, hubs én
+  catalogus-overzichten.
+- **H2 — Gedeelde sectiekop + "View all"-link:** channel-hub-stijl is leidend;
+  homepage neemt die over (gewone tekstlink, geen hoofdletter-variant).
+- **H3 — Featured article → grote tegel** in standaard kaart-stijl; de hover-naar-
+  blauw vervalt.
+- **H4 — Partner-carrousel:** Partner-tier eerst, aangevuld met merken ≥3
+  materialen, 6 tegels, kop "Featured brands". Lichter tegel-uiterlijk volgt als
+  voorstel.
+- **H5 — Channels in de hoofdnavigatie** (`/channel`-overzicht bestaat al, is niet
+  gelinkt).
+- **H6 — Featured boek op de homepage** (`/book`; WC-`featured`-vlag + terugval op
+  nieuwste). *Pending Johan:* kan een boek als "featured" gemarkeerd worden?
+- **H7 — Featured channel-blok** (leest de channel met de "featured"-vlag; geen
+  rotatie-logica — handmatig via de checkbox).
+- **H8 — Fonts site-wide groter:** eigen drop. ~450 font-sizes staan als vaste px
+  in `globals.css` (niet in pagina's — jouw regel staat overeind); migreren naar
+  de `--text-*`-schaal en dan de schaal optikken, met visuele controle.
+- **H9 — Responsive-pass** over alles wat verschuift (laatste).
+
+**🟢 Correctheid**
+- **H10 — Offline-materialen:** controleren of de homepage-fetches geen materialen
+  met `publication.isOnline:false` tonen (frontend filtert daar nu niet op).
+
+**🔵 Eigen track (geparkeerd, los van deze ronde)**
+- **H11 — Insider-only materiaal = hele pagina gaten** (teaser + join-prompt,
+  zoals artikelen). `insider_only`-vlag wordt al gelezen; gate-bouwstenen van de
+  artikelen herbruikbaar. *Pending Johan:* WP-veld op materialen zetten/ontsluiten.
+
+**ℹ️ Opgemerkt**
+- Eén los CSS-bestand `src/styles/globals-additions-auth.css` naast `globals.css`;
+  kan desgewenst in `globals.css` worden opgenomen (één-bestand-regel).
+
+## §S10.2 voortgang (16-06-2026)
+Afgerond: categorie-snelmenu, onder-witruimte, featured-article-tile, Channels in nav,
+story-type één kleur, sterke Insider-pill (incl. talks), content-type-badge uit op
+type-gesectioneerde pagina's (homepage + channel-hub), offline-materialen uitgefilterd,
+font-schaal ~10% groter, channel-bodypill + huidig-kanaal-onderdrukking, partner-
+carrousel "Featured brands", featured channel "In the spotlight".
+Open: duurzaamheids-/channel-pills OP materiaaltegels (theme-ID→label-resolve in de
+datalaag); featured boek blijft geparkeerd (bookshop-scope); responsive + half-cent-
+afronding = deploy-checks Johan; insider-material-gate (H11) blijft geparkeerd (WP-veld).

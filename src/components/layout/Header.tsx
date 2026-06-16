@@ -17,6 +17,7 @@ import {
   Calendar,
   Book,
   Mic,
+  LayoutGrid,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
@@ -35,6 +36,7 @@ export type HeaderSection =
   | 'events'
   | 'books'
   | 'talks'
+  | 'channels'
 
 interface HeaderProps {
   /** Welke nav-tab moet als actief getoond worden. */
@@ -76,6 +78,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'events', label: 'Events', href: '/event', icon: Calendar },
   { key: 'books', label: 'Books', href: '/book', icon: Book },
   { key: 'talks', label: 'Talks', href: '/talk', icon: Mic },
+  { key: 'channels', label: 'Channels', href: '/channel', icon: LayoutGrid },
 ]
 
 /**

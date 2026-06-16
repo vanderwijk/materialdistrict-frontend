@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Card } from './Card'
 import { Tag, type ContentType } from './Tag'
-import { InsiderMark } from './InsiderMark'
 
 // ============================================================
 // Types
@@ -47,10 +46,16 @@ interface ContentCardProps {
    */
   meta?: string | string[]
   /**
-   * Channel-tags op de thumb (linksonder, max 2 stuks). Voorbeeld:
-   * `["Sustainability", "Healthcare"]`. Extras worden afgekapt.
+   * Channel-tags (detail-stijl body-pill onder de titel/meta). Max 1 zichtbaar
+   * + "+N"-overflow. Voorbeeld: `["Sustainability", "Healthcare"]`.
    */
   channelTags?: string[]
+  /**
+   * Huidig kanaal (channel-hub-context): deze waarde wordt uit `channelTags`
+   * gefilterd, zodat een tegel op de "Sustainability"-hub niet z'n eigen
+   * "Sustainability"-pill toont. Default: niet gezet (niets onderdrukt).
+   */
+  currentChannel?: string
   /** Extra context-tags onder de meta-regel (oude positie, blijft ondersteund). */
   tags?: string[]
   /**
@@ -183,6 +188,7 @@ export function ContentCard({
   title,
   meta,
   channelTags,
+  currentChannel,
   tags,
   actions,
   isInsiderOnly,
@@ -208,7 +214,12 @@ export function ContentCard({
   const resolvedInsider = isInsiderOnly ?? insiderOnly ?? false
 
   // Channel-tags: max 2 stuks (rest afkappen — geen layout-overflow op de thumb)
-  const visibleChannelTags = channelTags ? channelTags.slice(0, 2) : null
+  // Channel-tags: huidig kanaal eruit filteren, dan max 1 zichtbaar + "+N".
+  const filteredChannelTags = (channelTags ?? []).filter(
+    (c) => c !== currentChannel,
+  )
+  const visibleChannelTags = filteredChannelTags.slice(0, 1)
+  const channelOverflow = filteredChannelTags.length - visibleChannelTags.length
 
   // Duurzaamheids-badges: max 2 zichtbaar + "+N"-overflow
   const allSustainability = sustainabilityBadges ?? []
@@ -254,12 +265,7 @@ export function ContentCard({
                 Featured
               </span>
             ) : typeBadge ? (
-              <span
-                className="card-type-badge"
-                style={{ background: typeBadge.color }}
-              >
-                {typeBadge.label}
-              </span>
+              <span className="card-type-badge">{typeBadge.label}</span>
             ) : (
               <Tag contentType={contentType} label={tagLabel} />
             )}
@@ -269,10 +275,9 @@ export function ContentCard({
         {/* Action-buttons — rechtsboven (positie ongewijzigd) */}
         {actions && <div className="card-thumb-overlay">{actions}</div>}
 
-        {/* Linksonder: duurzaamheids-badges (wit/groen, max 2 + "+N") en/of
-            channel-tags. In de praktijk sluiten ze elkaar uit per content-type. */}
-        {(visibleSustainability.length > 0 ||
-          (visibleChannelTags && visibleChannelTags.length > 0)) && (
+        {/* Linksonder: duurzaamheids-badges (wit/groen, max 2 + "+N").
+            Channel-tags staan nu als body-pill onder de titel (detail-stijl). */}
+        {visibleSustainability.length > 0 && (
           <div className="card-thumb-overlay is-bottom-left">
             {visibleSustainability.map((label) => (
               <span key={`sustain-${label}`} className="sustainability-badge">
@@ -298,12 +303,6 @@ export function ContentCard({
                 +{sustainabilityOverflow}
               </span>
             )}
-            {visibleChannelTags &&
-              visibleChannelTags.map((channel) => (
-                <span key={channel} className="channel-tag-overlay">
-                  {channel}
-                </span>
-              ))}
           </div>
         )}
       </Card.Thumb>
@@ -314,7 +313,20 @@ export function ContentCard({
         )}
 
         <div className="content-card-title-row">
-          {resolvedInsider && <InsiderMark size="sm" />}
+          {resolvedInsider && (
+            <span className="card-insider-pill">
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" />
+              </svg>
+              Insider
+            </span>
+          )}
           <TitleTag className="content-card-title">{title}</TitleTag>
         </div>
 
@@ -326,6 +338,21 @@ export function ContentCard({
                 {segment}
               </span>
             ))}
+          </div>
+        )}
+
+        {visibleChannelTags.length > 0 && (
+          <div className="content-card-channels">
+            {visibleChannelTags.map((channel) => (
+              <span key={channel} className="content-card-channel-pill">
+                {channel}
+              </span>
+            ))}
+            {channelOverflow > 0 && (
+              <span className="content-card-channel-pill is-more">
+                +{channelOverflow}
+              </span>
+            )}
           </div>
         )}
 

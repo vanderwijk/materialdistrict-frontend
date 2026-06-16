@@ -1,26 +1,24 @@
 /**
- * FeaturedPartners — homepage-blok "Featured partners".
+ * FeaturedPartners — homepage-blok "Featured brands".
  *
- * Build-order stap 10, S10.3.
+ * Build-order stap 10, S10.2/S10.3. Presentational server-component: krijgt een
+ * reeds geselecteerde + geordende subset brands van de homepage-server-component
+ * (Partner-tier eerst, daarna aangevuld met brands die ≥3 materialen hebben).
  *
- * Presentational server-component. Krijgt een reeds geselecteerde (en
- * geroteerde) subset Partner-tier brands van de homepage-server-component en
- * rendert ze als `BrandTile` in dezelfde `.ov-grid-brands`-container die
- * `/brand` gebruikt. Geen eigen CSS-familie (DRY): hergebruik van het
- * bestaande brand-tile-patroon.
+ * Bewust een *lichter* tegel-uiterlijk dan de `BrandTile` van het /brand-
+ * overzicht (dat de 4-thumbnail-montage + meer chrome heeft): hier alleen
+ * logo/hero + naam + locatie + materiaal-telling, via de gedeelde `ContentCard`.
+ * Horizontale rij (carrousel) zodat 6 merken naast elkaar passen.
  *
- * - Bron + rotatie zitten in `page.tsx` (`pickRotatingPartners`); deze
- *   component bepaalt geen data, alleen weergave.
- * - Lege lijst → de hele sectie verdwijnt (geen lege-state-rommel op de
- *   homepage). Een homepage zonder partners toont simpelweg geen blok.
+ * Lege lijst → de hele sectie verdwijnt (geen lege-state-rommel).
  */
 
 import Link from 'next/link'
-import { BrandTile } from '@/components/ui'
+import { ContentCard } from '@/components/ui'
 import type { BrandListItem } from '@/types/brand'
 
 export interface FeaturedPartnersProps {
-  /** Reeds geselecteerde/geroteerde subset Partner-tier brands. */
+  /** Reeds geselecteerde/geordende subset brands. */
   partners: BrandListItem[]
 }
 
@@ -30,14 +28,33 @@ export function FeaturedPartners({ partners }: FeaturedPartnersProps) {
   return (
     <section className="hp-section">
       <div className="section-hd">
-        <h2 className="section-title">Featured partners</h2>
+        <h2 className="section-title">Featured brands</h2>
         <Link href="/brand" className="section-link">
           All brands →
         </Link>
       </div>
-      <div className="ov-grid-brands">
+      <div className="hp-partner-row">
         {partners.map((brand) => (
-          <BrandTile key={brand.id} brand={brand} />
+          <ContentCard
+            key={brand.id}
+            className="hp-partner-tile"
+            href={`/brand/${brand.slug}`}
+            contentType="brand"
+            showTypeBadge={false}
+            thumbSrc={brand.logo?.sourceUrl}
+            thumbAlt={brand.logo?.alt ?? brand.name}
+            title={brand.name}
+            eyebrow={
+              [brand.city, brand.country].filter(Boolean).join(', ') || undefined
+            }
+            meta={
+              brand.materialCount > 0
+                ? `${brand.materialCount.toLocaleString('en-US')} ${
+                    brand.materialCount === 1 ? 'material' : 'materials'
+                  }`
+                : undefined
+            }
+          />
         ))}
       </div>
     </section>

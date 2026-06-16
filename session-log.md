@@ -2764,3 +2764,58 @@ Additieve detail-ronde. §F2.12 ná §Logo (§F2.10/§F2.11 al bezet).
 articles/[slug] + ArticlePrevNext · events/[slug].
 
 **WP:** FacetWP `brand`-facet (`facetwp-brand-facet.php`) — slug-keyed via `_material_brand`.
+
+---
+
+## §S10.2 — Homepage-feedbackronde · levering 1 (structuur & navigatie) · 16-06-2026
+
+Eerste geconsolideerde levering van de homepage-feedbackronde. Additief; routes
+in deze base zijn enkelvoud (`/material`, `/article`, …).
+
+**Geleverd:**
+- Categorie-snelmenu terug aangehaakt: `MaterialCategoryStrip` (bestond los, werd
+  niet ingeladen) nu gevoed met `material_category`-termen, op aantal aflopend,
+  met het aantal per pill. Channelbar-pill-look, bewust géén actieve staat —
+  het is een snelmenu naar het filter. Deeplink `/material?material_category=<slug>`.
+- Onder-witruimte: `.hp-main` bodem stond op 10px → 72px (56px op mobiel).
+- Featured article herbouwd als grote standaard-tegel (`ContentCard`, landscape,
+  "Featured"-pill) i.p.v. de bespoke `.hp-hero-article`-opzet — zelfde kaart-stijl
+  en hover als de rest, de eenmalige titel-naar-blauw-hover is weg.
+- "Channels" toegevoegd aan de hoofdnavigatie (desktop + mobiel), linkt naar het
+  bestaande `/channel`-overzicht; actieve nav-staat via `getCurrentSection`.
+
+**Gewijzigd:**
+- `src/app/(home)/page.tsx` — `getTerms('material_category')` in de Promise.all
+  (defensief, `.catch(()=>[])`); `materialCategories` afgeleid; inline strip
+  vervangen door `<MaterialCategoryStrip>`.
+- `src/app/(home)/_components/MaterialCategoryStrip.tsx` — `count` + aantal-badge.
+- `src/app/(home)/_components/FeaturedArticleHero.tsx` — herbouwd op `ContentCard`.
+- `src/components/layout/Header.tsx` — `HeaderSection` + 'channels', `LayoutGrid`,
+  nav-item.
+- `src/components/layout/HeaderShell.tsx` — `/channel` → 'channels'.
+- `src/styles/globals.css` — §-blok: `.hp-cat-count` + ruimere `.hp-main`-bodem.
+
+**Nog komend in deze ronde (volgende geconsolideerde levering):** tegel-/badge-
+fundament (geen type-badge; channel als detail-stijl body-pill, huidig kanaal weg,
+max 1 + "+N"; duurzaamheids-pills op materialen; story-type één kleur; sterke
+Insider-pill incl. talks), gedeelde sectiekop/links (channel-hub-stijl leidend),
+partner-carrousel ("Featured brands", Partner-tier + aanvulling ≥3 materialen, 6
+tegels), featured boek (`/book`) + featured channel. Eigen latere rondes: fonts-
+veeg (px → schaal-tokens), propagatie tegel-systeem naar hubs/overzichten, offline-
+check, responsive.
+
+**Aanvulling (zelfde levering):** tegel-/badge-fundament gedeeltelijk site-wide via
+`ContentCard`: story-type-badge nu één kleur (inline per-type-kleur verwijderd →
+val terug op `var(--ink)`); sterke Insider-pill i.p.v. `InsiderMark` (geldt overal
+waar ContentCard `isInsiderOnly` toont). Homepage: content-type-badge uit op
+materiaal- en story-tegels; story-type als één-kleurige badge. Offline-materialen
+(`publication.isOnline:false`) uitgefilterd op de homepage. Font-schaal site-wide
+~10% groter (rem-tokens + 449 px-waarden in `globals.css`); body ≈16,5px.
+
+**Afgemaakt in deze levering:** channel als detail-stijl body-pill onder de titel (huidig kanaal onderdrukt, max 1 + "+N") — site-wide via ContentCard; talks Insider-pill op de featured-talk-band; partner-carrousel "Featured brands" (Partner-tier eerst, aangevuld met brands ≥3 materialen, lichter tegel-uiterlijk in een horizontale rij, handmatige featured-vlag); featured channel-blok "In the spotlight" (getChannelsIndex featured-first + getChannelHub-materialen, header-beeld + omschrijving); channel-hub: type-badge uit + huidig kanaal onderdrukt op de strips.
+
+**Bewust niet in deze levering:** featured boek (geparkeerde bookshop-scope); duurzaamheids-/channel-pills OP materiaaltegels (vereist theme-ID→label-resolve in de datalaag — losse follow-up); finale responsive-verificatie en de half-cent-afronding (.95/.99) gebeuren op de deploy door Johan.
+**Reconciliatie (16-06-2026):** levering gerebased op main `188a543`. Johans tussentijdse
+canonical/JSON-LD-wijzigingen in `src/app/(home)/page.tsx` en `src/app/channel/[slug]/page.tsx`
+zijn via 3-way merge behouden; mijn werk staat eroverheen (0 conflicten). Overige bestanden
+(incl. `globals.css`) door Johan niet aangeraakt → ongewijzigd meegeleverd.

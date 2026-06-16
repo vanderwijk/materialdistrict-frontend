@@ -21,7 +21,17 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ContentCard } from '@/components/ui'
-import { listMaterials, listArticles, listEvents, listTalks } from '@/lib/api'
+import {
+  listMaterials,
+  listArticles,
+  listEvents,
+  listTalks,
+  listBrands,
+  getTerms,
+  getChannelsIndex,
+  getChannelHub,
+} from '@/lib/api'
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { JsonLd, buildWebSite, buildOrganization, canonicalPath } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { sortEventsByDate } from '@/app/event/_lib/events-order'
@@ -41,6 +51,16 @@ import {
   FeaturedTalkBand,
   type FeaturedTalkVM,
 } from './_components/FeaturedTalkBand'
+import {
+  MaterialCategoryStrip,
+  type MaterialCategoryLink,
+} from './_components/MaterialCategoryStrip'
+import { FeaturedPartners } from './_components/FeaturedPartners'
+import {
+  FeaturedChannel,
+  toChannelPlainText,
+  type FeaturedChannelVM,
+} from './_components/FeaturedChannel'
 
 const pagePath = canonicalPath('/')
 
@@ -95,16 +115,6 @@ const QUOTES = [
   },
 ] as const
 
-/** Placeholder-partners tot er een echte partners-bron is (open issue S10.x). */
-const PARTNERS = [
-  'Partner One',
-  'Partner Two',
-  'Partner Three',
-  'Partner Four',
-  'Partner Five',
-  'Partner Six',
-] as const
-
 /** Datumlabel — en-GB, consistent met de overzicht/detail-pages. */
 function formatDate(value: string): string {
   return new Date(value).toLocaleDateString('en-GB', {
@@ -115,20 +125,84 @@ function formatDate(value: string): string {
 }
 
 export default async function HomePage() {
-  const [matRes, artRes, eventRes, talkRes] = await Promise.all([
-    listMaterials({ perPage: MATERIALS_FETCH }),
-    listArticles({ perPage: ARTICLES_FETCH }),
-    listEvents({ perPage: EVENTS_FETCH }),
-    listTalks({ perPage: TALKS_FETCH }),
-  ])
+  const [matRes, artRes, eventRes, talkRes, catTerms, brandRes, channelsIndex] =
+    await Promise.all([
+      listMaterials({ perPage: MATERIALS_FETCH }),
+      listArticles({ perPage: ARTICLES_FETCH }),
+      listEvents({ perPage: EVENTS_FETCH }),
+      listTalks({ perPage: TALKS_FETCH }),
+      // Material-categorieën voor de snelmenu-strip. Defensief: faalt de
+      // taxonomie-fetch, dan degradeert de strip tot alleen "All materials"
+      // i.p.v. de hele homepage te laten vallen.
+      getTerms('material_category', { perPage: 100, hide_empty: true }).catch(
+        () => [],
+      ),
+      // Brands voor het "Featured brands"-blok. Ruim ophalen zodat we Partner-
+      // tier kunnen filteren én kunnen aanvullen. Faalt het → leeg blok.
+      listBrands({ perPage: 24 }).catch(() => ({
+        items: [],
+        total: 0,
+        totalPages: 0,
+      })),
+      // Channels (featured-first gesorteerd) voor het spotlight-blok.
+      getChannelsIndex().catch(() => []),
+    ])
+
+  // --- Material-categorieën: snelmenu-strip (deeplinkt naar het filter) ---
+  // Op aantal aflopend (zoals de FacetWP-facet), label HTML-gedecodeerd. De
+  // slug matcht de `material_category`-facetwaarde, dus
+  // `/material?material_category=<slug>` filtert direct.
+  const materialCategories: MaterialCategoryLink[] = catTerms
+    .filter((t) => t.slug)
+    .map((t) => ({
+      label: decodeHtmlEntities(t.name),
+      slug: t.slug,
+      count: t.count,
+    }))
+    .sort((a, b) => b.count - a.count)
+
+  // --- Featured brands: Partner-tier eerst, aangevuld met brands met ≥3
+  // materialen. Binnen Partner-tier: handmatige `featured`-vlag vooraan
+  // (WP-checkbox; geen rotatielogica in de frontend). Max 6. -----------------
+  const partnerBrands = brandRes.items
+    .filter((b) => b.partner)
+    .sort((a, b) => Number(b.featured) - Number(a.featured))
+  const topupBrands = brandRes.items.filter(
+    (b) => !b.partner && b.materialCount >= 3,
+  )
+  const featuredPartners = [...partnerBrands, ...topupBrands].slice(0, 6)
+
+  // --- Featured channel: het featured-first kanaal + zijn recente materialen.
+  // `getChannelsIndex` sorteert featured eerst; de hub levert de materialen.
+  const spotlightChannel = channelsIndex[0] ?? null
+  const spotlightHub = spotlightChannel
+    ? await getChannelHub(spotlightChannel.slug, 10).catch(() => null)
+    : null
+  const featuredChannel: FeaturedChannelVM | null = spotlightChannel
+    ? {
+        slug: spotlightChannel.slug,
+        label: spotlightChannel.label,
+        description: toChannelPlainText(spotlightChannel.description),
+        thumbnailUrl: spotlightChannel.thumbnailUrl,
+        count: spotlightChannel.count,
+      }
+    : null
+  const featuredChannelMaterials = (spotlightHub?.materials.items ?? []).filter(
+    (m) => m.publication.isOnline,
+  )
 
   // --- Materials: één fetch, meerdere afgeleiden -------------------------
   const materialCount =
     matRes.total > 0 ? matRes.total : MATERIALS_COUNT_FALLBACK
-  const latestMaterials = matRes.items.slice(0, 3)
-  const featuredPool = matRes.items.filter((m) => m.featured)
+  // Alleen online materialen tonen: WP kan een material op offline zetten
+  // (`publication.isOnline:false`) terwijl het wel als `publish` in de REST
+  // zit. De fetch filtert daar niet op, dus hier defensief uitfilteren.
+  // (Placeholder-publication = isOnline:true, blijft dus staan.)
+  const onlineMaterials = matRes.items.filter((m) => m.publication.isOnline)
+  const latestMaterials = onlineMaterials.slice(0, 3)
+  const featuredPool = onlineMaterials.filter((m) => m.featured)
   const featuredMaterials = (
-    featuredPool.length > 0 ? featuredPool : matRes.items
+    featuredPool.length > 0 ? featuredPool : onlineMaterials
   ).slice(0, 3)
 
   // --- Articles ----------------------------------------------------------
@@ -174,6 +248,7 @@ export default async function HomePage() {
         ]
           .filter(Boolean)
           .join(' · '),
+        insiderOnly: talkLead.insiderOnly,
       }
     : null
 
@@ -184,7 +259,7 @@ export default async function HomePage() {
     label: `${formatDate(a.date)} — ${STORY_TYPE_META[a.type].label}`,
     title: a.title,
   }))
-  const sidebarMaterials: StoryListItem[] = matRes.items.slice(0, 4).map((m) => ({
+  const sidebarMaterials: StoryListItem[] = onlineMaterials.slice(0, 4).map((m) => ({
     href: `/material/${m.slug}`,
     thumbUrl: m.hero?.sourceUrl,
     label: m.brandName ?? 'Material',
@@ -210,14 +285,10 @@ export default async function HomePage() {
 
         <PromoHero materialCount={materialCount} />
 
-        {/* Categorierij — minimale strip (volledige carousel = follow-up S10.x). */}
-        <nav className="hp-cats" aria-label="Material categories">
-          <div className="hp-cats-inner">
-            <Link href="/material" className="hp-cat-link">
-              All materials
-            </Link>
-          </div>
-        </nav>
+        {/* Categorie-snelmenu — material_category-termen, deeplinkt naar het
+            gefilterde overzicht. Degradeert tot "All materials" als de
+            taxonomie (nog) niet bereikbaar is. */}
+        <MaterialCategoryStrip categories={materialCategories} />
 
         <div className="hp-main">
           <div className="hp-content">
@@ -238,6 +309,7 @@ export default async function HomePage() {
                     key={m.id}
                     href={`/material/${m.slug}`}
                     contentType="material"
+                    showTypeBadge={false}
                     thumbSrc={m.hero?.sourceUrl}
                     thumbAlt={m.hero?.alt ?? m.title}
                     eyebrow={m.brandName ?? undefined}
@@ -274,7 +346,11 @@ export default async function HomePage() {
                     thumbAlt={a.hero?.alt ?? a.title}
                     eyebrow={formatDate(a.date)}
                     title={a.title}
-                    tagLabel={STORY_TYPE_META[a.type].label}
+                    showTypeBadge={false}
+                    typeBadge={{
+                      label: STORY_TYPE_META[a.type].label,
+                      color: STORY_TYPE_META[a.type].color,
+                    }}
                     channelTags={a.channels.map((c) => c.label)}
                     isInsiderOnly={a.insiderOnly}
                   />
@@ -299,6 +375,7 @@ export default async function HomePage() {
                     key={m.id}
                     href={`/material/${m.slug}`}
                     contentType="material"
+                    showTypeBadge={false}
                     thumbSrc={m.hero?.sourceUrl}
                     thumbAlt={m.hero?.alt ?? m.title}
                     eyebrow={m.brandName ?? undefined}
@@ -307,6 +384,12 @@ export default async function HomePage() {
                 ))}
               </div>
             </section>
+
+            {/* Featured channel — uitgelicht kanaal + recente materialen */}
+            <FeaturedChannel
+              channel={featuredChannel}
+              materials={featuredChannelMaterials}
+            />
 
             {/* Events (Books-blok bewust geparkeerd voor deze release) */}
             <section className="hp-section">
@@ -352,19 +435,9 @@ export default async function HomePage() {
               </div>
             </section>
 
-            {/* Featured partners (placeholder-bron in v1 — open issue S10.x) */}
-            <section className="hp-section">
-              <div className="section-hd">
-                <h2 className="section-title">Featured partners</h2>
-              </div>
-              <div className="partner-grid">
-                {PARTNERS.map((p) => (
-                  <div className="partner-card" key={p}>
-                    {p}
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* Featured brands — Partner-tier (+ aanvulling), lichter tegel-
+                uiterlijk in een carrousel. */}
+            <FeaturedPartners partners={featuredPartners} />
           </div>
 
           <aside className="hp-sidebar" aria-label="More from MaterialDistrict">

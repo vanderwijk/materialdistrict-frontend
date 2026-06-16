@@ -1,16 +1,18 @@
 'use client'
 
 /**
- * FeaturedArticleHero — het grote "FEATURED ARTICLE"-blok bovenaan de
- * contentkolom (sessie 10). Toont wanneer de promo-hero NIET zichtbaar is
+ * FeaturedArticleHero — het grote featured-article-blok bovenaan de
+ * contentkolom. Toont wanneer de promo-hero NIET zichtbaar is
  * (uitgelogd-en-weggeklikt, of ingelogd) — de tegenpool van PromoHero, via
  * HomeHeroProvider.
  *
- * Krijgt één al-gemapt, serializeerbaar artikel van de server-page. De titel
- * hergebruikt de bestaande `.ed-featured-title`-typografie.
+ * Herbouwd als een grote standaard-tegel (`<ContentCard>`, landscape-ratio,
+ * "Featured"-pill) i.p.v. de bespoke `.hp-hero-article`-opzet. Daardoor staat
+ * de featured article in dezelfde kaart-stijl en met dezelfde hover als de
+ * overige tegels — geen eenmalige titel-naar-blauw-hover meer.
  */
 
-import Link from 'next/link'
+import { ContentCard } from '@/components/ui'
 import { useHomeHero } from './HomeHeroProvider'
 
 export interface FeaturedArticleVM {
@@ -30,20 +32,16 @@ export function FeaturedArticleHero({ article }: FeaturedArticleHeroProps) {
   if (showPromo || !article) return null
 
   return (
-    <Link href={article.href} className="hp-hero-article">
-      <div className="hp-hero-article-thumb">
-        {article.thumbUrl && (
-          <img
-            src={article.thumbUrl}
-            alt=""
-            className="hp-hero-article-img"
-            loading="eager"
-          />
-        )}
-        <span className="hp-hero-article-badge">Featured article</span>
-      </div>
-      <div className="hp-hero-article-meta">{article.meta}</div>
-      <h2 className="ed-featured-title">{article.title}</h2>
-    </Link>
+    <ContentCard
+      href={article.href}
+      contentType="article"
+      thumbSrc={article.thumbUrl}
+      thumbAlt={article.title}
+      thumbRatio="landscape"
+      featured
+      eyebrow={article.meta}
+      title={article.title}
+      titleAs="h2"
+    />
   )
 }

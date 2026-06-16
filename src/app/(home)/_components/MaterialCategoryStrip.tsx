@@ -1,21 +1,19 @@
 /**
- * MaterialCategoryStrip — homepage material-type-carrousel (S10.2).
+ * MaterialCategoryStrip — homepage categorie-snelmenu.
  *
- * Build-order stap 10, Batch 2.
+ * Build-order stap 10. Een horizontale rij `material_category`-pillen die
+ * doorlinken naar het gefilterde materialen-overzicht. Géén actieve staat:
+ * dit is een snelmenu naar het filter, geen statusindicator (de channelbar
+ * heeft die actieve staat wél, hier bewust niet).
  *
- * Vervangt de minimale "All materials"-strip door een echte rij material-
- * types uit de `material_category`-taxonomie. Server-component; krijgt de
- * reeds opgehaalde + gesorteerde categorieën van de homepage-server-component.
+ * Server-component; krijgt de reeds opgehaalde + op aantal gesorteerde
+ * categorieën van de homepage-server-component. Elke pill toont het label
+ * met het aantal materialen erachter.
  *
- * Hergebruik (DRY): exact dezelfde `.hp-cats` / `.hp-cat-link`-klassen als de
- * bestaande strip — een horizontale, scrollbare rij. Geen nieuwe CSS-familie
- * en geen eigen carousel-mechaniek; de strip schuift horizontaal op smalle
- * viewports.
- *
- * Elke tegel deeplinkt naar het gefilterde overzicht
- * `/material?material_category=<slug>` — exact het URL-contract dat
- * `/material` al parseert (FacetWP-facet, comma-separated slugs). De eerste
- * link ("All materials") gaat naar het ongefilterde overzicht.
+ * Elke pill deeplinkt naar `/material?material_category=<slug>` — exact het
+ * URL-contract dat `/material` al parseert (FacetWP-facet, comma-separated
+ * slugs). De eerste link ("All materials") gaat naar het ongefilterde
+ * overzicht.
  *
  * Lege lijst (bijv. taxonomie nog niet REST-bereikbaar): de strip degradeert
  * netjes tot alleen "All materials" — geen lege rij, geen crash.
@@ -28,6 +26,8 @@ export interface MaterialCategoryLink {
   label: string
   /** WP term-slug — matcht de FacetWP `material_category`-facetwaarde. */
   slug: string
+  /** Aantal (online) materialen in deze categorie — door WP geteld. */
+  count: number
 }
 
 export interface MaterialCategoryStripProps {
@@ -50,6 +50,7 @@ export function MaterialCategoryStrip({
             className="hp-cat-link"
           >
             {cat.label}
+            <span className="hp-cat-count">{cat.count}</span>
           </Link>
         ))}
       </div>
