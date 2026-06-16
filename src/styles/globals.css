@@ -13775,6 +13775,50 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   border-color: transparent;
 }
 
+.checkout-vat-input-wrap {
+  position: relative;
+}
+
+.checkout-vat-input {
+  padding-right: 34px !important;
+}
+
+.checkout-vat-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.checkout-vat-indicator.is-valid {
+  color: var(--green-mid);
+  font-weight: 700;
+}
+
+.checkout-vat-indicator.is-invalid {
+  color: #b42318;
+  font-weight: 700;
+}
+
+.checkout-vat-input.is-valid {
+  border-color: var(--green-mid);
+}
+
+.checkout-vat-input.is-invalid {
+  border-color: #f04438;
+  background: #fff5f5;
+}
+
+.checkout-vat-error {
+  margin-top: 6px;
+  color: #b42318;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .checkout-checkbox {
   display: flex;
   align-items: center;
