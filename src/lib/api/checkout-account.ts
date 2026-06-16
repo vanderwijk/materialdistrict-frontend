@@ -11,6 +11,15 @@ export interface CheckoutMergeResult {
   items_count: number
 }
 
+export interface CheckoutVatStatus {
+  status: 'valid' | 'invalid' | 'unreachable' | 'non_eu' | 'empty'
+  is_valid: boolean
+  is_vat_exempt: boolean
+  country: string
+  vat_number: string
+  checked_at: string | null
+}
+
 export class CheckoutAccountError extends Error {
   status: number
   code: string
@@ -57,4 +66,17 @@ export async function mergeCheckoutCart(cartToken: string): Promise<CheckoutMerg
   })
   if (!res.ok) throw await parseError(res)
   return (await res.json()) as CheckoutMergeResult
+}
+
+export async function checkCheckoutVat(
+  country: string,
+  vatNumber: string,
+): Promise<CheckoutVatStatus> {
+  const res = await fetch('/api/checkout/vat-status', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ country: country.trim(), vat_number: vatNumber.trim() }),
+  })
+  if (!res.ok) throw await parseError(res)
+  return (await res.json()) as CheckoutVatStatus
 }

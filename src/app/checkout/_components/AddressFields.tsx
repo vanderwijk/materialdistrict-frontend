@@ -28,9 +28,19 @@ interface AddressFieldsProps {
   value: StoreAddress
   onChange: (next: StoreAddress) => void
   idPrefix: string
+  vatNumber?: string
+  onVatNumberChange?: (value: string) => void
+  vatStatus?: 'idle' | 'checking' | 'valid' | 'invalid'
 }
 
-export function AddressFields({ value, onChange, idPrefix }: AddressFieldsProps) {
+export function AddressFields({
+  value,
+  onChange,
+  idPrefix,
+  vatNumber,
+  onVatNumberChange,
+  vatStatus = 'idle',
+}: AddressFieldsProps) {
   const set = (key: keyof StoreAddress, v: string) =>
     onChange({ ...value, [key]: v })
 
@@ -64,6 +74,24 @@ export function AddressFields({ value, onChange, idPrefix }: AddressFieldsProps)
           autoComplete="organization"
         />
       </div>
+
+      {onVatNumberChange && (
+        <div className="addr-field addr-field-wide">
+          <label htmlFor={`${idPrefix}-vat`}>VAT number (optional)</label>
+          <div className="checkout-vat-input-wrap">
+            <input
+              id={`${idPrefix}-vat`}
+              value={vatNumber ?? ''}
+              onChange={(e) => onVatNumberChange(e.target.value)}
+              autoComplete="off"
+              placeholder="e.g. NL123456789B01"
+              className={`checkout-vat-input ${vatStatus === 'valid' ? 'is-valid' : ''}`.trim()}
+            />
+            {vatStatus === 'checking' && <span className="checkout-vat-indicator">…</span>}
+            {vatStatus === 'valid' && <span className="checkout-vat-indicator is-valid">✓</span>}
+          </div>
+        </div>
+      )}
 
       <div className="addr-field addr-field-wide">
         <label htmlFor={`${idPrefix}-addr1`}>Address *</label>

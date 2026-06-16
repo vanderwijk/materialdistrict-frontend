@@ -13775,6 +13775,33 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   border-color: transparent;
 }
 
+.checkout-vat-input-wrap {
+  position: relative;
+}
+
+.checkout-vat-input {
+  padding-right: 34px !important;
+}
+
+.checkout-vat-indicator {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.checkout-vat-indicator.is-valid {
+  color: var(--green-mid);
+  font-weight: 700;
+}
+
+.checkout-vat-input.is-valid {
+  border-color: var(--green-mid);
+}
+
 .checkout-checkbox {
   display: flex;
   align-items: center;

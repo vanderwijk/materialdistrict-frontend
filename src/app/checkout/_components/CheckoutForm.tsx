@@ -31,7 +31,7 @@ import type { StripeElementsOptions } from '@stripe/stripe-js'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber, type StoreAddress } from '@/lib/api/cart'
-import { checkCheckoutEmail } from '@/lib/api/checkout-account'
+import { checkCheckoutEmail, checkCheckoutVat } from '@/lib/api/checkout-account'
 import {
   buildStripePaymentData,
   isSupportedCheckoutPaymentMethod,
@@ -123,6 +123,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [shipSame, setShipSame] = useState(true)
   const [shipping, setShipping] = useState<StoreAddress>(EMPTY_ADDRESS)
   const [vatNumber, setVatNumber] = useState('')
+  const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [ratesLoaded, setRatesLoaded] = useState(false)
   const [method, setMethod] = useState<PayMethod>('card')
   const [submitting, setSubmitting] = useState(false)
@@ -217,6 +218,30 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
 
     return () => window.clearTimeout(timer)
   }, [email, isLoggedIn])
+
+  useEffect(() => {
+    const trimmedVat = vatNumber.trim()
+    if (!trimmedVat) {
+      setVatStatus('idle')
+      return
+    }
+    if (!billing.country) {
+      setVatStatus('idle')
+      return
+    }
+
+    const timer = window.setTimeout(async () => {
+      setVatStatus('checking')
+      try {
+        const result = await checkCheckoutVat(billing.country, trimmedVat)
+        setVatStatus(result.is_valid ? 'valid' : 'invalid')
+      } catch {
+        setVatStatus('invalid')
+      }
+    }, 500)
+
+    return () => window.clearTimeout(timer)
+  }, [vatNumber, billing.country])
 
   // Bereken verzendtarieven automatisch zodra land + postcode ingevuld zijn
   // (gedebounced). shipKey is de stabiele trigger; ref voorkomt herhaling.
@@ -523,17 +548,14 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         {/* Billing */}
         <section className="checkout-section">
           <h2 className="checkout-section-head">Billing address</h2>
-          <AddressFields value={billing} onChange={setBilling} idPrefix="billing" />
-          <div className="addr-field addr-field-wide">
-            <label htmlFor="billing-vat">VAT number (optional)</label>
-            <input
-              id="billing-vat"
-              value={vatNumber}
-              onChange={(e) => setVatNumber(e.target.value)}
-              autoComplete="off"
-              placeholder="e.g. NL123456789B01"
-            />
-          </div>
+          <AddressFields
+            value={billing}
+            onChange={setBilling}
+            idPrefix="billing"
+            vatNumber={vatNumber}
+            onVatNumberChange={setVatNumber}
+            vatStatus={vatStatus}
+          />
           <label className="checkout-checkbox">
             <input
               type="checkbox"
