@@ -12,7 +12,7 @@
  *  - prijs: `prices.price` staat in minor-units als string ("2350" = €23,50)
  *    → gedeeld door 10^currency_minor_unit.
  *  - cover: uit `images[0]` (geen WP-media/`_embed` meer).
- *  - isbn ← `sku`; publisher ← het `pa_publisher`-attribuut.
+ *  - isbn ← native WooCommerce `global_unique_id` (GTIN/UPC/EAN/ISBN), anders `sku`.
  *  - auteur/pagina's/jaar: niet in de Store API → voorlopig leeg.
  *  - geen `buy_url`/permalink user-facing: kopen gaat via Add-to-cart (stap 2);
  *    de permalink wordt na cutover een backend/cms-URL.
@@ -100,6 +100,8 @@ export interface WCStoreProduct {
   disciplines?: WCStoreTerm[]
   /** Product-tags (native product_tag). */
   tags?: WCStoreTerm[]
+  /** Native WooCommerce GTIN/UPC/EAN/ISBN (Inventory tab). */
+  global_unique_id?: string
   /** Catalog metadata for label filters (plugin). */
   md_catalog?: WCStoreCatalogMeta
 }
@@ -250,6 +252,10 @@ function mapTerms(terms: WCStoreTerm[] | undefined) {
   return (terms ?? []).map((t) => ({ id: t.id, name: t.name, slug: t.slug }))
 }
 
+function mapIsbn(p: WCStoreProduct): string | null {
+  return nullableString(p.global_unique_id) ?? nullableString(p.sku)
+}
+
 function mapCatalogMeta(p: WCStoreProduct) {
   const meta = p.md_catalog
   return {
@@ -302,7 +308,7 @@ export function mapBook(p: WCStoreProduct): Book {
     author: pickAttr(p.attributes, 'author', true),
     format: pickAttr(p.attributes, 'format'),
     // ISBN: eerst het ISBN-attribuut, anders de SKU (huidige MD-titels).
-    isbn: pickAttr(p.attributes, 'isbn') ?? nullableString(p.sku),
+    isbn: mapIsbn(p),
     publisher: pickAttr(p.attributes, 'publisher'),
     pages: pickInt(p.attributes, 'page'),
     publicationYear: pickInt(p.attributes, 'year'),
