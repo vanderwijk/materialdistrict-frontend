@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { cache, Suspense } from 'react'
 import { Schibsted_Grotesk } from 'next/font/google'
 import { HeaderShell } from '@/components/layout/HeaderShell'
@@ -15,6 +16,7 @@ import {
   WordPressAuthError,
 } from '@/lib/api/wordpress'
 import { clearAuthCookie, getAuthCookie } from '@/lib/auth/cookies'
+import { isNonProductionHost } from '@/lib/seo/host'
 import type { User } from '@/types/shared'
 import '@/styles/globals.css'
 
@@ -36,24 +38,28 @@ const groteskDisplay = Schibsted_Grotesk({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://materialdistrict.com'),
-  title: {
-    default: 'MaterialDistrict',
-    template: '%s | MaterialDistrict',
-  },
-  description:
-    'MaterialDistrict — discover sustainable and innovative materials, brands, articles, talks and events.',
-  openGraph: {
-    type: 'website',
-    siteName: 'MaterialDistrict',
-    locale: 'en_US',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  // Favicons via App Router file convention: icon.svg, favicon.ico, apple-icon.png.
+export async function generateMetadata(): Promise<Metadata> {
+  const host = (await headers()).get('host') ?? ''
+  const blockIndexing = isNonProductionHost(host)
+
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://materialdistrict.com'),
+    title: {
+      default: 'MaterialDistrict',
+      template: '%s | MaterialDistrict',
+    },
+    description:
+      'MaterialDistrict — discover sustainable and innovative materials, brands, articles, talks and events.',
+    openGraph: {
+      type: 'website',
+      siteName: 'MaterialDistrict',
+      locale: 'en_US',
+    },
+    robots: blockIndexing
+      ? { index: false, follow: false, googleBot: { index: false, follow: false } }
+      : { index: true, follow: true },
+    // Favicons via App Router file convention: icon.svg, favicon.ico, apple-icon.png.
+  }
 }
 
 /**
