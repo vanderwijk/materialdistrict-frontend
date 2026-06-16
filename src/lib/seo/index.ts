@@ -1,5 +1,6 @@
 export { JsonLd } from './JsonLd'
 export { buildPageMetadata } from './page-metadata'
+export { canonicalPath, absolutePageUrl, getSiteOrigin } from './urls'
 export {
   buildOrganization,
   buildBrandOrganization,

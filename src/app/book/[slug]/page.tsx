@@ -30,7 +30,7 @@ import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { getBook, listBooks } from '@/lib/api/books'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
-import { JsonLd, buildBook, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { BookGallery } from './_components/BookGallery'
 import { BookBuyCard } from './_components/BookBuyCard'
 import { BookCard } from '../_components/BookCard'
@@ -51,16 +51,17 @@ export async function generateMetadata({
   }
 
   const description = stripHtml(book.excerptHtml) || undefined
+  const path = canonicalPath(`/book/${book.slug}`)
 
   return {
     title: book.title,
     description,
-    alternates: { canonical: `/book/${book.slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: book.title,
       description,
       type: 'book',
-      url: `/book/${book.slug}`,
+      url: path,
     },
   }
 }

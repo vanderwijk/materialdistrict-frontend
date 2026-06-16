@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import type { Page } from '@/types/page'
+import { canonicalPath } from './urls'
 
 /**
  * Bouw een Next `Metadata`-object voor een statische contentpagina.
@@ -13,21 +14,22 @@ import type { Page } from '@/types/page'
  *
  * Sessie 11 (29-05-2026).
  */
-export function buildPageMetadata(page: Page, canonicalPath: string): Metadata {
+export function buildPageMetadata(page: Page, path: string): Metadata {
   const { seo } = page
   const title = seo.title || page.title
   const description = seo.description || undefined
+  const canonical = canonicalPath(path)
 
   return {
     title,
     description,
-    alternates: { canonical: canonicalPath },
+    alternates: { canonical },
     robots: { index: seo.index, follow: seo.follow },
     openGraph: {
       title: seo.ogTitle || title,
       description: seo.ogDescription || description,
       type: 'website',
-      url: canonicalPath,
+      url: canonical,
       ...(seo.ogImage ? { images: [seo.ogImage] } : {}),
     },
   }

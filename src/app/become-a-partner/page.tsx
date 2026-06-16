@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { canonicalPath } from '@/lib/seo/urls'
 import { PartnerCta } from './_components/PartnerCta'
 import {
   MANUFACTURER_PRICING,
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     'List your brand and materials on MaterialDistrict. Reach specifiers ' +
     'with a free brand page, or publish materials with a Basis, Plus or ' +
     'Partner membership.',
-  alternates: { canonical: '/become-a-partner' },
+  alternates: { canonical: canonicalPath('/become-a-partner') },
 }
 
 const TIER_ORDER: readonly ManufacturerTier[] = ['free', 'basis', 'plus', 'partner']

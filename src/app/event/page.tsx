@@ -23,24 +23,26 @@ import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ChannelBarNav } from '@/components/ui'
 import { listEvents, getChannelCatalog } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { sortEventsByDate } from './_lib/events-order'
 import { EventsBrowser } from './_components/EventsBrowser'
 
 /** Ruime bovengrens voor de enkele fetch. Events zijn een bescheiden set. */
 const EVENTS_FETCH_LIMIT = 100
 
+const pagePath = canonicalPath('/event')
+
 export const metadata: Metadata = {
   title: 'Events',
   description:
     'MaterialDistrict events, tradeshows, lectures and workshops worldwide — fairs, exhibitions and online sessions on materials and the built environment.',
-  alternates: { canonical: '/event' },
+  alternates: { canonical: pagePath },
   openGraph: {
     title: 'Events | MaterialDistrict',
     description:
       'MaterialDistrict events, tradeshows, lectures and workshops worldwide.',
     type: 'website',
-    url: '/event',
+    url: pagePath,
   },
 }
 

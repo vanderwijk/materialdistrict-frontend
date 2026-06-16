@@ -29,23 +29,25 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState, BrandTile } from '@/components/ui'
 import { getBrandCountryOptions, listBrands, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { RecentlyViewedRail } from '@/components/ui'
-import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { BrandsFilterSidebar } from './_components/BrandsFilterSidebar'
 import { BrandsPagination } from './_components/BrandsPagination'
 
 const BRANDS_PER_PAGE = 24
 
+const pagePath = canonicalPath('/brand')
+
 export const metadata: Metadata = {
   title: 'Brands',
   description:
     'Discover the manufacturers and suppliers behind the materials on MaterialDistrict. Browse by country, search by name, and explore their material collections.',
-  alternates: { canonical: '/brand' },
+  alternates: { canonical: pagePath },
   openGraph: {
     title: 'Brands | MaterialDistrict',
     description:
       'Discover the manufacturers and suppliers behind the materials on MaterialDistrict.',
     type: 'website',
-    url: '/brand',
+    url: pagePath,
   },
 }
 

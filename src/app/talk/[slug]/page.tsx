@@ -30,7 +30,7 @@ import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildVideoObject } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildVideoObject, canonicalPath } from '@/lib/seo'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { formatDuration } from '@/lib/utils/format-duration'
 import { TalkVideoGate } from './_components/TalkVideoGate'
@@ -82,16 +82,17 @@ export async function generateMetadata({
   }
 
   const description = stripHtml(talk.excerptHtml) || undefined
+  const path = canonicalPath(`/talk/${talk.slug}`)
 
   return {
     title: talk.title,
     description,
-    alternates: { canonical: `/talk/${talk.slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: talk.title,
       description,
       type: 'video.other',
-      url: `/talk/${talk.slug}`,
+      url: path,
       ...(talk.hero?.sourceUrl ? { images: [talk.hero.sourceUrl] } : {}),
     },
   }

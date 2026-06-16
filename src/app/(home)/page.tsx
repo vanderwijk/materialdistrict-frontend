@@ -22,7 +22,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ContentCard } from '@/components/ui'
 import { listMaterials, listArticles, listEvents, listTalks } from '@/lib/api'
-import { JsonLd, buildWebSite, buildOrganization } from '@/lib/seo'
+import { JsonLd, buildWebSite, buildOrganization, canonicalPath } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { sortEventsByDate } from '@/app/event/_lib/events-order'
 import { EventCard } from '@/app/event/_components/EventCard'
@@ -41,6 +41,22 @@ import {
   FeaturedTalkBand,
   type FeaturedTalkVM,
 } from './_components/FeaturedTalkBand'
+
+const pagePath = canonicalPath('/')
+
+export const metadata: Metadata = {
+  title: { absolute: 'MaterialDistrict — Where materials meet ideas' },
+  description:
+    '3,200+ innovative and sustainable materials for architecture and interior design, plus stories, events and books. Free to explore.',
+  alternates: { canonical: pagePath },
+  openGraph: {
+    title: 'MaterialDistrict — Where materials meet ideas',
+    description:
+      '3,200+ innovative and sustainable materials for architecture and interior design.',
+    type: 'website',
+    url: pagePath,
+  },
+}
 
 /** Aggregatie ververst elke 10 min (overzicht-cadence uit de kwaliteitseisen). */
 export const revalidate = 600
@@ -88,20 +104,6 @@ const PARTNERS = [
   'Partner Five',
   'Partner Six',
 ] as const
-
-export const metadata: Metadata = {
-  title: { absolute: 'MaterialDistrict — Where materials meet ideas' },
-  description:
-    '3,200+ innovative and sustainable materials for architecture and interior design, plus stories, events and books. Free to explore.',
-  alternates: { canonical: '/' },
-  openGraph: {
-    title: 'MaterialDistrict — Where materials meet ideas',
-    description:
-      '3,200+ innovative and sustainable materials for architecture and interior design.',
-    type: 'website',
-    url: '/',
-  },
-}
 
 /** Datumlabel — en-GB, consistent met de overzicht/detail-pages. */
 function formatDate(value: string): string {

@@ -40,7 +40,7 @@ import {
   listArticles,
   resolveChannelId,
 } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import {
   STORY_TYPE_META,
   isStoryType,
@@ -60,17 +60,19 @@ const ARTICLES_PER_PAGE = 12
  */
 const STORY_TYPE_BACKEND_CONNECTED = true
 
+const pagePath = canonicalPath('/article')
+
 export const metadata: Metadata = {
   title: 'Stories',
   description:
     'News, people, collaborations, projects and partner stories — all connected through materials. Read the latest from MaterialDistrict.',
-  alternates: { canonical: '/article' },
+  alternates: { canonical: pagePath },
   openGraph: {
     title: 'Stories | MaterialDistrict',
     description:
       'News, people, collaborations, projects and partner stories — all connected through materials.',
     type: 'website',
-    url: '/article',
+    url: pagePath,
   },
 }
 

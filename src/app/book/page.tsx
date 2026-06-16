@@ -20,22 +20,24 @@ import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
 import { listBooks } from '@/lib/api/books'
-import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { BooksFilterSidebar } from './_components/BooksFilterSidebar'
 import { BooksGrid } from './_components/BooksGrid'
 import { BooksPagination } from './_components/BooksPagination'
+
+const pagePath = canonicalPath('/book')
 
 export const metadata: Metadata = {
   title: 'Books',
   description:
     'Browse books, exhibition catalogues and publications on innovative and sustainable materials. Insider members save on every title.',
-  alternates: { canonical: '/book' },
+  alternates: { canonical: pagePath },
   openGraph: {
     title: 'Books | MaterialDistrict',
     description:
       'Books, exhibition catalogues and publications on innovative and sustainable materials.',
     type: 'website',
-    url: '/book',
+    url: pagePath,
   },
 }
 

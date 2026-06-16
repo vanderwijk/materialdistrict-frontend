@@ -17,6 +17,4 @@ export function isNonProductionHost(host: string): boolean {
   return false
 }
 
-export function getProductionSiteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://materialdistrict.com').replace(/\/$/, '')
-}
+export { getSiteOrigin as getProductionSiteUrl } from './urls'

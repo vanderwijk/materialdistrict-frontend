@@ -50,7 +50,7 @@ import {
   listArticles,
   listMaterials,
 } from '@/lib/api'
-import { JsonLd, buildArticle, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildArticle, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { ArticleBodyGate } from './_components/ArticleBodyGate'
 import { ArticleDetailActions } from './_components/ArticleDetailActions'
@@ -105,16 +105,17 @@ export async function generateMetadata({
   }
 
   const description = stripHtml(article.excerptHtml) || undefined
+  const path = canonicalPath(`/article/${article.slug}`)
 
   return {
     title: article.title,
     description,
-    alternates: { canonical: `/article/${article.slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: article.title,
       description,
       type: 'article',
-      url: `/article/${article.slug}`,
+      url: path,
       ...(article.hero?.sourceUrl ? { images: [article.hero.sourceUrl] } : {}),
     },
   }

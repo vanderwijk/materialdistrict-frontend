@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
+import { canonicalPath } from '@/lib/seo/urls'
 import { MembershipCta } from './_components/MembershipCta'
 import { CheckoutNotice } from './_components/CheckoutNotice'
 import {
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
   description:
     'Unlock the full MaterialDistrict platform: side-by-side comparison, ' +
     'datasheets & EPDs, saved searches, boards and quarterly trend reports.',
-  alternates: { canonical: '/membership' },
+  alternates: { canonical: canonicalPath('/membership') },
 }
 
 const { monthly, annual } = INSIDER_PRICING

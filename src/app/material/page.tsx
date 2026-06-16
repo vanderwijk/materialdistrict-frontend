@@ -38,7 +38,7 @@ import {
   parseBrandSlugFromSearchParams,
   parseFacetSelectionFromSearchParams,
 } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { MaterialsContextWriter } from '@/lib/hooks/useMaterialsContext'
 import {
   MaterialsFilterProvider,
@@ -51,21 +51,19 @@ import { MaterialsPagination } from './_components/MaterialsPagination'
 import { RecentlyViewedSection } from './_components/RecentlyViewedSection'
 import type { MaterialSortValue } from '@/types/facetwp'
 
-// --------------------------------------------------------------------
-// Metadata
-// --------------------------------------------------------------------
+const pagePath = canonicalPath('/material')
 
 export const metadata: Metadata = {
   title: 'Materials',
   description:
     'Browse 15,000+ innovative and sustainable materials for architects, designers and specifiers. Filter by properties, request samples, save your favourites.',
-  alternates: { canonical: '/material' },
+  alternates: { canonical: pagePath },
   openGraph: {
     title: 'Materials | MaterialDistrict',
     description:
       'Browse 15,000+ innovative and sustainable materials for architects, designers and specifiers.',
     type: 'website',
-    url: '/material',
+    url: pagePath,
   },
 }
 

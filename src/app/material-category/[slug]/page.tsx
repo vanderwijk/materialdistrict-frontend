@@ -17,7 +17,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ContentCard, EmptyState } from '@/components/ui'
 import { getTerm, getTerms, listMaterialsWithFacets } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildCollectionPage } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 const PER_PAGE = 24
@@ -55,16 +55,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = term.description
     ? toPlainText(term.description).slice(0, 160)
     : `Browse ${name} materials on MaterialDistrict — innovative and sustainable materials for architects and designers.`
+  const path = canonicalPath(`/material-category/${slug}`)
 
   return {
     title: name,
     description,
-    alternates: { canonical: `/material-category/${slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: `${name} | MaterialDistrict`,
       description,
       type: 'website',
-      url: `/material-category/${slug}`,
+      url: path,
     },
   }
 }

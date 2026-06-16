@@ -30,7 +30,7 @@ import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
-import { JsonLd, buildEvent, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildEvent, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { eventTypeLabel } from '@/lib/config/event-types'
 import type { Event } from '@/types/event'
 import type { MediaImage } from '@/types/media'
@@ -89,15 +89,16 @@ export async function generateMetadata({
     return { title: 'Event not found', robots: { index: false, follow: false } }
   }
   const description = stripHtml(event.excerptHtml) || undefined
+  const path = canonicalPath(`/event/${event.slug}`)
   return {
     title: event.title,
     description,
-    alternates: { canonical: `/event/${event.slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: event.title,
       description,
       type: 'website',
-      url: `/event/${event.slug}`,
+      url: path,
       ...(event.hero?.sourceUrl ? { images: [event.hero.sourceUrl] } : {}),
     },
   }

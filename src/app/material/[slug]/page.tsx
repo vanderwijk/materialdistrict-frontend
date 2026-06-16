@@ -43,7 +43,7 @@ import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { getChannelCatalog } from '@/lib/api'
 import { MaterialGallery } from '@/components/materials'
 import { getMaterial, getMaterialDetail } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildProduct } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath } from '@/lib/seo'
 import { materialFilterHref } from '@/lib/api/facetwp'
 import {
   getActiveSustainabilityFacets,
@@ -86,16 +86,17 @@ export async function generateMetadata({
 
   const description =
     material.shortDescription ?? stripHtml(material.excerptHtml)
+  const path = canonicalPath(`/material/${material.slug}`)
 
   return {
     title: material.title,
     description: description || undefined,
-    alternates: { canonical: `/material/${material.slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: material.title,
       description: description || undefined,
       type: 'article',
-      url: `/material/${material.slug}`,
+      url: path,
     },
   }
 }

@@ -26,8 +26,8 @@ import type {
   VideoObjectSchema,
   WebSiteSchema,
 } from './types'
+import { absolutePageUrl, canonicalPath, getSiteOrigin } from './urls'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://materialdistrict.com'
 const SITE_NAME = 'MaterialDistrict'
 
 /**
@@ -35,13 +35,14 @@ const SITE_NAME = 'MaterialDistrict'
  * Wordt typisch in de root layout geplaatst, één keer per page-load.
  */
 export function buildOrganization(): OrganizationSchema {
+  const origin = getSiteOrigin()
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    '@id': `${SITE_URL}/#organization`,
+    '@id': `${origin}/#organization`,
     name: SITE_NAME,
-    url: SITE_URL,
-    logo: `${SITE_URL}/material-district-logo.svg`,
+    url: `${origin}/`,
+    logo: `${origin}/material-district-logo.svg`,
     sameAs: [
       'https://www.linkedin.com/company/materialdistrict',
       'https://www.instagram.com/materialdistrict',
@@ -89,13 +90,14 @@ export function buildBrandOrganization(
       ].filter((url): url is string => Boolean(url))
     : []
 
+  const pageUrl = absolutePageUrl(`/brand/${brand.slug}`)
   const schema: OrganizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    '@id': `${SITE_URL}/brand/${brand.slug}#organization`,
+    '@id': `${pageUrl}#organization`,
     name: brand.name,
     // De canonieke URL van de brand binnen MaterialDistrict.
-    url: `${SITE_URL}/brand/${brand.slug}`,
+    url: pageUrl,
   }
 
   if (brand.description) schema.description = brand.description
@@ -119,17 +121,18 @@ export function buildBrandOrganization(
  * Eén keer per page in root layout.
  */
 export function buildWebSite(): WebSiteSchema {
+  const origin = getSiteOrigin()
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    '@id': `${SITE_URL}/#website`,
+    '@id': `${origin}/#website`,
     name: SITE_NAME,
-    url: SITE_URL,
+    url: `${origin}/`,
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+        urlTemplate: `${origin}/search?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -156,7 +159,7 @@ interface MaterialForJsonLd {
 export function buildProduct(material: MaterialForJsonLd): ProductSchema | null {
   if (!material.title || !material.slug) return null
 
-  const url = `${SITE_URL}/material/${material.slug}`
+  const url = absolutePageUrl(`/material/${material.slug}`)
   const schema: ProductSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -173,7 +176,7 @@ export function buildProduct(material: MaterialForJsonLd): ProductSchema | null 
     schema.brand = {
       '@type': 'Brand',
       name: material.brand.name,
-      ...(material.brand.slug ? { url: `${SITE_URL}/brand/${material.brand.slug}` } : {}),
+      ...(material.brand.slug ? { url: absolutePageUrl(`/brand/${material.brand.slug}`) } : {}),
     }
   }
 
@@ -209,7 +212,7 @@ interface ArticleForJsonLd {
 export function buildArticle(article: ArticleForJsonLd): ArticleSchema | null {
   if (!article.title || !article.slug || !article.publishedAt) return null
 
-  const url = `${SITE_URL}/article/${article.slug}`
+  const url = absolutePageUrl(`/article/${article.slug}`)
   const schema: ArticleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -225,7 +228,7 @@ export function buildArticle(article: ArticleForJsonLd): ArticleSchema | null {
       name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/material-district-logo.svg`,
+        url: `${getSiteOrigin()}/material-district-logo.svg`,
       },
     },
   }
@@ -275,7 +278,7 @@ export function buildVideoObject(
 ): VideoObjectSchema | null {
   if (!video.title || !video.uploadDate) return null
 
-  const url = `${SITE_URL}/talk/${video.slug}`
+  const url = absolutePageUrl(`/talk/${video.slug}`)
   const schema: VideoObjectSchema = {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
@@ -317,7 +320,7 @@ interface EventForJsonLd {
 export function buildEvent(event: EventForJsonLd): EventSchema | null {
   if (!event.title || !event.slug || !event.startsAt) return null
 
-  const url = `${SITE_URL}/event/${event.slug}`
+  const url = absolutePageUrl(`/event/${event.slug}`)
   const schema: EventSchema = {
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -379,7 +382,7 @@ interface BookForJsonLd {
 export function buildBook(book: BookForJsonLd): BookSchema | null {
   if (!book.title || !book.slug) return null
 
-  const url = `${SITE_URL}/book/${book.slug}`
+  const url = absolutePageUrl(`/book/${book.slug}`)
   const schema: BookSchema = {
     '@context': 'https://schema.org',
     '@type': 'Book',
@@ -423,7 +426,13 @@ export function buildBreadcrumbList(items: BreadcrumbInput[]): BreadcrumbListSch
       '@type': 'ListItem' as const,
       position: idx + 1,
       name: item.label,
-      ...(item.url ? { item: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}` } : {}),
+      ...(item.url
+        ? {
+            item: item.url.startsWith('http')
+              ? item.url
+              : absolutePageUrl(canonicalPath(item.url)),
+          }
+        : {}),
     })),
   }
 }
@@ -450,8 +459,9 @@ interface CollectionPageInput {
 }
 
 export function buildCollectionPage(input: CollectionPageInput): CollectionPageSchema {
-  const abs = (u: string) => (u.startsWith('http') ? u : `${SITE_URL}${u}`)
+  const abs = (u: string) => absolutePageUrl(u.startsWith('http') ? u : canonicalPath(u))
 
+  const origin = getSiteOrigin()
   const schema: CollectionPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
@@ -459,9 +469,9 @@ export function buildCollectionPage(input: CollectionPageInput): CollectionPageS
     url: abs(input.url),
     isPartOf: {
       '@type': 'WebSite',
-      '@id': `${SITE_URL}/#website`,
+      '@id': `${origin}/#website`,
       name: SITE_NAME,
-      url: SITE_URL,
+      url: `${origin}/`,
     },
   }
 

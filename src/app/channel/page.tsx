@@ -17,16 +17,18 @@ import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { EmptyState } from '@/components/ui'
 import { getChannelsIndex } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildCollectionPage } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { ChannelIndexCard } from './_components/ChannelIndexCard'
 
 const PAGE_DESCRIPTION =
   'Explore MaterialDistrict by channel — topic hubs that bring together materials, stories, brands, events and talks around themes like biobased, circular and acoustic.'
 
+const pagePath = canonicalPath('/channel')
+
 export const metadata: Metadata = {
   title: 'Channels',
   description: PAGE_DESCRIPTION,
-  alternates: { canonical: '/channel' },
+  alternates: { canonical: pagePath },
 }
 
 export default async function ChannelsIndexPage() {

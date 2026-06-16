@@ -19,7 +19,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ContentCard, EmptyState } from '@/components/ui'
 import { getTerm, listMaterialsWithFacets } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildCollectionPage } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 const PER_PAGE = 24
@@ -46,16 +46,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const name = decodeHtmlEntities(term.name)
   const description = `Browse all materials tagged "${name}" on MaterialDistrict — innovative and sustainable materials for architects and designers.`
+  const path = canonicalPath(`/tag/${slug}`)
 
   return {
     title: name,
     description,
-    alternates: { canonical: `/tag/${slug}` },
+    alternates: { canonical: path },
     openGraph: {
       title: `${name} | MaterialDistrict`,
       description,
       type: 'website',
-      url: `/tag/${slug}`,
+      url: path,
     },
   }
 }

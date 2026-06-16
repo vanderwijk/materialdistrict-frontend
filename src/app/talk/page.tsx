@@ -19,7 +19,7 @@ import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
 import { listTalks, getChannelCatalog, resolveChannelId } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { TalksBrowser, type TalksBrowserItem } from './_components/TalksBrowser'
 
 // De volledige matchende set wordt in één keer geladen (WP-max per page),
@@ -27,17 +27,19 @@ import { TalksBrowser, type TalksBrowserItem } from './_components/TalksBrowser'
 // curated set; 100 dekt de catalogus ruim.
 const TALKS_LOAD_ALL = 100
 
+const pagePath = canonicalPath('/talk')
+
 export const metadata: Metadata = {
   title: 'Talks',
   description:
     'Lectures, panels and conversations on materials and the built environment — watch the latest talks from MaterialDistrict.',
-  alternates: { canonical: '/talk' },
+  alternates: { canonical: pagePath },
   openGraph: {
     title: 'Talks | MaterialDistrict',
     description:
       'Lectures, panels and conversations on materials and the built environment.',
     type: 'website',
-    url: '/talk',
+    url: pagePath,
   },
 }
 

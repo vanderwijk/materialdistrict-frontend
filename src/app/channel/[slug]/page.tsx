@@ -23,7 +23,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { BrandTile, ContentCard } from '@/components/ui'
 import { getChannelCatalog, getChannelHub, getChannelTerm } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildCollectionPage } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import type { EventListItem } from '@/types/event'
 import { ChannelHero } from './_components/ChannelHero'
@@ -91,7 +91,7 @@ export async function generateMetadata({
   return {
     title: `${term.label} — Channels`,
     description,
-    alternates: { canonical: `/channel/${slug}` },
+    alternates: { canonical: canonicalPath(`/channel/${slug}`) },
   }
 }
 
