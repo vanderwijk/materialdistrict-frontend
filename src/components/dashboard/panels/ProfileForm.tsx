@@ -39,6 +39,7 @@ export function ProfileForm({
 
   const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [vatError, setVatError] = useState<string | null>(null)
+  const [vatTouched, setVatTouched] = useState(false)
 
   const professionOptions = useMemo(
     () => withCurrentSelectValue(options.professions, form.profession),
@@ -90,6 +91,12 @@ export function ProfileForm({
       return
     }
 
+    // Voorkom VIES calls bij page load / login. Alleen wanneer de gebruiker
+    // zelf de VAT (of de invoice-to-company toggle) aanpast, starten we checks.
+    if (!vatTouched) {
+      return
+    }
+
     const trimmedVat = form.vatNumber.trim()
     if (!trimmedVat) {
       setVatStatus('idle')
@@ -138,7 +145,7 @@ export function ProfileForm({
     }, 500)
 
     return () => window.clearTimeout(timer)
-  }, [form.country, form.invoiceToCompany, form.vatNumber])
+  }, [form.country, form.invoiceToCompany, form.vatNumber, vatTouched])
 
   return (
     <>
@@ -245,7 +252,15 @@ export function ProfileForm({
               label="Invoice to a company"
               description="For business invoices — used automatically at your next payment."
               checked={form.invoiceToCompany}
-              onChange={(e) => set('invoiceToCompany', e.target.checked)}
+              onChange={(e) => {
+                const next = e.target.checked
+                set('invoiceToCompany', next)
+                setVatTouched(next ? form.vatNumber.trim() !== '' : false)
+                if (!next) {
+                  setVatStatus('idle')
+                  setVatError(null)
+                }
+              }}
             />
             {form.invoiceToCompany && (
               <div className="g2 profile-invoice-fields">
@@ -261,7 +276,10 @@ export function ProfileForm({
                     <input
                       id="profile-vat"
                       value={form.vatNumber}
-                      onChange={(e) => set('vatNumber', e.target.value)}
+                      onChange={(e) => {
+                        set('vatNumber', e.target.value)
+                        setVatTouched(true)
+                      }}
                       autoComplete="off"
                       placeholder="e.g. NL123456789B01"
                       className={`checkout-vat-input ${
