@@ -56,6 +56,16 @@ export function AddressFields({ value, onChange, idPrefix }: AddressFieldsProps)
       </div>
 
       <div className="addr-field addr-field-wide">
+        <label htmlFor={`${idPrefix}-company`}>Company (optional)</label>
+        <input
+          id={`${idPrefix}-company`}
+          value={value.company ?? ''}
+          onChange={(e) => set('company', e.target.value)}
+          autoComplete="organization"
+        />
+      </div>
+
+      <div className="addr-field addr-field-wide">
         <label htmlFor={`${idPrefix}-addr1`}>Address *</label>
         <input
           id={`${idPrefix}-addr1`}
