@@ -69,10 +69,18 @@ export interface BookListItem {
   format: string | null
   /** Theme-channels (taxonomie op het product) — channelbalk + filter. */
   channels: BookTerm[]
+  /** Design-discipline categorieën (child terms van books). */
+  disciplines: BookTerm[]
   /** Product-tags — voor label-/tag-filters. */
   tags: BookTerm[]
   /** WooCommerce on_sale-vlag — voor het "On sale"-filter. */
   onSale: boolean
+  /** Store API catalog metadata (publicatiedatum, voorraad, verkoop). */
+  isNewRelease: boolean
+  isLastChance: boolean
+  isPopular: boolean
+  stockQuantity: number | null
+  totalSales: number
   date: string
 }
 
@@ -109,8 +117,15 @@ export interface Book {
   featured: boolean
   /** Theme-channels op het boek. */
   channels: BookTerm[]
+  /** Design-discipline categorieën. */
+  disciplines: BookTerm[]
   /** Product-tags op het boek. */
   tags: BookTerm[]
+  isNewRelease: boolean
+  isLastChance: boolean
+  isPopular: boolean
+  stockQuantity: number | null
+  totalSales: number
   date: string
   modified: string
 }

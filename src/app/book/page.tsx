@@ -3,13 +3,10 @@
  *
  * Spiegelt de materials-overzichtsshell (channelbalk + filter-sidebar + grid).
  * De boekcatalogus is klein, dus we halen alle boeken één keer op en leiden
- * daaruit de facetten af — channels (voor de balk) en Format/Publisher/On sale
- * (voor de sidebar) — elk mét tellingen, en filteren/zoeken/pagineren server-
+ * daaruit de facetten af — channels (voor de balk) en Category/Format/Publisher/
+ * Labels (voor de sidebar) — elk mét tellingen, en filteren/zoeken/pagineren server-
  * side in JS. Zo werken de filters en channels écht, zonder op extra Store-API-
  * filterparameters te wachten.
- *
- * Categorieën (design-disciplines) volgen in de sidebar zodra Johan ze als
- * taxonomie aanmaakt; de structuur is identiek aan materials.
  */
 
 import type { Metadata } from 'next'
@@ -55,6 +52,23 @@ function asSingle(v: string | string[] | undefined): string | undefined {
   return a[0]
 }
 
+/** Tel opties (slug→aantal) over discipline-termen. */
+function countDisciplines(
+  books: BookListItem[],
+): Array<{ value: string; label: string; count: number }> {
+  const counts = new Map<string, { label: string; count: number }>()
+  for (const b of books) {
+    for (const d of b.disciplines) {
+      const cur = counts.get(d.slug)
+      if (cur) cur.count += 1
+      else counts.set(d.slug, { label: d.name, count: 1 })
+    }
+  }
+  return [...counts.entries()]
+    .map(([value, v]) => ({ value, label: v.label, count: v.count }))
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
+}
+
 /** Tel opties (waarde→aantal) over een set boeken, geef gesorteerde FilterOptions. */
 function countOptions(
   books: BookListItem[],
@@ -76,6 +90,7 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
 
   const search = asSingle(params.q)
   const channel = asSingle(params.channel)
+  const categorySel = asArray(params.category)
   const formatSel = asArray(params.format)
   const publisherSel = asArray(params.publisher)
   const labelSel = asArray(params.label)
@@ -110,22 +125,35 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
 
   const formatOptions = countOptions(facetBase, (b) => b.format)
   const publisherOptions = countOptions(facetBase, (b) => b.publisher)
+  const categoryOptions = countDisciplines(facetBase)
   const saleCount = facetBase.filter((b) => b.onSale).length
+  const newReleaseCount = facetBase.filter((b) => b.isNewRelease).length
+  const lastChanceCount = facetBase.filter((b) => b.isLastChance).length
+  const popularCount = facetBase.filter((b) => b.isPopular).length
 
   // Sidebar-secties (Publisher bewust ZONDER zoekbox).
   const sections: FilterSection[] = []
+  if (categoryOptions.length > 0)
+    sections.push({ key: 'category', title: 'Category', options: categoryOptions })
   if (formatOptions.length > 0)
     sections.push({ key: 'format', title: 'Format', options: formatOptions })
   if (publisherOptions.length > 0)
     sections.push({ key: 'publisher', title: 'Publisher', options: publisherOptions })
+
+  const labelOptions: Array<{ value: string; label: string; count: number }> = []
+  if (newReleaseCount > 0)
+    labelOptions.push({ value: 'new-releases', label: 'New releases', count: newReleaseCount })
+  if (lastChanceCount > 0)
+    labelOptions.push({ value: 'last-chance', label: 'Last chance', count: lastChanceCount })
+  if (popularCount > 0)
+    labelOptions.push({ value: 'popular', label: 'Popular', count: popularCount })
   if (saleCount > 0)
-    sections.push({
-      key: 'label',
-      title: 'Labels',
-      options: [{ value: 'sale', label: 'On sale', count: saleCount }],
-    })
+    labelOptions.push({ value: 'sale', label: 'On sale', count: saleCount })
+  if (labelOptions.length > 0)
+    sections.push({ key: 'label', title: 'Labels', options: labelOptions })
 
   const selection: FilterSelection = {
+    category: categorySel,
     format: formatSel,
     publisher: publisherSel,
     label: labelSel,
@@ -133,6 +161,11 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
 
   // Definitieve filtering voor het grid.
   const filtered = facetBase.filter((b) => {
+    if (
+      categorySel.length > 0 &&
+      !b.disciplines.some((d) => categorySel.includes(d.slug))
+    )
+      return false
     if (formatSel.length > 0 && !(b.format && formatSel.includes(b.format)))
       return false
     if (
@@ -141,6 +174,9 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
     )
       return false
     if (labelSel.includes('sale') && !b.onSale) return false
+    if (labelSel.includes('new-releases') && !b.isNewRelease) return false
+    if (labelSel.includes('last-chance') && !b.isLastChance) return false
+    if (labelSel.includes('popular') && !b.isPopular) return false
     return true
   })
 
@@ -152,6 +188,7 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
   const hasActiveFilters = Boolean(
     search ||
       channel ||
+      categorySel.length ||
       formatSel.length ||
       publisherSel.length ||
       labelSel.length,

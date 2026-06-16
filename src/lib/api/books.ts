@@ -96,8 +96,22 @@ export interface WCStoreProduct {
   featured?: boolean
   /** Theme-channels op het product (plugin 81cfd2f, 16-06-2026). */
   channels?: WCStoreTerm[]
+  /** Design-discipline categorieën (child terms van books). */
+  disciplines?: WCStoreTerm[]
   /** Product-tags (native product_tag). */
   tags?: WCStoreTerm[]
+  /** Catalog metadata for label filters (plugin). */
+  md_catalog?: WCStoreCatalogMeta
+}
+
+/** Catalog metadata exposed by the plugin on Store API products. */
+interface WCStoreCatalogMeta {
+  date_created?: string | null
+  stock_quantity?: number | null
+  total_sales?: number
+  is_new_release?: boolean
+  is_last_chance?: boolean
+  is_popular?: boolean
 }
 
 /** Term (channel/tag) zoals de Store API die levert. */
@@ -236,7 +250,21 @@ function mapTerms(terms: WCStoreTerm[] | undefined) {
   return (terms ?? []).map((t) => ({ id: t.id, name: t.name, slug: t.slug }))
 }
 
+function mapCatalogMeta(p: WCStoreProduct) {
+  const meta = p.md_catalog
+  return {
+    isNewRelease: meta?.is_new_release ?? false,
+    isLastChance: meta?.is_last_chance ?? false,
+    isPopular: meta?.is_popular ?? false,
+    stockQuantity:
+      typeof meta?.stock_quantity === 'number' ? meta.stock_quantity : null,
+    totalSales: typeof meta?.total_sales === 'number' ? meta.total_sales : 0,
+    date: meta?.date_created ?? '',
+  }
+}
+
 export function mapBookListItem(p: WCStoreProduct): BookListItem {
+  const catalog = mapCatalogMeta(p)
   return {
     id: p.id,
     slug: p.slug,
@@ -253,14 +281,15 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
     featured: p.featured ?? false,
     format: pickAttr(p.attributes, 'format'),
     channels: mapTerms(p.channels),
+    disciplines: mapTerms(p.disciplines),
     tags: mapTerms(p.tags),
     onSale: p.on_sale ?? false,
-    // Store API levert geen date_created; sorteren gebeurt server-side.
-    date: '',
+    ...catalog,
   }
 }
 
 export function mapBook(p: WCStoreProduct): Book {
+  const catalog = mapCatalogMeta(p)
   return {
     id: p.id,
     slug: p.slug,
@@ -285,8 +314,9 @@ export function mapBook(p: WCStoreProduct): Book {
     inStock: p.is_in_stock ?? true,
     featured: p.featured ?? false,
     channels: mapTerms(p.channels),
+    disciplines: mapTerms(p.disciplines),
     tags: mapTerms(p.tags),
-    date: '',
+    ...catalog,
     modified: '',
   }
 }
