@@ -70,18 +70,6 @@ export const BOOK_DISCOUNT = {
   insiderDiscount: 0.10,
 } as const
 
-/**
- * Btw-tarief voor boeken (NL verlaagd tarief, 9%). De Store-API levert de
- * catalogusprijs **inclusief** btw (zoals de mand/checkout tonen). Het
- * boeken-overzicht toont echter ex-btw (B2B-conventie, net als de rest van de
- * site). Tot de backend een ex-btw veld levert leiden we dat hier af.
- * `included: true` = de bronprijs is incl. btw → ex = prijs / (1 + rate).
- */
-export const BOOK_VAT = {
-  rate: 0.09,
-  included: true,
-} as const
-
 export const INSIDER_BADGE = {
   // Gebaseerd op de mockup-discrepantie (#1E8FA1 vs --ct-member #007890):
   // we harmoniseren naar --ct-member voor consistentie met het Insider-palet.
@@ -233,17 +221,6 @@ export function getMaterialLimit(tier: ManufacturerTier): number {
 export function getBookPrice(basePrice: number, isInsider: boolean): number {
   if (!isInsider) return basePrice
   return Number((basePrice * (1 - BOOK_DISCOUNT.insiderDiscount)).toFixed(2))
-}
-
-/**
- * Catalogusprijs (incl. btw, uit de Store-API) → ex-btw, voor de weergave op
- * het boeken-overzicht. Interim-afleiding met `BOOK_VAT.rate`; zodra de backend
- * een ex-btw prijsveld levert leest de frontend dat rechtstreeks en vervalt
- * deze conversie.
- */
-export function getBookExVatPrice(inclPrice: number): number {
-  if (!BOOK_VAT.included) return inclPrice
-  return Number((inclPrice / (1 + BOOK_VAT.rate)).toFixed(2))
 }
 
 /**

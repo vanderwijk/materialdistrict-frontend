@@ -39,6 +39,7 @@ interface WCStorePrices {
   price: string
   regular_price: string
   sale_price: string
+  md_price_ex_vat?: string
   currency_code: string
   currency_minor_unit: number
   currency_symbol: string
@@ -119,6 +120,14 @@ function priceToEuros(prices: WCStorePrices | undefined): number {
   const minor = prices.currency_minor_unit ?? 2
   const n = Number(prices.price)
   return Number.isFinite(n) ? n / 10 ** minor : 0
+}
+
+/** Store-API prijsveld in minor-units string naar euro's. */
+function minorToEuros(value: string | undefined, minor = 2): number | null {
+  if (!value) return null
+  const n = Number(value)
+  if (!Number.isFinite(n)) return null
+  return n / 10 ** minor
 }
 
 function mapCover(images: WCStoreImage[] | undefined): BookCover | null {
@@ -220,6 +229,7 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
     publisher: pickAttr(p.attributes, 'publisher'),
     publicationYear: pickInt(p.attributes, 'year'),
     price: priceToEuros(p.prices),
+    priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
     inStock: p.is_in_stock ?? true,
     // Store API levert geen date_created; sorteren gebeurt server-side.
     date: '',
@@ -247,6 +257,7 @@ export function mapBook(p: WCStoreProduct): Book {
     // Kopen gaat via Add-to-cart (stap 2). Geen permalink user-facing.
     buyUrl: null,
     price: priceToEuros(p.prices),
+    priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
     inStock: p.is_in_stock ?? true,
     date: '',
     modified: '',

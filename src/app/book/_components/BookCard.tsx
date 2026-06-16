@@ -10,23 +10,23 @@
  *  - uitgever als eyebrow;
  *  - prijs **ex btw** + Insider-prijs in de Insider-huisstijlkleur (teal).
  *
- * De getoonde prijs is ex btw (B2B-conventie, net als de rest van de site);
- * de Store-API levert incl. btw, dus we leiden ex af via `getBookExVatPrice`.
+ * De getoonde prijs is ex btw (B2B-conventie, net als de rest van de site),
+ * gelezen uit het Store-API extensieveld `prices.md_price_ex_vat`.
  * De Insider-korting (10%) is een UI-afleiding via `getBookPrice`; de mand/
  * checkout tonen de echte WC-prijs.
  */
 
 import { useAuth } from '@/components/providers/AuthContext'
 import { Card } from '@/components/ui'
-import { getBookExVatPrice, getBookPrice } from '@/lib/config/membership'
+import { getBookPrice } from '@/lib/config/membership'
 import { formatEur } from '@/lib/utils/format-price'
 import type { BookListItem } from '@/types/book'
 
 export function BookCard({ book }: { book: BookListItem }) {
   const { isMember } = useAuth()
 
-  const exReg = getBookExVatPrice(book.price)
-  const exInsider = getBookExVatPrice(getBookPrice(book.price, true))
+  const exReg = book.priceExVat ?? book.price
+  const exInsider = getBookPrice(exReg, true)
   const hasDiscount = book.price > 0 && exInsider < exReg
 
   const coverSrc = book.cover?.thumbnailUrl ?? book.cover?.url

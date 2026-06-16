@@ -1,7 +1,7 @@
 /**
- * `/books` — boekenoverzicht.
+ * `/book` — boekenoverzicht.
  *
- * Spiegelt de materials-overzichtsshell 1-op-1 zodat /books één familie is met
+ * Spiegelt de materials-overzichtsshell 1-op-1 zodat /book één familie is met
  * de rest van de catalogus:
  *   ov-page-header (breadcrumb + h1)
  *   ChannelBarNav  (zoek + kolomkeuze; books heeft nog geen channels → alleen "All")
@@ -11,8 +11,8 @@
  * `listBooks`, en rendert de shell rond een client-grid + pagination.
  *
  * Filters: de sidebar-STRUCTUUR staat er in de huisstijl; de opties + functioneel
- * filteren volgen met Johans boek-taxonomie en de filterbron-keuze (FacetWP vs
- * Store-API). Prijzen op de tegels zijn ex btw (B2B-conventie).
+ * filteren volgen met Johans boek-taxonomie op basis van Store-API-parameters.
+ * Prijzen op de tegels zijn ex btw (B2B-conventie).
  */
 
 import type { Metadata } from 'next'

@@ -9,8 +9,8 @@
  * `src/lib/api/books.ts` — bewust geïsoleerd zolang het WP-endpoint nog niet
  * live is, zodat de gedeelde `mappers.ts` / `content.ts` ongemoeid blijven.
  *
- * Prijs: alleen `price` (regulier, uit WooCommerce) zit op het domeintype. De
- * Insider-prijs is GEEN apart veld — de korting is een centrale instelling
+ * Prijs: `price` (incl. btw) en `priceExVat` (ex. btw) komen uit WooCommerce.
+ * De Insider-prijs is GEEN apart veld — de korting is een centrale instelling
  * (`BOOK_DISCOUNT.insiderDiscount` in `lib/config/membership.ts`, nu 10%) en de
  * UI leidt de te tonen prijs af via `getBookPrice(price, isInsider)`. Wil je
  * ooit een ander percentage, dan wijzig je die ene constante en niets anders.
@@ -52,6 +52,8 @@ export interface BookListItem {
   /** Reguliere prijs in EUR (getal, twee decimalen). De Insider-prijs leidt de
    *  UI af via `getBookPrice(price, isInsider)`. */
   price: number
+  /** Catalogusprijs ex. btw in EUR (afkomstig uit Store API extensieveld). */
+  priceExVat: number | null
   /** Afgeleid van WC `stock_status`. */
   inStock: boolean
   date: string
@@ -83,6 +85,8 @@ export interface Book {
    */
   buyUrl: string | null
   price: number
+  /** Detailprijs ex. btw in EUR (afkomstig uit Store API extensieveld). */
+  priceExVat: number | null
   inStock: boolean
   date: string
   modified: string
