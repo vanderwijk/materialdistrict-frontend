@@ -1,46 +1,39 @@
 /**
- * `/books` — books-overzichtspagina met zoek, sortering, view-toggle, grid en
- * paginatie.
+ * `/books` — boekenoverzicht.
  *
- * Stap 2 (books-vertical). Server Component. Leest searchParams (q, sort, page),
- * haalt boeken op via `listBooks` en rendert de overzichts-shell rond een
- * compacte `BookCard`-grid (boek-verhouding 2:3, met Add-to-cart). Zelfde
- * /talks en /articles (design-system §6.1 / §F2.3), maar met een lichte eigen
- * toolbar i.p.v. de ChannelBar: books heeft (nog) geen channels/taxonomie om op
- * te filteren — die zijn geparkeerd tot Johan de taxonomie bevestigt.
+ * Spiegelt de materials-overzichtsshell 1-op-1 zodat /books één familie is met
+ * de rest van de catalogus:
+ *   ov-page-header (breadcrumb + h1)
+ *   ChannelBarNav  (zoek + kolomkeuze; books heeft nog geen channels → alleen "All")
+ *   ov-wrap        (FilterSidebar links + grid + pagination rechts)
  *
- * Prijs: cards tonen de reguliere prijs. De Insider-prijs is een
- * UI-afleiding via `getBookPrice()` en krijgt prominentie op de detailpagina
- * (stap 3), niet op de cards.
+ * Server Component: leest searchParams (q, page), haalt de boeken op via
+ * `listBooks`, en rendert de shell rond een client-grid + pagination.
  *
- * URL-structuur:
- *   /books?q=biobased&sort=title&page=2
- *
- * Draait nu op mock (`BOOKS_LIVE !== 'true'`); de swap naar de live endpoint is
- * één env-variabele (zie `lib/api/books.ts`). Géén component-wijziging nodig.
+ * Filters: de sidebar-STRUCTUUR staat er in de huisstijl; de opties + functioneel
+ * filteren volgen met Johans boek-taxonomie en de filterbron-keuze (FacetWP vs
+ * Store-API). Prijzen op de tegels zijn ex btw (B2B-conventie).
  */
 
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, EmptyState } from '@/components/ui'
+import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
 import { listBooks } from '@/lib/api/books'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
-import { BookCard } from './_components/BookCard'
-import { BooksSearchInput } from './_components/BooksSearchInput'
-import { BooksSort, type BooksSortValue } from './_components/BooksSort'
+import { BooksFilterSidebar } from './_components/BooksFilterSidebar'
+import { BooksGrid } from './_components/BooksGrid'
 import { BooksPagination } from './_components/BooksPagination'
-
-const BOOKS_PER_PAGE = 24
 
 export const metadata: Metadata = {
   title: 'Books',
   description:
-    'Books on materials, design and the built environment — browse the MaterialDistrict bookshop.',
+    'Browse books, exhibition catalogues and publications on innovative and sustainable materials. Insider members save on every title.',
   alternates: { canonical: '/books' },
   openGraph: {
     title: 'Books | MaterialDistrict',
     description:
-      'Books on materials, design and the built environment from the MaterialDistrict bookshop.',
+      'Books, exhibition catalogues and publications on innovative and sustainable materials.',
     type: 'website',
     url: '/books',
   },
@@ -50,43 +43,17 @@ interface BooksPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-function firstParam(raw: string | string[] | undefined): string | undefined {
-  return Array.isArray(raw) ? raw[0] : raw
-}
-
-/** Parse `?page=` naar een 1-based paginanummer (default 1). */
-function parsePage(raw: string | string[] | undefined): number {
-  const n = Number.parseInt(firstParam(raw) ?? '1', 10)
-  return Number.isFinite(n) && n > 0 ? n : 1
-}
-
-/** Parse `?sort=` — alleen `title` is een afwijking; al het andere = newest. */
-function parseSort(raw: string | string[] | undefined): BooksSortValue {
-  return firstParam(raw) === 'title' ? 'title' : 'newest'
-}
-
 export default async function BooksPage({ searchParams }: BooksPageProps) {
   const params = await searchParams
 
-  const search = firstParam(params.q)?.trim() || undefined
-  const page = parsePage(params.page)
-  const sort = parseSort(params.sort)
+  const search =
+    (Array.isArray(params.q) ? params.q[0] : params.q)?.trim() || undefined
+  const pageRaw = Array.isArray(params.page) ? params.page[0] : params.page
+  const page = Math.max(1, Number.parseInt(pageRaw ?? '1', 10) || 1)
 
-  const { orderby, order } =
-    sort === 'title'
-      ? ({ orderby: 'title', order: 'asc' } as const)
-      : ({ orderby: 'date', order: 'desc' } as const)
-
-  const result = await listBooks({
-    perPage: BOOKS_PER_PAGE,
-    page,
-    search,
-    orderby,
-    order,
-  })
-
+  const result = await listBooks({ page, search })
   const total = result.total
-  const hasSearch = Boolean(search)
+  const hasActiveFilters = Boolean(search)
 
   return (
     <>
@@ -97,61 +64,64 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
         </div>
       </header>
 
-      <div className="ov-wrap-single">
-        <div className="books-toolbar">
-          <BooksSearchInput
-            initialValue={search ?? ''}
-            placeholder={
-              total > 0
-                ? `Search ${total.toLocaleString('en-US')} books`
-                : 'Search books…'
-            }
-          />
-          <div className="books-toolbar-controls">
-            <BooksSort value={sort} />
-          </div>
-        </div>
+      {/* Books heeft (nog) geen channels — de bar levert hier de zoek + kolomkeuze,
+          exact als op materials. Channels volgen zodra Johan boek-categorieën levert. */}
+      <ChannelBarNav
+        channels={[]}
+        initialSearch={search ?? ''}
+        searchPlaceholder={
+          total > 0
+            ? `Search ${total.toLocaleString('en-US')} books`
+            : 'Search books…'
+        }
+      />
 
-        {result.items.length === 0 ? (
-          hasSearch ? (
-            <EmptyState
-              title="No books match your search"
-              description="Try a different search term to see more."
-              actions={
-                <Button as="link" href="/books" variant="outline" size="sm">
-                  Clear search
-                </Button>
-              }
-            />
+      <div className="ov-wrap">
+        <BooksFilterSidebar />
+
+        <div>
+          {result.items.length === 0 ? (
+            hasActiveFilters ? (
+              <EmptyState
+                title="No books match your search"
+                description="Try a different search term, or clear it to see all books."
+                actions={
+                  <Button as="link" href="/books" variant="outline" size="sm">
+                    Clear search
+                  </Button>
+                }
+              />
+            ) : (
+              <EmptyState
+                title="No books available"
+                description="There are currently no books to show. Please check back later."
+              />
+            )
           ) : (
-            <EmptyState
-              title="No books available"
-              description="There are currently no books to show. Please check back later."
-            />
-          )
-        ) : (
-          <>
-            <div className="book-grid">
-              {result.items.map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
-            </div>
+            <>
+              <Suspense fallback={null}>
+                <BooksGrid items={result.items} />
+              </Suspense>
 
-            {result.totalPages > 1 && (
-              <div className="ov-pagination">
-                <BooksPagination
-                  currentPage={page}
-                  totalPages={result.totalPages}
-                />
-              </div>
-            )}
-          </>
-        )}
+              {result.totalPages > 1 && (
+                <div className="ov-pagination">
+                  <BooksPagination
+                    currentPage={page}
+                    totalPages={result.totalPages}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       <JsonLd
         data={[
-          buildBreadcrumbList([{ label: 'Home', url: '/' }, { label: 'Books' }]),
+          buildBreadcrumbList([
+            { label: 'Home', url: '/' },
+            { label: 'Books' },
+          ]),
         ]}
       />
     </>

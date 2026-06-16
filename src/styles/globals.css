@@ -13775,50 +13775,6 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   border-color: transparent;
 }
 
-.checkout-vat-input-wrap {
-  position: relative;
-}
-
-.checkout-vat-input {
-  padding-right: 34px !important;
-}
-
-.checkout-vat-indicator {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.checkout-vat-indicator.is-valid {
-  color: var(--green-mid);
-  font-weight: 700;
-}
-
-.checkout-vat-indicator.is-invalid {
-  color: #b42318;
-  font-weight: 700;
-}
-
-.checkout-vat-input.is-valid {
-  border-color: var(--green-mid);
-}
-
-.checkout-vat-input.is-invalid {
-  border-color: #f04438;
-  background: #fff5f5;
-}
-
-.checkout-vat-error {
-  margin-top: 6px;
-  color: #b42318;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
 .checkout-checkbox {
   display: flex;
   align-items: center;
@@ -14647,3 +14603,90 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   font-size: 11.5px;
   color: var(--text-muted);
 }
+
+/* ============================================================
+   §BOOKS-FAMILY — books als familie van materials (16-06-2026)
+   ------------------------------------------------------------
+   Additief. /books hergebruikt nu de gedeelde overzicht-/detailshell
+   (ov-page-header, channel-bar, ov-wrap, uf-sidebar, ov-grid-3, card +
+   content-card-*, pub-wrap, mat-detail-wrap, detail-sheet, mat-main,
+   mat-sidebar, mat-gallery*, mat-prevnext*, mat-morefrombrand*,
+   mat-properties*). Hieronder ALLEEN het boek-tegel-specifieke: de prijs-
+   regel (ex btw + Insider in teal) en de sold-out badge op de portrait-cover.
+
+   De oude §BOOKS-redesign-tegels (.book-grid / .book-card* / .book-spec-table)
+   en het deel van §STOREFRONT-FEEDBACK met .book-card-* zijn hierdoor dood
+   en kunnen later opgeruimd worden; de .book-buy-* (koop-card) en de
+   cart/checkout-regels blijven in gebruik.
+   ============================================================ */
+
+/* Prijsregel onder titel in de boek-tegel (in de content-card-body). */
+.book-tile-foot {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  margin-top: 8px;
+}
+
+/* Reguliere prijs (ex btw) — prominent, display-font, in de inkt-kleur. */
+.book-tile-price {
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1;
+  color: var(--text);
+}
+
+/* Doorgehaalde reguliere prijs (getoond naast de Insider-prijs voor members). */
+.book-tile-was {
+  font-size: 13px;
+  color: var(--text-hint);
+  text-decoration: line-through;
+}
+
+/* Kleine "ex. VAT"-suffix — onopvallend, zodat duidelijk is dat het ex btw is. */
+.book-tile-vat {
+  font-size: 11px;
+  color: var(--text-hint);
+}
+
+/* Insider-prijs — Insider-huisstijlkleur (teal). Volle regel onder de prijs. */
+.book-tile-insider {
+  flex-basis: 100%;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ct-insider);
+}
+
+[data-theme="dark"] .book-tile-insider {
+  color: var(--ct-insider-mid);
+}
+
+/* Sold-out badge — donkere pill linksboven op de portrait-cover. */
+.book-tile-soldout {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Book-gallery: portrait-cover volledig tonen (niet bijsnijden zoals de 4/3
+   material-hero). Productshot-stijl op de surface-achtergrond. */
+.mat-gallery.is-book .mat-gallery-hero {
+  aspect-ratio: 3 / 4;
+  max-width: 320px;
+}
+.mat-gallery.is-book .mat-gallery-hero img {
+  object-fit: contain;
+}
+.mat-gallery.is-book .mat-gallery-thumb img {
+  object-fit: contain;
+  background: var(--surface);
+}
+
+/* ============================ einde §BOOKS-FAMILY ============================ */

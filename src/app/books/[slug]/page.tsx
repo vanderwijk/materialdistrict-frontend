@@ -1,40 +1,43 @@
 /**
- * `/books/[slug]` — book-detailpagina (Designerbooks-layout).
+ * /books/[slug] — book detail page.
  *
- * Server Component. Flow van boven naar onder:
- *   header        — breadcrumb + titel
- *   hero          — cover (links) · koop-kolom (korte beschrijving + BookBuyCard)
- *   body          — volledige beschrijving
- *   spreads       — binnenwerk-foto's uit de product-gallery (images[1..])
- *   specs         — "Additional information"-tabel (attributes)
- *   more books    — BookCard-grid
+ * Spiegelt de material-detailshell 1-op-1 (zelfde witte "vel" op de paper-
+ * achtergrond), zodat book-detail één familie is met material-detail:
  *
- * Cover = images[0]; spreads = de gallery — géén afbeeldingen in tekstvakken.
- * Auteur/format/jaar/pagina's komen uit attributes; ontbreken ze nog, dan
- * worden die rijen simpelweg overgeslagen (placeholder-bestendig).
+ *   pub-wrap > mat-detail-wrap >
+ *     detail-back-row     (← Back to Books)
+ *     detail-sheet        (wit vel)
+ *       DetailHeader      (titel + meta: by publisher · pages · year)
+ *       mat-main
+ *         BookGallery     (cover + spreads, hero + filmstrip)
+ *         DetailReadingTools
+ *         "About this book"
+ *         excerpt + body
+ *         "Book details"  (mat-properties-pills)
+ *     mat-sidebar         (BookBuyCard — donker ink-paneel, auth-aware)
+ *     detail-prevnext-row (prev/next)
+ *   MoreBooks             (buiten het vel)
  *
- * Koop-kolom: BookBuyCard is auth-aware (Insider-prijs als weergave). Kopen
- * loopt via add-to-cart → /cart → /checkout.
+ * Prijzen: de koop-card toont de WC-prijs (incl. btw, = wat je betaalt). Het
+ * overzicht toont ex btw; dat verschil is bewust (browse ex, koop incl).
  */
 
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { DetailHeader } from '@/components/layout/DetailHeader'
+import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { getBook, listBooks } from '@/lib/api/books'
-import { JsonLd, buildBook, buildBreadcrumbList } from '@/lib/seo'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
-import { BookCard } from '../_components/BookCard'
+import { JsonLd, buildBook, buildBreadcrumbList } from '@/lib/seo'
+import { BookGallery } from './_components/BookGallery'
 import { BookBuyCard } from './_components/BookBuyCard'
-
-const MORE_SCAN = 24
-const MORE_BOOKS = 6
+import { BookCard } from '../_components/BookCard'
+import type { BookListItem } from '@/types/book'
 
 interface BookDetailPageProps {
   params: Promise<{ slug: string }>
-}
-
-function stripHtml(value: string): string {
-  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 export async function generateMetadata({
@@ -56,48 +59,57 @@ export async function generateMetadata({
     openGraph: {
       title: book.title,
       description,
-      type: 'website',
+      type: 'book',
       url: `/books/${book.slug}`,
-      ...(book.cover?.url ? { images: [book.cover.url] } : {}),
     },
-  }
-}
-
-/** "More books": laatste titels, excl. de huidige. Faalbestendig (lege lijst). */
-async function getMoreBooks(currentSlug: string) {
-  try {
-    const { items } = await listBooks({
-      perPage: MORE_SCAN,
-      orderby: 'date',
-      order: 'desc',
-    })
-    return items.filter((b) => b.slug !== currentSlug).slice(0, MORE_BOOKS)
-  } catch {
-    return []
   }
 }
 
 export default async function BookDetailPage({ params }: BookDetailPageProps) {
   const { slug } = await params
-
   const book = await getBook(slug)
-  if (!book) notFound()
 
-  const more = await getMoreBooks(slug)
+  if (!book) {
+    notFound()
+  }
 
-  const specRows = [
-    book.author && { label: 'Authors', value: book.author },
-    book.format && { label: 'Format', value: book.format },
-    book.isbn && { label: 'ISBN', value: book.isbn },
-    book.pages && { label: 'Number of pages', value: String(book.pages) },
-    book.publicationYear && {
-      label: 'Year of Publishing',
-      value: String(book.publicationYear),
-    },
-    book.publisher && { label: 'Publisher', value: book.publisher },
-  ].filter(Boolean) as Array<{ label: string; value: string }>
+  // Eén lijst-fetch (newest-first) voor prev/next + "More books".
+  const list = await listBooks({ page: 1, perPage: 100 })
+  const items = list.items
+  const idx = items.findIndex((b) => b.slug === book.slug)
+  const prev = idx > 0 ? items[idx - 1] : null
+  const next = idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
+  const moreBooks = items.filter((b) => b.slug !== book.slug).slice(0, 6)
 
-  const bookSchema = buildBook({
+  // Meta-regel: by [publisher] · [pages] pages · [year]
+  const metaParts: Array<{ key: string; node: ReactNode }> = []
+  if (book.publisher) {
+    metaParts.push({
+      key: 'publisher',
+      node: (
+        <>
+          by <strong>{book.publisher}</strong>
+        </>
+      ),
+    })
+  }
+  if (book.pages) metaParts.push({ key: 'pages', node: <>{book.pages} pages</> })
+  if (book.format) metaParts.push({ key: 'format', node: <>{book.format}</> })
+  if (book.publicationYear)
+    metaParts.push({ key: 'year', node: <>{book.publicationYear}</> })
+
+  // "Book details"-pills (alleen ingevulde velden).
+  const detailPills: Array<{ label: string; value: string }> = []
+  if (book.publisher) detailPills.push({ label: 'Publisher', value: book.publisher })
+  if (book.format) detailPills.push({ label: 'Format', value: book.format })
+  if (book.pages) detailPills.push({ label: 'Pages', value: String(book.pages) })
+  if (book.publicationYear)
+    detailPills.push({ label: 'Year', value: String(book.publicationYear) })
+  if (book.isbn) detailPills.push({ label: 'ISBN', value: book.isbn })
+
+  const hasBody = Boolean(book.excerptHtml || book.contentHtml)
+
+  const bookJsonLd = buildBook({
     slug: book.slug,
     title: book.title,
     description: stripHtml(book.excerptHtml) || undefined,
@@ -105,99 +117,186 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
     author: book.author ? { name: book.author } : undefined,
     isbn: book.isbn ?? undefined,
     pages: book.pages ?? undefined,
-    publishedAt: book.date || undefined,
+    publishedAt: book.publicationYear ? `${book.publicationYear}` : undefined,
     publisher: book.publisher ? { name: book.publisher } : undefined,
   })
 
   return (
     <>
-      <article className="book-detail ov-wrap-single">
-        <header className="book-detail-head">
-          <Breadcrumb
-            items={[{ label: 'Books', href: '/books' }, { label: book.title }]}
-          />
-          <h1 className="t-display-lg book-detail-title">{book.title}</h1>
-        </header>
-
-        <div className="book-detail-hero">
-          <div className="book-detail-hero-cover">
-            {book.cover && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={book.cover.url} alt={book.cover.alt || book.title} />
-            )}
+      <article className="pub-wrap">
+        <div className="mat-detail-wrap">
+          <div className="detail-back-row">
+            <Link href="/books" className="detail-header-back">
+              <span aria-hidden="true">←</span> Back to Books
+            </Link>
           </div>
 
-          <div className="book-detail-hero-buy">
-            {book.excerptHtml && (
-              <div className="book-detail-shortdesc">
-                <MaterialBody html={book.excerptHtml} />
-              </div>
-            )}
+          <div className="detail-sheet">
+            <DetailHeader
+              tags={[]}
+              title={book.title}
+              meta={
+                metaParts.length > 0 ? (
+                  <>
+                    {metaParts.map((part, i) => (
+                      <span key={part.key}>
+                        {i > 0 && ' · '}
+                        {part.node}
+                      </span>
+                    ))}
+                  </>
+                ) : undefined
+              }
+            />
+
+            <div className="mat-main">
+              <BookGallery
+                cover={book.cover}
+                gallery={book.gallery}
+                title={book.title}
+              />
+
+              <DetailReadingTools />
+
+              {hasBody && (
+                <div className="detail-about-eyebrow">About this book</div>
+              )}
+
+              {book.excerptHtml && <MaterialBody html={book.excerptHtml} />}
+
+              {book.contentHtml && book.contentHtml !== book.excerptHtml && (
+                <MaterialBody html={book.contentHtml} />
+              )}
+
+              {detailPills.length > 0 && (
+                <section className="mat-properties" aria-labelledby="book-details-title">
+                  <h2 id="book-details-title" className="mat-section-title">
+                    Book details
+                  </h2>
+                  <div className="mat-properties-grid">
+                    <div className="mat-property-group">
+                      <div className="mat-property-group-tags">
+                        {detailPills.map((p) => (
+                          <span key={p.label} className="mat-property-tag is-neutral">
+                            <span className="mat-property-tag-key">{p.label}:</span>
+                            {p.value}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              )}
+            </div>
+          </div>
+
+          <aside className="mat-sidebar">
             <BookBuyCard
               title={book.title}
               productId={book.wcProductId ?? book.id}
               price={book.price}
               inStock={book.inStock}
             />
+          </aside>
+
+          <div className="detail-prevnext-row">
+            <BookPrevNext prev={prev} next={next} />
           </div>
         </div>
-
-        {book.contentHtml && (
-          <section className="book-detail-body">
-            <MaterialBody html={book.contentHtml} />
-          </section>
-        )}
-
-        {book.gallery.length > 0 && (
-          <section className="book-detail-spreads" aria-label="Inside this book">
-            {book.gallery.map((img, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={`${img.url}-${i}`}
-                src={img.url}
-                alt={img.alt || `${book.title} — spread ${i + 1}`}
-                loading="lazy"
-              />
-            ))}
-          </section>
-        )}
-
-        {specRows.length > 0 && (
-          <section className="book-detail-specs">
-            <h2 className="book-detail-specs-head">Additional information</h2>
-            <dl className="book-spec-table">
-              {specRows.map((row) => (
-                <div key={row.label} className="book-spec-row">
-                  <dt>{row.label}</dt>
-                  <dd>{row.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
-
-        {more.length > 0 && (
-          <section className="book-more" aria-label="More books">
-            <h2 className="book-more-head t-display-md">More books</h2>
-            <div className="book-grid">
-              {more.map((b) => (
-                <BookCard key={b.id} book={b} />
-              ))}
-            </div>
-          </section>
-        )}
       </article>
+
+      {moreBooks.length > 0 && (
+        <section className="mat-morefrombrand" aria-labelledby="more-books-title">
+          <header className="mat-morefrombrand-header">
+            <h2 id="more-books-title" className="mat-section-title mat-morefrombrand-heading">
+              More books
+            </h2>
+            <Link href="/books" className="mat-morefrombrand-viewall">
+              View all <span aria-hidden="true">→</span>
+            </Link>
+          </header>
+          <div className="mat-morefrombrand-grid">
+            {moreBooks.map((b) => (
+              <BookCard key={b.id} book={b} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <JsonLd
         data={[
-          ...(bookSchema ? [bookSchema] : []),
           buildBreadcrumbList([
             { label: 'Home', url: '/' },
             { label: 'Books', url: '/books' },
             { label: book.title },
           ]),
+          bookJsonLd,
         ]}
       />
     </>
   )
+}
+
+/** Server-side prev/next (newest-first lijstvolgorde), mirror van mat-prevnext. */
+function BookPrevNext({
+  prev,
+  next,
+}: {
+  prev: BookListItem | null
+  next: BookListItem | null
+}) {
+  if (!prev && !next) return null
+
+  return (
+    <nav className="mat-prevnext" aria-label="Book navigation">
+      {prev ? (
+        <Link href={`/books/${prev.slug}`} className="mat-prevnext-link">
+          <span className="mat-prevnext-arrow" aria-hidden="true">
+            ←
+          </span>
+          <span className="mat-prevnext-thumb" aria-hidden="true">
+            {prev.cover?.thumbnailUrl ?? prev.cover?.url ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={prev.cover?.thumbnailUrl ?? prev.cover?.url} alt="" />
+            ) : (
+              <span className="mat-prevnext-thumb-placeholder" />
+            )}
+          </span>
+          <span className="mat-prevnext-label">
+            <span className="mat-prevnext-eyebrow">Previous</span>
+            <span className="mat-prevnext-title">{prev.title}</span>
+          </span>
+        </Link>
+      ) : (
+        <span className="mat-prevnext-spacer" aria-hidden="true" />
+      )}
+
+      {next && (
+        <Link
+          href={`/books/${next.slug}`}
+          className="mat-prevnext-link mat-prevnext-link--right"
+        >
+          <span className="mat-prevnext-label">
+            <span className="mat-prevnext-eyebrow">Next</span>
+            <span className="mat-prevnext-title">{next.title}</span>
+          </span>
+          <span className="mat-prevnext-thumb" aria-hidden="true">
+            {next.cover?.thumbnailUrl ?? next.cover?.url ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={next.cover?.thumbnailUrl ?? next.cover?.url} alt="" />
+            ) : (
+              <span className="mat-prevnext-thumb-placeholder" />
+            )}
+          </span>
+          <span className="mat-prevnext-arrow" aria-hidden="true">
+            →
+          </span>
+        </Link>
+      )}
+    </nav>
+  )
+}
+
+function stripHtml(value: string): string {
+  return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
 }

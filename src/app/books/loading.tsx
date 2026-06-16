@@ -1,9 +1,7 @@
 /**
- * Books overzicht — loading skeleton.
- *
- * Gerendered tijdens de eerste server-render van `/books` en bij
- * hard-refresh/deeplink. Compacte book-grid: page-header + boek-tegels
- * (cover in 2:3 + titel/auteur/prijs).
+ * Books overzicht — loading skeleton. Spiegelt de materials-overzichts-skeleton:
+ * breadcrumb + h1-skeleton, filter-sidebar-skeleton en card-skeletons in de
+ * `.ov-grid-3`. Thumbs in portrait (3:4) zodat het de echte boek-tegels benadert.
  */
 
 import { Skeleton } from '@/components/ui'
@@ -14,32 +12,37 @@ export default function BooksLoading() {
   return (
     <>
       <header className="ov-page-header">
-        <Skeleton width="100px" height="14px" />
-        <Skeleton variant="title" width="160px" />
+        <Skeleton width="120px" height="14px" />
+        <Skeleton variant="title" width="200px" />
       </header>
 
-      <div className="ov-wrap-single" aria-busy="true" aria-live="polite">
-        <div className="book-grid">
-          {SKELETON_CARDS.map((i) => (
-            <div key={i}>
-              <div
-                style={{
-                  aspectRatio: '2 / 3',
-                  borderRadius: 'var(--radius)',
-                  overflow: 'hidden',
-                }}
-              >
-                <Skeleton width="100%" height="100%" />
-              </div>
-              <div style={{ marginTop: '12px' }}>
-                <Skeleton variant="title" width="85%" />
-                <Skeleton width="55%" />
-                <div style={{ marginTop: '8px' }}>
-                  <Skeleton width="35%" />
-                </div>
-              </div>
+      <div className="ov-wrap" aria-busy="true" aria-live="polite">
+        <aside className="filter-sidebar" aria-hidden="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              style={{ padding: '12px 0', borderBottom: '1px solid var(--border)' }}
+            >
+              <Skeleton width="60%" height="16px" />
             </div>
           ))}
+        </aside>
+
+        <div>
+          <div className="ov-grid-3">
+            {SKELETON_CARDS.map((i) => (
+              <div key={i} className="card">
+                <div style={{ aspectRatio: '3 / 4' }}>
+                  <Skeleton variant="thumb" />
+                </div>
+                <div className="card-body">
+                  <Skeleton width="40%" />
+                  <Skeleton variant="title" width="90%" />
+                  <Skeleton width="50%" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>
