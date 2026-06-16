@@ -25,7 +25,15 @@ import { getBookPrice } from '@/lib/config/membership'
 import { formatEur } from '@/lib/utils/format-price'
 import type { BookListItem } from '@/types/book'
 
-export function BookCard({ book }: { book: BookListItem }) {
+export function BookCard({
+  book,
+  variant,
+}: {
+  book: BookListItem
+  /** 'home' = compacte featured-tegel naast de EventCard (zelfde bandhoogte,
+   *  geen Add-to-cart). Default = volledige overzichts-/More-books-tegel. */
+  variant?: 'home'
+}) {
   const { isMember } = useAuth()
   const { addItem } = useCart()
   const [adding, setAdding] = useState(false)
@@ -52,9 +60,15 @@ export function BookCard({ book }: { book: BookListItem }) {
     }
   }
 
+  const isHome = variant === 'home'
+
   return (
     <Card href={`/book/${book.slug}`} prefetch={false} prefetchOn="hover">
-      <Card.Thumb className="book-thumb" src={coverSrc} alt={book.cover?.alt || book.title}>
+      <Card.Thumb
+        className={isHome ? 'book-thumb book-thumb--home' : 'book-thumb'}
+        src={coverSrc}
+        alt={book.cover?.alt || book.title}
+      >
         {!book.inStock && (
           <div className="card-thumb-overlay is-top-left">
             <span className="book-tile-soldout">Sold out</span>
@@ -95,20 +109,22 @@ export function BookCard({ book }: { book: BookListItem }) {
         )}
 
         {book.inStock ? (
-          <button
-            type="button"
-            className="book-tile-add"
-            onClick={onAdd}
-            disabled={adding}
-            aria-label={`Add ${book.title} to cart`}
-          >
-            {added ? 'Added ✓' : adding ? 'Adding…' : 'Add to cart'}
-          </button>
-        ) : (
+          !isHome && (
+            <button
+              type="button"
+              className="book-tile-add"
+              onClick={onAdd}
+              disabled={adding}
+              aria-label={`Add ${book.title} to cart`}
+            >
+              {added ? 'Added ✓' : adding ? 'Adding…' : 'Add to cart'}
+            </button>
+          )
+        ) : !isHome ? (
           <span className="book-tile-add is-disabled" aria-disabled="true">
             Sold out
           </span>
-        )}
+        ) : null}
       </Card.Body>
     </Card>
   )

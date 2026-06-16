@@ -426,7 +426,7 @@ export default async function HomePage() {
                     <EventCard key={featuredEvent.id} event={featuredEvent} />
                   )}
                   {featuredBook ? (
-                    <BookCard key={featuredBook.id} book={featuredBook} />
+                    <BookCard key={featuredBook.id} book={featuredBook} variant="home" />
                   ) : (
                     secondEvent && (
                       <EventCard key={secondEvent.id} event={secondEvent} />

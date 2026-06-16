@@ -94,6 +94,10 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
   const formatSel = asArray(params.format)
   const publisherSel = asArray(params.publisher)
   const labelSel = asArray(params.label)
+  // Deep-link-filters vanaf de detailpagina (categorie/uitgever/auteur/jaar).
+  const tagSel = asArray(params.tag)
+  const authorSel = asArray(params.author)
+  const yearSel = asArray(params.year)
   const page = Math.max(1, Number.parseInt(asSingle(params.page) ?? '1', 10) || 1)
 
   // Hele (kleine) catalogus ophalen — basis voor channels + facetten.
@@ -177,6 +181,15 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
     if (labelSel.includes('new-releases') && !b.isNewRelease) return false
     if (labelSel.includes('last-chance') && !b.isLastChance) return false
     if (labelSel.includes('popular') && !b.isPopular) return false
+    if (tagSel.length > 0 && !b.tags.some((t) => tagSel.includes(t.slug)))
+      return false
+    if (authorSel.length > 0 && !(b.author && authorSel.includes(b.author)))
+      return false
+    if (
+      yearSel.length > 0 &&
+      !(b.publicationYear && yearSel.includes(String(b.publicationYear)))
+    )
+      return false
     return true
   })
 
@@ -191,7 +204,10 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
       categorySel.length ||
       formatSel.length ||
       publisherSel.length ||
-      labelSel.length,
+      labelSel.length ||
+      tagSel.length ||
+      authorSel.length ||
+      yearSel.length,
   )
 
   return (

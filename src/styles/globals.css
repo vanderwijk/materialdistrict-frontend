@@ -14770,7 +14770,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   cursor: pointer;
   transition: background var(--transition-base), color var(--transition-base);
 }
-.book-tile-add:hover:not(:disabled) {
+.book-tile-add:hover:not(:disabled):not(.is-disabled) {
   background: var(--ink);
   color: var(--on-ink);
 }
@@ -15143,3 +15143,178 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 @media (max-width: 520px) {
   .hp-brand-logos { grid-template-columns: repeat(2, 1fr); }
 }
+/* ============================================================================
+   §BOOKS-DETAIL-SHEET — book-detailpagina op de materials-shell (16-06-2026)
+   ----------------------------------------------------------------------------
+   Additief blok, append-only ná §BOOKS-FAMILY. De detailpagina hergebruikt
+   .mat-detail-wrap / .detail-sheet / .mat-sidebar / .detail-prevnext-row uit
+   de materials-detailstijl; dit blok levert alleen de boek-specifieke stukken
+   BINNEN het witte vel + de rij-overrides. Vervangt visueel de oude
+   §BOOKS-redesign-detaillayout (.book-detail-hero* — nu ongebruikt, mag later
+   weg). Gebruikt uitsluitend bestaande MD-tokens.
+   ============================================================================ */
+
+/* Cover op een zacht paneel, gecentreerd — onder de DetailHeader. */
+.book-detail .book-detail-cover-hero {
+  margin: 4px 0 26px;
+  padding: 28px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: center;
+}
+.book-detail .book-detail-cover-hero img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 460px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 14px 32px rgba(13, 31, 45, 0.16);
+}
+
+/* "About this book". */
+.book-detail .book-detail-about {
+  margin-bottom: 28px;
+}
+.book-detail .book-detail-about-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-hint);
+  margin: 0 0 10px;
+}
+.book-detail .book-detail-lead {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.book-detail .book-detail-lead p {
+  margin: 0 0 12px;
+}
+
+/* Book details — pills. Publisher/Author/Year zijn klikbaar (deep-link). */
+.book-detail .book-detail-specs {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+.book-detail .book-detail-specs-head {
+  font-family: var(--font-display);
+  font-size: 19px;
+  margin: 0 0 14px;
+}
+.book-detail .book-spec-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.book-detail .book-spec-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 7px 12px;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+.book-detail .book-spec-pill b {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.book-detail a.book-spec-pill--link {
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.book-detail a.book-spec-pill--link span {
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 2px;
+}
+.book-detail a.book-spec-pill--link:hover {
+  background: var(--surface2);
+  border-color: var(--text-hint);
+}
+.book-detail a.book-spec-pill--link:hover span {
+  text-decoration-color: var(--text-muted);
+}
+
+/* Prev/Next op velbreedte (linkerkolom), NIET full-width zoals materials. */
+.book-detail .detail-prevnext-row {
+  grid-column: 1;
+}
+
+/* Uitgever-kaartje in de sidebar (klein, wit). */
+.book-publisher-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: var(--text);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.book-publisher-card:hover {
+  background: var(--surface2);
+  border-color: var(--text-hint);
+}
+.book-publisher-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.book-publisher-card-name {
+  font-weight: 600;
+  font-size: 14.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.book-publisher-card-meta {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-hint);
+}
+.book-publisher-card-chevron {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text-muted);
+  flex: none;
+}
+
+/* More books — één rij van vier witte tegels (override op de 3-koloms basis). */
+.book-morebooks .mat-morefrombrand-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+@media (max-width: 900px) {
+  .book-morebooks .mat-morefrombrand-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 540px) {
+  .book-morebooks .mat-morefrombrand-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Featured-tegel op de homepage: compact, zelfde bandhoogte als de EventCard
+   ernaast (punt 2). Geen Add-to-cart-rij (zie BookCard variant="home"). */
+.card-thumb.book-thumb--home {
+  aspect-ratio: auto;
+  height: 120px;
+}
+/* ============================ einde §BOOKS-DETAIL-SHEET ====================== */

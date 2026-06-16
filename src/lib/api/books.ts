@@ -22,6 +22,7 @@
  * Insider-prijs blijft een UI-afleiding via `getBookPrice()`.
  */
 
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import type {
   Book,
   BookCover,
@@ -47,7 +48,7 @@ interface WCStorePrices {
 
 /** Plugin namespace on Store API `extensions` (wc-store-books-pricing.php). */
 interface WCStoreMaterialDistrictExtension {
-  md_price_ex_vat?: string
+  md_price_ex_vat?: string | number
   featured?: boolean
   channels?: WCStoreTerm[]
   disciplines?: WCStoreTerm[]
@@ -169,11 +170,18 @@ function priceToEuros(prices: WCStorePrices | undefined): number {
 }
 
 /** Store-API prijsveld in minor-units string naar euro's. */
-function minorToEuros(value: string | undefined, minor = 2): number | null {
-  if (!value) return null
+function minorToEuros(value: string | number | undefined, minor = 2): number | null {
+  if (value === undefined || value === null || value === '') return null
   const n = Number(value)
   if (!Number.isFinite(n)) return null
   return n / 10 ** minor
+}
+
+/** Prijs ex. btw uit ExtendSchema (`extensions.materialdistrict`), met fallback. */
+function mapPriceExVat(p: WCStoreProduct): number | null {
+  const raw =
+    mdStoreExtension(p)?.md_price_ex_vat ?? p.prices?.md_price_ex_vat
+  return minorToEuros(raw, p.prices?.currency_minor_unit ?? 2)
 }
 
 function mapCover(images: WCStoreImage[] | undefined): BookCover | null {
@@ -216,8 +224,8 @@ function pickAttr(
   const terms = attr?.terms ?? []
   if (terms.length === 0) return null
   return joinAll
-    ? nullableString(terms.map((t) => t.name).join(', '))
-    : nullableString(terms[0]?.name)
+    ? nullableString(terms.map((t) => decodeHtmlEntities(t.name)).join(', '))
+    : nullableString(terms[0]?.name ? decodeHtmlEntities(terms[0].name) : null)
 }
 
 /** Eerste getal uit een attribuut-waarde (bv. "224" → 224). */
@@ -265,7 +273,11 @@ async function getBooksCategoryId(): Promise<number | null> {
 
 /** Map Store-API-terms (channels/tags) naar de platte BookTerm-vorm. */
 function mapTerms(terms: WCStoreTerm[] | undefined) {
-  return (terms ?? []).map((t) => ({ id: t.id, name: t.name, slug: t.slug }))
+  return (terms ?? []).map((t) => ({
+    id: t.id,
+    name: decodeHtmlEntities(t.name),
+    slug: t.slug,
+  }))
 }
 
 function mapIsbn(p: WCStoreProduct): string | null {
@@ -297,19 +309,18 @@ function mapCatalogMeta(p: WCStoreProduct) {
 export function mapBookListItem(p: WCStoreProduct): BookListItem {
   const catalog = mapCatalogMeta(p)
   const ext = mdStoreExtension(p)
-  const minor = p.prices?.currency_minor_unit ?? 2
   return {
     id: p.id,
     slug: p.slug,
     link: p.permalink,
-    title: p.name,
+    title: decodeHtmlEntities(p.name),
     excerptHtml: p.short_description ?? '',
     cover: mapCover(p.images),
     author: pickAttr(p.attributes, 'author', true),
     publisher: pickAttr(p.attributes, 'publisher'),
     publicationYear: pickInt(p.attributes, 'year'),
     price: priceToEuros(p.prices),
-    priceExVat: minorToEuros(ext?.md_price_ex_vat ?? p.prices?.md_price_ex_vat, minor),
+    priceExVat: mapPriceExVat(p),
     inStock: p.is_in_stock ?? true,
     featured: ext?.featured ?? p.featured ?? false,
     format: pickAttr(p.attributes, 'format'),
@@ -324,12 +335,11 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
 export function mapBook(p: WCStoreProduct): Book {
   const catalog = mapCatalogMeta(p)
   const ext = mdStoreExtension(p)
-  const minor = p.prices?.currency_minor_unit ?? 2
   return {
     id: p.id,
     slug: p.slug,
     link: p.permalink,
-    title: p.name,
+    title: decodeHtmlEntities(p.name),
     contentHtml: p.description ?? '',
     excerptHtml: p.short_description ?? '',
     cover: mapCover(p.images),
@@ -345,7 +355,7 @@ export function mapBook(p: WCStoreProduct): Book {
     // Kopen gaat via Add-to-cart (stap 2). Geen permalink user-facing.
     buyUrl: null,
     price: priceToEuros(p.prices),
-    priceExVat: minorToEuros(ext?.md_price_ex_vat ?? p.prices?.md_price_ex_vat, minor),
+    priceExVat: mapPriceExVat(p),
     inStock: p.is_in_stock ?? true,
     featured: ext?.featured ?? p.featured ?? false,
     channels: mapTerms(ext?.channels ?? p.channels),

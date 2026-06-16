@@ -1,31 +1,40 @@
 /**
  * /book/[slug] — book detail page.
  *
- * STRUCTUUR volgens Designerbooks, STIJL volgens MaterialDistrict. Gebruikt de
- * gedeelde book-detail-klassen uit globals.css (book-detail-hero / -hero-cover /
- * -hero-buy / -shortdesc / -body / -spreads / -specs + book-spec-table):
+ * STIJL & STRUCTUUR volgens de materiaaldetailpagina (één wit "vel" +
+ * donker koop-zijkaartje), zodat books één familie zijn met de rest van
+ * de detailpagina's. Hergebruikt de materials-detailshell:
  *
  *   pub-wrap.book-detail >
- *     detail-back-row            (← Back to Books)
- *     book-detail-head           (titel)
- *     book-detail-hero           → cover (links) + koop-kolom (rechts):
- *                                  korte beschrijving + BookBuyCard
- *     book-detail-body           (lange beschrijving)
- *     book-detail-spreads        (binnenwerk groot, ONDER ELKAAR — geen filmstrip)
- *     book-detail-specs          (Book details als nette tabel)
- *     detail-prevnext-row
- *   mat-morefrombrand            (More books, buiten het vel)
+ *     mat-detail-wrap                         (grid: vel | sidebar)
+ *       detail-back-row                       (← Back to Books)
+ *       detail-sheet                          → het witte vel:
+ *         DetailHeader                        (categorie/channel-pills, titel,
+ *                                              meta, Save/Share)
+ *         book-detail-cover-hero              (cover op zacht paneel)
+ *         book-detail-about                   ("About this book" + beschrijving)
+ *         book-detail-spreads                 (binnenwerk groot, onder elkaar)
+ *         book-detail-specs                   (Book details als pills; publisher/
+ *                                              author/year klikbaar)
+ *       mat-sidebar                           → BookBuyCard + uitgever-kaartje
+ *       detail-prevnext-row                   (vorige/volgende — op velbreedte)
+ *     book-morebooks                          (More books — één rij witte tegels)
  *
- * Prijs ex btw prominent (koop-card), incl btw klein; BTW bij checkout als regel.
+ * Klikbare details deep-linken naar het overzicht (`/book?publisher=` /
+ * `?author=` / `?year=` / `?tag=`); die filters draaien JS-side in het
+ * overzicht, dus ze werken zonder extra backend-facetten.
  */
 
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getBook, listBooks } from '@/lib/api/books'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
+import { DetailHeader } from '@/components/layout/DetailHeader'
 import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
 import { BookBuyCard } from './_components/BookBuyCard'
+import { BookDetailActions } from './_components/BookDetailActions'
 import { BookCard } from '../_components/BookCard'
 import type { BookListItem } from '@/types/book'
 
@@ -68,18 +77,76 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   const idx = items.findIndex((b) => b.slug === book.slug)
   const prev = idx > 0 ? items[idx - 1] : null
   const next = idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
-  const moreBooks = items.filter((b) => b.slug !== book.slug).slice(0, 6)
+  // Eén rij: vier boeken (zie .book-morebooks in globals.css).
+  const moreBooks = items.filter((b) => b.slug !== book.slug).slice(0, 4)
 
-  // "Book details"-tabel (alleen ingevulde velden).
-  const specRows: Array<{ label: string; value: string }> = []
-  if (book.publisher) specRows.push({ label: 'Publisher', value: book.publisher })
-  if (book.author) specRows.push({ label: 'Author', value: book.author })
-  if (book.format) specRows.push({ label: 'Format', value: book.format })
-  if (book.pages) specRows.push({ label: 'Pages', value: String(book.pages) })
+  // Categorie-pills boven de titel (nu de product-tags; design-discipline-
+  // categorieën schuiven hier in zodra Johan ze als taxonomie levert).
+  const categoryPills: ReactNode =
+    book.tags.length > 0 ? (
+      <>
+        {book.tags.map((t) => (
+          <Link
+            key={t.slug}
+            href={`/book?tag=${encodeURIComponent(t.slug)}`}
+            className="mat-detail-tag"
+          >
+            {t.name}
+          </Link>
+        ))}
+      </>
+    ) : undefined
+
+  const channelPills = book.channels.map((c) => ({ slug: c.slug, label: c.name }))
+
+  // Meta-regel: by [Publisher] · [n] pages · [year] — alleen ingevulde delen.
+  const metaBits: ReactNode[] = [
+    book.publisher ? (
+      <>
+        by <strong>{book.publisher}</strong>
+      </>
+    ) : null,
+    book.pages ? <>{book.pages} pages</> : null,
+    book.publicationYear ? <>{book.publicationYear}</> : null,
+  ].filter(Boolean) as ReactNode[]
+  const meta: ReactNode =
+    metaBits.length > 0 ? (
+      <>
+        {metaBits.map((bit, i) => (
+          <span key={i}>
+            {i > 0 ? ' · ' : ''}
+            {bit}
+          </span>
+        ))}
+      </>
+    ) : undefined
+
+  // "Book details"-pills. Publisher/Author/Year linken naar het overzicht;
+  // Format/Pages/ISBN zijn platte feiten (daar zoek je niet op).
+  const specPills: Array<{ label: string; value: string; href?: string }> = []
+  if (book.publisher)
+    specPills.push({
+      label: 'Publisher',
+      value: book.publisher,
+      href: `/book?publisher=${encodeURIComponent(book.publisher)}`,
+    })
+  if (book.author)
+    specPills.push({
+      label: 'Author',
+      value: book.author,
+      href: `/book?author=${encodeURIComponent(book.author)}`,
+    })
+  if (book.format) specPills.push({ label: 'Format', value: book.format })
+  if (book.pages) specPills.push({ label: 'Pages', value: String(book.pages) })
   if (book.publicationYear)
-    specRows.push({ label: 'Year', value: String(book.publicationYear) })
-  if (book.isbn) specRows.push({ label: 'ISBN', value: book.isbn })
+    specPills.push({
+      label: 'Year',
+      value: String(book.publicationYear),
+      href: `/book?year=${encodeURIComponent(String(book.publicationYear))}`,
+    })
+  if (book.isbn) specPills.push({ label: 'ISBN', value: book.isbn })
 
+  const hasBody = Boolean(book.excerptHtml || book.contentHtml)
   const longBody =
     book.contentHtml && book.contentHtml !== book.excerptHtml
       ? book.contentHtml
@@ -100,34 +167,99 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   return (
     <>
       <article className="pub-wrap book-detail">
-        <div className="detail-back-row">
-          <Link href="/book" className="detail-header-back">
-            <span aria-hidden="true">←</span> Back to Books
-          </Link>
-        </div>
+        <div className="mat-detail-wrap">
+          <div className="detail-back-row">
+            <Link href="/book" className="detail-header-back">
+              <span aria-hidden="true">←</span> Back to Books
+            </Link>
+          </div>
 
-        <div className="book-detail-head">
-          <h1 className="t-display-lg book-detail-title">{book.title}</h1>
-        </div>
+          {/* Het witte vel: alle informatie over het boek. */}
+          <div className="detail-sheet">
+            <DetailHeader
+              tags={[]}
+              leadingTags={categoryPills}
+              channels={channelPills}
+              title={book.title}
+              meta={meta}
+              actions={
+                <BookDetailActions
+                  bookId={book.id}
+                  bookSlug={book.slug}
+                  bookTitle={book.title}
+                />
+              }
+            />
 
-        {/* Cover (links) + korte beschrijving + koop-card (rechts). */}
-        <div className="book-detail-hero">
-          <div className="book-detail-hero-cover">
-            {book.cover ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={book.cover.url} alt={book.cover.alt || book.title} />
-            ) : (
-              <div className="book-card-cover-empty" aria-hidden="true" />
+            {book.cover && (
+              <div className="book-detail-cover-hero">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={book.cover.url} alt={book.cover.alt || book.title} />
+              </div>
+            )}
+
+            {hasBody && (
+              <div className="book-detail-about">
+                <p className="book-detail-about-eyebrow">About this book</p>
+                {book.excerptHtml && (
+                  <div
+                    className="book-detail-lead"
+                    dangerouslySetInnerHTML={{ __html: book.excerptHtml }}
+                  />
+                )}
+                {longBody && <MaterialBody html={longBody} />}
+              </div>
+            )}
+
+            {/* Binnenwerk-spreads — groot en onder elkaar (geen filmstrip). */}
+            {book.gallery.length > 0 && (
+              <div className="book-detail-spreads">
+                {book.gallery.map((img, i) => (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    key={`${img.url}-${i}`}
+                    src={img.url}
+                    alt={img.alt || `${book.title} — spread ${i + 1}`}
+                    loading="lazy"
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Book details — pills; sommige klikbaar. */}
+            {specPills.length > 0 && (
+              <section
+                className="book-detail-specs"
+                aria-labelledby="book-details-title"
+              >
+                <h2 id="book-details-title" className="book-detail-specs-head">
+                  Book details
+                </h2>
+                <div className="book-spec-pills">
+                  {specPills.map((s) =>
+                    s.href ? (
+                      <Link
+                        key={s.label}
+                        href={s.href}
+                        className="book-spec-pill book-spec-pill--link"
+                      >
+                        <b>{s.label}:</b>
+                        <span>{s.value}</span>
+                      </Link>
+                    ) : (
+                      <span key={s.label} className="book-spec-pill">
+                        <b>{s.label}:</b>
+                        {s.value}
+                      </span>
+                    ),
+                  )}
+                </div>
+              </section>
             )}
           </div>
 
-          <div className="book-detail-hero-buy">
-            {book.excerptHtml && (
-              <div
-                className="book-detail-shortdesc"
-                dangerouslySetInnerHTML={{ __html: book.excerptHtml }}
-              />
-            )}
+          {/* Sidebar: koop-card (donker) + uitgever-kaartje. */}
+          <aside className="mat-sidebar">
             <BookBuyCard
               title={book.title}
               productId={book.wcProductId ?? book.id}
@@ -135,57 +267,39 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
               priceExVat={book.priceExVat}
               inStock={book.inStock}
             />
+
+            {book.publisher && (
+              <Link
+                href={`/book?publisher=${encodeURIComponent(book.publisher)}`}
+                className="book-publisher-card"
+              >
+                <span className="book-publisher-card-text">
+                  <span className="book-publisher-card-name">{book.publisher}</span>
+                  <span className="book-publisher-card-meta">Publisher</span>
+                </span>
+                <span className="book-publisher-card-chevron" aria-hidden="true">
+                  ›
+                </span>
+              </Link>
+            )}
+          </aside>
+
+          <div className="detail-prevnext-row">
+            <BookPrevNext prev={prev} next={next} />
           </div>
-        </div>
-
-        {/* Lange beschrijving. */}
-        {longBody && (
-          <div className="book-detail-body">
-            <MaterialBody html={longBody} />
-          </div>
-        )}
-
-        {/* Binnenwerk-spreads — groot en onder elkaar (geen filmstrip). */}
-        {book.gallery.length > 0 && (
-          <div className="book-detail-spreads">
-            {book.gallery.map((img, i) => (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                key={`${img.url}-${i}`}
-                src={img.url}
-                alt={img.alt || `${book.title} — spread ${i + 1}`}
-                loading="lazy"
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Book details — nette tabel. */}
-        {specRows.length > 0 && (
-          <section className="book-detail-specs" aria-labelledby="book-details-title">
-            <h2 id="book-details-title" className="book-detail-specs-head">
-              Book details
-            </h2>
-            <dl className="book-spec-table">
-              {specRows.map((row) => (
-                <div key={row.label} className="book-spec-row">
-                  <dt>{row.label}</dt>
-                  <dd>{row.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-        )}
-
-        <div className="detail-prevnext-row">
-          <BookPrevNext prev={prev} next={next} />
         </div>
       </article>
 
       {moreBooks.length > 0 && (
-        <section className="mat-morefrombrand" aria-labelledby="more-books-title">
+        <section
+          className="mat-morefrombrand book-morebooks"
+          aria-labelledby="more-books-title"
+        >
           <header className="mat-morefrombrand-header">
-            <h2 id="more-books-title" className="mat-section-title mat-morefrombrand-heading">
+            <h2
+              id="more-books-title"
+              className="mat-section-title mat-morefrombrand-heading"
+            >
               More books
             </h2>
             <Link href="/book" className="mat-morefrombrand-viewall">
