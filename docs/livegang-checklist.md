@@ -1,7 +1,7 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 16 juni 2026  
+**Laatst bijgewerkt:** 17 juni 2026  
 **Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
@@ -165,6 +165,18 @@ wp user meta list --keys=simplefavorites --format=count
 - [ ] `wp cache flush --url=materialdistrict.com`
 
 **Niet migreren:** anonieme favorieten (cookie/sessie) — vervallen bij cutover; nieuwe site vereist login voor bookmarks.
+
+### 2.9 Material category-pagina's — vormgeving
+
+**Status:** open — functioneel OK, visueel onder de maat  
+**Eigenaar:** frontend (Claude)  
+**Referentie:** [`src/app/material-category/[slug]/page.tsx`](../src/app/material-category/[slug]/page.tsx)  
+**Voorbeeld:** [materialdistrict-frontend.vercel.app/material-category/plastics/](https://materialdistrict-frontend.vercel.app/material-category/plastics/) — titel/intro, breadcrumb en materiaalgrid ogen rommelig (dubbele “Plastics”, weinig hiërarchie).
+
+- [ ] Hero/intro-blok: één duidelijke H1, korte categoriebeschrijving (uit WP term), geen dubbele labels
+- [ ] Grid + telling (“913 materials”) visueel in lijn met `/materials` en brand-archief
+- [ ] Responsive check (mobiel: breadcrumb + filterbar indien van toepassing)
+- [ ] Rooktest op 2–3 categorieën (groot volume + kleine term)
 
 ---
 
