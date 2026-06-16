@@ -1203,8 +1203,8 @@ h4 {
 }
 
 .footer-newsletter button {
-  background: var(--green-mid);
-  color: white;
+  background: var(--ink);
+  color: var(--on-ink);
   font-size: 13px;
   font-weight: 700;
   padding: 9px 14px;
@@ -4580,7 +4580,7 @@ a:focus-visible {
   display: inline;
   padding: 0;
   text-decoration: none;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--text);
   font-size: 14px;
   line-height: 2.2;
   font-weight: 500;
@@ -4588,7 +4588,7 @@ a:focus-visible {
 }
 
 .site-footer .footer-link:hover {
-  color: #ffffff;
+  color: var(--green-mid);
   text-decoration: none;
 }
 
@@ -13671,8 +13671,8 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   min-height: 44px;
   border: none;
   border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--green-mid);
+  color: white;
   font-family: inherit;
   font-size: 15px;
   font-weight: 600;
@@ -13746,6 +13746,9 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+/* Veld over de volle breedte van het adres-raster (huisstijl-Input/Select). */
+.checkout-field-wide { grid-column: 1 / -1; }
 
 .addr-field {
   display: flex;
@@ -14738,6 +14741,56 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .mat-gallery.is-book .mat-gallery-thumb img {
   object-fit: contain;
   background: var(--surface);
+}
+
+/* ---- Overzicht-tegel: landscape thumb (gedeeld met de featured-tegel) ---- */
+.card-thumb.book-thumb {
+  aspect-ratio: 3 / 2;
+  background: var(--surface2);
+}
+.card-thumb.book-thumb img {
+  object-fit: contain;
+}
+
+/* Directe "Add to cart" op de tegel — secundair (niet groen). */
+.book-tile-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.book-tile-add:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.book-tile-add:disabled { opacity: 0.6; cursor: default; }
+.book-tile-add.is-disabled {
+  border-color: var(--border);
+  color: var(--text-muted);
+  cursor: default;
+}
+
+/* Koop-card: kleine "ex. VAT" naast de prijs + incl-btw regel eronder. */
+.book-buy-price-vat {
+  margin-left: 6px;
+  font-size: 12px;
+  color: var(--on-ink-muted, rgba(255, 255, 255, 0.65));
+}
+.book-buy-price-incl {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--on-ink-muted, rgba(255, 255, 255, 0.65));
 }
 
 /* ============================ einde §BOOKS-FAMILY ============================ */

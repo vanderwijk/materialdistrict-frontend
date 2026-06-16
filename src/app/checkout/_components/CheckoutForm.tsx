@@ -533,8 +533,9 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const moneyN = (v?: string, unit = minor) => storeMinorToNumber(v, unit)
   const subtotalIncl =
     moneyN(cart.totals.total_items) + moneyN(cart.totals.total_items_tax)
-  const shippingIncl =
-    moneyN(cart.totals.total_shipping) + moneyN(cart.totals.total_shipping_tax)
+  // Ex-btw weergave (prijzen ex btw; btw als aparte regel — punt 1).
+  const subtotalEx = moneyN(cart.totals.total_items)
+  const shippingEx = moneyN(cart.totals.total_shipping)
   const summaryTax = moneyN(cart.totals.total_tax)
   const freeShipRemaining = cart.needs_shipping
     ? freeShippingRemaining(billing.country, subtotalIncl)
@@ -715,8 +716,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
               <span className="checkout-summary-name">{item.name}</span>
               <span className="checkout-summary-amount">
                 {formatEur(
-                  moneyN(item.prices.price, item.prices.currency_minor_unit) *
-                    item.quantity,
+                  moneyN(item.totals.line_subtotal, item.prices.currency_minor_unit),
                 )}
               </span>
             </div>
@@ -726,7 +726,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         <dl className="cart-totals">
           <div className="cart-totals-row">
             <dt>Subtotal</dt>
-            <dd>{formatEur(subtotalIncl)}</dd>
+            <dd>{formatEur(subtotalEx)}</dd>
           </div>
           {storeMinorToNumber(cart.totals.total_discount, minor) > 0 && (
             <div className="cart-totals-row">
@@ -738,17 +738,20 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
             <div className="cart-totals-row">
               <dt>Shipping</dt>
               <dd>
-                {selectedRate ? formatEur(shippingIncl) : '—'}
+                {selectedRate ? formatEur(shippingEx) : '—'}
               </dd>
+            </div>
+          )}
+          {summaryTax > 0 && (
+            <div className="cart-totals-row">
+              <dt>VAT</dt>
+              <dd>{formatEur(summaryTax)}</dd>
             </div>
           )}
           <div className="cart-totals-row cart-totals-grand">
             <dt>Total</dt>
             <dd>{money(cart.totals.total_price)}</dd>
           </div>
-          {summaryTax > 0 && (
-            <p className="cart-totals-vat">incl. {formatEur(summaryTax)} VAT</p>
-          )}
         </dl>
       </aside>
     </div>

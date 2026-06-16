@@ -89,11 +89,12 @@ export function CartView() {
     formatEur(moneyN(value, unit))
   const discount = moneyN(cart.totals.total_discount)
 
-  // Incl-btw weergave.
+  // Incl-btw weergave (alleen subtotaal nog nodig voor de free-shipping-drempel).
   const subtotalIncl =
     moneyN(cart.totals.total_items) + moneyN(cart.totals.total_items_tax)
-  const shippingIncl =
-    moneyN(cart.totals.total_shipping) + moneyN(cart.totals.total_shipping_tax)
+  // Ex-btw weergave (prijzen ex btw; btw als aparte regel — punt 1).
+  const subtotalEx = moneyN(cart.totals.total_items)
+  const shippingEx = moneyN(cart.totals.total_shipping)
   const totalTax = moneyN(cart.totals.total_tax)
   const shippingSelected =
     cart.shipping_rates?.some((pkg) =>
@@ -134,7 +135,9 @@ export function CartView() {
           const img = item.images?.[0]
           const slug = slugFromPermalink(item.permalink)
           const lineUnit = item.prices.currency_minor_unit ?? minor
-          const lineIncl = moneyN(item.prices.price, lineUnit) * item.quantity
+          // Regelprijs ex btw (line_subtotal), zodat de regel klopt met het
+          // ex-btw subtotaal + de aparte BTW-regel (punt 1).
+          const lineEx = moneyN(item.totals.line_subtotal, lineUnit)
           const isLast = item.quantity <= 1
           return (
             <div key={item.key} className="cart-item">
@@ -181,7 +184,7 @@ export function CartView() {
                 </div>
               </div>
 
-              <div className="cart-item-linetotal">{formatEur(lineIncl)}</div>
+              <div className="cart-item-linetotal">{formatEur(lineEx)}</div>
             </div>
           )
         })}
@@ -233,7 +236,7 @@ export function CartView() {
         <dl className="cart-totals">
           <div className="cart-totals-row">
             <dt>Subtotal</dt>
-            <dd>{formatEur(subtotalIncl)}</dd>
+            <dd>{formatEur(subtotalEx)}</dd>
           </div>
           {discount > 0 && (
             <div className="cart-totals-row">
@@ -246,18 +249,21 @@ export function CartView() {
               <dt>Shipping</dt>
               <dd>
                 {shippingSelected
-                  ? formatEur(shippingIncl)
+                  ? formatEur(shippingEx)
                   : 'Calculated at checkout'}
               </dd>
+            </div>
+          )}
+          {totalTax > 0 && (
+            <div className="cart-totals-row">
+              <dt>VAT</dt>
+              <dd>{formatEur(totalTax)}</dd>
             </div>
           )}
           <div className="cart-totals-row cart-totals-grand">
             <dt>Total</dt>
             <dd>{money(cart.totals.total_price)}</dd>
           </div>
-          {totalTax > 0 && (
-            <p className="cart-totals-vat">incl. {formatEur(totalTax)} VAT</p>
-          )}
         </dl>
 
         <a className="cart-checkout-btn" href="/checkout">

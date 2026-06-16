@@ -3,16 +3,18 @@
 /**
  * BookBuyCard
  * ----------------------------------------------------------------------
- * Auth-aware koop-card in de book-detail-sidebar. Ink-paneel met prijs +
- * "Add to cart" (headless, via de Store-API-cart). De Insider-prijs is een
- * UI-afleiding via `getBookPrice(price, isInsider)`:
+ * Auth-aware koop-card op de book-detailpagina (MD-stijl ink-paneel) met
+ * prijs + "Add to cart" (headless, via de Store-API-cart).
  *
- *  - Insider      → Insider-prijs groot, reguliere prijs doorgehaald.
- *  - Niet-member  → reguliere prijs groot + upsell.
- *  - Uitverkocht  → "Sold out" i.p.v. de knop.
+ * Prijsweergave (punt 1): de prijs **ex btw** is het prominente bedrag
+ * (B2B-conventie, net als het overzicht); het **incl-btw** bedrag staat er
+ * klein onder (consument-zichtbaarheid). De BTW wordt bij de checkout als
+ * aparte regel verrekend.
  *
- * Na toevoegen tonen we "Added" + een link naar /cart. Kopen blijft volledig
- * op het apex-domein (geen redirect naar WooCommerce/cms).
+ * Insider-prijs is een UI-afleiding via `getBookPrice`:
+ *  - Insider     → Insider-prijs (ex) groot, reguliere prijs (ex) doorgehaald.
+ *  - Niet-member → reguliere prijs (ex) groot + upsell.
+ *  - Uitverkocht → "Sold out" i.p.v. de knop.
  */
 
 import { useState } from 'react'
@@ -26,11 +28,20 @@ export interface BookBuyCardProps {
   title: string
   /** WooCommerce-product-id, voor add-to-cart. */
   productId: number
+  /** Reguliere prijs incl. btw (wat je betaalt). */
   price: number
+  /** Reguliere prijs ex. btw (uit `prices.md_price_ex_vat`); valt terug op `price`. */
+  priceExVat: number | null
   inStock: boolean
 }
 
-export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardProps) {
+export function BookBuyCard({
+  title,
+  productId,
+  price,
+  priceExVat,
+  inStock,
+}: BookBuyCardProps) {
   const { isMember } = useAuth()
   const { addItem } = useCart()
 
@@ -39,8 +50,14 @@ export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardPro
   const [localError, setLocalError] = useState<string | null>(null)
 
   const priceKnown = price > 0
-  const insiderPrice = getBookPrice(price, true)
-  const hasDiscount = priceKnown && insiderPrice < price
+  const exReg = priceExVat ?? price
+  const exInsider = getBookPrice(exReg, true)
+  const inclInsider = getBookPrice(price, true)
+  const hasDiscount = priceKnown && exInsider < exReg
+
+  const useInsider = isMember && hasDiscount
+  const exNow = useInsider ? exInsider : exReg
+  const inclNow = useInsider ? inclInsider : price
 
   async function handleAdd() {
     setLocalError(null)
@@ -66,27 +83,30 @@ export function BookBuyCard({ title, productId, price, inStock }: BookBuyCardPro
       {priceKnown ? (
         <>
           <div className="book-buy-price">
-            <span className="book-buy-price-now">
-              {formatEur(isMember && hasDiscount ? insiderPrice : price)}
-            </span>
-            {isMember && hasDiscount && (
-              <span className="book-buy-price-was">{formatEur(price)}</span>
+            <span className="book-buy-price-now">{formatEur(exNow)}</span>
+            <span className="book-buy-price-vat">ex. VAT</span>
+            {useInsider && (
+              <span className="book-buy-price-was">{formatEur(exReg)}</span>
             )}
           </div>
 
-          {isMember && hasDiscount && (
+          <div className="book-buy-price-incl">
+            incl. VAT {formatEur(inclNow)}
+          </div>
+
+          {useInsider && (
             <div className="book-buy-insider-row">
               <span className="book-buy-insider-tag">Insider price</span>
               <span className="book-buy-save">
-                save {formatEur(price - insiderPrice)}
+                save {formatEur(exReg - exInsider)}
               </span>
             </div>
           )}
 
           {!isMember && hasDiscount && (
             <p className="book-buy-upsell">
-              Insiders pay {formatEur(insiderPrice)} —{' '}
-              <strong>save {formatEur(price - insiderPrice)}</strong>.{' '}
+              Insiders pay {formatEur(exInsider)} ex. VAT —{' '}
+              <strong>save {formatEur(exReg - exInsider)}</strong>.{' '}
               <a href="/membership">Become an Insider</a>
             </p>
           )}

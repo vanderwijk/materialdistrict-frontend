@@ -1,37 +1,30 @@
 /**
- * /books/[slug] — book detail page.
+ * /book/[slug] — book detail page.
  *
- * Spiegelt de material-detailshell 1-op-1 (zelfde witte "vel" op de paper-
- * achtergrond), zodat book-detail één familie is met material-detail:
+ * STRUCTUUR volgens Designerbooks, STIJL volgens MaterialDistrict. Gebruikt de
+ * gedeelde book-detail-klassen uit globals.css (book-detail-hero / -hero-cover /
+ * -hero-buy / -shortdesc / -body / -spreads / -specs + book-spec-table):
  *
- *   pub-wrap > mat-detail-wrap >
- *     detail-back-row     (← Back to Books)
- *     detail-sheet        (wit vel)
- *       DetailHeader      (titel + meta: by publisher · pages · year)
- *       mat-main
- *         BookGallery     (cover + spreads, hero + filmstrip)
- *         DetailReadingTools
- *         "About this book"
- *         excerpt + body
- *         "Book details"  (mat-properties-pills)
- *     mat-sidebar         (BookBuyCard — donker ink-paneel, auth-aware)
- *     detail-prevnext-row (prev/next)
- *   MoreBooks             (buiten het vel)
+ *   pub-wrap.book-detail >
+ *     detail-back-row            (← Back to Books)
+ *     book-detail-head           (titel)
+ *     book-detail-hero           → cover (links) + koop-kolom (rechts):
+ *                                  korte beschrijving + BookBuyCard
+ *     book-detail-body           (lange beschrijving)
+ *     book-detail-spreads        (binnenwerk groot, ONDER ELKAAR — geen filmstrip)
+ *     book-detail-specs          (Book details als nette tabel)
+ *     detail-prevnext-row
+ *   mat-morefrombrand            (More books, buiten het vel)
  *
- * Prijzen: de koop-card toont de WC-prijs (incl. btw, = wat je betaalt). Het
- * overzicht toont ex btw; dat verschil is bewust (browse ex, koop incl).
+ * Prijs ex btw prominent (koop-card), incl btw klein; BTW bij checkout als regel.
  */
 
 import type { Metadata } from 'next'
-import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { DetailHeader } from '@/components/layout/DetailHeader'
-import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { getBook, listBooks } from '@/lib/api/books'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
-import { BookGallery } from './_components/BookGallery'
 import { BookBuyCard } from './_components/BookBuyCard'
 import { BookCard } from '../_components/BookCard'
 import type { BookListItem } from '@/types/book'
@@ -57,12 +50,7 @@ export async function generateMetadata({
     title: book.title,
     description,
     alternates: { canonical: path },
-    openGraph: {
-      title: book.title,
-      description,
-      type: 'book',
-      url: path,
-    },
+    openGraph: { title: book.title, description, type: 'book', url: path },
   }
 }
 
@@ -82,33 +70,20 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   const next = idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
   const moreBooks = items.filter((b) => b.slug !== book.slug).slice(0, 6)
 
-  // Meta-regel: by [publisher] · [pages] pages · [year]
-  const metaParts: Array<{ key: string; node: ReactNode }> = []
-  if (book.publisher) {
-    metaParts.push({
-      key: 'publisher',
-      node: (
-        <>
-          by <strong>{book.publisher}</strong>
-        </>
-      ),
-    })
-  }
-  if (book.pages) metaParts.push({ key: 'pages', node: <>{book.pages} pages</> })
-  if (book.format) metaParts.push({ key: 'format', node: <>{book.format}</> })
+  // "Book details"-tabel (alleen ingevulde velden).
+  const specRows: Array<{ label: string; value: string }> = []
+  if (book.publisher) specRows.push({ label: 'Publisher', value: book.publisher })
+  if (book.author) specRows.push({ label: 'Author', value: book.author })
+  if (book.format) specRows.push({ label: 'Format', value: book.format })
+  if (book.pages) specRows.push({ label: 'Pages', value: String(book.pages) })
   if (book.publicationYear)
-    metaParts.push({ key: 'year', node: <>{book.publicationYear}</> })
+    specRows.push({ label: 'Year', value: String(book.publicationYear) })
+  if (book.isbn) specRows.push({ label: 'ISBN', value: book.isbn })
 
-  // "Book details"-pills (alleen ingevulde velden).
-  const detailPills: Array<{ label: string; value: string }> = []
-  if (book.publisher) detailPills.push({ label: 'Publisher', value: book.publisher })
-  if (book.format) detailPills.push({ label: 'Format', value: book.format })
-  if (book.pages) detailPills.push({ label: 'Pages', value: String(book.pages) })
-  if (book.publicationYear)
-    detailPills.push({ label: 'Year', value: String(book.publicationYear) })
-  if (book.isbn) detailPills.push({ label: 'ISBN', value: book.isbn })
-
-  const hasBody = Boolean(book.excerptHtml || book.contentHtml)
+  const longBody =
+    book.contentHtml && book.contentHtml !== book.excerptHtml
+      ? book.contentHtml
+      : ''
 
   const bookJsonLd = buildBook({
     slug: book.slug,
@@ -124,85 +99,86 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
 
   return (
     <>
-      <article className="pub-wrap">
-        <div className="mat-detail-wrap">
-          <div className="detail-back-row">
-            <Link href="/book" className="detail-header-back">
-              <span aria-hidden="true">←</span> Back to Books
-            </Link>
+      <article className="pub-wrap book-detail">
+        <div className="detail-back-row">
+          <Link href="/book" className="detail-header-back">
+            <span aria-hidden="true">←</span> Back to Books
+          </Link>
+        </div>
+
+        <div className="book-detail-head">
+          <h1 className="t-display-lg book-detail-title">{book.title}</h1>
+        </div>
+
+        {/* Cover (links) + korte beschrijving + koop-card (rechts). */}
+        <div className="book-detail-hero">
+          <div className="book-detail-hero-cover">
+            {book.cover ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={book.cover.url} alt={book.cover.alt || book.title} />
+            ) : (
+              <div className="book-card-cover-empty" aria-hidden="true" />
+            )}
           </div>
 
-          <div className="detail-sheet">
-            <DetailHeader
-              tags={[]}
-              title={book.title}
-              meta={
-                metaParts.length > 0 ? (
-                  <>
-                    {metaParts.map((part, i) => (
-                      <span key={part.key}>
-                        {i > 0 && ' · '}
-                        {part.node}
-                      </span>
-                    ))}
-                  </>
-                ) : undefined
-              }
-            />
-
-            <div className="mat-main">
-              <BookGallery
-                cover={book.cover}
-                gallery={book.gallery}
-                title={book.title}
+          <div className="book-detail-hero-buy">
+            {book.excerptHtml && (
+              <div
+                className="book-detail-shortdesc"
+                dangerouslySetInnerHTML={{ __html: book.excerptHtml }}
               />
-
-              <DetailReadingTools />
-
-              {hasBody && (
-                <div className="detail-about-eyebrow">About this book</div>
-              )}
-
-              {book.excerptHtml && <MaterialBody html={book.excerptHtml} />}
-
-              {book.contentHtml && book.contentHtml !== book.excerptHtml && (
-                <MaterialBody html={book.contentHtml} />
-              )}
-
-              {detailPills.length > 0 && (
-                <section className="mat-properties" aria-labelledby="book-details-title">
-                  <h2 id="book-details-title" className="mat-section-title">
-                    Book details
-                  </h2>
-                  <div className="mat-properties-grid">
-                    <div className="mat-property-group">
-                      <div className="mat-property-group-tags">
-                        {detailPills.map((p) => (
-                          <span key={p.label} className="mat-property-tag is-neutral">
-                            <span className="mat-property-tag-key">{p.label}:</span>
-                            {p.value}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </section>
-              )}
-            </div>
-          </div>
-
-          <aside className="mat-sidebar">
+            )}
             <BookBuyCard
               title={book.title}
               productId={book.wcProductId ?? book.id}
               price={book.price}
+              priceExVat={book.priceExVat}
               inStock={book.inStock}
             />
-          </aside>
-
-          <div className="detail-prevnext-row">
-            <BookPrevNext prev={prev} next={next} />
           </div>
+        </div>
+
+        {/* Lange beschrijving. */}
+        {longBody && (
+          <div className="book-detail-body">
+            <MaterialBody html={longBody} />
+          </div>
+        )}
+
+        {/* Binnenwerk-spreads — groot en onder elkaar (geen filmstrip). */}
+        {book.gallery.length > 0 && (
+          <div className="book-detail-spreads">
+            {book.gallery.map((img, i) => (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                key={`${img.url}-${i}`}
+                src={img.url}
+                alt={img.alt || `${book.title} — spread ${i + 1}`}
+                loading="lazy"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Book details — nette tabel. */}
+        {specRows.length > 0 && (
+          <section className="book-detail-specs" aria-labelledby="book-details-title">
+            <h2 id="book-details-title" className="book-detail-specs-head">
+              Book details
+            </h2>
+            <dl className="book-spec-table">
+              {specRows.map((row) => (
+                <div key={row.label} className="book-spec-row">
+                  <dt>{row.label}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        <div className="detail-prevnext-row">
+          <BookPrevNext prev={prev} next={next} />
         </div>
       </article>
 
@@ -252,11 +228,9 @@ function BookPrevNext({
     <nav className="mat-prevnext" aria-label="Book navigation">
       {prev ? (
         <Link href={`/book/${prev.slug}`} className="mat-prevnext-link">
-          <span className="mat-prevnext-arrow" aria-hidden="true">
-            ←
-          </span>
+          <span className="mat-prevnext-arrow" aria-hidden="true">←</span>
           <span className="mat-prevnext-thumb" aria-hidden="true">
-            {prev.cover?.thumbnailUrl ?? prev.cover?.url ? (
+            {(prev.cover?.thumbnailUrl ?? prev.cover?.url) ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={prev.cover?.thumbnailUrl ?? prev.cover?.url} alt="" />
             ) : (
@@ -282,16 +256,14 @@ function BookPrevNext({
             <span className="mat-prevnext-title">{next.title}</span>
           </span>
           <span className="mat-prevnext-thumb" aria-hidden="true">
-            {next.cover?.thumbnailUrl ?? next.cover?.url ? (
+            {(next.cover?.thumbnailUrl ?? next.cover?.url) ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={next.cover?.thumbnailUrl ?? next.cover?.url} alt="" />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}
           </span>
-          <span className="mat-prevnext-arrow" aria-hidden="true">
-            →
-          </span>
+          <span className="mat-prevnext-arrow" aria-hidden="true">→</span>
         </Link>
       )}
     </nav>

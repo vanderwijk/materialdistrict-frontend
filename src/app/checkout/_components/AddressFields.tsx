@@ -2,10 +2,17 @@
 
 /**
  * AddressFields — herbruikbare, controlled adresvelden voor de checkout.
- * Landkeuze beperkt tot de zones die de winkel bedient (NL / BE+DE / EU / RoW
- * worden server-side als verzendzones afgehandeld; hier een praktische lijst).
+ *
+ * Gebouwd op de gedeelde huisstijl-formuliercomponenten (`Input`/`Select` uit
+ * components/ui/form): die tonen de §41-veldstatus — een groen vinkje rechts-
+ * boven zodra een verplicht veld geldig is gevuld. Zo is de checkout één
+ * familie met de overige formulieren (register, dashboard).
+ *
+ * Company (optioneel) en VAT number (optioneel) staan naast elkaar (elk half);
+ * als er geen BTW-veld is (verzendadres), wordt Company volle breedte.
  */
 
+import { Input, Select } from '@/components/ui/form'
 import type { StoreAddress } from '@/lib/api/cart'
 
 const COUNTRIES: Array<[string, string]> = [
@@ -37,7 +44,6 @@ interface AddressFieldsProps {
 export function AddressFields({
   value,
   onChange,
-  idPrefix,
   vatNumber,
   onVatNumberChange,
   vatStatus = 'idle',
@@ -48,110 +54,95 @@ export function AddressFields({
 
   return (
     <div className="addr-grid">
-      <div className="addr-field">
-        <label htmlFor={`${idPrefix}-first`}>First name *</label>
-        <input
-          id={`${idPrefix}-first`}
-          value={value.first_name}
-          onChange={(e) => set('first_name', e.target.value)}
-          autoComplete="given-name"
-        />
-      </div>
-      <div className="addr-field">
-        <label htmlFor={`${idPrefix}-last`}>Last name *</label>
-        <input
-          id={`${idPrefix}-last`}
-          value={value.last_name}
-          onChange={(e) => set('last_name', e.target.value)}
-          autoComplete="family-name"
-        />
-      </div>
+      <Input
+        label="First name"
+        required
+        showFilledState
+        value={value.first_name}
+        onChange={(e) => set('first_name', e.target.value)}
+        autoComplete="given-name"
+      />
+      <Input
+        label="Last name"
+        required
+        showFilledState
+        value={value.last_name}
+        onChange={(e) => set('last_name', e.target.value)}
+        autoComplete="family-name"
+      />
 
-      <div className="addr-field addr-field-wide">
-        <label htmlFor={`${idPrefix}-company`}>Company (optional)</label>
-        <input
-          id={`${idPrefix}-company`}
-          value={value.company ?? ''}
-          onChange={(e) => set('company', e.target.value)}
-          autoComplete="organization"
-        />
-      </div>
-
+      <Input
+        className={onVatNumberChange ? undefined : 'checkout-field-wide'}
+        label="Company"
+        optional
+        showFilledState
+        value={value.company ?? ''}
+        onChange={(e) => set('company', e.target.value)}
+        autoComplete="organization"
+      />
       {onVatNumberChange && (
-        <div className="addr-field addr-field-wide">
-          <label htmlFor={`${idPrefix}-vat`}>VAT number (optional)</label>
-          <div className="checkout-vat-input-wrap">
-            <input
-              id={`${idPrefix}-vat`}
-              value={vatNumber ?? ''}
-              onChange={(e) => onVatNumberChange(e.target.value)}
-              autoComplete="off"
-              placeholder="e.g. NL123456789B01"
-              className={`checkout-vat-input ${vatStatus === 'valid' ? 'is-valid' : ''} ${
-                vatStatus === 'invalid' ? 'is-invalid' : ''
-              }`.trim()}
-            />
-            {vatStatus === 'checking' && <span className="checkout-vat-indicator">…</span>}
-            {vatStatus === 'valid' && <span className="checkout-vat-indicator is-valid">✓</span>}
-            {vatStatus === 'invalid' && <span className="checkout-vat-indicator is-invalid">!</span>}
-          </div>
-          {vatErrorMessage && <p className="checkout-vat-error">{vatErrorMessage}</p>}
-        </div>
+        <Input
+          label="VAT number"
+          optional
+          value={vatNumber ?? ''}
+          onChange={(e) => onVatNumberChange(e.target.value)}
+          valid={vatStatus === 'valid'}
+          error={
+            vatStatus === 'invalid'
+              ? vatErrorMessage ?? 'VAT number could not be validated.'
+              : undefined
+          }
+          helper={vatStatus === 'checking' ? 'Checking…' : undefined}
+          placeholder="e.g. NL123456789B01"
+          autoComplete="off"
+        />
       )}
 
-      <div className="addr-field addr-field-wide">
-        <label htmlFor={`${idPrefix}-addr1`}>Address *</label>
-        <input
-          id={`${idPrefix}-addr1`}
-          value={value.address_1}
-          onChange={(e) => set('address_1', e.target.value)}
-          autoComplete="address-line1"
-        />
-      </div>
-      <div className="addr-field addr-field-wide">
-        <label htmlFor={`${idPrefix}-addr2`}>Address line 2</label>
-        <input
-          id={`${idPrefix}-addr2`}
-          value={value.address_2 ?? ''}
-          onChange={(e) => set('address_2', e.target.value)}
-          autoComplete="address-line2"
-        />
-      </div>
+      <Input
+        className="checkout-field-wide"
+        label="Address"
+        required
+        showFilledState
+        value={value.address_1}
+        onChange={(e) => set('address_1', e.target.value)}
+        autoComplete="address-line1"
+      />
+      <Input
+        className="checkout-field-wide"
+        label="Address line 2"
+        optional
+        showFilledState
+        value={value.address_2 ?? ''}
+        onChange={(e) => set('address_2', e.target.value)}
+        autoComplete="address-line2"
+      />
 
-      <div className="addr-field">
-        <label htmlFor={`${idPrefix}-post`}>Postcode *</label>
-        <input
-          id={`${idPrefix}-post`}
-          value={value.postcode}
-          onChange={(e) => set('postcode', e.target.value)}
-          autoComplete="postal-code"
-        />
-      </div>
-      <div className="addr-field">
-        <label htmlFor={`${idPrefix}-city`}>City *</label>
-        <input
-          id={`${idPrefix}-city`}
-          value={value.city}
-          onChange={(e) => set('city', e.target.value)}
-          autoComplete="address-level2"
-        />
-      </div>
+      <Input
+        label="Postcode"
+        required
+        showFilledState
+        value={value.postcode}
+        onChange={(e) => set('postcode', e.target.value)}
+        autoComplete="postal-code"
+      />
+      <Input
+        label="City"
+        required
+        showFilledState
+        value={value.city}
+        onChange={(e) => set('city', e.target.value)}
+        autoComplete="address-level2"
+      />
 
-      <div className="addr-field addr-field-wide">
-        <label htmlFor={`${idPrefix}-country`}>Country *</label>
-        <select
-          id={`${idPrefix}-country`}
-          value={value.country}
-          onChange={(e) => set('country', e.target.value)}
-          autoComplete="country"
-        >
-          {COUNTRIES.map(([code, name]) => (
-            <option key={code} value={code}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Select
+        className="checkout-field-wide"
+        label="Country"
+        required
+        options={COUNTRIES.map(([v, label]) => ({ value: v, label }))}
+        value={value.country}
+        onChange={(e) => set('country', e.target.value)}
+        autoComplete="country"
+      />
     </div>
   )
 }

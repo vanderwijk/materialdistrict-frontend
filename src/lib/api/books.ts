@@ -94,6 +94,17 @@ export interface WCStoreProduct {
   /** Native WooCommerce featured-vlag (sterretje op het product). Plugin
    *  commit 81cfd2f (16-06-2026). Ontbreekt in oudere responses → default false. */
   featured?: boolean
+  /** Theme-channels op het product (plugin 81cfd2f, 16-06-2026). */
+  channels?: WCStoreTerm[]
+  /** Product-tags (native product_tag). */
+  tags?: WCStoreTerm[]
+}
+
+/** Term (channel/tag) zoals de Store API die levert. */
+interface WCStoreTerm {
+  id: number
+  name: string
+  slug: string
 }
 
 // --------------------------------------------------------------------
@@ -220,6 +231,11 @@ async function getBooksCategoryId(): Promise<number | null> {
 // Mappers (Store-API-product → domein)
 // --------------------------------------------------------------------
 
+/** Map Store-API-terms (channels/tags) naar de platte BookTerm-vorm. */
+function mapTerms(terms: WCStoreTerm[] | undefined) {
+  return (terms ?? []).map((t) => ({ id: t.id, name: t.name, slug: t.slug }))
+}
+
 export function mapBookListItem(p: WCStoreProduct): BookListItem {
   return {
     id: p.id,
@@ -235,6 +251,10 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
     priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
     inStock: p.is_in_stock ?? true,
     featured: p.featured ?? false,
+    format: pickAttr(p.attributes, 'format'),
+    channels: mapTerms(p.channels),
+    tags: mapTerms(p.tags),
+    onSale: p.on_sale ?? false,
     // Store API levert geen date_created; sorteren gebeurt server-side.
     date: '',
   }
@@ -264,6 +284,8 @@ export function mapBook(p: WCStoreProduct): Book {
     priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
     inStock: p.is_in_stock ?? true,
     featured: p.featured ?? false,
+    channels: mapTerms(p.channels),
+    tags: mapTerms(p.tags),
     date: '',
     modified: '',
   }

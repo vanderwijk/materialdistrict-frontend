@@ -1,37 +1,53 @@
 'use client'
 
 /**
- * BooksFilterSidebar — filterblok links op /book, in dezelfde huis-`FilterSidebar`
- * als de materials-/overzichtspagina's, zodat /book één familie is met de rest.
+ * BooksFilterSidebar — filterblok links op /book, in de gedeelde huis-
+ * `FilterSidebar` (zelfde component als materials), zodat /book één familie is.
  *
- * STRUCTUUR NU, OPTIES LATER (akkoord Jeroen): de secties (Category, Format,
- * Publisher) staan er als huisstijl-structuur; de opties + tellingen vullen
- * zich zodra Johan de boek-categorieën/attributen aanmaakt op Store API.
- * Tot die tijd is de selectie een no-op en tonen de secties nog geen opties.
- *
- * Prijs-range, Sale, New releases en Last chance volgen in dezelfde ronde als
- * de databron (range-UI + tag-/on_sale-facetten).
+ * Props-gedreven: de pagina levert de secties + tellingen (server-side afgeleid
+ * uit de catalogus) en de huidige selectie (uit de URL). Een wijziging schrijft
+ * de selectie terug naar de URL als herhaalde query-params (`?format=...&
+ * publisher=...`), reset `?page=`, en behoudt overige params (q, channel) —
+ * exact het patroon van de ChannelBar. Publisher staat bewust ZONDER zoekbox.
  */
 
-import { useState } from 'react'
-import { FilterSidebar, type FilterSection, type FilterSelection } from '@/components/ui'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import {
+  FilterSidebar,
+  type FilterSection,
+  type FilterSelection,
+} from '@/components/ui'
 
-const BOOK_FILTER_SECTIONS: FilterSection[] = [
-  { key: 'category', title: 'Category', options: [], selectMode: 'single' },
-  { key: 'format', title: 'Format', options: [] },
-  { key: 'publisher', title: 'Publisher', options: [], searchable: true },
-]
+interface BooksFilterSidebarProps {
+  sections: FilterSection[]
+  selected: FilterSelection
+}
 
-export function BooksFilterSidebar() {
-  // Lokale (no-op) selectie tot de databron er is. Wordt URL-gedreven zodra
-  // Johans taxonomie + filter-params beschikbaar zijn.
-  const [selected, setSelected] = useState<FilterSelection>({})
+export function BooksFilterSidebar({ sections, selected }: BooksFilterSidebarProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  if (sections.length === 0) return null
+
+  function handleChange(next: FilterSelection) {
+    const params = new URLSearchParams(Array.from(searchParams.entries()))
+    params.delete('page')
+    for (const section of sections) {
+      params.delete(section.key)
+      for (const value of next[section.key] ?? []) {
+        params.append(section.key, value)
+      }
+    }
+    const qs = params.toString()
+    router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+  }
 
   return (
     <FilterSidebar
-      sections={BOOK_FILTER_SECTIONS}
+      sections={sections}
       selected={selected}
-      onChange={setSelected}
+      onChange={handleChange}
     />
   )
 }

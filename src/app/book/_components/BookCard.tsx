@@ -1,29 +1,35 @@
 'use client'
 
 /**
- * BookCard — boek-tegel voor het /books-overzicht.
+ * BookCard — boek-tegel voor het /book-overzicht.
  *
- * Bewust gebouwd op dezelfde `Card`-primitives als de generieke `ContentCard`
- * (zelfde thumb + `content-card-*` body-klassen), zodat de tegel één familie
- * is met de materials-/articles-overzichten. Boek-specifiek is alleen:
- *  - portrait-cover (3:4) als thumb;
- *  - uitgever als eyebrow;
- *  - prijs **ex btw** + Insider-prijs in de Insider-huisstijlkleur (teal).
+ * Gebouwd op dezelfde `Card`-primitives als de generieke `ContentCard` (zelfde
+ * thumb + `content-card-*` body-klassen), zodat de tegel één familie is met de
+ * materials-/articles-overzichten.
  *
- * De getoonde prijs is ex btw (B2B-conventie, net als de rest van de site),
- * gelezen uit het Store-API extensieveld `prices.md_price_ex_vat`.
- * De Insider-korting (10%) is een UI-afleiding via `getBookPrice`; de mand/
- * checkout tonen de echte WC-prijs.
+ * - Thumb in **landscape** (`book-thumb`), NIET portrait — dezelfde liggende
+ *   tegel die ook de featured-tegel op de homepage gebruikt (punt 2 + 8).
+ * - Uitgever als eyebrow, titel, prijs **ex btw** (uit `prices.md_price_ex_vat`)
+ *   + Insider-prijs in de Insider-huisstijlkleur (teal).
+ * - Twee acties op de tegel: **bookmark** (gedeelde CardBookmarkButton) en
+ *   **direct in mandje** (add-to-cart via de gedeelde CartContext). Beide
+ *   secundair — groen blijft gereserveerd voor de primaire actie van een pagina.
  */
 
+import { useState } from 'react'
+import type { MouseEvent } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
-import { Card } from '@/components/ui'
+import { useCart } from '@/components/providers/CartContext'
+import { Card, CardBookmarkButton } from '@/components/ui'
 import { getBookPrice } from '@/lib/config/membership'
 import { formatEur } from '@/lib/utils/format-price'
 import type { BookListItem } from '@/types/book'
 
 export function BookCard({ book }: { book: BookListItem }) {
   const { isMember } = useAuth()
+  const { addItem } = useCart()
+  const [adding, setAdding] = useState(false)
+  const [added, setAdded] = useState(false)
 
   const exReg = book.priceExVat ?? book.price
   const exInsider = getBookPrice(exReg, true)
@@ -31,18 +37,30 @@ export function BookCard({ book }: { book: BookListItem }) {
 
   const coverSrc = book.cover?.thumbnailUrl ?? book.cover?.url
 
+  const onAdd = async (e: MouseEvent<HTMLButtonElement>) => {
+    // De tegel is een Link; voorkom navigatie bij klik op de actieknop.
+    e.preventDefault()
+    e.stopPropagation()
+    if (adding || !book.inStock) return
+    setAdding(true)
+    try {
+      await addItem(book.id, 1)
+      setAdded(true)
+      window.setTimeout(() => setAdded(false), 2000)
+    } finally {
+      setAdding(false)
+    }
+  }
+
   return (
     <Card href={`/book/${book.slug}`} prefetch={false} prefetchOn="hover">
-      <Card.Thumb
-        className="is-portrait"
-        src={coverSrc}
-        alt={book.cover?.alt || book.title}
-      >
+      <Card.Thumb className="book-thumb" src={coverSrc} alt={book.cover?.alt || book.title}>
         {!book.inStock && (
           <div className="card-thumb-overlay is-top-left">
             <span className="book-tile-soldout">Sold out</span>
           </div>
         )}
+        <CardBookmarkButton type="books" itemId={book.id} withOverlay />
       </Card.Thumb>
 
       <Card.Body>
@@ -74,6 +92,22 @@ export function BookCard({ book }: { book: BookListItem }) {
               </>
             )}
           </div>
+        )}
+
+        {book.inStock ? (
+          <button
+            type="button"
+            className="book-tile-add"
+            onClick={onAdd}
+            disabled={adding}
+            aria-label={`Add ${book.title} to cart`}
+          >
+            {added ? 'Added ✓' : adding ? 'Adding…' : 'Add to cart'}
+          </button>
+        ) : (
+          <span className="book-tile-add is-disabled" aria-disabled="true">
+            Sold out
+          </span>
         )}
       </Card.Body>
     </Card>

@@ -36,6 +36,13 @@ export type BookOrderBy = 'date' | 'title'
  * Lichtgewicht boek voor lijsten/cards (overzichtspagina).
  * Prijs zit erop zodat cards de (Insider-)prijs kunnen tonen zonder extra call.
  */
+/** Term (channel of tag) op een boek: WC-term-id, naam en slug. */
+export interface BookTerm {
+  id: number
+  name: string
+  slug: string
+}
+
 export interface BookListItem {
   id: number
   slug: string
@@ -58,6 +65,14 @@ export interface BookListItem {
   inStock: boolean
   /** Native WooCommerce featured-vlag (sterretje op het product). */
   featured: boolean
+  /** Format-attribuut (bv. Hardcover/Paperback) — voor het Format-filter. */
+  format: string | null
+  /** Theme-channels (taxonomie op het product) — channelbalk + filter. */
+  channels: BookTerm[]
+  /** Product-tags — voor label-/tag-filters. */
+  tags: BookTerm[]
+  /** WooCommerce on_sale-vlag — voor het "On sale"-filter. */
+  onSale: boolean
   date: string
 }
 
@@ -92,6 +107,10 @@ export interface Book {
   inStock: boolean
   /** Native WooCommerce featured-vlag (sterretje op het product). */
   featured: boolean
+  /** Theme-channels op het boek. */
+  channels: BookTerm[]
+  /** Product-tags op het boek. */
+  tags: BookTerm[]
   date: string
   modified: string
 }
