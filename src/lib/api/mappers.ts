@@ -170,13 +170,15 @@ export function splitGallery(
 // --------------------------------------------------------------------
 
 /**
- * Bouwt een publication-placeholder voor wanneer Johan's WP-meta nog
- * geen `publication`-object levert. Zolang dat niet live is, behandelen
- * we elk material als zichtbaar (`isOnline: true`) zodat overzichts-
- * filtering geen materials onbedoeld verbergt — `isPlaceholder: true`
- * markeert dat dit geen echte WP-data is.
+ * Leest het `publication`-object uit de WP REST meta en valideert de shape.
  *
- * Zie `datacontract-proposal.md` §3 voor het uiteindelijke contract.
+ * WP levert `meta.publication` als genest object met `isOnline`, `source` en
+ * `validUntil` (zie `md_extend_material_rest_meta` in rest-post-meta.php).
+ * `isOnline` is gebaseerd op WordPress post_status ('publish' → true).
+ *
+ * Fallback (isPlaceholder: true) treedt op als het veld ontbreekt — bijv.
+ * bij lokale test-data of als de plugin niet actief is. In dat geval
+ * behandelen we het material als online zodat niets onbedoeld verborgen wordt.
  */
 function publicationFromMeta(
   meta: WPMaterialRawResponse['meta'] | undefined,

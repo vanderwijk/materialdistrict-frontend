@@ -165,34 +165,30 @@ export interface MaterialMeta {
   _material_brand?: string | null
   _material_code?: string | null
   /**
-   * Publication-status — uitbreiding op `meta` per
-   * `datacontract-proposal.md` sectie 3. Optioneel zolang Johan's
-   * implementatie nog niet live is; mapper geeft een placeholder als
-   * het veld ontbreekt.
+   * Publication-status — geleverd door WP als genest object via
+   * `md_extend_material_rest_meta` (rest-post-meta.php). Optioneel voor
+   * backward-compat; mapper geeft een placeholder als het veld ontbreekt.
    */
   publication?: MaterialPublication
 }
 
 // --------------------------------------------------------------------
-// Publication-status (uit datacontract-proposal.md sectie 3)
+// Publication-status
 // --------------------------------------------------------------------
 //
-// Datacontract-voorstel breidt `material.meta` uit met een `publication`-
-// blok dat aangeeft of dit material momenteel gepubliceerd is, en zo ja
-// via welk subscription-mechanisme (brand-tier-slot of standalone €150).
+// WP levert `meta.publication` als genest object. `isOnline` is gebaseerd
+// op WordPress post_status ('publish' → true). Stripe-webhooks houden
+// post_status en publication_status synchroon.
 //
 // Frontend-gedrag op basis van `isOnline`:
 //   true   → material toont in publieke overzichten (`/material`,
 //            brand-detail, etc.)
 //   false  → material toont NIET publiek; wel in manufacturer-dashboard
-//            (Fase 2) met status "Offline"
+//            met status "Offline"
 //
 // `source` is alleen informatief — dashboard kan tonen "Published via
 // Plus-tier" vs "Standalone subscription". Publieke pagina's gebruiken
 // alleen `isOnline`.
-//
-// Status: voorstel-shape (datacontract-proposal.md v0.1, 11-05-2026).
-// Wijkt Johan af, dan via deze interface + mapper bijwerken.
 
 /**
  * Bron van de publicatie — waar komt het recht-om-online-te-zijn vandaan?

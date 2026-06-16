@@ -119,6 +119,13 @@ export default async function MaterialsPage({
     getChannelCatalog(),
   ])
 
+  // Defensief uitfilteren: WP levert via REST normaal alleen 'publish'-posts,
+  // maar als veiligheidsmarge verwijderen we hier ook offline materialen
+  // (isOnline:false) voor het geval post_status en publication niet synchroon
+  // lopen. Zolang de placeholder actief is (isPlaceholder:true), is
+  // isOnline:true en verandert er niets aan de weergave.
+  const onlineItems = result.items.filter((m) => m.publication.isOnline)
+
   const hasActiveFilters =
     Object.keys(filterSelection).length > 0 || Boolean(search) || Boolean(brandSlug)
   const totalRows = result.pager.totalRows
@@ -172,7 +179,7 @@ export default async function MaterialsPage({
             CSS de inhoud subtiel kan dimmen. Eigen client-component
             zodat page.tsx zelf server-rendered kan blijven. */}
         <MaterialsGridDimWrapper>
-          {result.items.length === 0 ? (
+          {onlineItems.length === 0 ? (
             hasActiveFilters ? (
               <EmptyState
                 title="No materials match these filters"
@@ -192,7 +199,7 @@ export default async function MaterialsPage({
           ) : (
             <>
               <Suspense fallback={null}>
-                <MaterialsGrid items={result.items} searchTerm={search} />
+                <MaterialsGrid items={onlineItems} searchTerm={search} />
               </Suspense>
 
               {result.pager.totalPages > 1 && (
