@@ -207,22 +207,17 @@ export function MaterialCard({
     material.hero?.sizes?.medium?.url ??
     material.hero?.sourceUrl
 
-  // Eyebrow: brand-naam links + material-code-pill rechts (Punt 9).
-  // Mockup-stijl. Als brand of code ontbreekt, blijft het andere over.
-  const eyebrowNode = (material.brandName || material.materialCode) ? (
+  // Eyebrow: alleen de brand-naam. De materiaalcode is bewust van het
+  // overzicht gehaald (voegt weinig toe bij scannen; staat op de detailpagina).
+  const eyebrowNode = material.brandName ? (
     <span className="material-card-eyebrow-row">
-      {material.brandName && (
-        <span className="material-card-eyebrow-brand">
-          {searchTerm ? (
-            <HighlightedText text={material.brandName} term={searchTerm} />
-          ) : (
-            material.brandName
-          )}
-        </span>
-      )}
-      {material.materialCode && (
-        <span className="material-card-eyebrow-code">{material.materialCode}</span>
-      )}
+      <span className="material-card-eyebrow-brand">
+        {searchTerm ? (
+          <HighlightedText text={material.brandName} term={searchTerm} />
+        ) : (
+          material.brandName
+        )}
+      </span>
     </span>
   ) : undefined
 

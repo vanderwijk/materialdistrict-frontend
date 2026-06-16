@@ -7,8 +7,9 @@
  * verandert de URL niet: dit serveert nog steeds `/`.
  *
  * Server Component. Aggregeert de content-types tot één "magazine"-pagina. Eén
- * Promise.all (materials/articles/events/talks). Books is bewust geparkeerd
- * voor deze release (geen homepage-blok, geen sidebar-widget).
+ * Promise.all (materials/articles/events/talks/brands/channels/featured-book).
+ * Het featured boek (native WC featured-vlag) verschijnt als tegel naast de
+ * featured event; de sidebar-books-widget blijft geparkeerd.
  *
  * Hero-bovenkant: gast ziet de promo-band (PromoHero); klikt die weg → dan
  * verschijnt de FeaturedArticleHero. Ingelogde users zien meteen de
@@ -29,7 +30,7 @@ import {
   listBrands,
   getTerms,
   getChannelsIndex,
-  getChannelHub,
+  listMaterialsWithFacets,
 } from '@/lib/api'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { JsonLd, buildWebSite, buildOrganization, canonicalPath } from '@/lib/seo'
@@ -61,6 +62,8 @@ import {
   toChannelPlainText,
   type FeaturedChannelVM,
 } from './_components/FeaturedChannel'
+import { BookCard } from '@/app/book/_components/BookCard'
+import { listFeaturedBooks } from '@/lib/api/books'
 
 const pagePath = canonicalPath('/')
 
@@ -125,8 +128,16 @@ function formatDate(value: string): string {
 }
 
 export default async function HomePage() {
-  const [matRes, artRes, eventRes, talkRes, catTerms, brandRes, channelsIndex] =
-    await Promise.all([
+  const [
+    matRes,
+    artRes,
+    eventRes,
+    talkRes,
+    catTerms,
+    brandRes,
+    channelsIndex,
+    bookRes,
+  ] = await Promise.all([
       listMaterials({ perPage: MATERIALS_FETCH }),
       listArticles({ perPage: ARTICLES_FETCH }),
       listEvents({ perPage: EVENTS_FETCH }),
@@ -146,6 +157,9 @@ export default async function HomePage() {
       })),
       // Channels (featured-first gesorteerd) voor het spotlight-blok.
       getChannelsIndex().catch(() => []),
+      // Featured boek (native WC featured-vlag, Store API featured=true) voor
+      // het tegeltje naast de featured event. Geen featured boek → leeg.
+      listFeaturedBooks().catch(() => ({ items: [], total: 0, totalPages: 0 })),
     ])
 
   // --- Material-categorieën: snelmenu-strip (deeplinkt naar het filter) ---
@@ -173,10 +187,16 @@ export default async function HomePage() {
   const featuredPartners = [...partnerBrands, ...topupBrands].slice(0, 6)
 
   // --- Featured channel: het featured-first kanaal + zijn recente materialen.
-  // `getChannelsIndex` sorteert featured eerst; de hub levert de materialen.
+  // `getChannelsIndex` levert het kanaal (label/description/thumb, featured
+  // eerst). Voor de materiaalrij halen we ALLEEN de materialen van dat kanaal
+  // op (i.p.v. de volledige channel-hub met alle 5 content-types) — scheelt
+  // 5 van de 6 fetches en houdt de static-generation snel.
   const spotlightChannel = channelsIndex[0] ?? null
-  const spotlightHub = spotlightChannel
-    ? await getChannelHub(spotlightChannel.slug, 10).catch(() => null)
+  const spotlightMaterials = spotlightChannel
+    ? await listMaterialsWithFacets({
+        selection: { theme: [spotlightChannel.slug] },
+        perPage: 10,
+      }).catch(() => null)
     : null
   const featuredChannel: FeaturedChannelVM | null = spotlightChannel
     ? {
@@ -187,9 +207,12 @@ export default async function HomePage() {
         count: spotlightChannel.count,
       }
     : null
-  const featuredChannelMaterials = (spotlightHub?.materials.items ?? []).filter(
+  const featuredChannelMaterials = (spotlightMaterials?.items ?? []).filter(
     (m) => m.publication.isOnline,
   )
+
+  // --- Books: het featured boek voor het tegeltje naast de featured event --
+  const featuredBook = bookRes.items[0] ?? null
 
   // --- Materials: één fetch, meerdere afgeleiden -------------------------
   const materialCount =
@@ -223,12 +246,10 @@ export default async function HomePage() {
   const orderedEvents = sortEventsByDate(eventRes.items)
   const upcoming = orderedEvents.filter((e) => !e.isPast)
   const featuredEvent = upcoming.find((e) => e.featured) ?? upcoming[0] ?? null
-  // Twee events naast elkaar (Books-helft is geparkeerd); featured eerst.
-  const homeEvents = (
-    featuredEvent
-      ? [featuredEvent, ...upcoming.filter((e) => e.id !== featuredEvent.id)]
-      : upcoming
-  ).slice(0, 2)
+  // Rij = [featured event | featured boek]. Geen featured boek? Dan valt de
+  // tweede cel terug op het eerstvolgende event (rij blijft gevuld).
+  const secondEvent =
+    upcoming.find((e) => e.id !== featuredEvent?.id) ?? null
 
   // --- Featured talk (homepage band) -------------------------------------
   // Featured-eerst (WP talk-CPT checkbox via meta.featured); valt terug op de
@@ -391,7 +412,7 @@ export default async function HomePage() {
               materials={featuredChannelMaterials}
             />
 
-            {/* Events (Books-blok bewust geparkeerd voor deze release) */}
+            {/* Events */}
             <section className="hp-section">
               <div className="section-hd">
                 <h2 className="section-title">Events</h2>
@@ -399,11 +420,18 @@ export default async function HomePage() {
                   All events →
                 </Link>
               </div>
-              {homeEvents.length > 0 ? (
+              {featuredEvent || featuredBook ? (
                 <div className="grid-2">
-                  {homeEvents.map((e) => (
-                    <EventCard key={e.id} event={e} />
-                  ))}
+                  {featuredEvent && (
+                    <EventCard key={featuredEvent.id} event={featuredEvent} />
+                  )}
+                  {featuredBook ? (
+                    <BookCard key={featuredBook.id} book={featuredBook} />
+                  ) : (
+                    secondEvent && (
+                      <EventCard key={secondEvent.id} event={secondEvent} />
+                    )
+                  )}
                 </div>
               ) : (
                 <p className="hp-empty">No upcoming events at this time.</p>

@@ -659,3 +659,8 @@ carrousel "Featured brands", featured channel "In the spotlight".
 Open: duurzaamheids-/channel-pills OP materiaaltegels (theme-ID→label-resolve in de
 datalaag); featured boek blijft geparkeerd (bookshop-scope); responsive + half-cent-
 afronding = deploy-checks Johan; insider-material-gate (H11) blijft geparkeerd (WP-veld).
+
+## §S10.2 ronde-2 — open Johan-punt (16-06-2026)
+Offline-materiaal: de homepage filtert op `meta.publication.isOnline`, maar de material-
+REST-respons levert dat veld nog niet → frontend valt terug op placeholder `isOnline:true`
+en toont offline materialen toch. Backend moet `meta.publication.isOnline` blootleggen.

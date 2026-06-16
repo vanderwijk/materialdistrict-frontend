@@ -91,6 +91,9 @@ export interface WCStoreProduct {
   attributes: WCStoreAttribute[]
   is_purchasable: boolean
   is_in_stock: boolean
+  /** Native WooCommerce featured-vlag (sterretje op het product). Plugin
+   *  commit 81cfd2f (16-06-2026). Ontbreekt in oudere responses → default false. */
+  featured?: boolean
 }
 
 // --------------------------------------------------------------------
@@ -231,6 +234,7 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
     price: priceToEuros(p.prices),
     priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
     inStock: p.is_in_stock ?? true,
+    featured: p.featured ?? false,
     // Store API levert geen date_created; sorteren gebeurt server-side.
     date: '',
   }
@@ -259,6 +263,7 @@ export function mapBook(p: WCStoreProduct): Book {
     price: priceToEuros(p.prices),
     priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
     inStock: p.is_in_stock ?? true,
+    featured: p.featured ?? false,
     date: '',
     modified: '',
   }
@@ -296,11 +301,26 @@ export async function listBooks(
         orderby,
         order,
         search: search || undefined,
+        // Native WC featured-vlag (plugin 81cfd2f). Alleen meesturen als true,
+        // zodat de reguliere lijst onveranderd blijft.
+        ...(params.featured ? { featured: true } : {}),
       },
     },
   )
 
   return { items: items.map(mapBookListItem), total, totalPages }
+}
+
+/**
+ * Featured boeken — native WooCommerce featured-vlag (Store API `featured=true`),
+ * binnen de books-categorie. Voor het homepage featured-boek-tegeltje volstaat
+ * `perPage: 1`. Geen featured boek → lege lijst (de homepage verbergt dan het
+ * tegeltje).
+ */
+export async function listFeaturedBooks(
+  params: Omit<BooksListParams, 'featured'> = {},
+): Promise<ListBooksResult> {
+  return listBooks({ perPage: 1, ...params, featured: true })
 }
 
 export async function getBook(slug: string): Promise<Book | null> {

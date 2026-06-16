@@ -9626,53 +9626,6 @@ mark.search-mark {
   font-weight: 600;
 }
 
-/* "All" — navy pill when active (mockup renderStoriesOverview) */
-.articles-type-btn[data-all][data-active] {
-  background: var(--navy);
-  border-color: var(--navy);
-}
-
-/* Story-type tokens — sync met STORY_TYPE_META in story-types.ts */
-.articles-type-btn[data-story-type="news"],
-.articles-type-intro[data-story-type="news"] {
-  --story-type-accent: #185fa5;
-  --story-type-pale: #e6f1fb;
-  --story-type-border: #185fa522;
-}
-
-.articles-type-btn[data-story-type="people"],
-.articles-type-intro[data-story-type="people"] {
-  --story-type-accent: #183e90;
-  --story-type-pale: #e8f0fb;
-  --story-type-border: #183e9022;
-}
-
-.articles-type-btn[data-story-type="collaborations"],
-.articles-type-intro[data-story-type="collaborations"] {
-  --story-type-accent: #006878;
-  --story-type-pale: #e0f3f6;
-  --story-type-border: #00687822;
-}
-
-.articles-type-btn[data-story-type="projects"],
-.articles-type-intro[data-story-type="projects"] {
-  --story-type-accent: #3a6b10;
-  --story-type-pale: #eaf3de;
-  --story-type-border: #3a6b1022;
-}
-
-.articles-type-btn[data-story-type="partner"],
-.articles-type-intro[data-story-type="partner"] {
-  --story-type-accent: #7a3800;
-  --story-type-pale: #fff3e0;
-  --story-type-border: #7a380022;
-}
-
-.articles-type-btn[data-story-type][data-active] {
-  background: var(--story-type-accent);
-  border-color: var(--story-type-accent);
-}
-
 .articles-type-btn:focus-visible {
   outline: 2px solid var(--navy-light);
   outline-offset: 2px;
@@ -9766,10 +9719,9 @@ mark.search-mark {
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border: 1px solid var(--story-type-border);
+  border: 1px solid;
   border-radius: var(--radius-md);
   margin-bottom: 24px;
-  background: var(--story-type-pale);
 }
 
 .articles-type-intro-icon {
@@ -9777,7 +9729,6 @@ mark.search-mark {
   height: 36px;
   border-radius: 50%;
   color: #fff;
-  background: var(--story-type-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9794,7 +9745,6 @@ mark.search-mark {
 .articles-type-intro-label {
   font-size: 14px;
   font-weight: 700;
-  color: var(--story-type-accent);
 }
 
 .articles-type-intro-desc {
@@ -10573,15 +10523,16 @@ mark.search-mark {
 
 /* --- Categorierij (minimale strip; volledige carousel = follow-up S10.x) --- */
 .hp-cats {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: transparent;
 }
 .hp-cats-inner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 4px 32px 0;
+  padding: 6px 32px;
   display: flex;
-  align-items: stretch;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -10589,17 +10540,23 @@ mark.search-mark {
   display: none;
 }
 .hp-cat-link {
-  padding: 12px 16px;
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--text-muted);
-  border-bottom: 2px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
   white-space: nowrap;
-  transition: color 0.15s, border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .hp-cat-link:hover {
-  color: var(--ct-material-dark);
-  border-bottom-color: var(--ct-material);
+  color: var(--navy);
+  border-color: var(--navy);
 }
 
 /* --- Layout: content + sticky sidebar --- */
@@ -12185,8 +12142,8 @@ mark.search-mark {
 .hp-content{min-width:0; display:flex; flex-direction:column; gap:46px}
 .hp-content > .hp-section{margin:0}
 .hp-main .section-hd{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:18px}
-.hp-main .section-title{font-size:24px; font-weight:700; letter-spacing:-.01em; margin:0; color:var(--text); font-family:var(--font-display)}
-.hp-main .section-link{font-size:14px; font-weight:600; color:var(--navy)}
+.hp-main .section-title{font-size:24px; font-weight:400; letter-spacing:-.02em; margin:0; color:var(--text); font-family:var(--font-display)}
+.hp-main .section-link{font-size:15px; font-weight:600; color:var(--link); text-transform:none; letter-spacing:0}
 .hp-main .section-link:hover{color:var(--navy); text-decoration:underline}
 .hp-main .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:26px}
 .hp-main .grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:24px; align-items:start}
@@ -14917,7 +14874,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: 280px;
+  min-height: 360px;
   padding: 28px;
   border-radius: 14px;
   overflow: hidden;
@@ -14978,7 +14935,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 @media (max-width: 560px) {
   .hp-channel-hero {
-    min-height: 220px;
+    min-height: 260px;
     padding: 20px;
   }
   .hp-channel-title {
@@ -14988,4 +14945,148 @@ a.mat-detail-tag:hover::after { opacity: 1; }
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
+}
+
+/* ============================================================
+   § S10.2 ronde-2 — Insider-ster, channel-icoon, featured-article-titel,
+     spotlight-thumbnails, brand-logo-grid
+   ------------------------------------------------------------
+   Feedbackronde op de live homepage. (1) Insider = ster-icoon vóór de titel
+   (InsiderMark md) met hover-tooltip; (2) channel-bodypill krijgt het detail-
+   icoon; (3) featured-article-tegel een grote kop; (4) spotlight-materialen
+   als compacte vierkante thumbnails met hover-tooltip; (5) featured brands
+   logo-only grid.
+   ============================================================ */
+
+/* (1) Insider-ster vóór de titel ------------------------------------- */
+.content-card-insider {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 2px;
+  vertical-align: middle;
+}
+.feature-band-title .content-card-insider {
+  margin-right: 8px;
+}
+
+/* (2) Channel-bodypill: icoon (zelfde als .detail-header-channel) ----- */
+.content-card-channel-pill svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-right: 5px;
+}
+
+/* (3) Featured-article-tegel: prominente kop ------------------------- */
+.hp-featured-article .content-card-title {
+  font-size: 30px;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+}
+@media (max-width: 768px) {
+  .hp-featured-article .content-card-title { font-size: 24px; }
+}
+
+/* (4) Spotlight: rij vierkante thumbnails + hover-tooltip ------------- */
+.hp-channel-thumbs {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 10px;
+}
+.hp-channel-thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  background-color: var(--surface2);
+  background-size: cover;
+  background-position: center;
+  overflow: visible;
+}
+.hp-channel-thumb-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 140px;
+  max-width: 220px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 120ms ease;
+  pointer-events: none;
+  z-index: 5;
+}
+.hp-channel-thumb:hover .hp-channel-thumb-tip,
+.hp-channel-thumb:focus-visible .hp-channel-thumb-tip {
+  opacity: 1;
+  visibility: visible;
+}
+.hp-channel-thumb-brand {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.7);
+}
+.hp-channel-thumb-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+@media (max-width: 900px) {
+  .hp-channel-thumbs { grid-template-columns: repeat(5, 1fr); }
+}
+@media (max-width: 520px) {
+  .hp-channel-thumbs { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+}
+
+/* (5) Featured brands: logo-only grid -------------------------------- */
+.hp-brand-logos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.hp-brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 2;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background-color: var(--surface);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.hp-brand-logo:hover {
+  border-color: var(--navy);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+.hp-brand-logo-fallback {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .hp-brand-logos { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 520px) {
+  .hp-brand-logos { grid-template-columns: repeat(2, 1fr); }
 }

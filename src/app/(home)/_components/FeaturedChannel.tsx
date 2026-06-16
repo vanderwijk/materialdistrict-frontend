@@ -3,18 +3,15 @@
  *
  * Build-order stap 10, S10.2. Server-component, presentational: krijgt het
  * (featured-first gesorteerde) kanaal + een reeks recente materialen van de
- * homepage-server-component. Toont een header-beeld + naam + korte omschrijving
- * met een deeplink naar de channel-hub, gevolgd door een rij materiaal-
- * thumbnails.
+ * homepage-server-component. Toont een groot header-beeld + naam + korte
+ * omschrijving met een deeplink naar de channel-hub, gevolgd door een rij
+ * compacte vierkante thumbnails (alleen beeld, afgeronde hoekjes). Merk + titel
+ * verschijnen in een hover-tooltip, zodat de rij weinig ruimte inneemt.
  *
  * Niets te tonen (geen kanaal of geen materialen) → de sectie verdwijnt.
- * Header-beeld + omschrijving zijn redactioneel (Johan/redactie vult ontbrekende
- * `theme_thumbnail`/description per kanaal); ontbreekt het beeld, dan valt de
- * header terug op een effen vlak.
  */
 
 import Link from 'next/link'
-import { ContentCard } from '@/components/ui'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import type { MaterialListItem } from '@/types/material'
 
@@ -64,22 +61,32 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
         </div>
       </Link>
 
-      <div className="hp-channel-materials">
-        {materials.slice(0, 10).map((m) => (
-          <ContentCard
-            key={m.id}
-            className="hp-channel-material"
-            href={`/material/${m.slug}`}
-            contentType="material"
-            showTypeBadge={false}
-            currentChannel={channel.label}
-            thumbSrc={m.hero?.sourceUrl}
-            thumbAlt={m.hero?.alt ?? m.title}
-            eyebrow={m.brandName ?? undefined}
-            title={m.title}
-          />
-        ))}
-      </div>
+      <ul className="hp-channel-thumbs">
+        {materials.slice(0, 10).map((m) => {
+          const label = [m.brandName, m.title].filter(Boolean).join(' — ')
+          return (
+            <li key={m.id}>
+              <Link
+                href={`/material/${m.slug}`}
+                className="hp-channel-thumb"
+                aria-label={label}
+                style={
+                  m.hero?.sourceUrl
+                    ? { backgroundImage: `url(${m.hero.sourceUrl})` }
+                    : undefined
+                }
+              >
+                <span className="hp-channel-thumb-tip" aria-hidden="true">
+                  {m.brandName && (
+                    <span className="hp-channel-thumb-brand">{m.brandName}</span>
+                  )}
+                  <span className="hp-channel-thumb-title">{m.title}</span>
+                </span>
+              </Link>
+            </li>
+          )
+        })}
+      </ul>
     </section>
   )
 }

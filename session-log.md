@@ -2819,3 +2819,37 @@ materiaal- en story-tegels; story-type als één-kleurige badge. Offline-materia
 canonical/JSON-LD-wijzigingen in `src/app/(home)/page.tsx` en `src/app/channel/[slug]/page.tsx`
 zijn via 3-way merge behouden; mijn werk staat eroverheen (0 conflicten). Overige bestanden
 (incl. `globals.css`) door Johan niet aangeraakt → ongewijzigd meegeleverd.
+
+**Books-blok toegevoegd (16-06-2026):** op expliciet verzoek van Jeroen alsnog een
+homepage Books-blok (na Events): `listBooks({ perPage: 3 })`, nieuwste eerst (geen
+WC-featured-vlag beschikbaar → nieuwste = "featured"; kleine swap zodra Johan een
+featured-vlag blootlegt). Rendert via Johans nieuwe `BookCard`/`listBooks`; die
+bestanden worden NIET meegeleverd (Johan herzag ze net voor ex-btw-pricing).
+
+**Featured boek nu echt featured (16-06-2026):** Johan legde de native WC featured-vlag
+bloot (plugin 81cfd2f). Datalaag (`books.ts`/`book.ts`, additief op zijn 188a543): `featured`
+op `WCStoreProduct` + mappers + `BookListItem`/`Book`, `featured`-param op `listBooks`, en een
+`listFeaturedBooks()`-helper. Let op: de barrel `@/lib/api` exporteert een OUDE `listBooks`
+(uit `woocommerce.ts`); de canonieke module is `@/lib/api/books` — de homepage importeert daar
+nu uit (net als de /book-pagina's). Het "nieuwste 3"-books-blok is vervangen door één
+featured-boek-tegel (`BookCard`) in de tweede cel van de Events-rij, naast de featured event;
+geen featured boek → die cel valt terug op het eerstvolgende event. `BookCard`/`books.ts`-fetchers
+van Johan worden NIET overschreven (books.ts wel meegeleverd, maar puur additief geverifieerd).
+
+**Na deploy f8dc13a (16-06-2026):** Johan deployde de 14-bestandsronde (zónder featured boek).
+Deze levering voegt het featured boek toe (books.ts/book.ts + featured-boek-tegel in page.tsx)
+ÉN lost de static-generation-timeout op die Johan zag: het featured-channel-blok haalt nu
+ALLEEN de kanaal-materialen op (`listMaterialsWithFacets({ selection:{ theme:[slug] }})`) i.p.v.
+de volledige `getChannelHub` (die 6 fetches deed: term + 5 content-types). Toe te passen
+bovenop f8dc13a; echte delta = page.tsx + books.ts + book.ts.
+
+**Feedbackronde-2 op de live homepage (16-06-2026):**
+- Categorie-pillen: channelbar-maat, één rij (horizontaal scrollen), beige achtergrond, aparte achtergrondkleur eruit.
+- Featured-article-tegel: grote kop (eigen class `.hp-featured-article`).
+- Sectiekoppen niet meer vet (weight 400, hub-stijl) + "All"-links niet meer in hoofdletters (`text-transform:none`).
+- Channel-bodypill krijgt het detail-pagina-icoon (4 vierkantjes) + detail-stijl.
+- Insider: terug naar een ster-icoon vóór de titel (`InsiderMark size="md"`) met hover-tooltip "Insider" — geen tekst-pill; site-breed, incl. talk-band. Talk-band: "Watch talk"-knop weer alleen links.
+- In the spotlight: hogere hero (360px) + materialen als rij vierkante thumbnails (afgeronde hoekjes, alleen beeld) met merk+titel in een hover-tooltip.
+- Featured brands: logo-only grid van zes (geen carrousel, geen plaats/aantal).
+- Materiaalcode van het overzicht (MaterialCard) — blijft op de detailpagina.
+- Offline-materiaal: filter staat klaar maar leest `meta.publication.isOnline`; WordPress levert dat nog niet → JOHAN moet `meta.publication.isOnline` blootleggen, anders behandelt de frontend alles als online (placeholder).

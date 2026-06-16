@@ -56,6 +56,8 @@ export interface BookListItem {
   priceExVat: number | null
   /** Afgeleid van WC `stock_status`. */
   inStock: boolean
+  /** Native WooCommerce featured-vlag (sterretje op het product). */
+  featured: boolean
   date: string
 }
 
@@ -88,6 +90,8 @@ export interface Book {
   /** Detailprijs ex. btw in EUR (afkomstig uit Store API extensieveld). */
   priceExVat: number | null
   inStock: boolean
+  /** Native WooCommerce featured-vlag (sterretje op het product). */
+  featured: boolean
   date: string
   modified: string
 }
@@ -99,4 +103,6 @@ export interface BooksListParams {
   search?: string
   orderby?: BookOrderBy
   order?: 'asc' | 'desc'
+  /** Alleen native WooCommerce featured-producten (Store API `featured=true`). */
+  featured?: boolean
 }

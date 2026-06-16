@@ -33,6 +33,7 @@ export function FeaturedArticleHero({ article }: FeaturedArticleHeroProps) {
 
   return (
     <ContentCard
+      className="hp-featured-article"
       href={article.href}
       contentType="article"
       thumbSrc={article.thumbUrl}

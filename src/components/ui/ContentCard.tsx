@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Card } from './Card'
 import { Tag, type ContentType } from './Tag'
+import { InsiderMark } from './InsiderMark'
 
 // ============================================================
 // Types
@@ -314,17 +315,8 @@ export function ContentCard({
 
         <div className="content-card-title-row">
           {resolvedInsider && (
-            <span className="card-insider-pill">
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" />
-              </svg>
-              Insider
+            <span className="content-card-insider" title="Insider">
+              <InsiderMark size="md" ariaLabel="Insider" />
             </span>
           )}
           <TitleTag className="content-card-title">{title}</TitleTag>
@@ -345,6 +337,20 @@ export function ContentCard({
           <div className="content-card-channels">
             {visibleChannelTags.map((channel) => (
               <span key={channel} className="content-card-channel-pill">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>
                 {channel}
               </span>
             ))}

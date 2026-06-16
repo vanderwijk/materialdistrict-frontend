@@ -9,6 +9,7 @@
  */
 
 import Link from 'next/link'
+import { InsiderMark } from '@/components/ui'
 
 export interface FeaturedTalkVM {
   href: string
@@ -52,25 +53,16 @@ export function FeaturedTalkBand({ talk }: FeaturedTalkBandProps) {
         </span>
         <div className="feature-band-inner">
           <p className="feature-band-eyebrow">Featured talk</p>
-          <h3 className="feature-band-title">{talk.title}</h3>
-          {talk.meta && <p className="feature-band-meta">{talk.meta}</p>}
-          <span className="feature-band-actions">
+          <h3 className="feature-band-title">
             {talk.insiderOnly && (
-              <span className="card-insider-pill is-on-photo">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" />
-                </svg>
-                Insider
+              <span className="content-card-insider" title="Insider">
+                <InsiderMark size="md" ariaLabel="Insider" />
               </span>
             )}
-            <span className="btn btn-lg btn-on-photo">Watch talk →</span>
-          </span>
+            {talk.title}
+          </h3>
+          {talk.meta && <p className="feature-band-meta">{talk.meta}</p>}
+          <span className="btn btn-lg btn-on-photo">Watch talk →</span>
         </div>
       </Link>
     </section>
