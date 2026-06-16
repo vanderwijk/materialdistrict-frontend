@@ -220,7 +220,7 @@ export function BrandProfileForm({
             <Textarea label="Brand description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
           </div>
           <div className="brand-logo-field">
-            <span className="field-label">Logo</span>
+            <label htmlFor="brand-logo-input" className="field-label">Logo</label>
             <div className="brand-logo-box">
               {form.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -233,6 +233,7 @@ export function BrandProfileForm({
               )}
             </div>
             <input
+              id="brand-logo-input"
               ref={logoInputRef}
               type="file"
               accept="image/*"
@@ -466,17 +467,32 @@ export function BrandProfileForm({
               {MATERIAL_CHANNEL_LABELS.map((channel) => {
                 const selected = form.channels.includes(channel)
                 const atMax = !selected && form.channels.length >= MAX_CHANNELS
+                if (selected) {
+                  return (
+                    <button
+                      key={channel}
+                      type="button"
+                      className="chip is-on"
+                      aria-pressed="true"
+                      disabled={atMax}
+                      onClick={() => toggleChannel(channel)}
+                    >
+                      {channel}
+                      <IconCheck size={12} className="chip-check" aria-hidden="true" />
+                    </button>
+                  )
+                }
+
                 return (
                   <button
                     key={channel}
                     type="button"
-                    className={`chip ${selected ? 'is-on' : ''}`}
-                    aria-pressed={selected}
+                    className="chip"
+                    aria-pressed="false"
                     disabled={atMax}
                     onClick={() => toggleChannel(channel)}
                   >
                     {channel}
-                    {selected && <IconCheck size={12} className="chip-check" aria-hidden="true" />}
                   </button>
                 )
               })}
