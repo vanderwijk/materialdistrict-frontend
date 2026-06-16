@@ -10,7 +10,6 @@ const BRAND_REVALIDATE = 24 * 3600
 const EDITORIAL_REVALIDATE = 3600
 const BOOK_REVALIDATE = 1800
 
-const STORE_PRODUCTS = '/wc/store/v1/products'
 const BOOKS_CATEGORY_SLUG = 'books'
 
 function pageUrl(path: string): string {
@@ -47,25 +46,23 @@ async function getBooksCategoryId(): Promise<number | null> {
   }
 }
 
-interface BookStoreItem {
-  slug: string
-  /** ISO-datum van laatste wijziging, beschikbaar via WC Store API. */
-  date_updated?: string
-}
-
-async function fetchAllBooks(): Promise<BookStoreItem[]> {
+async function fetchAllBooks(): Promise<WPSitemapPost[]> {
+  // /wp/v2/product geeft `modified` terug (in tegenstelling tot de WC Store
+  // API). product_cat-filter gebruikt het WP term-ID van de books-categorie.
   const categoryId = await getBooksCategoryId()
-  const books: BookStoreItem[] = []
+  const books: WPSitemapPost[] = []
   let page = 1
   let totalPages = 1
 
   while (page <= totalPages) {
-    const { items, totalPages: pages } = await wpFetchPaginated<BookStoreItem[]>(
-      STORE_PRODUCTS,
+    const { items, totalPages: pages } = await wpFetchPaginated<WPSitemapPost[]>(
+      '/wp/v2/product',
       {
         revalidate: BOOK_REVALIDATE,
         params: {
-          ...(categoryId ? { category: categoryId } : {}),
+          status: 'publish',
+          _fields: ['slug', 'modified'],
+          ...(categoryId ? { product_cat: categoryId } : {}),
           per_page: 100,
           page,
         },
@@ -154,8 +151,5 @@ export async function getTalksSitemapEntries(): Promise<SitemapEntry[]> {
 
 export async function getBooksSitemapEntries(): Promise<SitemapEntry[]> {
   const books = await fetchAllBooks()
-  return books.map((book) => ({
-    loc: pageUrl(`/book/${book.slug}`),
-    ...(book.date_updated ? { lastmod: book.date_updated } : {}),
-  }))
+  return postsToEntries(books, '/book')
 }
