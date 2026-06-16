@@ -47,14 +47,20 @@ async function getBooksCategoryId(): Promise<number | null> {
   }
 }
 
-async function fetchAllBookSlugs(): Promise<string[]> {
+interface BookStoreItem {
+  slug: string
+  /** ISO-datum van laatste wijziging, beschikbaar via WC Store API. */
+  date_updated?: string
+}
+
+async function fetchAllBooks(): Promise<BookStoreItem[]> {
   const categoryId = await getBooksCategoryId()
-  const slugs: string[] = []
+  const books: BookStoreItem[] = []
   let page = 1
   let totalPages = 1
 
   while (page <= totalPages) {
-    const { items, totalPages: pages } = await wpFetchPaginated<{ slug: string }[]>(
+    const { items, totalPages: pages } = await wpFetchPaginated<BookStoreItem[]>(
       STORE_PRODUCTS,
       {
         revalidate: BOOK_REVALIDATE,
@@ -66,12 +72,12 @@ async function fetchAllBookSlugs(): Promise<string[]> {
       },
     )
 
-    slugs.push(...items.map((item) => item.slug).filter(Boolean))
+    books.push(...items.filter((item) => item.slug))
     totalPages = pages
     page += 1
   }
 
-  return slugs
+  return books
 }
 
 /** Vaste routes: home, archieven en marketingpagina's zonder WP lastmod. */
@@ -147,8 +153,9 @@ export async function getTalksSitemapEntries(): Promise<SitemapEntry[]> {
 }
 
 export async function getBooksSitemapEntries(): Promise<SitemapEntry[]> {
-  const slugs = await fetchAllBookSlugs()
-  return slugs.map((slug) => ({
-    loc: pageUrl(`/book/${slug}`),
+  const books = await fetchAllBooks()
+  return books.map((book) => ({
+    loc: pageUrl(`/book/${book.slug}`),
+    ...(book.date_updated ? { lastmod: book.date_updated } : {}),
   }))
 }

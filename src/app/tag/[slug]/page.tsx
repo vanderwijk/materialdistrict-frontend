@@ -87,6 +87,9 @@ export default async function TagPage({ params, searchParams }: Props) {
   const { items, pager } = result
   const { totalRows, totalPages } = pager
 
+  // Soft 404: tag bestaat maar heeft geen materialen op pagina 1.
+  if (items.length === 0 && page === 1) notFound()
+
   const collectionItems = items.map((m) => ({
     name: m.title,
     url: `/material/${m.slug}`,

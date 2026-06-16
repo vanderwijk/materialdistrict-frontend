@@ -55,6 +55,10 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'MaterialDistrict',
       locale: 'en_US',
     },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@materialdistrct',
+    },
     robots: blockIndexing
       ? { index: false, follow: false, googleBot: { index: false, follow: false } }
       : { index: true, follow: true },

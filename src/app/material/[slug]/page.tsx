@@ -75,7 +75,9 @@ export async function generateMetadata({
   params,
 }: MaterialDetailPageProps): Promise<Metadata> {
   const { slug } = await params
-  const material = await getMaterial(slug, { resolve: { gallery: false } })
+  // gallery: true zodat hero beschikbaar is voor OG-image. De onderliggende
+  // WP REST-fetches worden door Next.js gededupliceerd met de pagina-render.
+  const material = await getMaterial(slug, { resolve: { gallery: true } })
 
   if (!material) {
     return {
@@ -87,6 +89,7 @@ export async function generateMetadata({
   const description =
     material.shortDescription ?? stripHtml(material.excerptHtml)
   const path = canonicalPath(`/material/${material.slug}`)
+  const hero = material.gallery.hero
 
   return {
     title: material.title,
@@ -97,6 +100,13 @@ export async function generateMetadata({
       description: description || undefined,
       type: 'article',
       url: path,
+      ...(hero && {
+        images: [{ url: hero.sourceUrl, width: hero.width, height: hero.height }],
+      }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      ...(hero && { images: [hero.sourceUrl] }),
     },
   }
 }

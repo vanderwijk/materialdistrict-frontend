@@ -94,6 +94,9 @@ export default async function MaterialCategoryPage({ params, searchParams }: Pro
   const { items, pager } = result
   const { totalRows, totalPages } = pager
 
+  // Soft 404: taxonomy bestaat maar heeft geen materialen op pagina 1.
+  if (items.length === 0 && page === 1) notFound()
+
   const collectionItems = items.map((m) => ({
     name: m.title,
     url: `/material/${m.slug}`,
