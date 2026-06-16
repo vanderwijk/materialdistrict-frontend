@@ -328,7 +328,7 @@ ____________________________________________________________________
 ### Vraag 20 — WooCommerce-integratie billing (Batch E6): Pad B akkoord?
 
 Pad B betekent: factuuradres-uitbreiding-velden (`billing_is_company`,
-`billing_company_name`, `billing_vat_number`, `billing_kvk_number`) in
+`billing_company_name`, `billing_vat_number`, `billing_coc_number`) in
 WC-meta-namespace, zodat WooCommerce automatisch de BTW-afhandeling
 doet. Akkoord op dit pad?
 

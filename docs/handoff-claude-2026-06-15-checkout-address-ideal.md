@@ -72,7 +72,7 @@ User-adresgegevens worden opgeslagen in de **WooCommerce billing meta namespace*
 | Factuur op bedrijf | `billing_is_company` (`true`/`false`) |
 | Bedrijfsnaam (factuur) | `billing_company_name` |
 | BTW-nummer | `billing_vat_number` |
-| KvK-nummer | `billing_kvk_number` (WP admin + REST user meta; **nog niet** in dashboard profile API) |
+| CoC-nummer | `billing_coc_number` (WP admin + REST user meta; **nog niet** in dashboard profile API) |
 
 ### Waarom Pad B
 
@@ -217,7 +217,7 @@ Order confirmation URLs worden door de plugin herschreven naar Next.js (Johan: `
 
 | Onderwerp | Status |
 |-----------|--------|
-| **KvK in dashboard** | `billing_kvk_number` bestaat in WP; nog niet in `/md/v2/dashboard/profile` of `ProfileForm.tsx` — **frontend** kan `ProfileForm` + mappers; **plugin**-API-veld via Johan |
+| **CoC in dashboard** | `billing_coc_number` bestaat in WP; nog niet in `/md/v2/dashboard/profile` of `ProfileForm.tsx` — **frontend** kan `ProfileForm` + mappers; **plugin**-API-veld via Johan |
 | **Company/BTW in checkout UI** | Profiel heeft `invoiceToCompany` / `vatNumber`; checkout prefill stuurt `company` mee maar geen BTW-UI — **frontend** |
 | **VIES/BTW-validatie** | Geparkeerd (Batch E) — **plugin**, via Johan |
 | **Legacy dual-read uitzetten** | **Plugin** (`profile-options.php`), via Johan |
