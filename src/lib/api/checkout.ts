@@ -150,6 +150,7 @@ export function buildStripePaymentData(
   paymentMethodId: string,
   gatewayId: string,
   billing?: StoreAddress,
+  vatNumber?: string,
 ): PaymentDataItem[] {
   const items: PaymentDataItem[] = [
     { key: 'payment_method', value: gatewayId },
@@ -168,6 +169,14 @@ export function buildStripePaymentData(
       { key: 'billing_state', value: billing.state ?? '' },
       { key: 'billing_postcode', value: billing.postcode },
       { key: 'billing_country', value: billing.country },
+    )
+  }
+
+  const normalizedVat = (vatNumber ?? '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
+  if (normalizedVat) {
+    items.push(
+      { key: 'vat_number', value: normalizedVat },
+      { key: 'billing_vat_number', value: normalizedVat },
     )
   }
 

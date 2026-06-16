@@ -122,6 +122,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [checkingEmail, setCheckingEmail] = useState(false)
   const [shipSame, setShipSame] = useState(true)
   const [shipping, setShipping] = useState<StoreAddress>(EMPTY_ADDRESS)
+  const [vatNumber, setVatNumber] = useState('')
   const [ratesLoaded, setRatesLoaded] = useState(false)
   const [method, setMethod] = useState<PayMethod>('card')
   const [submitting, setSubmitting] = useState(false)
@@ -351,7 +352,12 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           return
         }
         paymentMethod = STRIPE_CARD_METHOD
-        paymentData = buildStripePaymentData(pm.id, STRIPE_CARD_METHOD, billingWithContact)
+        paymentData = buildStripePaymentData(
+          pm.id,
+          STRIPE_CARD_METHOD,
+          billingWithContact,
+          vatNumber,
+        )
       } else {
         const stripe = stripeRef
         const elements = elementsRef
@@ -391,7 +397,12 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         // Store API: betaling loopt via de hoofd-gateway `stripe`; iDEAL-type zit in
         // payment_data (split UPE-gateway `stripe_ideal` wordt server-side niet verwerkt).
         paymentMethod = STRIPE_CARD_METHOD
-        paymentData = buildStripePaymentData(pm.id, STRIPE_IDEAL_METHOD, billingWithContact)
+        paymentData = buildStripePaymentData(
+          pm.id,
+          STRIPE_IDEAL_METHOD,
+          billingWithContact,
+          vatNumber,
+        )
       }
 
       const result = await submitCheckout({
@@ -513,6 +524,16 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         <section className="checkout-section">
           <h2 className="checkout-section-head">Billing address</h2>
           <AddressFields value={billing} onChange={setBilling} idPrefix="billing" />
+          <div className="addr-field addr-field-wide">
+            <label htmlFor="billing-vat">VAT number (optional)</label>
+            <input
+              id="billing-vat"
+              value={vatNumber}
+              onChange={(e) => setVatNumber(e.target.value)}
+              autoComplete="off"
+              placeholder="e.g. NL123456789B01"
+            />
+          </div>
           <label className="checkout-checkbox">
             <input
               type="checkbox"
