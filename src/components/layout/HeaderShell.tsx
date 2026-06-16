@@ -11,12 +11,12 @@ import { useCart } from '@/components/providers/CartContext'
  * Returns undefined op homepage en pages zonder match (dashboard, etc.).
  */
 function getCurrentSection(pathname: string): HeaderSection | undefined {
-  if (pathname.startsWith('/materials')) return 'materials'
-  if (pathname.startsWith('/articles') || pathname.startsWith('/stories')) return 'articles'
-  if (pathname.startsWith('/brands')) return 'brands'
-  if (pathname.startsWith('/events')) return 'events'
+  if (pathname.startsWith('/material')) return 'materials'
+  if (pathname.startsWith('/article') || pathname.startsWith('/stories')) return 'articles'
+  if (pathname.startsWith('/brand')) return 'brands'
+  if (pathname.startsWith('/event')) return 'events'
   if (pathname.startsWith('/books')) return 'books'
-  if (pathname.startsWith('/talks')) return 'talks'
+  if (pathname.startsWith('/talk')) return 'talks'
   return undefined
 }
 

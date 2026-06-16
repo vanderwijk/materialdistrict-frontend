@@ -31,6 +31,7 @@ interface AddressFieldsProps {
   vatNumber?: string
   onVatNumberChange?: (value: string) => void
   vatStatus?: 'idle' | 'checking' | 'valid' | 'invalid'
+  vatErrorMessage?: string | null
 }
 
 export function AddressFields({
@@ -40,6 +41,7 @@ export function AddressFields({
   vatNumber,
   onVatNumberChange,
   vatStatus = 'idle',
+  vatErrorMessage = null,
 }: AddressFieldsProps) {
   const set = (key: keyof StoreAddress, v: string) =>
     onChange({ ...value, [key]: v })
@@ -85,11 +87,15 @@ export function AddressFields({
               onChange={(e) => onVatNumberChange(e.target.value)}
               autoComplete="off"
               placeholder="e.g. NL123456789B01"
-              className={`checkout-vat-input ${vatStatus === 'valid' ? 'is-valid' : ''}`.trim()}
+              className={`checkout-vat-input ${vatStatus === 'valid' ? 'is-valid' : ''} ${
+                vatStatus === 'invalid' ? 'is-invalid' : ''
+              }`.trim()}
             />
             {vatStatus === 'checking' && <span className="checkout-vat-indicator">…</span>}
             {vatStatus === 'valid' && <span className="checkout-vat-indicator is-valid">✓</span>}
+            {vatStatus === 'invalid' && <span className="checkout-vat-indicator is-invalid">!</span>}
           </div>
+          {vatErrorMessage && <p className="checkout-vat-error">{vatErrorMessage}</p>}
         </div>
       )}
 

@@ -29,7 +29,7 @@ export function FeaturedTalkBand({ talk }: FeaturedTalkBandProps) {
     <section className="hp-section" aria-label="Featured talk">
       <div className="section-hd">
         <h2 className="section-title">Talks</h2>
-        <Link href="/talks" className="section-link">
+        <Link href="/talk" className="section-link">
           All talks →
         </Link>
       </div>

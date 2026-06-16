@@ -58,7 +58,7 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
           title="No saved searches"
           description="Save a filter combination on the materials page to get alerts when new matches appear."
           actions={
-            <Link href="/materials" className="btn btn-primary">
+            <Link href="/material" className="btn btn-primary">
               Search materials
             </Link>
           }
@@ -87,7 +87,7 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
               >
                 <IconBell size={14} /> {s.alertsEnabled ? 'Alerts on' : 'Alerts off'}
               </button>
-              <Link href={`/materials?${s.query}`} className="btn btn-outline btn-sm">
+              <Link href={`/material?${s.query}`} className="btn btn-outline btn-sm">
                 Run search
               </Link>
               <button

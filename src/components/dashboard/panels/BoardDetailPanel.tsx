@@ -31,7 +31,7 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
           title="This board is empty"
           description="Add materials and articles to this board from their detail pages."
           actions={
-            <Link href="/materials" className="btn btn-primary">
+            <Link href="/material" className="btn btn-primary">
               Browse materials
             </Link>
           }

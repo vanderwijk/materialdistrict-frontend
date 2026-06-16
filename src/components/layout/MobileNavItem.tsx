@@ -26,7 +26,7 @@ interface MobileNavItemProps {
  * Klasse-gestuurd via `.mobile-nav-item` in §43.
  *
  * @example
- *   <MobileNavItem href="/materials" icon={<IconMaterial />}>Materials</MobileNavItem>
+ *   <MobileNavItem href="/material" icon={<IconMaterial />}>Materials</MobileNavItem>
  *   <MobileNavItem href="/insider" insider>Insider</MobileNavItem>
  */
 export function MobileNavItem({

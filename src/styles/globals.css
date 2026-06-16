@@ -13798,8 +13798,25 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   font-weight: 700;
 }
 
+.checkout-vat-indicator.is-invalid {
+  color: #b42318;
+  font-weight: 700;
+}
+
 .checkout-vat-input.is-valid {
   border-color: var(--green-mid);
+}
+
+.checkout-vat-input.is-invalid {
+  border-color: #f04438;
+  background: #fff5f5;
+}
+
+.checkout-vat-error {
+  margin-top: 6px;
+  color: #b42318;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .checkout-checkbox {

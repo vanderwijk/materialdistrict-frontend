@@ -19,12 +19,12 @@ interface FooterProps {
 }
 
 const DISCOVER_LINKS: FooterLink[] = [
-  { label: 'Materials', href: '/materials' },
-  { label: 'Stories', href: '/articles' },
-  { label: 'Events', href: '/events' },
-  { label: 'Talks', href: '/talks' },
+  { label: 'Materials', href: '/material' },
+  { label: 'Stories', href: '/article' },
+  { label: 'Events', href: '/event' },
+  { label: 'Talks', href: '/talk' },
   { label: 'Books', href: '/books' },
-  { label: 'Brands', href: '/brands' },
+  { label: 'Brands', href: '/brand' },
 ]
 
 const SPECIFIER_LINKS: FooterLink[] = [
@@ -39,7 +39,7 @@ const SPECIFIER_LINKS: FooterLink[] = [
 
 const MANUFACTURER_LINKS: FooterLink[] = [
   { label: 'List your materials', href: '/register?type=show' },
-  { label: 'Brand profile', href: '/brands' },
+  { label: 'Brand profile', href: '/brand' },
   { label: 'Reach 80,000+ specifiers', href: '/register?type=show' },
   { label: 'Sample requests', href: '/register?type=show' },
 ]

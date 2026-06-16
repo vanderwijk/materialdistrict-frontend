@@ -8,7 +8,7 @@
  *
  * Deze sectie is bewust local-state-based (eigen CompareProvider) zodat de
  * style-guide los staat van een echte data-laag. In productie zit de
- * Provider in `/materials/layout.tsx` en delen alle pages dezelfde state.
+ * Provider in `/material/layout.tsx` en delen alle pages dezelfde state.
  *
  * Inline styles waar nodig conform design-system §8 uitzondering 3
  * (style-guide page-specifieke layout-tweaks). De daadwerkelijke
@@ -72,7 +72,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
   {
     id: 9001,
     slug: 'recycled-glass-composite',
-    link: '/materials/recycled-glass-composite',
+    link: '/material/recycled-glass-composite',
     title: 'Recycled Glass Composite',
     excerptHtml: '<p>A translucent panel made from 100% post-consumer glass.</p>',
     hero: mockMedia(
@@ -115,7 +115,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
   {
     id: 9002,
     slug: 'biobased-acoustic-panel',
-    link: '/materials/biobased-acoustic-panel',
+    link: '/material/biobased-acoustic-panel',
     title: 'Biobased Acoustic Panel',
     excerptHtml: '<p>Hemp-fibre acoustic panel for interior partitioning.</p>',
     hero: mockMedia(
@@ -158,7 +158,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
   {
     id: 9003,
     slug: 'translucent-pvc-sheet',
-    link: '/materials/translucent-pvc-sheet',
+    link: '/material/translucent-pvc-sheet',
     title: 'Translucent PVC Sheet',
     excerptHtml: '<p>Pigmented PVC sheet with bio-resin matrix.</p>',
     hero: mockMedia(

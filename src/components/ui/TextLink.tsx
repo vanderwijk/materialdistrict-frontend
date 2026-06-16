@@ -32,7 +32,7 @@ type TextLinkProps = TextLinkInternalProps | TextLinkExternalProps
  * externe (dan met `target="_blank"` + `rel="noopener noreferrer"`).
  *
  * @example
- *   <TextLink href="/materials">All materials</TextLink>
+ *   <TextLink href="/material">All materials</TextLink>
  *   <TextLink href="https://docs.example.com" external>Docs</TextLink>
  *   <TextLink href="/x" arrow={false}>No arrow</TextLink>
  */

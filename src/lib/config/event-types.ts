@@ -1,7 +1,7 @@
 /**
  * Event types — UI-config voor event-segmentatie
  * ----------------------------------------------------------------------
- * Events worden gesegmenteerd in zes vaste typen. Op het `/events`-overzicht
+ * Events worden gesegmenteerd in zes vaste typen. Op het `/event`-overzicht
  * stuurt dit de type-label op de card en (later) sortering/filtering; op de
  * detailpagina de type-pill in de header.
  *

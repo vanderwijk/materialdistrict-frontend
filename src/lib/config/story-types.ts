@@ -1,7 +1,7 @@
 /**
  * Story types — UI-config voor article-segmentatie
  * ----------------------------------------------------------------------
- * Articles/stories worden gesegmenteerd in subtypen. Op het `/articles`
+ * Articles/stories worden gesegmenteerd in subtypen. Op het `/article`
  * overzicht stuurt dit de type-filter-sidebar en de type-pills; op de
  * detailpagina de category-pill in de header.
  *

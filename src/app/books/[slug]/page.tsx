@@ -22,7 +22,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { getBook, listBooks } from '@/lib/api/books'
 import { JsonLd, buildBook, buildBreadcrumbList } from '@/lib/seo'
-import { MaterialBody } from '@/app/materials/[slug]/_components/MaterialBody'
+import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { BookCard } from '../_components/BookCard'
 import { BookBuyCard } from './_components/BookBuyCard'
 

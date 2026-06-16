@@ -43,7 +43,7 @@ export function MembershipCta() {
           </svg>
           You&rsquo;re an Insider — you have full access.
         </span>
-        <Button as="link" href="/materials" variant="outline" size="lg">
+        <Button as="link" href="/material" variant="outline" size="lg">
           Explore materials
         </Button>
       </div>

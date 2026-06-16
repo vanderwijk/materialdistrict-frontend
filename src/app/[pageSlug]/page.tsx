@@ -10,7 +10,7 @@
  * Onbekende of niet-toegestane segmenten → notFound(). Zo lekken
  * account-/systeempagina's (sign-in, invoices, …) nooit via deze template.
  *
- * Statische segmenten (/articles, /events, /materials, /brands, /talks,
+ * Statische segmenten (/article, /event, /material, /brand, /talk,
  * /books, /contact) winnen in Next altijd van dit dynamische segment, dus
  * geen botsing — die slugs staan ook niet in de allowlist.
  *
@@ -23,7 +23,7 @@ import { getPage } from '@/lib/api'
 import { buildPageMetadata } from '@/lib/seo/page-metadata'
 import { STATIC_PAGE_SLUGS, wpSlugForRoute } from '@/lib/config/static-pages'
 // Hergebruikt de gedeelde prose-renderer (zelfde als de article-body).
-import { MaterialBody } from '@/app/materials/[slug]/_components/MaterialBody'
+import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 
 interface StaticPageProps {
   params: Promise<{ pageSlug: string }>

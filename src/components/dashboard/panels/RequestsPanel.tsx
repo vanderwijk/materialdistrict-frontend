@@ -24,7 +24,7 @@ export function RequestsPanel({ requests }: { requests: MyRequest[] }) {
           title="No requests yet"
           description="When you request a sample, brochure or info from a manufacturer, it shows up here."
           actions={
-            <Link href="/materials" className="btn btn-primary">
+            <Link href="/material" className="btn btn-primary">
               Browse materials
             </Link>
           }

@@ -9,7 +9,7 @@
  * hangen van `useAuth()` (AuthContext) en — bij de contact-card — van de
  * GetInTouchModal-flow. Die los in de style-guide mocken zou een
  * kunstmatige context vereisen die niet representatief is. Ze zijn te
- * zien op een echte brand-detail-pagina (`/brands/[slug]`).
+ * zien op een echte brand-detail-pagina (`/brand/[slug]`).
  *
  * Mock-data only — geen echte data-laag. Logo's zijn SVG-data-URL
  * gradients zodat er geen externe assets nodig zijn.
@@ -62,7 +62,7 @@ const MOCK_BRANDS: BrandListItem[] = [
   {
     id: 8001,
     slug: 'obro-bv',
-    link: '/brands/obro-bv',
+    link: '/brand/obro-bv',
     name: 'OBRO B.V.',
     excerptHtml:
       '<p>Specialists in leather-infused translucent composites for interior and architectural applications.</p>',
@@ -81,7 +81,7 @@ const MOCK_BRANDS: BrandListItem[] = [
   {
     id: 8002,
     slug: 'fiber-werk',
-    link: '/brands/fiber-werk',
+    link: '/brand/fiber-werk',
     name: 'FiberWerk GmbH',
     excerptHtml:
       '<p>Biobased acoustic panels and hemp-fibre surfaces, engineered in Germany.</p>',
@@ -96,7 +96,7 @@ const MOCK_BRANDS: BrandListItem[] = [
   {
     id: 8003,
     slug: 'studio-mineral',
-    link: '/brands/studio-mineral',
+    link: '/brand/studio-mineral',
     name: 'Studio Mineral',
     excerptHtml:
       '<p>Recycled-glass terrazzo and mineral composites for worktops and cladding.</p>',

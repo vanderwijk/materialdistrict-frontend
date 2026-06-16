@@ -77,7 +77,7 @@ export function TopStoriesWidget({ articles, materials }: TopStoriesWidgetProps)
 
       <div className="sw-footer">
         <Link
-          href={tab === 'articles' ? '/articles' : '/materials'}
+          href={tab === 'articles' ? '/article' : '/material'}
           className="section-link"
         >
           {tab === 'articles' ? 'All articles →' : 'All materials →'}

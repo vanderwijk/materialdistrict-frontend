@@ -145,7 +145,7 @@ interface ContentCardProps {
  *
  * @example Material met overlay-knoppen:
  *   <ContentCard
- *     href={`/materials/${m.slug}`}
+ *     href={`/material/${m.slug}`}
  *     contentType="material"
  *     thumbSrc={m.heroImage}
  *     thumbAlt={m.title}
@@ -163,7 +163,7 @@ interface ContentCardProps {
  *
  * @example Insider-only article:
  *   <ContentCard
- *     href={`/articles/${a.slug}`}
+ *     href={`/article/${a.slug}`}
  *     contentType="article"
  *     thumbSrc={a.heroImage}
  *     eyebrow={a.dateLabel}

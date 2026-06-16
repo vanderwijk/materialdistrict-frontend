@@ -485,5 +485,5 @@ export const fetchMaterials = fetchMaterialsFiltered
 export function materialFilterHref(facet: string, value: string): string | null {
   if (!value) return null
   if (!FILTER_FACET_KEYS_SET.has(facet)) return null
-  return `/materials?${facet}=${encodeURIComponent(value)}`
+  return `/material?${facet}=${encodeURIComponent(value)}`
 }

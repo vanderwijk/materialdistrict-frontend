@@ -70,12 +70,12 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { key: 'materials', label: 'Materials', href: '/materials', icon: Layers },
-  { key: 'articles', label: 'Stories', href: '/articles', icon: BookOpen },
-  { key: 'brands', label: 'Brands', href: '/brands', icon: Building2 },
-  { key: 'events', label: 'Events', href: '/events', icon: Calendar },
+  { key: 'materials', label: 'Materials', href: '/material', icon: Layers },
+  { key: 'articles', label: 'Stories', href: '/article', icon: BookOpen },
+  { key: 'brands', label: 'Brands', href: '/brand', icon: Building2 },
+  { key: 'events', label: 'Events', href: '/event', icon: Calendar },
   { key: 'books', label: 'Books', href: '/books', icon: Book },
-  { key: 'talks', label: 'Talks', href: '/talks', icon: Mic },
+  { key: 'talks', label: 'Talks', href: '/talk', icon: Mic },
 ]
 
 /**

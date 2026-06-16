@@ -23,7 +23,7 @@ export interface Channel {
 }
 
 /**
- * Channel zoals getoond op de `/channels`-index (stap 12). Bovenop `Channel`:
+ * Channel zoals getoond op de `/channel`-index (stap 12). Bovenop `Channel`:
  * de term-presentatievelden uit `/wp/v2/theme` (description + thumbnail) en de
  * term-niveau "Featured"-vlag (WF-6).
  *
@@ -103,11 +103,11 @@ export function resolveChannelId(
 }
 
 // --------------------------------------------------------------------
-// Channels-index (stap 12) — de `/channels`-hub-overzichtspagina
+// Channels-index (stap 12) — de `/channel`-hub-overzichtspagina
 // --------------------------------------------------------------------
 
 /**
- * Bouwt de `/channels`-index: alle channels met presentatievelden voor de
+ * Bouwt de `/channel`-index: alle channels met presentatievelden voor de
  * hub-kaarten, featured-channels vooraan.
  *
  * Twee bronnen, parallel:
@@ -164,7 +164,7 @@ export async function getChannelsIndex(): Promise<ChannelIndexItem[]> {
 }
 
 // --------------------------------------------------------------------
-// Channel-term — hero-data voor `/channels/[slug]` (stap 12)
+// Channel-term — hero-data voor `/channel/[slug]` (stap 12)
 // --------------------------------------------------------------------
 
 /** Presentatie van één channel-term: hero-naam, -description en -thumbnail. */

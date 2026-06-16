@@ -873,8 +873,8 @@ export default function StyleGuidePage() {
             <div className="sg-preview is-stack is-light">
               <Breadcrumb
                 items={[
-                  { label: 'Materials', href: '/materials' },
-                  { label: 'Composites', href: '/materials?material_type=composites' },
+                  { label: 'Materials', href: '/material' },
+                  { label: 'Composites', href: '/material?material_type=composites' },
                   { label: 'Recycled Glass Composite' },
                 ]}
               />
@@ -1111,7 +1111,7 @@ export default function StyleGuidePage() {
             </p>
             <div className="sg-preview is-stack is-light" style={{ padding: 0 }}>
               <DetailHeader
-                back={{ label: 'Materials', href: '/materials' }}
+                back={{ label: 'Materials', href: '/material' }}
                 tags={[{ type: 'content', contentType: 'material' }]}
                 title="Recycled Glass Composite"
                 meta={

@@ -212,7 +212,7 @@ export interface SavedSearch {
   name: string
   /** Human-readable summary of the filters (computed server-side). */
   summary: string
-  /** Canonical query string to re-run the search on `/materials`. */
+  /** Canonical query string to re-run the search on `/material`. */
   query: string
   /** Result count at last evaluation. */
   resultCount: number

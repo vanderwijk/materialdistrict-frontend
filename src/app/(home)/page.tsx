@@ -24,8 +24,8 @@ import { ContentCard } from '@/components/ui'
 import { listMaterials, listArticles, listEvents, listTalks } from '@/lib/api'
 import { JsonLd, buildWebSite, buildOrganization } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
-import { sortEventsByDate } from '@/app/events/_lib/events-order'
-import { EventCard } from '@/app/events/_components/EventCard'
+import { sortEventsByDate } from '@/app/event/_lib/events-order'
+import { EventCard } from '@/app/event/_components/EventCard'
 import { HomeHeroProvider } from './_components/HomeHeroProvider'
 import { PromoHero } from './_components/PromoHero'
 import {
@@ -136,7 +136,7 @@ export default async function HomePage() {
   const lead = artRes.items[0] ?? null
   const featuredArticle: FeaturedArticleVM | null = lead
     ? {
-        href: `/articles/${lead.slug}`,
+        href: `/article/${lead.slug}`,
         title: lead.title,
         thumbUrl: lead.hero?.sourceUrl,
         meta: `${formatDate(lead.date)} · Article`,
@@ -161,7 +161,7 @@ export default async function HomePage() {
     talkRes.items.find((t) => t.featured) ?? talkRes.items[0] ?? null
   const featuredTalk: FeaturedTalkVM | null = talkLead
     ? {
-        href: `/talks/${talkLead.slug}`,
+        href: `/talk/${talkLead.slug}`,
         title: talkLead.title,
         thumbUrl: talkLead.hero?.sourceUrl,
         meta: [
@@ -177,13 +177,13 @@ export default async function HomePage() {
 
   // --- Sidebar (Top stories): articles + materials, al gemapt ------------
   const sidebarArticles: StoryListItem[] = artRes.items.slice(0, 5).map((a) => ({
-    href: `/articles/${a.slug}`,
+    href: `/article/${a.slug}`,
     thumbUrl: a.hero?.sourceUrl,
     label: `${formatDate(a.date)} — ${STORY_TYPE_META[a.type].label}`,
     title: a.title,
   }))
   const sidebarMaterials: StoryListItem[] = matRes.items.slice(0, 4).map((m) => ({
-    href: `/materials/${m.slug}`,
+    href: `/material/${m.slug}`,
     thumbUrl: m.hero?.sourceUrl,
     label: m.brandName ?? 'Material',
     title: m.title,
@@ -211,7 +211,7 @@ export default async function HomePage() {
         {/* Categorierij — minimale strip (volledige carousel = follow-up S10.x). */}
         <nav className="hp-cats" aria-label="Material categories">
           <div className="hp-cats-inner">
-            <Link href="/materials" className="hp-cat-link">
+            <Link href="/material" className="hp-cat-link">
               All materials
             </Link>
           </div>
@@ -226,7 +226,7 @@ export default async function HomePage() {
             <section className="hp-section">
               <div className="section-hd">
                 <h2 className="section-title">Latest materials</h2>
-                <Link href="/materials" className="section-link">
+                <Link href="/material" className="section-link">
                   All materials →
                 </Link>
               </div>
@@ -234,7 +234,7 @@ export default async function HomePage() {
                 {latestMaterials.map((m) => (
                   <ContentCard
                     key={m.id}
-                    href={`/materials/${m.slug}`}
+                    href={`/material/${m.slug}`}
                     contentType="material"
                     thumbSrc={m.hero?.sourceUrl}
                     thumbAlt={m.hero?.alt ?? m.title}
@@ -258,7 +258,7 @@ export default async function HomePage() {
             <section className="hp-section">
               <div className="section-hd">
                 <h2 className="section-title">Latest stories</h2>
-                <Link href="/articles" className="section-link">
+                <Link href="/article" className="section-link">
                   All articles →
                 </Link>
               </div>
@@ -266,7 +266,7 @@ export default async function HomePage() {
                 {latestStories.map((a) => (
                   <ContentCard
                     key={a.id}
-                    href={`/articles/${a.slug}`}
+                    href={`/article/${a.slug}`}
                     contentType="article"
                     thumbSrc={a.hero?.sourceUrl}
                     thumbAlt={a.hero?.alt ?? a.title}
@@ -287,7 +287,7 @@ export default async function HomePage() {
             <section className="hp-section">
               <div className="section-hd">
                 <h2 className="section-title">Featured materials</h2>
-                <Link href="/materials" className="section-link">
+                <Link href="/material" className="section-link">
                   All materials →
                 </Link>
               </div>
@@ -295,7 +295,7 @@ export default async function HomePage() {
                 {featuredMaterials.map((m) => (
                   <ContentCard
                     key={m.id}
-                    href={`/materials/${m.slug}`}
+                    href={`/material/${m.slug}`}
                     contentType="material"
                     thumbSrc={m.hero?.sourceUrl}
                     thumbAlt={m.hero?.alt ?? m.title}
@@ -310,7 +310,7 @@ export default async function HomePage() {
             <section className="hp-section">
               <div className="section-hd">
                 <h2 className="section-title">Events</h2>
-                <Link href="/events" className="section-link">
+                <Link href="/event" className="section-link">
                   All events →
                 </Link>
               </div>

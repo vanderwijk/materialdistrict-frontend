@@ -88,7 +88,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
  * `/` (or backslash) are allowed.
  */
 function sanitizeNext(next: string | undefined): string {
-  const fallback = '/materials'
+  const fallback = '/material'
   if (!next) return fallback
   if (next.length === 0) return fallback
   // Must start with `/` …

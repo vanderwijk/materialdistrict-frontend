@@ -85,7 +85,7 @@ interface DetailHeaderProps {
  *
  * @example
  *   <DetailHeader
- *     back={{ label: 'Materials', href: '/materials' }}
+ *     back={{ label: 'Materials', href: '/material' }}
  *     tags={[{ type: 'content', contentType: 'material' }]}
  *     title="Recycled Glass Composite"
  *     meta={<>By <strong>Eternit</strong> · Added 12 days ago</>}
@@ -134,7 +134,7 @@ export function DetailHeader({
                 {channels?.map((c) => (
                   <Link
                     key={c.slug}
-                    href={`/channels/${c.slug}`}
+                    href={`/channel/${c.slug}`}
                     className="detail-header-channel"
                   >
                     <svg

@@ -6,7 +6,7 @@
  * Houdt de filter/search/page-context van het materials-overzicht
  * vast tussen overzicht en detail-page. Twee doelen:
  *
- *  1. "Back to materials" → linken naar `/materials?<oorspronkelijke
+ *  1. "Back to materials" → linken naar `/material?<oorspronkelijke
  *     query>` zodat de gebruiker terugkomt op de pagina die hij verliet,
  *     mét dezelfde filters/zoekterm actief.
  *  2. "Prev / Next material" op de detail-page → laat de buurman binnen

@@ -113,7 +113,7 @@ interface CompareProviderProps {
  * CompareProvider — wrap dit om de materials-pages (overzicht én detail).
  *
  * In batch 3 wordt deze provider rendered in `src/app/materials/layout.tsx`
- * zodat zowel `/materials` als `/materials/[slug]` dezelfde state delen.
+ * zodat zowel `/material` als `/material/[slug]` dezelfde state delen.
  *
  * Buiten een Provider werken `useCompare()`-consumers in "loose mode":
  * geen errors, maar `toggleCompare` is een no-op en `compareIds` is leeg.

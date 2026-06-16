@@ -53,7 +53,7 @@ export function PromoHero({ materialCount }: PromoHeroProps) {
             <Link href="/register" className="btn btn-lg btn-ink">
               Create free account
             </Link>
-            <Link href="/materials" className="btn btn-lg btn-outline">
+            <Link href="/material" className="btn btn-lg btn-outline">
               Browse materials
             </Link>
           </div>

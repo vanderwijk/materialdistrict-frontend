@@ -124,6 +124,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [shipping, setShipping] = useState<StoreAddress>(EMPTY_ADDRESS)
   const [vatNumber, setVatNumber] = useState('')
   const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
+  const [vatError, setVatError] = useState<string | null>(null)
   const [ratesLoaded, setRatesLoaded] = useState(false)
   const [method, setMethod] = useState<PayMethod>('card')
   const [submitting, setSubmitting] = useState(false)
@@ -223,20 +224,46 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     const trimmedVat = vatNumber.trim()
     if (!trimmedVat) {
       setVatStatus('idle')
+      setVatError(null)
       return
     }
     if (!billing.country) {
       setVatStatus('idle')
+      setVatError(null)
+      return
+    }
+
+    const normalizedVat = trimmedVat.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    const vatPrefix = normalizedVat.slice(0, 2)
+    if (/^[A-Z]{2}$/.test(vatPrefix) && vatPrefix !== billing.country.toUpperCase()) {
+      setVatStatus('invalid')
+      setVatError('VAT country prefix does not match the selected billing country.')
       return
     }
 
     const timer = window.setTimeout(async () => {
       setVatStatus('checking')
+      setVatError(null)
       try {
         const result = await checkCheckoutVat(billing.country, trimmedVat)
-        setVatStatus(result.is_valid ? 'valid' : 'invalid')
+        if (result.is_valid) {
+          setVatStatus('valid')
+          setVatError(null)
+        } else {
+          setVatStatus('invalid')
+          if (result.status === 'invalid') {
+            setVatError('VAT number not recognized by VIES.')
+          } else if (result.status === 'unreachable') {
+            setVatError('Could not verify VAT right now. Please try again.')
+          } else if (result.status === 'non_eu') {
+            setVatError('VAT validation via VIES is only available for EU countries.')
+          } else {
+            setVatError('VAT number could not be validated.')
+          }
+        }
       } catch {
         setVatStatus('invalid')
+        setVatError('Could not verify VAT right now. Please try again.')
       }
     }, 500)
 
@@ -555,6 +582,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
             vatNumber={vatNumber}
             onVatNumberChange={setVatNumber}
             vatStatus={vatStatus}
+            vatErrorMessage={vatError}
           />
           <label className="checkout-checkbox">
             <input

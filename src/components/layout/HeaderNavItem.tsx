@@ -23,7 +23,7 @@ interface HeaderNavItemProps {
  * Header.tsx verspreid stonden. Klasse-gestuurd via `.nav-item` in §43.
  *
  * @example
- *   <HeaderNavItem href="/materials" active={pathname.startsWith('/materials')}>
+ *   <HeaderNavItem href="/material" active={pathname.startsWith('/material')}>
  *     Materials
  *   </HeaderNavItem>
  *   <HeaderNavItem href="/insider" insider>Insider</HeaderNavItem>

@@ -13,8 +13,8 @@
  * viewports.
  *
  * Elke tegel deeplinkt naar het gefilterde overzicht
- * `/materials?material_category=<slug>` — exact het URL-contract dat
- * `/materials` al parseert (FacetWP-facet, comma-separated slugs). De eerste
+ * `/material?material_category=<slug>` — exact het URL-contract dat
+ * `/material` al parseert (FacetWP-facet, comma-separated slugs). De eerste
  * link ("All materials") gaat naar het ongefilterde overzicht.
  *
  * Lege lijst (bijv. taxonomie nog niet REST-bereikbaar): de strip degradeert
@@ -40,13 +40,13 @@ export function MaterialCategoryStrip({
   return (
     <nav className="hp-cats" aria-label="Material categories">
       <div className="hp-cats-inner">
-        <Link href="/materials" className="hp-cat-link">
+        <Link href="/material" className="hp-cat-link">
           All materials
         </Link>
         {categories.map((cat) => (
           <Link
             key={cat.slug}
-            href={`/materials?material_category=${encodeURIComponent(cat.slug)}`}
+            href={`/material?material_category=${encodeURIComponent(cat.slug)}`}
             className="hp-cat-link"
           >
             {cat.label}

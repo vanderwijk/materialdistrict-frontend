@@ -33,7 +33,7 @@
  * Sessie 6 (performance):
  *  - `prefetch={false}` + `prefetchOn="hover"` op de onderliggende Card-Link.
  *  - Reden: Next.js' default-gedrag prefetcht álle Link-elementen zodra ze
- *    in viewport komen. Op `/materials` met 12 cards = 12 extra fetches per
+ *    in viewport komen. Op `/material` met 12 cards = 12 extra fetches per
  *    page-load van 150-400 ms elk. Door hover/focus/touchstart-trigger
  *    laden we alleen wat de user echt overweegt aan te klikken.
  *  - Trade-off: eerste klik wordt 50-150 ms langzamer voor users die direct
@@ -44,7 +44,7 @@
  *  - De Save- en Compare-knoppen liggen als overlay BINNEN de card-Link
  *    (ContentCard rendert de hele card als één `<Link>` / HoverPrefetchLink).
  *    Een klik op een van die knoppen bubbelde door naar de Link, waardoor
- *    Next.js direct naar `/materials/[slug]` navigeerde. De toggle draaide
+ *    Next.js direct naar `/material/[slug]` navigeerde. De toggle draaide
  *    dan wel even, maar de grid + CompareBar werden door die navigatie
  *    ge-unmount voordat er iets zichtbaar werd — gevoel: "compare werkt niet".
  *  - Oplossing: beide handlers vangen nu het click-event op en roepen
@@ -175,7 +175,7 @@ export function MaterialCard({
         slug: material.slug,
         link: material.link.startsWith('/')
           ? material.link
-          : `/materials/${material.slug}`,
+          : `/material/${material.slug}`,
       })
       if (result === 'limit-reached') {
         onCompareLimitReached?.()
@@ -240,7 +240,7 @@ export function MaterialCard({
 
   return (
     <ContentCard
-      href={material.link.startsWith('/') ? material.link : `/materials/${material.slug}`}
+      href={material.link.startsWith('/') ? material.link : `/material/${material.slug}`}
       contentType="material"
       featured={material.featured}
       showTypeBadge={false}

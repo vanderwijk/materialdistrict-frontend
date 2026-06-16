@@ -268,7 +268,7 @@ export default function MockPage() {
       >
         <Breadcrumb
           items={[
-            { label: 'Materials', href: '/materials' },
+            { label: 'Materials', href: '/material' },
             { label: 'Smoke test' },
           ]}
         />
@@ -336,7 +336,7 @@ export default function MockPage() {
                 Cards grid
               </h2>
               <div className="grid-3">
-                <Card href="/materials/recycled-glass">
+                <Card href="/material/recycled-glass">
                   <Card.Thumb background="linear-gradient(135deg,#88a800,#4a5800)" />
                   <Card.Body>
                     <Tag contentType="material" />
@@ -345,7 +345,7 @@ export default function MockPage() {
                     <Card.Date>Added 12 days ago</Card.Date>
                   </Card.Body>
                 </Card>
-                <Card href="/articles/quiet-revolution">
+                <Card href="/article/quiet-revolution">
                   <Card.Thumb background="linear-gradient(135deg,#dce8f8,#4070b0)" />
                   <Card.Body>
                     <Tag contentType="article" />

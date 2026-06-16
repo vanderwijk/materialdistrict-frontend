@@ -26,7 +26,7 @@ interface CardLinkProps extends CardBaseProps {
    * te prefetchen zonder elke card-in-viewport te warmen.
    *
    * Sessie 6 (performance): gebruikt door MaterialCard om 12 simultane
-   * prefetches per `/materials`-page te voorkomen.
+   * prefetches per `/material`-page te voorkomen.
    */
   prefetch?: boolean
   /**

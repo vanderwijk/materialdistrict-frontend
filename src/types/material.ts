@@ -125,7 +125,7 @@ export interface MaterialMeta {
   brand_id?: number
   /**
    * Slug van het gekoppelde brand (Johan-handoff 27-05-2026). Voor directe
-   * links naar `/brands/[slug]` zonder extra resolve. Null als geen brand.
+   * links naar `/brand/[slug]` zonder extra resolve. Null als geen brand.
    */
   brand_slug?: string | null
   /**
@@ -182,7 +182,7 @@ export interface MaterialMeta {
 // via welk subscription-mechanisme (brand-tier-slot of standalone €150).
 //
 // Frontend-gedrag op basis van `isOnline`:
-//   true   → material toont in publieke overzichten (`/materials`,
+//   true   → material toont in publieke overzichten (`/material`,
 //            brand-detail, etc.)
 //   false  → material toont NIET publiek; wel in manufacturer-dashboard
 //            (Fase 2) met status "Offline"
@@ -334,7 +334,7 @@ export interface Material {
   /** Brand-naam (resolved). Null als brand_id ontbreekt of niet kon worden opgehaald. */
   brandName: string | null
 
-  /** Brand-slug (uit meta, Johan-handoff). Null als niet ingesteld. Voor `/brands/[slug]`-link. */
+  /** Brand-slug (uit meta, Johan-handoff). Null als niet ingesteld. Voor `/brand/[slug]`-link. */
   brandSlug: string | null
 
   /** Leesbare brand-landnaam (uit meta `brand_country.label`). Null als onbekend. */

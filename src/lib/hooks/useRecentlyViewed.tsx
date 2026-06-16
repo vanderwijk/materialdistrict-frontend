@@ -24,7 +24,7 @@ export interface RecentlyViewedEntry {
   /** Tweede regel: datum / locatie / spreker. Null als leeg. */
   subtitle: string | null
   thumbnailUrl: string | null
-  /** Volledige detail-link (`/articles/[slug]`, …). */
+  /** Volledige detail-link (`/article/[slug]`, …). */
   href: string
   /** Voor stabiele sortering. */
   viewedAt: number

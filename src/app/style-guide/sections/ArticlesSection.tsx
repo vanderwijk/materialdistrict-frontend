@@ -16,7 +16,7 @@
  *    representatief zonder routing-context.
  *  - De detail-componenten (`ArticleBodyGate`, `ArticleDetailSidebar`,
  *    `ArticleDetailActions`) hangen aan `useAuth()`. Te zien op een echte
- *    `/articles/[slug]`-pagina.
+ *    `/article/[slug]`-pagina.
  *
  * Mock-data only. Inline styles alleen voor style-guide-layout
  * (design-system §8 uitzondering 3); component-styling komt uit

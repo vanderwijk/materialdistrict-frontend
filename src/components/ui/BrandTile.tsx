@@ -1,7 +1,7 @@
 /**
  * BrandTile
  * ----------------------------------------------------------------------
- * Overzicht-kaart voor het brand-overzicht (`/brands`). Volgt de mockup
+ * Overzicht-kaart voor het brand-overzicht (`/brand`). Volgt de mockup
  * `renderBrandsOverview()`:
  *
  *  ┌──────────────────────────────┐
@@ -22,7 +22,7 @@
  * oprekken (DRY-regel: één naam per patroon, maar dit IS een ander
  * patroon).
  *
- * Hele kaart is een link naar `/brands/[slug]`. Gebruikt
+ * Hele kaart is een link naar `/brand/[slug]`. Gebruikt
  * <HoverPrefetchLink> (sessie 6 performance): prefetch op hover/focus
  * i.p.v. viewport — bespaart RSC-fetches op een overzicht met veel
  * tiles.
@@ -84,7 +84,7 @@ export function BrandTile({ brand }: BrandTileProps) {
 
   return (
     <HoverPrefetchLink
-      href={`/brands/${brand.slug}`}
+      href={`/brand/${brand.slug}`}
       className="brand-tile"
       ariaLabel={brand.name}
     >

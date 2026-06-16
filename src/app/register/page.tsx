@@ -64,7 +64,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 }
 
 function sanitizeNext(next: string | undefined): string {
-  const fallback = '/materials'
+  const fallback = '/material'
   if (!next || next.length === 0) return fallback
   if (next[0] !== '/') return fallback
   if (next.length > 1 && (next[1] === '/' || next[1] === '\\')) return fallback

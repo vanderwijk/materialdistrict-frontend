@@ -6,7 +6,7 @@
  * Presentational server-component. Krijgt een reeds geselecteerde (en
  * geroteerde) subset Partner-tier brands van de homepage-server-component en
  * rendert ze als `BrandTile` in dezelfde `.ov-grid-brands`-container die
- * `/brands` gebruikt. Geen eigen CSS-familie (DRY): hergebruik van het
+ * `/brand` gebruikt. Geen eigen CSS-familie (DRY): hergebruik van het
  * bestaande brand-tile-patroon.
  *
  * - Bron + rotatie zitten in `page.tsx` (`pickRotatingPartners`); deze
@@ -31,7 +31,7 @@ export function FeaturedPartners({ partners }: FeaturedPartnersProps) {
     <section className="hp-section">
       <div className="section-hd">
         <h2 className="section-title">Featured partners</h2>
-        <Link href="/brands" className="section-link">
+        <Link href="/brand" className="section-link">
           All brands →
         </Link>
       </div>

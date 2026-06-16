@@ -92,10 +92,10 @@ export function buildBrandOrganization(
   const schema: OrganizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    '@id': `${SITE_URL}/brands/${brand.slug}#organization`,
+    '@id': `${SITE_URL}/brand/${brand.slug}#organization`,
     name: brand.name,
     // De canonieke URL van de brand binnen MaterialDistrict.
-    url: `${SITE_URL}/brands/${brand.slug}`,
+    url: `${SITE_URL}/brand/${brand.slug}`,
   }
 
   if (brand.description) schema.description = brand.description
@@ -156,7 +156,7 @@ interface MaterialForJsonLd {
 export function buildProduct(material: MaterialForJsonLd): ProductSchema | null {
   if (!material.title || !material.slug) return null
 
-  const url = `${SITE_URL}/materials/${material.slug}`
+  const url = `${SITE_URL}/material/${material.slug}`
   const schema: ProductSchema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -173,7 +173,7 @@ export function buildProduct(material: MaterialForJsonLd): ProductSchema | null 
     schema.brand = {
       '@type': 'Brand',
       name: material.brand.name,
-      ...(material.brand.slug ? { url: `${SITE_URL}/brands/${material.brand.slug}` } : {}),
+      ...(material.brand.slug ? { url: `${SITE_URL}/brand/${material.brand.slug}` } : {}),
     }
   }
 
@@ -209,7 +209,7 @@ interface ArticleForJsonLd {
 export function buildArticle(article: ArticleForJsonLd): ArticleSchema | null {
   if (!article.title || !article.slug || !article.publishedAt) return null
 
-  const url = `${SITE_URL}/articles/${article.slug}`
+  const url = `${SITE_URL}/article/${article.slug}`
   const schema: ArticleSchema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -275,7 +275,7 @@ export function buildVideoObject(
 ): VideoObjectSchema | null {
   if (!video.title || !video.uploadDate) return null
 
-  const url = `${SITE_URL}/talks/${video.slug}`
+  const url = `${SITE_URL}/talk/${video.slug}`
   const schema: VideoObjectSchema = {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
@@ -317,7 +317,7 @@ interface EventForJsonLd {
 export function buildEvent(event: EventForJsonLd): EventSchema | null {
   if (!event.title || !event.slug || !event.startsAt) return null
 
-  const url = `${SITE_URL}/events/${event.slug}`
+  const url = `${SITE_URL}/event/${event.slug}`
   const schema: EventSchema = {
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -431,7 +431,7 @@ export function buildBreadcrumbList(items: BreadcrumbInput[]): BreadcrumbListSch
 /**
  * CollectionPage — voor hub-/overzichtspagina's (stap 12: de channel-hubs).
  *
- * `url` mag een pad (`/channels/biobased`) of een absolute URL zijn; paden
+ * `url` mag een pad (`/channel/biobased`) of een absolute URL zijn; paden
  * worden geprefixt met `SITE_URL`. Een optionele `items`-lijst wordt als
  * `ItemList` opgenomen zodat Google de getoonde collectie herkent; lege
  * lijsten laten de `mainEntity` weg.

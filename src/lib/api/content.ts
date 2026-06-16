@@ -189,7 +189,7 @@ export interface MaterialDetailResult {
 }
 
 /**
- * Detail-orchestrator voor `/materials/[slug]`.
+ * Detail-orchestrator voor `/material/[slug]`.
  *
  * Sessie 6 (performance): vervangt het sequentiële paar
  * `getMaterial(slug)` → `getTerms('tags', { include: tag_ids })` op de
@@ -393,7 +393,7 @@ export interface ListMaterialsWithFacetsResult {
 }
 
 /**
- * Orchestrator voor `/materials` — combineert drie data-bronnen:
+ * Orchestrator voor `/material` — combineert drie data-bronnen:
  *
  *  1. FacetWP filtered call → `results`-IDs + pager + actuele facet-state
  *  2. FacetWP baseline call → volledige facet-set (label + choices + counts
@@ -542,7 +542,7 @@ export interface ListMaterialsByBrandParams {
  * `?brand_id=<id>` (Johan-handoff 27-05-2026, production verified).
  *
  * Dit is GEEN FacetWP-route. FacetWP blijft de filter-mechaniek voor het
- * hoofdoverzicht `/materials`; deze functie is een dedicated code-
+ * hoofdoverzicht `/material`; deze functie is een dedicated code-
  * gebaseerde relatie-query voor:
  *  - MoreFromBrand op de material-detail-page
  *  - de "Materials by [brand]"-grid op de brand-detail-page
@@ -584,7 +584,7 @@ export interface ListMaterialsForBrandArchiveParams {
 }
 
 /**
- * `/materials?brand=<slug>` — REST-relatie-query, geen FacetWP.
+ * `/material?brand=<slug>` — REST-relatie-query, geen FacetWP.
  *
  * Zelfde `?brand_id=<id>`-mechaniek als `listMaterialsByBrand`, maar met
  * slug-resolutie, paging, sort en zoek. Filter-sidebar krijgt alleen de
@@ -824,7 +824,7 @@ export interface StoryTypeOption {
 }
 
 /**
- * Bouwt de story-type-filteropties voor het `/articles` overzicht.
+ * Bouwt de story-type-filteropties voor het `/article` overzicht.
  *
  * Sinds sessie 6b is `story_type` een echte WP-taxonomy en geeft het
  * standaard term-endpoint per term een `count`-veld met het aantal

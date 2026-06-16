@@ -61,7 +61,7 @@ export function BookmarksPanel({ initial }: { initial: BookmarkItem[] }) {
           title="No bookmarks yet"
           description="Save materials, articles and brands to find them back here."
           actions={
-            <Link href="/materials" className="btn btn-primary">
+            <Link href="/material" className="btn btn-primary">
               Browse materials
             </Link>
           }

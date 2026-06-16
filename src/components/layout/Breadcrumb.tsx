@@ -25,7 +25,7 @@ interface BreadcrumbProps {
  *
  * @example
  *   <Breadcrumb items={[
- *     { label: 'Materials', href: '/materials' },
+ *     { label: 'Materials', href: '/material' },
  *     { label: 'Recycled Glass Composite' },
  *   ]} />
  *
