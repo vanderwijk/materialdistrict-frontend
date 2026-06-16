@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
@@ -18,6 +18,7 @@ import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import type { BrandProfile, BrandSocialLinks, MaterialAsset } from '@/types/dashboard'
 import { canManufacturerAccess, type ManufacturerTier } from '@/lib/config/membership'
 import { tierMeets } from '@/lib/dashboard/nav'
+import { checkCheckoutVat } from '@/lib/api/checkout-account'
 
 const SOCIAL_FIELDS: { key: keyof BrandSocialLinks; label: string }[] = [
   { key: 'twitter', label: 'Twitter / X' },
@@ -53,6 +54,10 @@ export function BrandProfileForm({
   const [saveError, setSaveError] = useState<string | null>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+
+  const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
+  const [vatError, setVatError] = useState<string | null>(null)
+  const [vatTouched, setVatTouched] = useState(false)
 
   const canApplications = tierMeets(tier, 'plus')
   const canVideos = canManufacturerAccess(tier, 'Video link')
@@ -149,6 +154,59 @@ export function BrandProfileForm({
     }
   }
 
+  useEffect(() => {
+    if (!vatTouched) return
+
+    const trimmedVat = form.vatNumber.trim()
+    if (!trimmedVat) {
+      setVatStatus('idle')
+      setVatError(null)
+      return
+    }
+
+    if (!form.country) {
+      setVatStatus('idle')
+      setVatError(null)
+      return
+    }
+
+    const normalizedVat = trimmedVat.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    const vatPrefix = normalizedVat.slice(0, 2)
+    if (/^[A-Z]{2}$/.test(vatPrefix) && vatPrefix !== form.country.toUpperCase()) {
+      setVatStatus('invalid')
+      setVatError('VAT country prefix does not match the selected billing country.')
+      return
+    }
+
+    const timer = window.setTimeout(async () => {
+      setVatStatus('checking')
+      setVatError(null)
+      try {
+        const result = await checkCheckoutVat(form.country, trimmedVat)
+        if (result.is_valid) {
+          setVatStatus('valid')
+          setVatError(null)
+        } else {
+          setVatStatus('invalid')
+          if (result.status === 'invalid') {
+            setVatError('VAT number not recognized by VIES.')
+          } else if (result.status === 'unreachable') {
+            setVatError('Could not verify VAT right now. Please try again.')
+          } else if (result.status === 'non_eu') {
+            setVatError('VAT validation via VIES is only available for EU countries.')
+          } else {
+            setVatError('VAT number could not be validated.')
+          }
+        }
+      } catch {
+        setVatStatus('invalid')
+        setVatError('Could not verify VAT right now. Please try again.')
+      }
+    }, 500)
+
+    return () => window.clearTimeout(timer)
+  }, [form.country, form.vatNumber, vatTouched])
+
   return (
     <>
       <CurrentPlanBanner tier={tier} />
@@ -208,7 +266,10 @@ export function BrandProfileForm({
             label="Country"
             value={form.country}
             placeholder="Select a country"
-            onChange={(e) => set('country', e.target.value)}
+            onChange={(e) => {
+              set('country', e.target.value)
+              setVatTouched(true)
+            }}
             options={COUNTRY_OPTIONS}
           />
         </div>
@@ -221,7 +282,28 @@ export function BrandProfileForm({
           <Input label="City" value={form.city} onChange={(e) => set('city', e.target.value)} />
         </div>
         <div className="g2">
-          <Input label="VAT number" value={form.vatNumber} onChange={(e) => set('vatNumber', e.target.value)} />
+          <div className="addr-field addr-field-wide">
+            <label htmlFor="brand-vat">VAT number</label>
+            <div className="checkout-vat-input-wrap">
+              <input
+                id="brand-vat"
+                value={form.vatNumber}
+                onChange={(e) => {
+                  set('vatNumber', e.target.value)
+                  setVatTouched(true)
+                }}
+                autoComplete="off"
+                placeholder="e.g. NL123456789B01"
+                className={`checkout-vat-input ${
+                  vatStatus === 'valid' ? 'is-valid' : ''
+                } ${vatStatus === 'invalid' ? 'is-invalid' : ''}`.trim()}
+              />
+              {vatStatus === 'checking' && <span className="checkout-vat-indicator">…</span>}
+              {vatStatus === 'valid' && <span className="checkout-vat-indicator is-valid">✓</span>}
+              {vatStatus === 'invalid' && <span className="checkout-vat-indicator is-invalid">!</span>}
+            </div>
+            {vatError && <p className="checkout-vat-error">{vatError}</p>}
+          </div>
           <Input label="Chamber of Commerce number" value={form.chamberNumber} onChange={(e) => set('chamberNumber', e.target.value)} />
         </div>
       </div>
