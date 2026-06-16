@@ -23,7 +23,7 @@ const DISCOVER_LINKS: FooterLink[] = [
   { label: 'Stories', href: '/article' },
   { label: 'Events', href: '/event' },
   { label: 'Talks', href: '/talk' },
-  { label: 'Books', href: '/books' },
+  { label: 'Books', href: '/book' },
   { label: 'Brands', href: '/brand' },
 ]
 

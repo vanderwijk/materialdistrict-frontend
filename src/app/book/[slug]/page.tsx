@@ -55,12 +55,12 @@ export async function generateMetadata({
   return {
     title: book.title,
     description,
-    alternates: { canonical: `/books/${book.slug}` },
+    alternates: { canonical: `/book/${book.slug}` },
     openGraph: {
       title: book.title,
       description,
       type: 'book',
-      url: `/books/${book.slug}`,
+      url: `/book/${book.slug}`,
     },
   }
 }
@@ -126,7 +126,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
       <article className="pub-wrap">
         <div className="mat-detail-wrap">
           <div className="detail-back-row">
-            <Link href="/books" className="detail-header-back">
+            <Link href="/book" className="detail-header-back">
               <span aria-hidden="true">←</span> Back to Books
             </Link>
           </div>
@@ -211,7 +211,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
             <h2 id="more-books-title" className="mat-section-title mat-morefrombrand-heading">
               More books
             </h2>
-            <Link href="/books" className="mat-morefrombrand-viewall">
+            <Link href="/book" className="mat-morefrombrand-viewall">
               View all <span aria-hidden="true">→</span>
             </Link>
           </header>
@@ -227,7 +227,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
         data={[
           buildBreadcrumbList([
             { label: 'Home', url: '/' },
-            { label: 'Books', url: '/books' },
+            { label: 'Books', url: '/book' },
             { label: book.title },
           ]),
           bookJsonLd,
@@ -250,7 +250,7 @@ function BookPrevNext({
   return (
     <nav className="mat-prevnext" aria-label="Book navigation">
       {prev ? (
-        <Link href={`/books/${prev.slug}`} className="mat-prevnext-link">
+        <Link href={`/book/${prev.slug}`} className="mat-prevnext-link">
           <span className="mat-prevnext-arrow" aria-hidden="true">
             ←
           </span>
@@ -273,7 +273,7 @@ function BookPrevNext({
 
       {next && (
         <Link
-          href={`/books/${next.slug}`}
+          href={`/book/${next.slug}`}
           className="mat-prevnext-link mat-prevnext-link--right"
         >
           <span className="mat-prevnext-label">

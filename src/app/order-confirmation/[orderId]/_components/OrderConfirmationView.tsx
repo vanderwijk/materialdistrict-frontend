@@ -62,7 +62,7 @@ export function OrderConfirmationView({
           Thank you. A confirmation has been emailed to you. Full order details
           aren&apos;t available in this browser session.
         </p>
-        <a className="confirm-link" href="/books">
+        <a className="confirm-link" href="/book">
           Continue browsing<span aria-hidden="true"> →</span>
         </a>
       </div>
@@ -77,7 +77,7 @@ export function OrderConfirmationView({
           Your payment may still have gone through — please check your email for
           a confirmation. If you need help, contact us with order #{orderId}.
         </p>
-        <a className="confirm-link" href="/books">
+        <a className="confirm-link" href="/book">
           Continue browsing<span aria-hidden="true"> →</span>
         </a>
       </div>
@@ -115,7 +115,7 @@ export function OrderConfirmationView({
         <span>{money(order.totals.total_price)}</span>
       </div>
 
-      <a className="confirm-link" href="/books">
+      <a className="confirm-link" href="/book">
         Continue browsing<span aria-hidden="true"> →</span>
       </a>
     </div>

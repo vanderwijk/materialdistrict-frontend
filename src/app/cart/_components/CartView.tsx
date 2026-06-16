@@ -74,7 +74,7 @@ export function CartView() {
         title="Your cart is empty"
         description="Browse the bookshop to add titles to your cart."
         actions={
-          <Button as="link" href="/books" variant="green" size="sm">
+          <Button as="link" href="/book" variant="green" size="sm">
             Browse books
           </Button>
         }
@@ -149,7 +149,7 @@ export function CartView() {
               </div>
 
               <div className="cart-item-main">
-                <a className="cart-item-title" href={`/books/${slug}`}>
+                <a className="cart-item-title" href={`/book/${slug}`}>
                   {item.name}
                 </a>
 

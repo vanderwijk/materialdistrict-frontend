@@ -15,7 +15,7 @@ function getCurrentSection(pathname: string): HeaderSection | undefined {
   if (pathname.startsWith('/article') || pathname.startsWith('/stories')) return 'articles'
   if (pathname.startsWith('/brand')) return 'brands'
   if (pathname.startsWith('/event')) return 'events'
-  if (pathname.startsWith('/books')) return 'books'
+  if (pathname.startsWith('/book')) return 'books'
   if (pathname.startsWith('/talk')) return 'talks'
   return undefined
 }

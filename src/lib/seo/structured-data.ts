@@ -379,7 +379,7 @@ interface BookForJsonLd {
 export function buildBook(book: BookForJsonLd): BookSchema | null {
   if (!book.title || !book.slug) return null
 
-  const url = `${SITE_URL}/books/${book.slug}`
+  const url = `${SITE_URL}/book/${book.slug}`
   const schema: BookSchema = {
     '@context': 'https://schema.org',
     '@type': 'Book',

@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   title: 'Books',
   description:
     'Browse books, exhibition catalogues and publications on innovative and sustainable materials. Insider members save on every title.',
-  alternates: { canonical: '/books' },
+  alternates: { canonical: '/book' },
   openGraph: {
     title: 'Books | MaterialDistrict',
     description:
       'Books, exhibition catalogues and publications on innovative and sustainable materials.',
     type: 'website',
-    url: '/books',
+    url: '/book',
   },
 }
 
@@ -86,7 +86,7 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
                 title="No books match your search"
                 description="Try a different search term, or clear it to see all books."
                 actions={
-                  <Button as="link" href="/books" variant="outline" size="sm">
+                  <Button as="link" href="/book" variant="outline" size="sm">
                     Clear search
                   </Button>
                 }

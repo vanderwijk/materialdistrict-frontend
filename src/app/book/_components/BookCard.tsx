@@ -32,7 +32,7 @@ export function BookCard({ book }: { book: BookListItem }) {
   const coverSrc = book.cover?.thumbnailUrl ?? book.cover?.url
 
   return (
-    <Card href={`/books/${book.slug}`} prefetch={false} prefetchOn="hover">
+    <Card href={`/book/${book.slug}`} prefetch={false} prefetchOn="hover">
       <Card.Thumb
         className="is-portrait"
         src={coverSrc}

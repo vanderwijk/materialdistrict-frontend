@@ -74,7 +74,7 @@ const NAV_ITEMS: NavItem[] = [
   { key: 'articles', label: 'Stories', href: '/article', icon: BookOpen },
   { key: 'brands', label: 'Brands', href: '/brand', icon: Building2 },
   { key: 'events', label: 'Events', href: '/event', icon: Calendar },
-  { key: 'books', label: 'Books', href: '/books', icon: Book },
+  { key: 'books', label: 'Books', href: '/book', icon: Book },
   { key: 'talks', label: 'Talks', href: '/talk', icon: Mic },
 ]
 

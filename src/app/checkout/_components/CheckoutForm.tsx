@@ -524,7 +524,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   if (!cart || cart.items.length === 0) {
     return (
       <p className="checkout-empty">
-        Your cart is empty. <a href="/books">Browse books</a>.
+        Your cart is empty. <a href="/book">Browse books</a>.
       </p>
     )
   }

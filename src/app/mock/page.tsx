@@ -353,7 +353,7 @@ export default function MockPage() {
                     <Card.Date>3 May 2026</Card.Date>
                   </Card.Body>
                 </Card>
-                <Card href="/books/material-atlas">
+                <Card href="/book/material-atlas">
                   <Card.Thumb background="linear-gradient(135deg,#f8f5d0,#706800)" />
                   <Card.Body>
                     <Tag contentType="book" />
