@@ -19,7 +19,7 @@ import type { User } from '@/types/shared'
 
 interface CheckoutSignInPanelProps {
   email: string
-  onSignedIn: (data: { email: string; billing: StoreAddress }) => void
+  onSignedIn: (data: { email: string; billing: StoreAddress; vatNumber?: string }) => void
 }
 
 export function CheckoutSignInPanel({ email, onSignedIn }: CheckoutSignInPanelProps) {
@@ -68,7 +68,7 @@ export function CheckoutSignInPanel({ email, onSignedIn }: CheckoutSignInPanelPr
           const profile = (await profileRes.json()) as UserProfile
           const prefill = profileToCheckoutPrefill(profile)
           billing = prefill.billing
-          onSignedIn({ email: prefill.email, billing })
+          onSignedIn({ email: prefill.email, billing, vatNumber: prefill.vatNumber })
         }
       } catch {
         /* profile prefill is optional */

@@ -122,7 +122,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [checkingEmail, setCheckingEmail] = useState(false)
   const [shipSame, setShipSame] = useState(true)
   const [shipping, setShipping] = useState<StoreAddress>(EMPTY_ADDRESS)
-  const [vatNumber, setVatNumber] = useState('')
+  const [vatNumber, setVatNumber] = useState(prefill?.vatNumber ?? '')
   const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [vatError, setVatError] = useState<string | null>(null)
   const [ratesLoaded, setRatesLoaded] = useState(false)
@@ -302,9 +302,10 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ratesKey, selectedRateId, loading, cart?.needs_shipping])
 
-  async function handleCheckoutSignedIn(data: { email: string; billing: StoreAddress }) {
+  async function handleCheckoutSignedIn(data: { email: string; billing: StoreAddress; vatNumber?: string }) {
     setEmail(data.email)
     setBilling(data.billing)
+    setVatNumber(data.vatNumber ?? '')
     setEmailRegistered(null)
     setRatesLoaded(false)
     try {

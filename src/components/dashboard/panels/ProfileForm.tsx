@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input, Select, Checkbox } from '@/components/ui/form'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import { withCurrentSelectValue } from '@/lib/config/profile-options'
+import { checkCheckoutVat } from '@/lib/api/checkout-account'
 import type { UserProfile, ProfileFieldOptions } from '@/types/dashboard'
 
 /**
@@ -35,6 +36,9 @@ export function ProfileForm({
 
   const set = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) =>
     setForm((f) => ({ ...f, [key]: value }))
+
+  const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
+  const [vatError, setVatError] = useState<string | null>(null)
 
   const professionOptions = useMemo(
     () => withCurrentSelectValue(options.professions, form.profession),
@@ -78,6 +82,63 @@ export function ProfileForm({
       setSaving(false)
     }
   }
+
+  useEffect(() => {
+    if (!form.invoiceToCompany) {
+      setVatStatus('idle')
+      setVatError(null)
+      return
+    }
+
+    const trimmedVat = form.vatNumber.trim()
+    if (!trimmedVat) {
+      setVatStatus('idle')
+      setVatError(null)
+      return
+    }
+
+    if (!form.country) {
+      setVatStatus('idle')
+      setVatError(null)
+      return
+    }
+
+    const normalizedVat = trimmedVat.toUpperCase().replace(/[^A-Z0-9]/g, '')
+    const vatPrefix = normalizedVat.slice(0, 2)
+    if (/^[A-Z]{2}$/.test(vatPrefix) && vatPrefix !== form.country.toUpperCase()) {
+      setVatStatus('invalid')
+      setVatError('VAT country prefix does not match the selected billing country.')
+      return
+    }
+
+    const timer = window.setTimeout(async () => {
+      setVatStatus('checking')
+      setVatError(null)
+      try {
+        const result = await checkCheckoutVat(form.country, trimmedVat)
+        if (result.is_valid) {
+          setVatStatus('valid')
+          setVatError(null)
+        } else {
+          setVatStatus('invalid')
+          if (result.status === 'invalid') {
+            setVatError('VAT number not recognized by VIES.')
+          } else if (result.status === 'unreachable') {
+            setVatError('Could not verify VAT right now. Please try again.')
+          } else if (result.status === 'non_eu') {
+            setVatError('VAT validation via VIES is only available for EU countries.')
+          } else {
+            setVatError('VAT number could not be validated.')
+          }
+        }
+      } catch {
+        setVatStatus('invalid')
+        setVatError('Could not verify VAT right now. Please try again.')
+      }
+    }, 500)
+
+    return () => window.clearTimeout(timer)
+  }, [form.country, form.invoiceToCompany, form.vatNumber])
 
   return (
     <>
@@ -194,12 +255,31 @@ export function ProfileForm({
                   onChange={(e) => set('company', e.target.value)}
                   showFilledState
                 />
-                <Input
-                  label="VAT number"
-                  value={form.vatNumber}
-                  onChange={(e) => set('vatNumber', e.target.value)}
-                  showFilledState
-                />
+                <div className="addr-field addr-field-wide">
+                  <label htmlFor="profile-vat">VAT number (optional)</label>
+                  <div className="checkout-vat-input-wrap">
+                    <input
+                      id="profile-vat"
+                      value={form.vatNumber}
+                      onChange={(e) => set('vatNumber', e.target.value)}
+                      autoComplete="off"
+                      placeholder="e.g. NL123456789B01"
+                      className={`checkout-vat-input ${
+                        vatStatus === 'valid' ? 'is-valid' : ''
+                      } ${vatStatus === 'invalid' ? 'is-invalid' : ''}`.trim()}
+                    />
+                    {vatStatus === 'checking' && (
+                      <span className="checkout-vat-indicator">…</span>
+                    )}
+                    {vatStatus === 'valid' && (
+                      <span className="checkout-vat-indicator is-valid">✓</span>
+                    )}
+                    {vatStatus === 'invalid' && (
+                      <span className="checkout-vat-indicator is-invalid">!</span>
+                    )}
+                  </div>
+                  {vatError && <p className="checkout-vat-error">{vatError}</p>}
+                </div>
               </div>
             )}
           </div>
