@@ -37,6 +37,10 @@ export const DEFAULT_STORY_TYPE: StoryType = 'news'
  * Presentatie-metadata per story-type. Leidend voor de UI; niet uit de
  * API af te leiden. 1-op-1 uit de mockup `STORY_TYPE_META`.
  *
+ * Kleuren voor filter/intro in CSS: `globals.css` (`.articles-type-btn` /
+ * `.articles-type-intro` + `data-story-type`) — houd die tokens in sync
+ * met `color` / `pale` hieronder.
+ *
  * - `label`  — presentatie-naam (let op: `partner` → "Partner stories")
  * - `color`  — accentkleur voor pills, sidebar-actief, type-intro
  * - `pale`   — zachte achtergrond voor de type-intro-banner

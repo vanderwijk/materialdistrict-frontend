@@ -29,7 +29,7 @@ import { useTransition } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import {
   STORY_TYPES,
-  storyTypeMeta,
+  storyTypeLabel,
   type StoryType,
 } from '@/lib/config/story-types'
 import type { StoryTypeOption } from '@/lib/api'
@@ -86,6 +86,7 @@ export function ArticlesTypeFilter({
           <button
             type="button"
             className="articles-type-btn"
+            data-all=""
             data-active={selectedType === null ? '' : undefined}
             aria-pressed={selectedType === null}
             onClick={() => select(null)}
@@ -95,28 +96,18 @@ export function ArticlesTypeFilter({
           </button>
         </li>
         {STORY_TYPES.map((type) => {
-          const meta = storyTypeMeta(type)
           const active = selectedType === type
           return (
             <li key={type}>
               <button
                 type="button"
                 className="articles-type-btn"
+                data-story-type={type}
                 data-active={active ? '' : undefined}
                 aria-pressed={active}
                 onClick={() => select(type)}
-                style={
-                  active
-                    ? { background: meta.color, borderColor: meta.color }
-                    : undefined
-                }
               >
-                <span
-                  className="articles-type-dot"
-                  aria-hidden="true"
-                  style={{ background: active ? 'rgba(255,255,255,0.9)' : meta.color }}
-                />
-                <span className="articles-type-label">{meta.label}</span>
+                <span className="articles-type-label">{storyTypeLabel(type)}</span>
                 <span className="filter-count">{countByType.get(type) ?? 0}</span>
               </button>
             </li>

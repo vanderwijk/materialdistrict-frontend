@@ -9626,6 +9626,53 @@ mark.search-mark {
   font-weight: 600;
 }
 
+/* "All" — navy pill when active (mockup renderStoriesOverview) */
+.articles-type-btn[data-all][data-active] {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+
+/* Story-type tokens — sync met STORY_TYPE_META in story-types.ts */
+.articles-type-btn[data-story-type="news"],
+.articles-type-intro[data-story-type="news"] {
+  --story-type-accent: #185fa5;
+  --story-type-pale: #e6f1fb;
+  --story-type-border: #185fa522;
+}
+
+.articles-type-btn[data-story-type="people"],
+.articles-type-intro[data-story-type="people"] {
+  --story-type-accent: #183e90;
+  --story-type-pale: #e8f0fb;
+  --story-type-border: #183e9022;
+}
+
+.articles-type-btn[data-story-type="collaborations"],
+.articles-type-intro[data-story-type="collaborations"] {
+  --story-type-accent: #006878;
+  --story-type-pale: #e0f3f6;
+  --story-type-border: #00687822;
+}
+
+.articles-type-btn[data-story-type="projects"],
+.articles-type-intro[data-story-type="projects"] {
+  --story-type-accent: #3a6b10;
+  --story-type-pale: #eaf3de;
+  --story-type-border: #3a6b1022;
+}
+
+.articles-type-btn[data-story-type="partner"],
+.articles-type-intro[data-story-type="partner"] {
+  --story-type-accent: #7a3800;
+  --story-type-pale: #fff3e0;
+  --story-type-border: #7a380022;
+}
+
+.articles-type-btn[data-story-type][data-active] {
+  background: var(--story-type-accent);
+  border-color: var(--story-type-accent);
+}
+
 .articles-type-btn:focus-visible {
   outline: 2px solid var(--navy-light);
   outline-offset: 2px;
@@ -9719,9 +9766,10 @@ mark.search-mark {
   align-items: center;
   gap: 12px;
   padding: 16px 20px;
-  border: 1px solid;
+  border: 1px solid var(--story-type-border);
   border-radius: var(--radius-md);
   margin-bottom: 24px;
+  background: var(--story-type-pale);
 }
 
 .articles-type-intro-icon {
@@ -9729,6 +9777,7 @@ mark.search-mark {
   height: 36px;
   border-radius: 50%;
   color: #fff;
+  background: var(--story-type-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9745,6 +9794,7 @@ mark.search-mark {
 .articles-type-intro-label {
   font-size: 14px;
   font-weight: 700;
+  color: var(--story-type-accent);
 }
 
 .articles-type-intro-desc {

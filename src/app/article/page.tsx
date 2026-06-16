@@ -213,30 +213,16 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
 
         <div>
           {/* Type-intro-banner wanneer een type actief is (mockup-patroon) */}
-          {activeMeta && (
-            <div
-              className="articles-type-intro"
-              style={{
-                background: activeMeta.pale,
-                borderColor: `${activeMeta.color}22`,
-              }}
-            >
+          {activeMeta && selectedType && (
+            <div className="articles-type-intro" data-story-type={selectedType}>
               <span
                 className="articles-type-intro-icon"
-                style={{ background: activeMeta.color }}
                 aria-hidden="true"
                 dangerouslySetInnerHTML={{ __html: activeMeta.icon }}
               />
               <span className="articles-type-intro-text">
-                <span
-                  className="articles-type-intro-label"
-                  style={{ color: activeMeta.color }}
-                >
-                  {activeMeta.label}
-                </span>
-                <span className="articles-type-intro-desc">
-                  {activeMeta.desc}
-                </span>
+                <span className="articles-type-intro-label">{activeMeta.label}</span>
+                <span className="articles-type-intro-desc">{activeMeta.desc}</span>
               </span>
               <Button
                 as="link"
