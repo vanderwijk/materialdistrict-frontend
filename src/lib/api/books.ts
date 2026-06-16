@@ -45,6 +45,20 @@ interface WCStorePrices {
   currency_symbol: string
 }
 
+/** Plugin namespace on Store API `extensions` (wc-store-books-pricing.php). */
+interface WCStoreMaterialDistrictExtension {
+  md_price_ex_vat?: string
+  featured?: boolean
+  channels?: WCStoreTerm[]
+  disciplines?: WCStoreTerm[]
+  global_unique_id?: string
+  md_catalog?: WCStoreCatalogMeta
+}
+
+interface WCStoreExtensions {
+  materialdistrict?: WCStoreMaterialDistrictExtension
+}
+
 interface WCStoreImage {
   id: number
   src: string
@@ -104,6 +118,8 @@ export interface WCStoreProduct {
   global_unique_id?: string
   /** Catalog metadata for label filters (plugin). */
   md_catalog?: WCStoreCatalogMeta
+  /** WooCommerce Store API extension bucket (official ExtendSchema output). */
+  extensions?: WCStoreExtensions
 }
 
 /** Catalog metadata exposed by the plugin on Store API products. */
@@ -253,11 +269,20 @@ function mapTerms(terms: WCStoreTerm[] | undefined) {
 }
 
 function mapIsbn(p: WCStoreProduct): string | null {
-  return nullableString(p.global_unique_id) ?? nullableString(p.sku)
+  const ext = mdStoreExtension(p)
+  return (
+    nullableString(ext?.global_unique_id)
+    ?? nullableString(p.global_unique_id)
+    ?? nullableString(p.sku)
+  )
+}
+
+function mdStoreExtension(p: WCStoreProduct): WCStoreMaterialDistrictExtension | undefined {
+  return p.extensions?.materialdistrict
 }
 
 function mapCatalogMeta(p: WCStoreProduct) {
-  const meta = p.md_catalog
+  const meta = mdStoreExtension(p)?.md_catalog ?? p.md_catalog
   return {
     isNewRelease: meta?.is_new_release ?? false,
     isLastChance: meta?.is_last_chance ?? false,
@@ -271,6 +296,8 @@ function mapCatalogMeta(p: WCStoreProduct) {
 
 export function mapBookListItem(p: WCStoreProduct): BookListItem {
   const catalog = mapCatalogMeta(p)
+  const ext = mdStoreExtension(p)
+  const minor = p.prices?.currency_minor_unit ?? 2
   return {
     id: p.id,
     slug: p.slug,
@@ -282,12 +309,12 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
     publisher: pickAttr(p.attributes, 'publisher'),
     publicationYear: pickInt(p.attributes, 'year'),
     price: priceToEuros(p.prices),
-    priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
+    priceExVat: minorToEuros(ext?.md_price_ex_vat ?? p.prices?.md_price_ex_vat, minor),
     inStock: p.is_in_stock ?? true,
-    featured: p.featured ?? false,
+    featured: ext?.featured ?? p.featured ?? false,
     format: pickAttr(p.attributes, 'format'),
-    channels: mapTerms(p.channels),
-    disciplines: mapTerms(p.disciplines),
+    channels: mapTerms(ext?.channels ?? p.channels),
+    disciplines: mapTerms(ext?.disciplines ?? p.disciplines),
     tags: mapTerms(p.tags),
     onSale: p.on_sale ?? false,
     ...catalog,
@@ -296,6 +323,8 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
 
 export function mapBook(p: WCStoreProduct): Book {
   const catalog = mapCatalogMeta(p)
+  const ext = mdStoreExtension(p)
+  const minor = p.prices?.currency_minor_unit ?? 2
   return {
     id: p.id,
     slug: p.slug,
@@ -316,11 +345,11 @@ export function mapBook(p: WCStoreProduct): Book {
     // Kopen gaat via Add-to-cart (stap 2). Geen permalink user-facing.
     buyUrl: null,
     price: priceToEuros(p.prices),
-    priceExVat: minorToEuros(p.prices?.md_price_ex_vat, p.prices?.currency_minor_unit ?? 2),
+    priceExVat: minorToEuros(ext?.md_price_ex_vat ?? p.prices?.md_price_ex_vat, minor),
     inStock: p.is_in_stock ?? true,
-    featured: p.featured ?? false,
-    channels: mapTerms(p.channels),
-    disciplines: mapTerms(p.disciplines),
+    featured: ext?.featured ?? p.featured ?? false,
+    channels: mapTerms(ext?.channels ?? p.channels),
+    disciplines: mapTerms(ext?.disciplines ?? p.disciplines),
     tags: mapTerms(p.tags),
     ...catalog,
     modified: '',
