@@ -281,16 +281,24 @@ De `buildWebSite()` builder heeft al een `potentialAction` SearchAction. Control
 
 ## Launch checklist
 
+- [x] `trailingSlash: true` in `next.config.ts` — Next.js stuurt nu altijd door naar URL met slash
+- [x] `canonicalPath()` functie in `src/lib/seo/urls.ts` — voegt automatisch trailing slash toe aan alle canonicals en JSON-LD URLs
+- [x] `absolutePageUrl()` in structured-data builders — alle JSON-LD `@id` en `url` waarden hebben trailing slash
+- [x] `src/app/robots.ts` aangemaakt — blokkeert crawlen van private paden; stuurt `Disallow: /` op preview/staging hosts
+- [x] `X-Robots-Tag: noindex, nofollow` voor preview/staging — geïmplementeerd via `vercel.json` headers op platform-niveau (betrouwbaarder dan middleware bij Turbopack)
 - [ ] `NEXT_PUBLIC_SITE_URL=https://materialdistrict.com` op Vercel (production, geen trailing slash)
-- [ ] `src/app/robots.ts` aangemaakt
-- [ ] `src/middleware.ts` met X-Robots-Tag noindex voor Vercel preview-deployments
-- [ ] Sitemap aangemaakt, gesplitst per content-type, met echte `lastmod`-datums
+- [ ] Sitemap aangemaakt, gesplitst per content-type, met echte `lastmod`-datums vanuit WP `modified`
 - [ ] OG-image toegevoegd aan material `generateMetadata`
 - [ ] Twitter card meta toegevoegd aan root layout en detailpagina's
 - [ ] Soft 404 gefixt: `notFound()` bij 0 resultaten op taxonomy-pagina's (pagina 1)
 - [ ] Na DNS-overzet: sitemap indienen in Google Search Console
 - [ ] Na DNS-overzet: sitemap indienen in Bing Webmaster Tools
 - [ ] `site:materialdistrict-frontend.vercel.app` in Google — moet 0 resultaten geven
+
+**Opmerking preview-beveiliging:** Drie lagen werken samen:
+1. `vercel.json` — `X-Robots-Tag: noindex, nofollow` op HTTP-niveau voor alle `*.vercel.app` en `staging.*` domeinen (platform-native, geen Turbopack-conflict)
+2. `robots.ts` — stuurt `Disallow: /` voor dezelfde hosts als extra crawl-blokkade
+3. `isNonProductionHost()` in `src/lib/seo/host.ts` — gedeelde logica voor beide
 
 ---
 

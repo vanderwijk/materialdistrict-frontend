@@ -1038,37 +1038,32 @@ export async function getPageBySlug(slug: string): Promise<WPPageRaw | null> {
 }
 
 /**
- * Exacte story-type-tellingen uit de WP-taxonomy `story_type`.
+ * Story-type-tellingen die overeenkomen met de article-collectiefilter.
  *
- * Eén lichte call op het standaard term-endpoint: WP geeft per term een
- * `count`-veld dat het aantal GEPUBLICEERDE artikelen telt — onafhankelijk
- * van catalogusgrootte, geen sampling, geen aanname. Vervangt het
- * sampling-pad via `listArticleStoryTypeSlugs` voor de filter-counts: dat
- * pad had een cap (alleen nieuwste N artikelen) en degradeerde
- * ongecategoriseerde artikelen naar `'news'`, wat op grote catalogi met
- * deels-ongetypeerde content tot foute counts leidt.
+ * Het WP-term-endpoint (`/wp/v2/story_type`) telt alleen artikelen met een
+ * expliciete term. De plugin-filter op `?story_type=news` matcht óók
+ * artikelen zonder `story_type`-term (default = news). Daardoor wijkt de
+ * native term-`count` af — News toonde bv. 20 terwijl de filter ~3200
+ * artikelen teruggeeft.
  *
- * `hide_empty: false` is essentieel — zonder die flag verbergt WP terms
- * met `count = 0`, en dan zou de filter-sidebar incompleet zijn.
- * `_fields` houdt de response klein. `EDITORIAL_REVALIDATE` (3600s) lijnt
- * de cache uit met de overige editorial endpoints.
+ * We halen daarom per type `X-WP-Total` op via `listArticles` (`per_page=1`)
+ * — zelfde bron als de filter in de sidebar.
  */
 export async function getStoryTypeCounts(): Promise<Record<string, number>> {
-  const terms = await wpFetch<Array<{ slug: string; count: number }>>(
-    '/wp/v2/story_type',
-    {
-      revalidate: EDITORIAL_REVALIDATE,
-      params: {
-        per_page: 100,
-        hide_empty: false,
-        _fields: ['slug', 'count'],
-      },
-    },
+  const { STORY_TYPES } = await import('@/lib/config/story-types')
+
+  const pairs = await Promise.all(
+    STORY_TYPES.map(async (slug) => {
+      const { total } = await listArticles({
+        storyType: slug,
+        perPage: 1,
+        page: 1,
+      })
+      return [slug, total] as const
+    }),
   )
 
-  const counts: Record<string, number> = {}
-  for (const t of terms) counts[t.slug] = t.count
-  return counts
+  return Object.fromEntries(pairs) as Record<string, number>
 }
 
 /**

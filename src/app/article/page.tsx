@@ -116,12 +116,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const channels = await getChannelCatalog()
   const themeId = resolveChannelId(channels, channelSlug) ?? undefined
 
-  // Articles + story-type-opties + totaal-count parallel. De type-opties
-  // komen uit het lichte WP-term-endpoint (`getStoryTypeCounts`) — exacte
-  // tellingen per type, ongeacht catalogusgrootte. Het totaal-aantal komt
-  // los uit een minimale `per_page=1`-call (X-WP-Total); we tellen de
-  // type-counts NIET op, want ongecategoriseerde artikelen horen in geen
-  // type-bucket maar wel in "All".
+  // Articles + story-type-opties + totaal-count parallel. Type-counts komen
+  // uit `getStoryTypeCounts()` (X-WP-Total per story_type-filter, gelijk aan
+  // wat je ziet na klikken op News/People/…). Totaal "All" apart via
+  // `getArticleTotalCount()`.
   const [result, typeOptions, totalArticleCount] = await Promise.all([
     listArticles({
       perPage: ARTICLES_PER_PAGE,

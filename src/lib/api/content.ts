@@ -826,18 +826,15 @@ export interface StoryTypeOption {
 /**
  * Bouwt de story-type-filteropties voor het `/article` overzicht.
  *
- * Sinds sessie 6b is `story_type` een echte WP-taxonomy en geeft het
- * standaard term-endpoint per term een `count`-veld met het aantal
- * gepubliceerde artikelen — onafhankelijk van catalogusgrootte. We
- * leunen daarop via `getStoryTypeCounts()`: één lichte call, exacte
- * tellingen, geen sampling.
+ * Sinds sessie 6b is `story_type` een echte WP-taxonomy. De sidebar-
+ * tellingen komen uit `getStoryTypeCounts()`: per type een lichte
+ * `listArticles`-call (`per_page=1`) zodat de count overeenkomt met de
+ * plugin-filter (news telt ook ongetypeerde artikelen mee).
  *
- * Belangrijke regel — géén fallback-naar-`'news'` voor onbekende slugs.
- * Een artikel zonder `story_type`-term hoort in geen enkele filter-bucket
- * thuis (zou anders News kunstmatig opblazen met ongecategoriseerde
- * content). De mapper-default `'news'` in `toStoryType()` blijft staan —
- * die gaat over de *weergave* van één artikel, niet over de filter-
- * tellingen. Dat zijn twee aparte vragen.
+ * Belangrijke regel — géén fallback-naar-`'news'` voor onbekende slugs in
+ * de optie-set. De mapper-default `'news'` in `toStoryType()` gaat over de
+ * *weergave* van één artikel, niet over welke slug in de vaste optie-lijst
+ * staat.
  *
  * De optie-SET is vast (de vijf canonieke types uit `STORY_TYPE_META`);
  * we mappen elke type op `counts[slug] ?? 0` zodat een nog-niet-

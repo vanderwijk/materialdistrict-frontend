@@ -185,6 +185,21 @@ WC_CONSUMER_SECRET=cs_...
 
 ---
 
+## WordPress data model
+
+Classificatie en filtering (channels, story types, material categories, event
+types, product tags, …) lopen via **WordPress taxonomies**, niet via `post_meta`.
+Taxonomy-queries (`tax_query`) zijn op grote catalogi veel performanter dan
+`meta_query`.
+
+Zie `materialdistrict-plugin/docs/taxonomy-over-post-meta.md`.
+
+REST-responses mogen afgeleide taxonomy-velden onder `meta.*` tonen (bv.
+`meta._story_type`) — dat is geen meta-opslag, maar een convenience voor de
+frontend-mapper.
+
+---
+
 ## Metadata & SEO
 
 ```tsx
