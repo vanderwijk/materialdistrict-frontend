@@ -9,12 +9,14 @@ import type { UserProfile } from '@/types/dashboard'
 export interface CheckoutPrefill {
   email: string
   billing: StoreAddress
+  vatNumber?: string
 }
 
 export function profileToCheckoutPrefill(profile: UserProfile): CheckoutPrefill {
   const country = resolveCountryCode(profile.country) || 'NL'
   return {
     email: profile.email,
+    vatNumber: profile.vatNumber || undefined,
     billing: {
       first_name: profile.firstName,
       last_name: profile.lastName,
