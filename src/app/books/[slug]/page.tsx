@@ -1,34 +1,33 @@
 /**
- * `/books/[slug]` — book-detailpagina.
+ * `/books/[slug]` — book-detailpagina (Designerbooks-layout).
  *
- * Stap 3 (books-vertical). Server Component. Haalt het boek op (incl. cover) en
- * — uit één datum-gesorteerde scan — "More books" (laatste, excl. huidige).
- * Rendert de F2 detail-shell, identiek aan /talks en /articles:
+ * Server Component. Flow van boven naar onder:
+ *   header        — breadcrumb + titel
+ *   hero          — cover (links) · koop-kolom (korte beschrijving + BookBuyCard)
+ *   body          — volledige beschrijving
+ *   spreads       — binnenwerk-foto's uit de product-gallery (images[1..])
+ *   specs         — "Additional information"-tabel (attributes)
+ *   more books    — BookCard-grid
  *
- *   pub-wrap > pub-layout
- *     detail-back-row   (← Books, op paper boven het vel)
- *     detail-sheet      (DetailHeader + main: cover · about)
- *     BookDetailSidebar (koop-card · book details, op paper)
- *     detail-related-row (More books)
+ * Cover = images[0]; spreads = de gallery — géén afbeeldingen in tekstvakken.
+ * Auteur/format/jaar/pagina's komen uit attributes; ontbreken ze nog, dan
+ * worden die rijen simpelweg overgeslagen (placeholder-bestendig).
  *
- * Prijs/Insider: de koop-card in de sidebar is auth-aware (zie BookBuyCard).
- * Add-to-cart via Store API-cart; checkout volgt in een latere fase.
- *
- * JSON-LD: Book + BreadcrumbList. notFound() bij onbekende slug.
+ * Koop-kolom: BookBuyCard is auth-aware (Insider-prijs als weergave). Kopen
+ * loopt via add-to-cart → /cart → /checkout.
  */
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { DetailHeader } from '@/components/layout/DetailHeader'
-import { ContentCard } from '@/components/ui'
+import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { getBook, listBooks } from '@/lib/api/books'
 import { JsonLd, buildBook, buildBreadcrumbList } from '@/lib/seo'
 import { MaterialBody } from '@/app/materials/[slug]/_components/MaterialBody'
-import { formatEur } from '@/lib/utils/format-price'
-import { BookDetailSidebar } from './_components/BookDetailSidebar'
+import { BookCard } from '../_components/BookCard'
+import { BookBuyCard } from './_components/BookBuyCard'
 
 const MORE_SCAN = 24
-const MORE_BOOKS = 4
+const MORE_BOOKS = 6
 
 interface BookDetailPageProps {
   params: Promise<{ slug: string }>
@@ -85,14 +84,18 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   if (!book) notFound()
 
   const more = await getMoreBooks(slug)
-  const bodyHtml = book.contentHtml || book.excerptHtml
 
-  const metaText = [
-    book.author,
-    book.publicationYear ? String(book.publicationYear) : null,
-  ]
-    .filter(Boolean)
-    .join(' · ')
+  const specRows = [
+    book.author && { label: 'Authors', value: book.author },
+    book.format && { label: 'Format', value: book.format },
+    book.isbn && { label: 'ISBN', value: book.isbn },
+    book.pages && { label: 'Number of pages', value: String(book.pages) },
+    book.publicationYear && {
+      label: 'Year of Publishing',
+      value: String(book.publicationYear),
+    },
+    book.publisher && { label: 'Publisher', value: book.publisher },
+  ].filter(Boolean) as Array<{ label: string; value: string }>
 
   const bookSchema = buildBook({
     slug: book.slug,
@@ -108,72 +111,81 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
 
   return (
     <>
-      <article className="pub-wrap">
-        <div className="pub-layout">
-          <div className="detail-back-row">
-            <a href="/books" className="article-detail-back">
-              ← Books
-            </a>
-          </div>
+      <article className="book-detail ov-wrap-single">
+        <header className="book-detail-head">
+          <Breadcrumb
+            items={[{ label: 'Books', href: '/books' }, { label: book.title }]}
+          />
+          <h1 className="t-display-lg book-detail-title">{book.title}</h1>
+        </header>
 
-          <div className="detail-sheet">
-            <DetailHeader
-              tags={[{ type: 'content', contentType: 'book' }]}
-              title={book.title}
-              meta={metaText || undefined}
-            />
-
-            {/* Main column */}
-            <div>
-              {book.cover && (
-                <div className="book-detail-cover">
-                  <img
-                    src={book.cover.url}
-                    alt={book.cover.alt || book.title}
-                  />
-                </div>
-              )}
-
-              {bodyHtml && (
-                <section className="book-about">
-                  <div className="book-about-eyebrow">About this book</div>
-                  <MaterialBody html={bodyHtml} />
-                </section>
-              )}
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <BookDetailSidebar book={book} />
-
-          <div className="detail-related-row">
-            {more.length > 0 && (
-              <section className="book-more" aria-label="More books">
-                <h2 className="book-more-head t-display-md">More books</h2>
-                <div className="ov-grid-3">
-                  {more.map((b) => (
-                    <ContentCard
-                      key={b.id}
-                      href={`/books/${b.slug}`}
-                      contentType="book"
-                      showTypeBadge={false}
-                      thumbRatio="portrait"
-                      thumbSrc={b.cover?.thumbnailUrl ?? b.cover?.url}
-                      thumbAlt={b.cover?.alt || b.title}
-                      eyebrow={b.author ?? undefined}
-                      title={b.title}
-                      meta={
-                        b.inStock
-                          ? formatEur(b.price)
-                          : [formatEur(b.price), 'Sold out']
-                      }
-                    />
-                  ))}
-                </div>
-              </section>
+        <div className="book-detail-hero">
+          <div className="book-detail-hero-cover">
+            {book.cover && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={book.cover.url} alt={book.cover.alt || book.title} />
             )}
           </div>
+
+          <div className="book-detail-hero-buy">
+            {book.excerptHtml && (
+              <div className="book-detail-shortdesc">
+                <MaterialBody html={book.excerptHtml} />
+              </div>
+            )}
+            <BookBuyCard
+              title={book.title}
+              productId={book.wcProductId ?? book.id}
+              price={book.price}
+              inStock={book.inStock}
+            />
+          </div>
         </div>
+
+        {book.contentHtml && (
+          <section className="book-detail-body">
+            <MaterialBody html={book.contentHtml} />
+          </section>
+        )}
+
+        {book.gallery.length > 0 && (
+          <section className="book-detail-spreads" aria-label="Inside this book">
+            {book.gallery.map((img, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={`${img.url}-${i}`}
+                src={img.url}
+                alt={img.alt || `${book.title} — spread ${i + 1}`}
+                loading="lazy"
+              />
+            ))}
+          </section>
+        )}
+
+        {specRows.length > 0 && (
+          <section className="book-detail-specs">
+            <h2 className="book-detail-specs-head">Additional information</h2>
+            <dl className="book-spec-table">
+              {specRows.map((row) => (
+                <div key={row.label} className="book-spec-row">
+                  <dt>{row.label}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {more.length > 0 && (
+          <section className="book-more" aria-label="More books">
+            <h2 className="book-more-head t-display-md">More books</h2>
+            <div className="book-grid">
+              {more.map((b) => (
+                <BookCard key={b.id} book={b} />
+              ))}
+            </div>
+          </section>
+        )}
       </article>
 
       <JsonLd

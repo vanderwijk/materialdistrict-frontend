@@ -131,10 +131,48 @@ function mapCover(images: WCStoreImage[] | undefined): BookCover | null {
   }
 }
 
-/** Publisher uit het `pa_publisher`-attribuut (eerste term). */
-function pickPublisher(attributes: WCStoreAttribute[] | undefined): string | null {
-  const attr = attributes?.find((a) => a.taxonomy === 'pa_publisher')
-  return nullableString(attr?.terms?.[0]?.name)
+/** Binnenwerk-spreads uit de product-gallery: alle images ná de cover. */
+function mapGallery(images: WCStoreImage[] | undefined): BookCover[] {
+  if (!images || images.length <= 1) return []
+  return images
+    .slice(1)
+    .filter((img) => img.src)
+    .map((img) => ({
+      url: img.src,
+      thumbnailUrl: img.thumbnail || null,
+      alt: img.alt || img.name || '',
+    }))
+}
+
+/**
+ * Attribuut-waarde op naam (case-insensitive deelmatch op het label), robuust
+ * tegen slug-varianten (pa_author vs pa_authors enz.). `joinAll` voegt meerdere
+ * termen samen (bv. meerdere auteurs). Geeft `null` als het attribuut ontbreekt
+ * — placeholders blijven dus leeg tot Johan de attributes aanmaakt.
+ */
+function pickAttr(
+  attributes: WCStoreAttribute[] | undefined,
+  keyword: string,
+  joinAll = false,
+): string | null {
+  const attr = attributes?.find((a) =>
+    (a.name ?? '').toLowerCase().includes(keyword),
+  )
+  const terms = attr?.terms ?? []
+  if (terms.length === 0) return null
+  return joinAll
+    ? nullableString(terms.map((t) => t.name).join(', '))
+    : nullableString(terms[0]?.name)
+}
+
+/** Eerste getal uit een attribuut-waarde (bv. "224" → 224). */
+function pickInt(
+  attributes: WCStoreAttribute[] | undefined,
+  keyword: string,
+): number | null {
+  const raw = pickAttr(attributes, keyword)
+  const m = raw?.match(/\d+/)
+  return m ? Number(m[0]) : null
 }
 
 // --------------------------------------------------------------------
@@ -178,9 +216,9 @@ export function mapBookListItem(p: WCStoreProduct): BookListItem {
     title: p.name,
     excerptHtml: p.short_description ?? '',
     cover: mapCover(p.images),
-    // Niet in de Store API; later evt. als product attribute.
-    author: null,
-    publicationYear: null,
+    author: pickAttr(p.attributes, 'author', true),
+    publisher: pickAttr(p.attributes, 'publisher'),
+    publicationYear: pickInt(p.attributes, 'year'),
     price: priceToEuros(p.prices),
     inStock: p.is_in_stock ?? true,
     // Store API levert geen date_created; sorteren gebeurt server-side.
@@ -197,11 +235,14 @@ export function mapBook(p: WCStoreProduct): Book {
     contentHtml: p.description ?? '',
     excerptHtml: p.short_description ?? '',
     cover: mapCover(p.images),
-    author: null,
-    isbn: nullableString(p.sku),
-    publisher: pickPublisher(p.attributes),
-    pages: null,
-    publicationYear: null,
+    gallery: mapGallery(p.images),
+    author: pickAttr(p.attributes, 'author', true),
+    format: pickAttr(p.attributes, 'format'),
+    // ISBN: eerst het ISBN-attribuut, anders de SKU (huidige MD-titels).
+    isbn: pickAttr(p.attributes, 'isbn') ?? nullableString(p.sku),
+    publisher: pickAttr(p.attributes, 'publisher'),
+    pages: pickInt(p.attributes, 'page'),
+    publicationYear: pickInt(p.attributes, 'year'),
     wcProductId: p.id,
     // Kopen gaat via Add-to-cart (stap 2). Geen permalink user-facing.
     buyUrl: null,

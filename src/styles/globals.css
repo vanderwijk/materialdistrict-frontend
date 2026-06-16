@@ -14242,3 +14242,364 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   color: #fff;
   font-weight: 700;
 }
+
+/* ============================================================
+   §BOOKS-redesign — additief blok (catalog-tegels + detail-layout)
+   Append ná het bestaande §BOOKS-blok in globals.css.
+   ============================================================ */
+
+/* --- Catalog: compacte boek-grid (boek-verhouding, meer per rij) --- */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 30px 22px;
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.book-card-cover {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: 0 2px 12px rgba(22, 32, 43, 0.07);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.book-card-link:hover .book-card-cover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(22, 32, 43, 0.12);
+}
+
+.book-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.book-card-cover-empty {
+  width: 100%;
+  height: 100%;
+  background: var(--paper);
+}
+
+.book-card-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.book-card-title {
+  margin: 12px 0 2px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.book-card-meta {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+
+.book-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.book-card-price {
+  font-size: 13.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.book-card-add {
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  border-radius: var(--radius);
+  padding: 5px 13px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.book-card-add:hover:not(:disabled) {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.book-card-add:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.book-card-soldout {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* --- Detailpagina: Designerbooks-flow --- */
+.book-detail {
+  padding-top: 8px;
+}
+
+.book-detail-head {
+  margin-bottom: 28px;
+}
+
+.book-detail-title {
+  margin: 10px 0 0;
+}
+
+/* Hero: cover links · koop-kolom rechts */
+.book-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(240px, 320px) 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+.book-detail-hero-cover img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 26px rgba(22, 32, 43, 0.14);
+  display: block;
+}
+
+.book-detail-hero-buy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.book-detail-shortdesc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* Volledige beschrijving */
+.book-detail-body {
+  max-width: 720px;
+  margin: 0 0 44px;
+}
+
+/* Binnenwerk-spreads (uit de product-gallery) */
+.book-detail-spreads {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 48px;
+}
+
+.book-detail-spreads img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  display: block;
+}
+
+/* Additional information-tabel */
+.book-detail-specs {
+  max-width: 720px;
+  margin: 0 0 52px;
+}
+
+.book-detail-specs-head {
+  margin: 0 0 14px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.book-spec-table {
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+.book-spec-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 16px;
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.book-spec-row dt {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.book-spec-row dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+/* More books */
+.book-more {
+  margin-top: 8px;
+}
+
+.book-more-head {
+  margin: 0 0 22px;
+}
+
+@media (max-width: 768px) {
+  .book-detail-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .book-detail-hero-cover {
+    max-width: 280px;
+  }
+  .book-spec-row {
+    grid-template-columns: 130px 1fr;
+  }
+}
+
+
+/* =====================================================================
+   § STOREFRONT-FEEDBACK — overzichtskaart-prijzen en mand/checkout
+   ---------------------------------------------------------------------
+   Additief blok. Plak onderaan globals.css (na het books-redesign-blok).
+   De regels zijn zelfstandig (volledige declaraties), dus ze werken óók
+   als het redesign-blok nog niet is toegepast; staat het er wel, dan
+   winnen deze door volgorde.
+
+   Wijzigingen:
+   - BookCard: prominentere prijs, uitgever met meer gewicht, Insider-prijs
+     zichtbaar (uitgelicht voor Insiders, als hint voor de rest).
+   - Mand/checkout: free-shipping-melding, prullenbak-knop bij aantal 1,
+     btw-notitie onder het totaal.
+   ===================================================================== */
+
+/* --- Overzichtskaart: prijs en uitgever --- */
+.book-card-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.book-card-meta {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.book-card-author {
+  color: var(--text-muted);
+}
+
+.book-card-sep {
+  color: var(--text-muted);
+}
+
+.book-card-publisher {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.book-card-prices {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.book-card-price {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.book-card-price-was {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  font-variant-numeric: tabular-nums;
+}
+
+.book-card-insider {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--green-mid);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Mand en checkout: free-shipping-melding --- */
+.cart-freeship {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--green-pale);
+  color: var(--green);
+  border: 1px solid var(--green-light);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.cart-freeship strong {
+  font-weight: 700;
+}
+
+/* --- Mand: min-knop wordt prullenbak bij aantal 1 --- */
+.cart-qty button.cart-qty-trash {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.cart-qty button.cart-qty-trash:hover:not(:disabled) {
+  color: #c0392b;
+}
+
+.cart-qty button.cart-qty-trash svg {
+  display: block;
+}
+
+/* --- Mand en checkout: btw-notitie onder het totaal --- */
+.cart-totals-vat {
+  margin: 6px 0 0;
+  text-align: right;
+  font-size: 11.5px;
+  color: var(--text-muted);
+}

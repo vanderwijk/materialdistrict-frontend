@@ -3,24 +3,50 @@
 /**
  * CartView — winkelmand-UI (client).
  *
- * Rendert de Store-API-mand uit `useCart`: regelitems met aantal/verwijderen,
- * coupon, en een ordersamenvatting. Alle bedragen komen rechtstreeks uit de
- * response (minor-units → euro's); we rekenen niets zelf na — ook de btw en
- * verzendkosten zijn van WooCommerce.
+ * Wijzigingen t.o.v. de eerste versie:
+ *  - Eén prijs per regel: het regeltotaal **incl. btw** (geen dubbele incl/excl).
+ *  - Bij aantal 1 wordt de min-knop een prullenbak (verwijdert het item); de
+ *    losse "Remove"-knop is daarmee weg.
+ *  - Verzendkosten: "Calculated at checkout" zolang er geen tarief gekozen is
+ *    (de "€0,00"-weergave was misleidend — een leeg/nul-tarief is níét gratis).
+ *  - Ordersamenvatting incl. btw, met de btw als notitie ("incl. €X VAT").
+ *  - "Spend €X more for free shipping"-melding op basis van het incl-btw
+ *    goederen-subtotaal (drempel uit `config/shipping-thresholds`).
  *
- * De checkout-knop staat uit tot de checkout-fase (payments). De Insider-
- * korting is NIET hier toegepast: de mand toont wat WooCommerce daadwerkelijk
- * rekent. (Zie MANIFEST: de member-korting moet server-side in WC komen.)
+ * Bedragen komen uit de Store-API-response (minor-units → euro's). De Insider-
+ * korting zit al in `prices.price` (server-side dynamic pricing via de JWT-
+ * proxy); we rekenen niets na — behalve het incl-btw-regeltotaal (eenheids-
+ * prijs incl. btw × aantal) voor de weergave.
  */
 
 import { useState } from 'react'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber } from '@/lib/api/cart'
 import { formatEur } from '@/lib/utils/format-price'
+import { freeShippingRemaining } from '@/lib/config/shipping-thresholds'
 import { Button, EmptyState } from '@/components/ui'
 
 function slugFromPermalink(permalink: string): string {
   return permalink.replace(/\/+$/, '').split('/').pop() ?? ''
+}
+
+function TrashIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      aria-hidden="true"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2m2 0v14a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6" />
+      <path d="M10 11v6M14 11v6" />
+    </svg>
+  )
 }
 
 export function CartView() {
@@ -57,9 +83,27 @@ export function CartView() {
   }
 
   const minor = cart.totals.currency_minor_unit ?? 2
+  const moneyN = (value: string | undefined, unit = minor) =>
+    storeMinorToNumber(value, unit)
   const money = (value: string | undefined, unit = minor) =>
-    formatEur(storeMinorToNumber(value, unit))
-  const discount = storeMinorToNumber(cart.totals.total_discount, minor)
+    formatEur(moneyN(value, unit))
+  const discount = moneyN(cart.totals.total_discount)
+
+  // Incl-btw weergave.
+  const subtotalIncl =
+    moneyN(cart.totals.total_items) + moneyN(cart.totals.total_items_tax)
+  const shippingIncl =
+    moneyN(cart.totals.total_shipping) + moneyN(cart.totals.total_shipping_tax)
+  const totalTax = moneyN(cart.totals.total_tax)
+  const shippingSelected =
+    cart.shipping_rates?.some((pkg) =>
+      pkg.shipping_rates?.some((r) => r.selected),
+    ) ?? false
+
+  // Free-shipping-melding: nog geen adres in de mand → NL-drempel (primaire markt).
+  const freeShipRemaining = cart.needs_shipping
+    ? freeShippingRemaining('NL', subtotalIncl)
+    : 0
 
   async function handleApplyCoupon() {
     const code = couponInput.trim()
@@ -79,15 +123,28 @@ export function CartView() {
   return (
     <div className="cart-layout">
       <div className="cart-items">
+        {freeShipRemaining > 0 && (
+          <div className="cart-freeship" role="status">
+            Spend <strong>{formatEur(freeShipRemaining)}</strong> more for free
+            shipping!
+          </div>
+        )}
+
         {cart.items.map((item) => {
           const img = item.images?.[0]
           const slug = slugFromPermalink(item.permalink)
+          const lineUnit = item.prices.currency_minor_unit ?? minor
+          const lineIncl = moneyN(item.prices.price, lineUnit) * item.quantity
+          const isLast = item.quantity <= 1
           return (
             <div key={item.key} className="cart-item">
               <div className="cart-item-thumb">
                 {img ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={img.thumbnail ?? img.src} alt={img.alt || item.name} />
+                  <img
+                    src={img.thumbnail ?? img.src}
+                    alt={img.alt || item.name}
+                  />
                 ) : null}
               </div>
 
@@ -95,19 +152,21 @@ export function CartView() {
                 <a className="cart-item-title" href={`/books/${slug}`}>
                   {item.name}
                 </a>
-                <div className="cart-item-unit">
-                  {money(item.prices.price, item.prices.currency_minor_unit)}
-                </div>
 
                 <div className="cart-item-controls">
                   <div className="cart-qty">
                     <button
                       type="button"
-                      onClick={() => updateItem(item.key, Math.max(1, item.quantity - 1))}
-                      disabled={loading || item.quantity <= 1}
-                      aria-label="Decrease quantity"
+                      className={isLast ? 'cart-qty-trash' : undefined}
+                      onClick={() =>
+                        isLast
+                          ? removeItem(item.key)
+                          : updateItem(item.key, item.quantity - 1)
+                      }
+                      disabled={loading}
+                      aria-label={isLast ? 'Remove item' : 'Decrease quantity'}
                     >
-                      −
+                      {isLast ? <TrashIcon /> : '−'}
                     </button>
                     <span className="cart-qty-value">{item.quantity}</span>
                     <button
@@ -119,20 +178,10 @@ export function CartView() {
                       +
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    className="cart-item-remove"
-                    onClick={() => removeItem(item.key)}
-                    disabled={loading}
-                  >
-                    Remove
-                  </button>
                 </div>
               </div>
 
-              <div className="cart-item-linetotal">
-                {money(item.totals.line_total, item.totals.currency_minor_unit)}
-              </div>
+              <div className="cart-item-linetotal">{formatEur(lineIncl)}</div>
             </div>
           )
         })}
@@ -184,7 +233,7 @@ export function CartView() {
         <dl className="cart-totals">
           <div className="cart-totals-row">
             <dt>Subtotal</dt>
-            <dd>{money(cart.totals.total_items)}</dd>
+            <dd>{formatEur(subtotalIncl)}</dd>
           </div>
           {discount > 0 && (
             <div className="cart-totals-row">
@@ -196,20 +245,19 @@ export function CartView() {
             <div className="cart-totals-row">
               <dt>Shipping</dt>
               <dd>
-                {cart.totals.total_shipping
-                  ? money(cart.totals.total_shipping)
+                {shippingSelected
+                  ? formatEur(shippingIncl)
                   : 'Calculated at checkout'}
               </dd>
             </div>
           )}
-          <div className="cart-totals-row">
-            <dt>Tax</dt>
-            <dd>{money(cart.totals.total_tax)}</dd>
-          </div>
           <div className="cart-totals-row cart-totals-grand">
             <dt>Total</dt>
             <dd>{money(cart.totals.total_price)}</dd>
           </div>
+          {totalTax > 0 && (
+            <p className="cart-totals-vat">incl. {formatEur(totalTax)} VAT</p>
+          )}
         </dl>
 
         <a className="cart-checkout-btn" href="/checkout">

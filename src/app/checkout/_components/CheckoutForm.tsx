@@ -6,8 +6,10 @@
  *
  * Stappen:
  *  1. Contact (e-mail) + factuuradres (+ optioneel apart verzendadres).
- *  2. "Calculate shipping" → `update-customer` → verzendtarieven → keuze →
- *     `select-shipping-rate`. Totalen komen uit de mand-response.
+ *  2. Verzendkosten worden AUTOMATISCH berekend zodra land + postcode bekend
+ *     zijn (gedebounced `update-customer` → verzendtarieven). Het goedkoopste
+ *     tarief wordt vanzelf geselecteerd; de bezoeker kan wisselen bij meerdere.
+ *     Totalen komen uit de mand-response.
  *  3. Betaling: Stripe-kaart (CardElement) of iDEAL (Payment Element + redirect).
  *  4. `POST /checkout`. Bij `redirect_url` (3DS/iDEAL) → doorsturen; anders bij
  *     success/pending → /order-confirmation/{id}?key=…
@@ -16,7 +18,7 @@
  * PaymentMethod uit Stripe's Payment Element (bankkeuze).
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   CardElement,
@@ -44,6 +46,7 @@ import type { CheckoutPrefill } from '@/lib/checkout/profile-prefill'
 import { resolveStripeCheckoutRedirect } from '@/lib/stripe/confirm-redirect'
 import { getStripe } from '@/lib/stripe/client'
 import { formatEur } from '@/lib/utils/format-price'
+import { freeShippingRemaining } from '@/lib/config/shipping-thresholds'
 import { AddressFields } from './AddressFields'
 import { CheckoutSignInPanel } from './CheckoutSignInPanel'
 
@@ -155,6 +158,13 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const rates = cart?.shipping_rates?.[0]?.shipping_rates ?? []
   const selectedRate = rates.find((r) => r.selected)
 
+  // Auto-shipping: adres compleet genoeg om tarieven te berekenen?
+  const shipComplete = Boolean(shipAddr.country && shipAddr.postcode.trim())
+  const shipKey = `${shipAddr.country}|${normalizePostcode(shipAddr.country, shipAddr.postcode)}|${shipAddr.city}|${shipAddr.address_1}`
+  const ratesKey = rates.map((r) => r.rate_id).join('|')
+  const selectedRateId = selectedRate?.rate_id ?? ''
+  const lastShipKeyRef = useRef('')
+
   const availablePaymentMethods = useMemo(
     () => (cart?.payment_methods ?? []).filter(isSupportedCheckoutPaymentMethod),
     [cart?.payment_methods],
@@ -207,6 +217,38 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     return () => window.clearTimeout(timer)
   }, [email, isLoggedIn])
 
+  // Bereken verzendtarieven automatisch zodra land + postcode ingevuld zijn
+  // (gedebounced). shipKey is de stabiele trigger; ref voorkomt herhaling.
+  useEffect(() => {
+    if (!cart?.needs_shipping || !shipComplete) return
+    if (shipKey === lastShipKeyRef.current) return
+    const handle = window.setTimeout(() => {
+      lastShipKeyRef.current = shipKey
+      setError(null)
+      setCustomer(withNormalizedPostcode(shipAddr), withNormalizedPostcode(billing))
+        .then(() => setRatesLoaded(true))
+        .catch((err) =>
+          setError(err instanceof Error ? err.message : 'Could not calculate shipping.'),
+        )
+    }, 600)
+    return () => window.clearTimeout(handle)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shipKey, shipComplete, cart?.needs_shipping])
+
+  // Selecteer automatisch het goedkoopste tarief zodra de tarieven binnen zijn
+  // en er nog niets gekozen is. De loading-guard voorkomt dubbele calls.
+  useEffect(() => {
+    if (!cart?.needs_shipping || loading) return
+    if (rates.length === 0 || selectedRateId) return
+    const cheapest = [...rates].sort((a, b) => Number(a.price) - Number(b.price))[0]
+    if (cheapest) {
+      void selectShipping(cheapest.rate_id).catch(() =>
+        setError('Could not select that shipping method.'),
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ratesKey, selectedRateId, loading, cart?.needs_shipping])
+
   async function handleCheckoutSignedIn(data: { email: string; billing: StoreAddress }) {
     setEmail(data.email)
     setBilling(data.billing)
@@ -216,16 +258,6 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
       await refresh()
     } catch {
       /* cart may still render from prior state */
-    }
-  }
-
-  async function handleCalculateShipping() {
-    setError(null)
-    try {
-      await setCustomer(withNormalizedPostcode(shipAddr), withNormalizedPostcode(billing))
-      setRatesLoaded(true)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not calculate shipping.')
     }
   }
 
@@ -434,9 +466,26 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     )
   }
 
+  const moneyN = (v?: string, unit = minor) => storeMinorToNumber(v, unit)
+  const subtotalIncl =
+    moneyN(cart.totals.total_items) + moneyN(cart.totals.total_items_tax)
+  const shippingIncl =
+    moneyN(cart.totals.total_shipping) + moneyN(cart.totals.total_shipping_tax)
+  const summaryTax = moneyN(cart.totals.total_tax)
+  const freeShipRemaining = cart.needs_shipping
+    ? freeShippingRemaining(billing.country, subtotalIncl)
+    : 0
+
   return (
     <div className="checkout-layout">
       <div className="checkout-main">
+        {freeShipRemaining > 0 && (
+          <div className="cart-freeship" role="status">
+            Spend <strong>{formatEur(freeShipRemaining)}</strong> more for free
+            shipping!
+          </div>
+        )}
+
         {/* Contact */}
         <section className="checkout-section">
           <h2 className="checkout-section-head">Contact</h2>
@@ -482,22 +531,20 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           </section>
         )}
 
-        {/* Shipping method */}
+        {/* Shipping method — automatisch berekend op land + postcode */}
         {cart.needs_shipping && (
           <section className="checkout-section">
             <h2 className="checkout-section-head">Shipping method</h2>
-            <button
-              type="button"
-              className="checkout-secondary-btn"
-              onClick={handleCalculateShipping}
-              disabled={loading}
-            >
-              {loading ? 'Calculating…' : 'Calculate shipping'}
-            </button>
 
-            {ratesLoaded && rates.length === 0 && (
+            {!shipComplete ? (
+              <p className="checkout-hint">
+                Enter your address to calculate shipping.
+              </p>
+            ) : loading && rates.length === 0 ? (
+              <p className="checkout-hint">Calculating shipping…</p>
+            ) : ratesLoaded && rates.length === 0 ? (
               <p className="checkout-hint">No shipping rates for this address.</p>
-            )}
+            ) : null}
 
             {rates.length > 0 && (
               <div className="checkout-rates">
@@ -595,7 +642,10 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
               <span className="checkout-summary-qty">{item.quantity}×</span>
               <span className="checkout-summary-name">{item.name}</span>
               <span className="checkout-summary-amount">
-                {money(item.totals.line_total)}
+                {formatEur(
+                  moneyN(item.prices.price, item.prices.currency_minor_unit) *
+                    item.quantity,
+                )}
               </span>
             </div>
           ))}
@@ -604,7 +654,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         <dl className="cart-totals">
           <div className="cart-totals-row">
             <dt>Subtotal</dt>
-            <dd>{money(cart.totals.total_items)}</dd>
+            <dd>{formatEur(subtotalIncl)}</dd>
           </div>
           {storeMinorToNumber(cart.totals.total_discount, minor) > 0 && (
             <div className="cart-totals-row">
@@ -616,18 +666,17 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
             <div className="cart-totals-row">
               <dt>Shipping</dt>
               <dd>
-                {selectedRate ? money(cart.totals.total_shipping) : '—'}
+                {selectedRate ? formatEur(shippingIncl) : '—'}
               </dd>
             </div>
           )}
-          <div className="cart-totals-row">
-            <dt>Tax</dt>
-            <dd>{money(cart.totals.total_tax)}</dd>
-          </div>
           <div className="cart-totals-row cart-totals-grand">
             <dt>Total</dt>
             <dd>{money(cart.totals.total_price)}</dd>
           </div>
+          {summaryTax > 0 && (
+            <p className="cart-totals-vat">incl. {formatEur(summaryTax)} VAT</p>
+          )}
         </dl>
       </aside>
     </div>

@@ -2,12 +2,13 @@
  * Books overzicht — loading skeleton.
  *
  * Gerendered tijdens de eerste server-render van `/books` en bij
- * hard-refresh/deeplink. Single-column: page-header + portrait card-grid.
+ * hard-refresh/deeplink. Compacte book-grid: page-header + boek-tegels
+ * (cover in 2:3 + titel/auteur/prijs).
  */
 
 import { Skeleton } from '@/components/ui'
 
-const SKELETON_CARDS = Array.from({ length: 8 }, (_, i) => i)
+const SKELETON_CARDS = Array.from({ length: 12 }, (_, i) => i)
 
 export default function BooksLoading() {
   return (
@@ -18,22 +19,24 @@ export default function BooksLoading() {
       </header>
 
       <div className="ov-wrap-single" aria-busy="true" aria-live="polite">
-        <div className="ov-grid-3">
+        <div className="book-grid">
           {SKELETON_CARDS.map((i) => (
-            <div
-              key={i}
-              style={{
-                background: 'var(--surface)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-md)',
-                overflow: 'hidden',
-              }}
-            >
-              <Skeleton width="100%" height="240px" />
-              <div style={{ padding: '14px 16px 16px' }}>
-                <Skeleton width="40%" />
-                <Skeleton variant="title" width="80%" />
-                <Skeleton width="30%" />
+            <div key={i}>
+              <div
+                style={{
+                  aspectRatio: '2 / 3',
+                  borderRadius: 'var(--radius)',
+                  overflow: 'hidden',
+                }}
+              >
+                <Skeleton width="100%" height="100%" />
+              </div>
+              <div style={{ marginTop: '12px' }}>
+                <Skeleton variant="title" width="85%" />
+                <Skeleton width="55%" />
+                <div style={{ marginTop: '8px' }}>
+                  <Skeleton width="35%" />
+                </div>
               </div>
             </div>
           ))}

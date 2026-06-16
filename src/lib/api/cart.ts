@@ -168,9 +168,13 @@ export interface StoreShippingRate {
 
 export interface StoreCartTotals extends StoreMonetary {
   total_items: string
+  /** Btw over de items (Store API). Voor incl-btw weergave van het subtotaal. */
+  total_items_tax?: string
   total_price: string
   total_tax: string
   total_shipping?: string
+  /** Btw over de verzendkosten (Store API). Voor incl-btw weergave. */
+  total_shipping_tax?: string
   total_discount?: string
 }
 

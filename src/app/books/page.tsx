@@ -4,29 +4,28 @@
  *
  * Stap 2 (books-vertical). Server Component. Leest searchParams (q, sort, page),
  * haalt boeken op via `listBooks` en rendert de overzichts-shell rond een
- * `ContentCard`-grid (portrait-covers). Volgt dezelfde page-header en grid als
+ * compacte `BookCard`-grid (boek-verhouding 2:3, met Add-to-cart). Zelfde
  * /talks en /articles (design-system §6.1 / §F2.3), maar met een lichte eigen
  * toolbar i.p.v. de ChannelBar: books heeft (nog) geen channels/taxonomie om op
  * te filteren — die zijn geparkeerd tot Johan de taxonomie bevestigt.
  *
- * Prijs: cards tonen de reguliere prijs (`formatEur`). De Insider-prijs is een
+ * Prijs: cards tonen de reguliere prijs. De Insider-prijs is een
  * UI-afleiding via `getBookPrice()` en krijgt prominentie op de detailpagina
  * (stap 3), niet op de cards.
  *
  * URL-structuur:
  *   /books?q=biobased&sort=title&page=2
  *
- * Catalogus via WooCommerce Store API (`/wc/store/v1/products`, server-side).
- * Winkelmand: Store API-cart via `/api/store-cart` (JWT-proxy).
+ * Draait nu op mock (`BOOKS_LIVE !== 'true'`); de swap naar de live endpoint is
+ * één env-variabele (zie `lib/api/books.ts`). Géén component-wijziging nodig.
  */
 
 import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
-import { Button, ContentCard, EmptyState } from '@/components/ui'
-import { ViewToggle } from '@/components/ui/ViewToggle'
+import { Button, EmptyState } from '@/components/ui'
 import { listBooks } from '@/lib/api/books'
-import { formatEur } from '@/lib/utils/format-price'
 import { JsonLd, buildBreadcrumbList } from '@/lib/seo'
+import { BookCard } from './_components/BookCard'
 import { BooksSearchInput } from './_components/BooksSearchInput'
 import { BooksSort, type BooksSortValue } from './_components/BooksSort'
 import { BooksPagination } from './_components/BooksPagination'
@@ -110,7 +109,6 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
           />
           <div className="books-toolbar-controls">
             <BooksSort value={sort} />
-            <ViewToggle />
           </div>
         </div>
 
@@ -133,29 +131,9 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
           )
         ) : (
           <>
-            <div className="ov-grid-3">
+            <div className="book-grid">
               {result.items.map((book) => (
-                <ContentCard
-                  key={book.id}
-                  href={`/books/${book.slug}`}
-                  contentType="book"
-                  showTypeBadge={false}
-                  thumbRatio="portrait"
-                  thumbSrc={book.cover?.thumbnailUrl ?? book.cover?.url}
-                  thumbAlt={book.cover?.alt || book.title}
-                  eyebrow={
-                    book.author ??
-                    (book.publicationYear
-                      ? String(book.publicationYear)
-                      : undefined)
-                  }
-                  title={book.title}
-                  meta={
-                    book.inStock
-                      ? formatEur(book.price)
-                      : [formatEur(book.price), 'Sold out']
-                  }
-                />
+                <BookCard key={book.id} book={book} />
               ))}
             </div>
 

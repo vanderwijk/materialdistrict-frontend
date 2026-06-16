@@ -43,9 +43,11 @@ export interface BookListItem {
   title: string
   excerptHtml: string
   cover: BookCover | null
-  /** ACF `author_name`; `null` als niet ingevuld. */
+  /** Auteur(s) — uit het `Authors`-attribuut (samengevoegd); `null` als afwezig. */
   author: string | null
-  /** ACF `publication_year`; `null` als niet ingevuld. */
+  /** Uitgever — uit het `Publisher`-attribuut; `null` als afwezig. */
+  publisher: string | null
+  /** Uit het `Year of Publishing`-attribuut; `null` als afwezig. */
   publicationYear: number | null
   /** Reguliere prijs in EUR (getal, twee decimalen). De Insider-prijs leidt de
    *  UI af via `getBookPrice(price, isInsider)`. */
@@ -64,7 +66,10 @@ export interface Book {
   contentHtml: string
   excerptHtml: string
   cover: BookCover | null
+  /** Binnenwerk-spreads uit de product-gallery (`images[1..]`). */
+  gallery: BookCover[]
   author: string | null
+  format: string | null
   isbn: string | null
   publisher: string | null
   pages: number | null
