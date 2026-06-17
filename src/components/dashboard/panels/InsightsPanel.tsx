@@ -74,53 +74,62 @@ export function InsightsPanel({
       {insights.length === 0 ? (
         <p className="field-helper">No reports yet.</p>
       ) : (
-        <ul className="insight-list">
+        <div className="insight-grid">
           {insights.map((report) => {
             // Echte toegang — onveranderd, bepaalt of het werkelijke bestand mag.
             const canDownload = isInsider || !report.insiderOnly
-            const thumbStyle = { '--cover': report.gradient } as CSSProperties
+            const coverStyle = { '--cover': report.gradient } as CSSProperties
+            const meta = [fmtMonthYear(report.date), `${report.pages} pages`, report.format]
+              .filter(Boolean)
+              .join(' \u00b7 ')
             return (
-              <li key={report.id} className="insight-row">
-                {report.thumbnailUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="insight-thumb" src={report.thumbnailUrl} alt="" />
-                ) : (
-                  <span className="insight-thumb" style={thumbStyle} aria-hidden="true" />
-                )}
-                <div className="insight-row-body">
-                  <Link href={report.href} className="insight-row-title">
+              <article key={report.id} className="insight-card">
+                <Link
+                  href={report.href}
+                  className="insight-card-cover"
+                  style={report.thumbnailUrl ? undefined : coverStyle}
+                  aria-hidden="true"
+                  tabIndex={-1}
+                >
+                  {report.thumbnailUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={report.thumbnailUrl} alt="" />
+                  )}
+                </Link>
+                <div className="insight-card-body">
+                  <span className="insight-card-label">Report</span>
+                  <Link href={report.href} className="insight-card-title">
                     {report.title}
                   </Link>
-                  <div className="insight-row-meta">
-                    {[fmtMonthYear(report.date), `${report.pages} pages`, report.format]
-                      .filter(Boolean)
-                      .join(' \u00b7 ')}
+                  {report.description && (
+                    <p className="insight-card-desc">{report.description}</p>
+                  )}
+                  <div className="insight-card-meta">{meta}</div>
+                  <div className="insight-card-action">
+                    {canDownload && report.hasPdf ? (
+                      // Echte Insider (of vrij rapport): echte download.
+                      <a
+                        href={`/api/dashboard/insider-insights/${report.id}/download`}
+                        className="btn btn-green btn-sm"
+                        download
+                      >
+                        <IconDownload size={15} /> Download PDF
+                      </a>
+                    ) : previewing && report.insiderOnly && report.hasPdf ? (
+                      // Preview: toon de Insider-affordance, maar route naar de
+                      // upgrade-CTA — het bestand blijft gated (server-side 403).
+                      <Link href={CTA_HREF} className="btn btn-green btn-sm">
+                        <IconDownload size={15} /> Download PDF
+                      </Link>
+                    ) : !canDownload ? (
+                      <InsiderBadge size="sm" padded>Insider only</InsiderBadge>
+                    ) : null}
                   </div>
                 </div>
-                <div className="insight-row-action">
-                  {canDownload && report.hasPdf ? (
-                    // Echte Insider (of vrij rapport): echte download.
-                    <a
-                      href={`/api/dashboard/insider-insights/${report.id}/download`}
-                      className="btn btn-outline btn-sm"
-                      download
-                    >
-                      <IconDownload size={15} /> Download PDF
-                    </a>
-                  ) : previewing && report.insiderOnly && report.hasPdf ? (
-                    // Preview: toon de Insider-affordance, maar route naar de
-                    // upgrade-CTA — het bestand blijft gated (server-side 403).
-                    <Link href={CTA_HREF} className="btn btn-outline btn-sm">
-                      <IconDownload size={15} /> Download PDF
-                    </Link>
-                  ) : !canDownload ? (
-                    <InsiderBadge size="sm" padded>Insider only</InsiderBadge>
-                  ) : null}
-                </div>
-              </li>
+              </article>
             )
           })}
-        </ul>
+        </div>
       )}
     </div>
   )

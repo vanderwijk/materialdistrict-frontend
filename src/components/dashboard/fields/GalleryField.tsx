@@ -102,7 +102,7 @@ export function GalleryField({
                 </button>
                 <button
                   type="button"
-                  className="icon-btn is-sm is-ghost"
+                  className="icon-btn is-sm is-ghost is-delete"
                   onClick={() => remove(g.id)}
                   aria-label={`Remove ${g.name}`}
                 >

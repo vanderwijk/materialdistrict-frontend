@@ -7,11 +7,12 @@ import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import {
   ApplicationPicker,
+  ChannelPicker,
   DownloadsField,
   VideoLinksField,
   GalleryField,
 } from '../fields'
-import { IconAdd, IconClose, IconCheck, IconUpload, IconDelete, IconImage } from '@/components/ui/icons'
+import { IconAdd, IconClose, IconUpload, IconDelete, IconImage } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { tierMeets } from '@/lib/dashboard/nav'
 import { canManufacturerAccess, type ManufacturerTier } from '@/lib/config/membership'
@@ -85,15 +86,6 @@ export function MaterialForm({
         : [...f.indoorOutdoor, value],
     }))
 
-  const toggleChannel = (channel: string) =>
-    setForm((f) => {
-      if (f.channels.includes(channel)) {
-        return { ...f, channels: f.channels.filter((c) => c !== channel) }
-      }
-      if (f.channels.length >= MAX_CHANNELS) return f
-      return { ...f, channels: [...f.channels, channel] }
-    })
-
   /** Upload one file via the scoped dashboard media endpoint → MaterialAsset. */
   async function uploadFile(
     file: File,
@@ -145,7 +137,33 @@ export function MaterialForm({
     return (checks.filter(Boolean).length / checks.length) * 100
   }, [form])
 
+  // Hard verplicht: naam, omschrijving, type, featured image, ten minste één
+  // indoor/outdoor en ten minste één applicatie (minimaal hoofdniveau).
+  const requiredComplete =
+    form.name.trim() !== '' &&
+    form.description.trim() !== '' &&
+    form.type !== '' &&
+    form.featuredImage !== null &&
+    form.indoorOutdoor.length > 0 &&
+    form.applications.length > 0
+
+  // Zacht: filter-eigenschappen zijn niet verplicht, maar bij leeg vragen we
+  // op opslaan om bevestiging (een materiaal zonder filters is slecht vindbaar).
+  const hasAnyProperty = useMemo(
+    () =>
+      Object.values(form.properties).some((v) =>
+        Array.isArray(v) ? v.length > 0 : String(v ?? '').trim() !== '',
+      ),
+    [form.properties],
+  )
+
   async function handleSave() {
+    if (!hasAnyProperty) {
+      const proceed = window.confirm(
+        "You haven't set any filter properties yet. Without them this material is harder to find and compare. Save anyway?",
+      )
+      if (!proceed) return
+    }
     setSaving(true)
     setSaveError(null)
     try {
@@ -204,11 +222,11 @@ export function MaterialForm({
         {saveError && <p className="form-error" role="alert">{saveError}</p>}
         <div className="material-basics-grid">
           <div className="material-basics-main">
-            <Input label="Material name" value={form.name} onChange={(e) => set('name', e.target.value)} />
-            <Textarea label="Material description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={5} />
+            <Input label="Material name" required value={form.name} onChange={(e) => set('name', e.target.value)} />
+            <Textarea label="Material description" required value={form.description} onChange={(e) => set('description', e.target.value)} rows={5} />
           </div>
           <div className="material-featured-field">
-            <span className="field-label">Featured image</span>
+            <span className="field-label">Featured image <span className="field-required" aria-hidden="true">*</span></span>
             <div className="material-featured-box">
               {form.featuredImage?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -248,6 +266,7 @@ export function MaterialForm({
         <div className="g2">
           <Select
             label="Material type"
+            required
             value={typeSelectValue}
             placeholder="Select material type"
             onChange={(e) => set('type', e.target.value)}
@@ -255,7 +274,7 @@ export function MaterialForm({
             disabled={typeOptions.length === 0}
           />
           <div className="field-group">
-            <span className="field-label">Indoor / Outdoor use</span>
+            <span className="field-label">Indoor / Outdoor use <span className="field-required" aria-hidden="true">*</span></span>
             <div className="toggle-group">
               {INDOOR_OUTDOOR.map((o) => {
                 const on = form.indoorOutdoor.includes(o.value)
@@ -276,7 +295,7 @@ export function MaterialForm({
         </div>
 
         <div className="field-block">
-          <span className="field-label">Material applications</span>
+          <span className="field-label">Material applications <span className="field-required" aria-hidden="true">*</span></span>
           <p className="field-helper">Select up to three levels: main application, sub application, and type.</p>
           <ApplicationPicker value={form.applications} onChange={(next) => set('applications', next)} />
         </div>
@@ -376,7 +395,7 @@ export function MaterialForm({
                   }
                 }}
               />
-              <button type="button" className="btn btn-outline" onClick={addKeyword}>
+              <button type="button" className="btn btn-primary" onClick={addKeyword} disabled={!keywordDraft.trim()}>
                 <IconAdd size={16} /> Add
               </button>
             </div>
@@ -415,41 +434,13 @@ export function MaterialForm({
           alongside curated articles, talks and brands.
         </p>
         {canChannels ? (
-          <>
-            <span className="field-subhead">Select up to {MAX_CHANNELS} channels</span>
-            <div className="chip-group">
-              {MATERIAL_CHANNEL_LABELS.map((channel) => {
-                const selected = form.channels.includes(channel)
-                const atMax = !selected && form.channels.length >= MAX_CHANNELS
-                return (
-                  <button
-                    key={channel}
-                    type="button"
-                    className={`chip ${selected ? 'is-on' : ''}`}
-                    aria-pressed={selected}
-                    disabled={atMax}
-                    onClick={() => toggleChannel(channel)}
-                  >
-                    {channel}
-                    {selected && <IconCheck size={12} className="chip-check" aria-hidden="true" />}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div className="active-channel-links">
-              <span className="field-subhead">Active channel links</span>
-              {form.channels.length === 0 ? (
-                <p className="field-helper">No channels linked yet.</p>
-              ) : (
-                <div className="chip-group">
-                  {form.channels.map((c) => (
-                    <span key={c} className="chip is-active-link">{c}</span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </>
+          <ChannelPicker
+            options={MATERIAL_CHANNEL_LABELS}
+            value={form.channels}
+            onChange={(next) => set('channels', next)}
+            max={MAX_CHANNELS}
+            note="This material will appear on these channel pages within 24 hours of saving."
+          />
         ) : (
           <BrandTierGate
             variant="page"
@@ -474,6 +465,7 @@ export function MaterialForm({
       <DashboardStickyFooter
         progress={progress}
         saving={saving}
+        disabled={!requiredComplete}
         onSave={handleSave}
         saveLabel={isEdit ? 'Save changes' : 'Publish material'}
       />

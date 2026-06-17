@@ -8,6 +8,7 @@
 
 import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/form'
 import { useAuth } from '@/components/providers/AuthContext'
 import { parseAuthErrorResponse } from '@/app/_auth-components/auth-errors'
 import { getCartToken } from '@/lib/api/cart'
@@ -105,17 +106,15 @@ export function CheckoutSignInPanel({ email, onSignedIn }: CheckoutSignInPanelPr
         Insider pricing.
       </p>
       <form className="checkout-account-form" onSubmit={handleSubmit}>
-        <div className="addr-field addr-field-wide">
-          <label htmlFor="checkout-signin-password">Password</label>
-          <input
-            id="checkout-signin-password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            disabled={submitting}
-          />
-        </div>
+        <Input
+          label="Password"
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
+          disabled={submitting}
+        />
         {error && <p className="checkout-error">{error}</p>}
         <button type="submit" className="checkout-secondary-btn" disabled={submitting}>
           {submitting ? 'Signing in…' : 'Sign in'}

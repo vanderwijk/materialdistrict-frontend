@@ -48,6 +48,11 @@ export function LeadRoutingPanel({
     setConfig((c) => ({ ...c, routes: c.routes.filter((r) => r.id !== id) }))
   }
 
+  // Per regel zijn land, naam en e-mail verplicht; lege lijst is toegestaan.
+  const routesComplete = config.routes.every(
+    (r) => r.country.trim() !== '' && r.name.trim() !== '' && r.email.trim() !== '',
+  )
+
   async function handleSave() {
     setSaving(true)
     setSaveError(null)
@@ -115,7 +120,7 @@ export function LeadRoutingPanel({
       <div className="dash-panel">
         <div className="panel-head-row">
           <h2 className="panel-section-title">Country rules</h2>
-          <button type="button" className="btn btn-outline btn-sm" onClick={addRoute}>
+          <button type="button" className="btn btn-primary btn-sm" onClick={addRoute}>
             <IconAdd size={16} /> Add rule
           </button>
         </div>
@@ -124,16 +129,17 @@ export function LeadRoutingPanel({
           <div key={route.id} className="route-row">
             <Select
               label="Country"
+              required
               value={route.country}
               onChange={(e) => updateRoute(route.id, 'country', e.target.value)}
               placeholder="Select a country"
               options={COUNTRY_OPTIONS}
             />
-            <Input label="Name" value={route.name} onChange={(e) => updateRoute(route.id, 'name', e.target.value)} />
-            <Input label="Email" type="email" value={route.email} onChange={(e) => updateRoute(route.id, 'email', e.target.value)} />
+            <Input label="Name" required value={route.name} onChange={(e) => updateRoute(route.id, 'name', e.target.value)} />
+            <Input label="Email" type="email" required value={route.email} onChange={(e) => updateRoute(route.id, 'email', e.target.value)} />
             <button
               type="button"
-              className="icon-btn route-remove"
+              className="icon-btn route-remove is-delete"
               onClick={() => removeRoute(route.id)}
               aria-label="Remove rule"
             >
@@ -180,7 +186,7 @@ export function LeadRoutingPanel({
         </div>
       </div>
 
-      <DashboardStickyFooter progress={100} saving={saving} showPreview={false} onSave={handleSave} />
+      <DashboardStickyFooter progress={100} saving={saving} disabled={!routesComplete} showPreview={false} onSave={handleSave} />
     </>
   )
 }

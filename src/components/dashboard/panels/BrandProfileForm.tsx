@@ -8,11 +8,12 @@ import { DashboardStickyFooter } from '../DashboardStickyFooter'
 import { CurrentPlanBanner } from '../CurrentPlanBanner'
 import {
   ApplicationPicker,
+  ChannelPicker,
   DownloadsField,
   VideoLinksField,
   GalleryField,
 } from '../fields'
-import { IconAdd, IconClose, IconCheck, IconUpload, IconImage } from '@/components/ui/icons'
+import { IconAdd, IconClose, IconUpload, IconImage } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import type { BrandProfile, BrandSocialLinks, MaterialAsset } from '@/types/dashboard'
@@ -71,15 +72,6 @@ export function BrandProfileForm({
   const setSocial = (key: keyof BrandSocialLinks, value: string) =>
     setForm((f) => ({ ...f, social: { ...f.social, [key]: value } }))
 
-  const toggleChannel = (channel: string) =>
-    setForm((f) => {
-      if (f.channels.includes(channel)) {
-        return { ...f, channels: f.channels.filter((c) => c !== channel) }
-      }
-      if (f.channels.length >= MAX_CHANNELS) return f
-      return { ...f, channels: [...f.channels, channel] }
-    })
-
   function addKeyword() {
     const kw = keywordDraft.trim()
     if (!kw || form.keywords.includes(kw)) return
@@ -127,6 +119,19 @@ export function BrandProfileForm({
     const filled = core.filter((v) => v.trim() !== '').length
     return (filled / core.length) * 100
   }, [form])
+
+  // Verplichte velden voor een merkprofiel: kerngegevens, volledig adres én logo.
+  const requiredComplete =
+    form.brandName.trim() !== '' &&
+    form.description.trim() !== '' &&
+    form.website.trim() !== '' &&
+    form.email.trim() !== '' &&
+    form.phone.trim() !== '' &&
+    form.country.trim() !== '' &&
+    form.addressLine1.trim() !== '' &&
+    form.postcode.trim() !== '' &&
+    form.city.trim() !== '' &&
+    Boolean(form.logoUrl)
 
   async function handleSave() {
     setSaving(true)
@@ -216,11 +221,11 @@ export function BrandProfileForm({
         {saveError && <p className="form-error" role="alert">{saveError}</p>}
         <div className="brand-details-grid">
           <div className="brand-details-main">
-            <Input label="Brand name" value={form.brandName} onChange={(e) => set('brandName', e.target.value)} />
-            <Textarea label="Brand description" value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
+            <Input label="Brand name" required value={form.brandName} onChange={(e) => set('brandName', e.target.value)} />
+            <Textarea label="Brand description" required value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
           </div>
           <div className="brand-logo-field">
-            <label htmlFor="brand-logo-input" className="field-label">Logo</label>
+            <label htmlFor="brand-logo-input" className="field-label">Logo <span className="field-required" aria-hidden="true">*</span></label>
             <div className="brand-logo-box">
               {form.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -258,13 +263,14 @@ export function BrandProfileForm({
         <h2 className="panel-section-title">Contact &amp; company</h2>
         <p className="panel-section-desc">Core company details used on the public brand page and in lead follow-up.</p>
         <div className="g2">
-          <Input label="Website" value={form.website} onChange={(e) => set('website', e.target.value)} />
-          <Input label="Email" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} />
+          <Input label="Website" required value={form.website} onChange={(e) => set('website', e.target.value)} />
+          <Input label="Email" type="email" required value={form.email} onChange={(e) => set('email', e.target.value)} />
         </div>
         <div className="g2">
-          <Input label="Phone" value={form.phone} onChange={(e) => set('phone', e.target.value)} />
+          <Input label="Phone" required value={form.phone} onChange={(e) => set('phone', e.target.value)} />
           <Select
             label="Country"
+            required
             value={form.country}
             placeholder="Select a country"
             onChange={(e) => {
@@ -275,38 +281,52 @@ export function BrandProfileForm({
           />
         </div>
         <div className="g2">
-          <Input label="Address line 1" value={form.addressLine1} onChange={(e) => set('addressLine1', e.target.value)} />
+          <Input label="Address line 1" required value={form.addressLine1} onChange={(e) => set('addressLine1', e.target.value)} />
           <Input label="Address line 2" optional value={form.addressLine2} onChange={(e) => set('addressLine2', e.target.value)} />
         </div>
         <div className="g2">
-          <Input label="Post code" value={form.postcode} onChange={(e) => set('postcode', e.target.value)} />
-          <Input label="City" value={form.city} onChange={(e) => set('city', e.target.value)} />
+          <Input label="Post code" required value={form.postcode} onChange={(e) => set('postcode', e.target.value)} />
+          <Input label="City" required value={form.city} onChange={(e) => set('city', e.target.value)} />
         </div>
         <div className="g2">
-          <div className="addr-field addr-field-wide">
-            <label htmlFor="brand-vat">VAT number</label>
-            <div className="checkout-vat-input-wrap">
-              <input
-                id="brand-vat"
-                value={form.vatNumber}
-                onChange={(e) => {
-                  set('vatNumber', e.target.value)
-                  setVatTouched(true)
-                }}
-                autoComplete="off"
-                placeholder="e.g. NL123456789B01"
-                className={`checkout-vat-input ${
-                  vatStatus === 'valid' ? 'is-valid' : ''
-                } ${vatStatus === 'invalid' ? 'is-invalid' : ''}`.trim()}
-              />
-              {vatStatus === 'checking' && <span className="checkout-vat-indicator">…</span>}
-              {vatStatus === 'valid' && <span className="checkout-vat-indicator is-valid">✓</span>}
-              {vatStatus === 'invalid' && <span className="checkout-vat-indicator is-invalid">!</span>}
-            </div>
-            {vatError && <p className="checkout-vat-error">{vatError}</p>}
-          </div>
-          <Input label="Chamber of Commerce number" value={form.chamberNumber} onChange={(e) => set('chamberNumber', e.target.value)} />
+          <Input
+            label="VAT number"
+            optional
+            value={form.vatNumber}
+            onChange={(e) => {
+              set('vatNumber', e.target.value)
+              setVatTouched(true)
+            }}
+            autoComplete="off"
+            placeholder="e.g. NL123456789B01"
+            valid={vatStatus === 'valid'}
+            error={vatStatus === 'invalid' ? (vatError ?? 'VAT number could not be validated.') : undefined}
+            helper={vatStatus === 'checking' ? 'Checking VAT…' : undefined}
+          />
+          <Input label="Chamber of Commerce number" optional value={form.chamberNumber} onChange={(e) => set('chamberNumber', e.target.value)} />
         </div>
+      </div>
+
+      {/* Sectors & applications — Plus+ (boven Social: belangrijker) */}
+      <div className="dash-panel">
+        <h2 className="panel-section-title">Sectors &amp; applications</h2>
+        <p className="panel-section-desc">
+          In which application areas are your products used? This makes your brand findable when specifiers
+          filter by application — e.g. wall cladding, facade, or flooring.
+        </p>
+        {canApplications ? (
+          <ApplicationPicker value={form.applications} onChange={(next) => set('applications', next)} />
+        ) : (
+          <BrandTierGate
+            variant="section"
+            required="plus"
+            title="Sectors & applications"
+            description="Help architects and designers find your brand by the applications you serve. Available from the Plus tier."
+            upgradeHref="./membership"
+          >
+            <ApplicationPicker value={form.applications} onChange={() => {}} />
+          </BrandTierGate>
+        )}
       </div>
 
       {/* Social channels */}
@@ -324,26 +344,6 @@ export function BrandProfileForm({
             />
           ))}
         </div>
-      </div>
-
-      {/* Sectors & applications — Plus+ */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Sectors &amp; applications</h2>
-        <p className="panel-section-desc">
-          In which application areas are your products used? This makes your brand findable when specifiers
-          filter by application — e.g. wall cladding, facade, or flooring.
-        </p>
-        {canApplications ? (
-          <ApplicationPicker value={form.applications} onChange={(next) => set('applications', next)} />
-        ) : (
-          <BrandTierGate
-            variant="page"
-            required="plus"
-            title="Sectors & applications"
-            description="Help architects and designers find your brand by the applications you serve. Available from the Plus tier."
-            upgradeHref="./membership"
-          />
-        )}
       </div>
 
       {/* Media — gallery (all tiers) + video links (Plus+) */}
@@ -422,7 +422,7 @@ export function BrandProfileForm({
                   }
                 }}
               />
-              <button type="button" className="btn btn-outline" onClick={addKeyword}>
+              <button type="button" className="btn btn-primary" onClick={addKeyword} disabled={!keywordDraft.trim()}>
                 <IconAdd size={16} /> Add
               </button>
             </div>
@@ -461,57 +461,13 @@ export function BrandProfileForm({
           shown alongside curated materials, articles and talks.
         </p>
         {canChannels ? (
-          <>
-            <span className="field-subhead">Select up to {MAX_CHANNELS} channels</span>
-            <div className="chip-group">
-              {MATERIAL_CHANNEL_LABELS.map((channel) => {
-                const selected = form.channels.includes(channel)
-                const atMax = !selected && form.channels.length >= MAX_CHANNELS
-                if (selected) {
-                  return (
-                    <button
-                      key={channel}
-                      type="button"
-                      className="chip is-on"
-                      aria-pressed="true"
-                      disabled={atMax}
-                      onClick={() => toggleChannel(channel)}
-                    >
-                      {channel}
-                      <IconCheck size={12} className="chip-check" aria-hidden="true" />
-                    </button>
-                  )
-                }
-
-                return (
-                  <button
-                    key={channel}
-                    type="button"
-                    className="chip"
-                    aria-pressed="false"
-                    disabled={atMax}
-                    onClick={() => toggleChannel(channel)}
-                  >
-                    {channel}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div className="active-channel-links">
-              <span className="field-subhead">Active channel links</span>
-              {form.channels.length === 0 ? (
-                <p className="field-helper">No channels linked yet.</p>
-              ) : (
-                <div className="chip-group">
-                  {form.channels.map((c) => (
-                    <span key={c} className="chip is-active-link">{c}</span>
-                  ))}
-                </div>
-              )}
-              <p className="field-helper">Your brand will appear on these channel pages within 24 hours of saving.</p>
-            </div>
-          </>
+          <ChannelPicker
+            options={MATERIAL_CHANNEL_LABELS}
+            value={form.channels}
+            onChange={(next) => set('channels', next)}
+            max={MAX_CHANNELS}
+            note="Your brand will appear on these channel pages within 24 hours of saving."
+          />
         ) : (
           <BrandTierGate
             variant="page"
@@ -523,7 +479,7 @@ export function BrandProfileForm({
         )}
       </div>
 
-      <DashboardStickyFooter progress={progress} saving={saving} onSave={handleSave} />
+      <DashboardStickyFooter progress={progress} saving={saving} disabled={!requiredComplete} onSave={handleSave} />
     </>
   )
 }

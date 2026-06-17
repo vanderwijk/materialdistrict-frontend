@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { IconBoard, IconBoardAdd, IconDelete } from '@/components/ui/icons'
+import { IconBoard, IconAdd, IconDelete } from '@/components/ui/icons'
 import type { Board } from '@/types/dashboard'
 
 /**
@@ -33,6 +33,7 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
   }
 
   async function remove(id: string) {
+    if (!window.confirm('Delete this board? Its saved items will be removed from the board.')) return
     const prev = boards
     setBoards((b) => b.filter((x) => x.id !== id)) // optimistic
     try {
@@ -48,7 +49,7 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
       <div className="panel-head-row">
         <h2 className="panel-section-title">Your boards</h2>
         <button type="button" className="btn btn-primary btn-sm" onClick={createBoard}>
-          <IconBoardAdd size={16} /> New board
+          <IconAdd size={16} /> Add board
         </button>
       </div>
 

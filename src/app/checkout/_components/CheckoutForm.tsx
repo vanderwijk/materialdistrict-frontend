@@ -48,6 +48,7 @@ import { getStripe } from '@/lib/stripe/client'
 import { formatEur } from '@/lib/utils/format-price'
 import { freeShippingRemaining } from '@/lib/config/shipping-thresholds'
 import { AddressFields } from './AddressFields'
+import { Input } from '@/components/ui/form'
 import { CheckoutSignInPanel } from './CheckoutSignInPanel'
 
 const stripePromise = getStripe()
@@ -554,18 +555,16 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
         {/* Contact */}
         <section className="checkout-section">
           <h2 className="checkout-section-head">Contact</h2>
-          <div className="addr-field addr-field-wide">
-            <label htmlFor="checkout-email">Email *</label>
-            <input
-              id="checkout-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              placeholder="you@example.com"
-              readOnly={isLoggedIn}
-            />
-          </div>
+          <Input
+            label="Email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
+            placeholder="you@example.com"
+            readOnly={isLoggedIn}
+          />
           {checkingEmail && !isLoggedIn && (
             <p className="checkout-hint">Checking email…</p>
           )}

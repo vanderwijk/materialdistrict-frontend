@@ -14,7 +14,7 @@ export default async function BoardDetailPage({ params }: BoardDetailPageProps) 
 
   return (
     <>
-      <DashboardPageHeader title={board.name} />
+      <DashboardPageHeader title="Boards" />
       <BoardDetailPanel board={board} />
     </>
   )

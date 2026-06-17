@@ -172,6 +172,11 @@ export function GetInTouchModal({
   // interactions): match label-tegen-label, geen code-conversie.
   const countryBlocked = restrictToListedCountries && !acceptedCountries.includes(userCountry)
   const sampleLocked = sampleRequestsInsidersOnly && !isMember
+  // Een fysieke sample vereist een compleet bezorgadres. We poorten alléén als
+  // het /auth/me-signaal expliciet zegt dat het adres incompleet is; zolang dat
+  // signaal nog niet live is (undefined) blokkeren we niet — nette terugval.
+  const sampleAddressMissing =
+    selected.has('sample') && user?.hasShippingAddress === false
   const acceptedLabels = acceptedCountries.filter(Boolean).join(', ')
 
   // Reset state als modal opnieuw opent
@@ -231,7 +236,7 @@ export function GetInTouchModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (selected.size === 0 || countryBlocked) return
+    if (selected.size === 0 || countryBlocked || sampleAddressMissing) return
     setPending(true)
     setError(null)
     try {
@@ -361,6 +366,18 @@ export function GetInTouchModal({
               </div>
             )}
 
+            {sampleAddressMissing && (
+              <div className="git-country-block" role="alert">
+                <p className="git-country-block-title">
+                  We need your delivery address for a physical sample.
+                </p>
+                <p className="git-country-block-body">
+                  Add your street, postcode and city so the manufacturer can ship
+                  your sample. <a href="/dashboard/profile">Complete your address</a>.
+                </p>
+              </div>
+            )}
+
             <ul className="git-options" role="list">
               {REQUEST_OPTIONS.map((opt, idx) => {
                 const isSelected = selected.has(opt.key)
@@ -440,7 +457,7 @@ export function GetInTouchModal({
               <button
                 type="submit"
                 className="git-submit"
-                disabled={selected.size === 0 || pending || countryBlocked}
+                disabled={selected.size === 0 || pending || countryBlocked || sampleAddressMissing}
               >
                 {pending ? 'Sending…' : 'Send request'}
               </button>

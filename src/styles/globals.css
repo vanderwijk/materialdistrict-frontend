@@ -802,10 +802,10 @@ h4 {
 }
 
 .field-wrap.error {
-  /* Batch 2: rode border behouden naast de status-cirkel — dubbele
-     visuele feedback bij invalid (gebruiker-keuze sessie 3A). */
+  /* Veldstatus: fout = grijze achtergrond + rode rand + rood kruisje.
+     Wit is uitsluitend het "goed ingevuld"-signaal (.filled). */
   border-color: var(--red);
-  background: var(--surface);
+  background: var(--surface2);
 }
 
 .field-wrap input,
@@ -968,8 +968,8 @@ h4 {
   position: absolute;
   top: -4px;
   right: -4px;
-  background: var(--ct-article);
-  color: white;
+  background: var(--ink);
+  color: var(--on-ink);
   font-size: 9px;
   font-weight: 700;
   border-radius: 50%;
@@ -3180,6 +3180,11 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  /* Rustige sentence-case labels (checkout-stijl), site-breed. Heft de
+     hoofdletter-behandeling + letterspatiëring van de gegroepeerde
+     .field-label/.login-eyebrow-regel op; .login-eyebrow blijft uppercase. */
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .field-label .field-required {
@@ -4301,10 +4306,10 @@ a:focus-visible {
 }
 
 .tab-item.is-active {
-  /* Sessie 3B correctie 1C — actieve tab kleur+border via --link token
-     zodat het in dark mode lichter blauw wordt en leesbaar blijft. */
-  color: var(--link);
-  border-bottom-color: var(--link);
+  /* Actieve tab via --ink i.p.v. --link: zwart selectie-accent dat overal in
+     het dashboard consistent is. --ink keert in dark mode vanzelf om naar licht. */
+  color: var(--ink);
+  border-bottom-color: var(--ink);
 }
 
 .tab-item:focus-visible {
@@ -4333,8 +4338,8 @@ a:focus-visible {
 }
 
 .tab-item.is-active .tab-item-count {
-  background: var(--link);
-  color: white;
+  background: var(--ink);
+  color: var(--on-ink);
 }
 
 /* ------------------------------------------------------------
@@ -5064,6 +5069,10 @@ a:focus-visible {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
+  /* Hoogte afkappen: de gelockte sectie nam de volle hoogte van het echte
+     formulier erachter aan en werd daardoor veel te hoog. Nu een compacte
+     preview-strook; de doorschijnende inhoud erachter wordt netjes geclipt. */
+  max-height: 300px;
 }
 
 .brand-tier-gate-content-blur {
@@ -5076,7 +5085,9 @@ a:focus-visible {
 .brand-tier-gate-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.85);
+  /* Minder dekkend wit (was 0.85) zodat de vervaagde inhoud erachter
+     doorschijnt — de "sneak preview" met duidelijk contrast, zoals de demo. */
+  background: rgba(255, 255, 255, 0.58);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   display: flex;
@@ -11153,13 +11164,14 @@ mark.search-mark {
 .dash-sidebar-wrap{position:sticky;top:82px}
 .sb-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px}
 .sb-section-hd{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-hint)}
-.sb-scope{border-radius:var(--radius);border:1px solid var(--border);margin:8px;transition:all 0.15s}
+.sb-scope{border-radius:var(--radius);border:1px solid var(--border);margin:8px;transition:all 0.15s;background:var(--surface)}
 .sb-scope.active{border-color:var(--navy-light);background:var(--surface2)}
 .sb-scope-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;width:100%;border-radius:var(--radius)}
 .sb-scope-btn:hover{background:var(--surface2)}
 .sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-hint);flex-shrink:0}
-.sb-scope-name{font-size:14px;font-weight:600;color:var(--text)}
-.sb-scope-sub{font-size:12px;color:var(--text-hint);margin-top:1px}
+.sb-scope-text{display:flex;flex-direction:column;min-width:0}
+.sb-scope-name{display:block;font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-scope-sub{display:block;font-size:12px;color:var(--text-hint);margin-top:1px}
 .sb-nav{padding:4px 8px 8px}
 .sb-nav-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--radius);font-size:14px;color:var(--text-muted);transition:all 0.12s;cursor:pointer;width:100%;text-align:left}
 .sb-nav-item:hover{background:var(--surface2);color:var(--text)}
@@ -11170,8 +11182,8 @@ mark.search-mark {
 .dash-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:26px;box-shadow:var(--shadow)}
 .panel-section-title{font-size:15px;font-weight:700;color:var(--text)}
 .panel-section-desc{font-size:13px;color:var(--text-hint);margin-top:3px;margin-bottom:16px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
 .col2{grid-column:span 2}
 .col3{grid-column:span 3}
 .section-sep{border-top:1px solid var(--border);padding-top:22px;margin-top:22px}
@@ -11208,7 +11220,7 @@ mark.search-mark {
 .ip-body{padding:22px 24px;flex:1}
 .ip-section{margin-bottom:24px}
 .ip-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-hint);margin-bottom:12px}
-.ip-bg{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px}
+.ip-bg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px}
 .ip-row{display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:10px;font-size:14px}
 .ip-row:last-child{margin-bottom:0}
 .ip-label{font-weight:600;color:var(--text-muted)}
@@ -11364,7 +11376,7 @@ mark.search-mark {
 .chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;border:1px solid var(--border);background:var(--surface);font-size:14px;color:var(--text-muted);cursor:pointer;transition:all 0.15s}
 .chip:hover{border-color:var(--navy-light)}
-.chip.is-on{background:var(--navy);border-color:var(--navy);color:#fff;cursor:default}
+.chip.is-on{background:var(--navy);border-color:var(--navy);color:#fff;cursor:pointer}
 .chip-x{display:inline-flex;align-items:center;justify-content:center;color:inherit;opacity:0.8}
 .chip-x:hover{opacity:1}
 .kw-input-row{display:flex;align-items:flex-end;gap:10px}
@@ -11392,7 +11404,7 @@ mark.search-mark {
 .cat-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px}
 .cat-remove{align-self:center;margin-bottom:2px}
 .asset-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.asset-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px}
+.asset-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border:1px solid var(--green-mid);background:var(--green-pale);border-radius:var(--radius);font-size:14px}
 .danger-panel{border-color:var(--red)}
 
 /* --- Interactions drawer --- */
@@ -11960,22 +11972,22 @@ mark.search-mark {
   border-bottom-color: var(--ink);
 }
 
-/* --- Knoppen: zwart als primair in het hele dashboard (spiegelt
-   .header-actions .btn-primary uit §F2.1). De save-knop in de sticky-
-   footer gebruikt nu .btn-primary i.p.v. .btn-green en wordt hierdoor
-   ink. Teal (.btn-insider) en rood (.btn-danger) blijven hun eigen
-   accent houden — die markeren bewust iets aparts. --- */
+/* --- Knoppen: GROEN als primaire actie in het hele dashboard (jouw afspraak:
+   primaire CTA per pagina = groen). Save changes, Add board/material, upgrade-
+   CTA's e.d. Gebruikt dezelfde tokens als .btn-green voor 1-op-1 consistentie.
+   Teal (.btn-insider) en rood (.btn-danger) blijven hun eigen accent houden —
+   die markeren bewust iets aparts. --- */
 .dash-content .btn-primary,
 .dash-sidebar-wrap .btn-primary,
 .sticky-footer .btn-primary {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--green-mid);
+  color: white;
 }
 .dash-content .btn-primary:hover:not(:disabled),
 .dash-sidebar-wrap .btn-primary:hover:not(:disabled),
 .sticky-footer .btn-primary:hover:not(:disabled) {
-  background: var(--ink);
-  opacity: 0.88;
+  background: var(--green);
+  opacity: 1;
 }
 
 /* --- Dark-mode: neutraliseer de oude navy-actief-overrides uit de
@@ -15143,6 +15155,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 @media (max-width: 520px) {
   .hp-brand-logos { grid-template-columns: repeat(2, 1fr); }
 }
+
 /* ============================================================================
    §BOOKS-DETAIL-SHEET — book-detailpagina op de materials-shell (16-06-2026)
    ----------------------------------------------------------------------------
@@ -15318,3 +15331,51 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   height: 120px;
 }
 /* ============================ einde §BOOKS-DETAIL-SHEET ====================== */
+
+/* ============================================================================
+   §DASH-POLISH — dashboard polish (16-06-2026), append-only.
+   Kleine aanvullende regels bij de dashboard-polish-sessie. Gebruikt
+   uitsluitend bestaande tokens.
+   ----------------------------------------------------------------------------
+   Board-detail: paginatitel blijft "Boards"; de boardnaam staat als kop ín de
+   pagina, met de frontend-terug-link (.detail-header-back) erboven. */
+.board-detail-name { margin: 10px 0 2px; }
+.dash-panel > .detail-header-back { margin-bottom: 2px; }
+
+/* Delete-iconen: één prullenbak overal, rood bij hover. .bm-remove en
+   .board-remove kleuren al rood; deze regel trekt de overige icoon-knoppen
+   (saved searches, downloads, gallery, video links, lead-routing-rij) gelijk
+   via de gedeelde .is-delete-modifier. De × blijft uitsluitend voor echt
+   sluiten en chip-dismiss. */
+.icon-btn.is-delete:hover:not(:disabled) {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+/* Saved searches — catalogus-kaarten met thumbnailstrip + filter-chips
+   (vervangt de oude .ss-list/.ss-row-lijstweergave). .ss-name/.ss-summary/
+   .ss-count worden hergebruikt. */
+.ss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:14px}
+.ss-card{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.ss-card-thumbs{display:flex;gap:2px;height:84px;background:var(--surface2)}
+.ss-thumb{flex:1;min-width:0;height:100%;object-fit:cover}
+.ss-thumbs-empty{display:flex;align-items:center;justify-content:center;width:100%;color:var(--text-hint)}
+.ss-card-body{display:flex;flex-direction:column;gap:8px;padding:14px}
+.ss-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.ss-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ss-chip{font-size:12px;font-weight:600;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:2px 10px}
+.ss-card-actions{display:flex;align-items:center;gap:8px;margin-top:4px}
+
+/* Insider insights — catalogus-kaarten (cover, label, titel, omschrijving,
+   meta, groene download). Vervangt de oude .insight-list/.insight-row-lijst. */
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:14px}
+.insight-card{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.insight-card-cover{display:block;aspect-ratio:16/10;background:var(--cover,var(--surface2));overflow:hidden}
+.insight-card-cover img{width:100%;height:100%;object-fit:cover}
+.insight-card-body{display:flex;flex-direction:column;gap:6px;padding:16px}
+.insight-card-label{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-hint)}
+.insight-card-title{font-size:16px;font-weight:600;color:var(--text);line-height:1.3}
+.insight-card-title:hover{text-decoration:underline}
+.insight-card-desc{font-size:13px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.insight-card-meta{font-size:12px;color:var(--text-hint);margin-top:2px}
+.insight-card-action{margin-top:10px}

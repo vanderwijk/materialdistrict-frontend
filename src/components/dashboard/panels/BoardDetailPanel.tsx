@@ -16,14 +16,27 @@ import type { BoardDetail } from '@/types/dashboard'
 export function BoardDetailPanel({ board }: { board: BoardDetail }) {
   return (
     <div className="dash-panel">
-      <div className="panel-head-row">
-        <p className="board-meta">
-          {board.materialCount} materials · {board.articleCount} articles
-        </p>
-        <Link href="/dashboard/boards" className="btn btn-outline btn-sm">
-          ← Your boards
-        </Link>
-      </div>
+      <Link href="/dashboard/boards" className="detail-header-back">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+        Back to boards
+      </Link>
+      <h2 className="panel-section-title board-detail-name">{board.name}</h2>
+      <p className="board-meta">
+        {board.materialCount} materials · {board.articleCount} articles
+      </p>
 
       {board.items.length === 0 ? (
         <EmptyState

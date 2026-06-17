@@ -61,6 +61,13 @@ export function ProfileForm({
     return (filled / fields.length) * 100
   }, [form])
 
+  // Verplichte velden voor een persoonlijk profiel: voor- en achternaam + e-mail.
+  // (Adres is hier bewust niet verplicht; dat hoort bij sample-aanvragen.)
+  const requiredComplete =
+    form.firstName.trim() !== '' &&
+    form.lastName.trim() !== '' &&
+    form.email.trim() !== ''
+
   async function handleSave() {
     setSaving(true)
     setSaveError(null)
@@ -156,15 +163,15 @@ export function ProfileForm({
         <div className="g2">
           <Input
             label="First name"
+            required
             value={form.firstName}
             onChange={(e) => set('firstName', e.target.value)}
-            showFilledState
           />
           <Input
             label="Last name"
+            required
             value={form.lastName}
             onChange={(e) => set('lastName', e.target.value)}
-            showFilledState
           />
         </div>
 
@@ -172,9 +179,9 @@ export function ProfileForm({
           <Input
             label="Email"
             type="email"
+            required
             value={form.email}
             onChange={(e) => set('email', e.target.value)}
-            showFilledState
           />
           <Input
             label="Telephone"
@@ -270,34 +277,20 @@ export function ProfileForm({
                   onChange={(e) => set('company', e.target.value)}
                   showFilledState
                 />
-                <div className="addr-field addr-field-wide">
-                  <label htmlFor="profile-vat">VAT number (optional)</label>
-                  <div className="checkout-vat-input-wrap">
-                    <input
-                      id="profile-vat"
-                      value={form.vatNumber}
-                      onChange={(e) => {
-                        set('vatNumber', e.target.value)
-                        setVatTouched(true)
-                      }}
-                      autoComplete="off"
-                      placeholder="e.g. NL123456789B01"
-                      className={`checkout-vat-input ${
-                        vatStatus === 'valid' ? 'is-valid' : ''
-                      } ${vatStatus === 'invalid' ? 'is-invalid' : ''}`.trim()}
-                    />
-                    {vatStatus === 'checking' && (
-                      <span className="checkout-vat-indicator">…</span>
-                    )}
-                    {vatStatus === 'valid' && (
-                      <span className="checkout-vat-indicator is-valid">✓</span>
-                    )}
-                    {vatStatus === 'invalid' && (
-                      <span className="checkout-vat-indicator is-invalid">!</span>
-                    )}
-                  </div>
-                  {vatError && <p className="checkout-vat-error">{vatError}</p>}
-                </div>
+                <Input
+                  label="VAT number"
+                  optional
+                  value={form.vatNumber}
+                  onChange={(e) => {
+                    set('vatNumber', e.target.value)
+                    setVatTouched(true)
+                  }}
+                  autoComplete="off"
+                  placeholder="e.g. NL123456789B01"
+                  valid={vatStatus === 'valid'}
+                  error={vatStatus === 'invalid' ? (vatError ?? 'VAT number could not be validated.') : undefined}
+                  helper={vatStatus === 'checking' ? 'Checking VAT…' : undefined}
+                />
               </div>
             )}
           </div>
@@ -307,6 +300,7 @@ export function ProfileForm({
       <DashboardStickyFooter
         progress={progress}
         saving={saving}
+        disabled={!requiredComplete}
         showPreview={false}
         onSave={handleSave}
       />

@@ -146,6 +146,7 @@ export function AddBrandPanel({ candidates }: { candidates: BrandCandidate[] }) 
             {requestError && <p className="form-error" role="alert">{requestError}</p>}
             <Input
               label="Brand name"
+              required
               value={reqForm.name}
               onChange={(e) => setReqForm((f) => ({ ...f, name: e.target.value }))}
             />
@@ -156,6 +157,8 @@ export function AddBrandPanel({ candidates }: { candidates: BrandCandidate[] }) 
             />
             <Input
               label="Contact e-mail"
+              type="email"
+              required
               value={reqForm.email}
               onChange={(e) => setReqForm((f) => ({ ...f, email: e.target.value }))}
             />
@@ -168,7 +171,7 @@ export function AddBrandPanel({ candidates }: { candidates: BrandCandidate[] }) 
             <button
               type="button"
               className="btn btn-primary"
-              disabled={requesting}
+              disabled={requesting || !reqForm.name.trim() || !reqForm.email.trim()}
               onClick={submitRequest}
             >
               {requesting ? 'Sending…' : 'Send request'}

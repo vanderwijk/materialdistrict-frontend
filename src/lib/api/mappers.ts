@@ -802,6 +802,7 @@ function mapUser(raw: WPAuthMeRawResponse['user']): User {
     profession: raw.profession,
     company: raw.company,
     country: raw.country ?? null,
+    hasShippingAddress: raw.has_shipping_address,
     membership: mapMembership(raw.membership),
     brands: raw.connected_brands.map(mapBrandMembership),
   }

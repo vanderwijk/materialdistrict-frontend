@@ -107,7 +107,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   const wrapClassName = [
     'field-wrap',
     'is-select',
-    showFilledState && value.trim() !== '' && validation.state !== 'invalid' && 'filled',
+    validation.state === 'valid' && 'filled',
     validation.state === 'invalid' && 'error',
     disabled && 'is-disabled',
   ]

@@ -47,7 +47,7 @@ export function DashboardSidebar({
           <Link href="/dashboard/profile" className="sb-scope-btn">
             <span className="sb-scope-id">
               <span className="sb-avatar">{initialsFrom(user.displayName || user.name)}</span>
-              <span>
+              <span className="sb-scope-text">
                 <span className="sb-scope-name">{user.displayName || user.name}</span>
                 <span className="sb-scope-sub">Personal account</span>
               </span>
@@ -96,7 +96,10 @@ export function DashboardSidebar({
               <Link href={brandPanelHref(brand.slug, '')} className="sb-scope-btn">
                 <span className="sb-scope-id">
                   <span className="sb-avatar is-brand">{initialsFrom(brand.name)}</span>
-                  <span className="sb-scope-name">{brand.name}</span>
+                  <span className="sb-scope-text">
+                    <span className="sb-scope-name">{brand.name}</span>
+                    <span className="sb-scope-sub">Brand account</span>
+                  </span>
                 </span>
                 {isOpen ? <IconChevronDown size={16} /> : <IconChevronRight size={16} />}
               </Link>

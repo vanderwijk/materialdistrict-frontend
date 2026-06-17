@@ -236,6 +236,15 @@ export interface User {
    */
   country: string | null
 
+  /**
+   * Optioneel signaal van `/auth/me`: heeft de gebruiker een compleet
+   * bezorgadres op naam (straat, postcode, plaats, land)? Gebruikt om fysieke
+   * sample-aanvragen te poorten. `undefined` zolang het backend-signaal nog
+   * niet live is — de frontend valt dan netjes terug (geen harde blokkade).
+   * Johan levert dit veld op `/auth/me` (zie Johan-handoff).
+   */
+  hasShippingAddress?: boolean
+
   /** Reader membership (always present, default free/inactive). */
   membership: Membership
 
@@ -350,6 +359,8 @@ export interface WPAuthMeRawResponse {
     profession: string | null
     company: string | null
     country: string | null
+    country_code?: string | null
+    has_shipping_address?: boolean
     membership: {
       tier: ReaderTier
       is_insider: boolean

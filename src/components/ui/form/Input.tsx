@@ -107,12 +107,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     onChange?.(e)
   }
 
-  // Field-wrap classes: filled (groene border) als showFilledState && niet leeg.
-  // .error (rode border) wanneer validation invalid is — naast de
-  // .field-status-cirkel; dubbele visuele feedback (gebruiker-keuze sessie 3A).
+  // Veld-staat stuurt het uiterlijk, niet langer een per-veld vlag:
+  //   valid  → .filled (wit + groen randje + groen vinkje)
+  //   invalid→ .error  (grijs + rode rand + rood kruisje)
+  //   idle   → neutraal grijs
+  // `showFilledState` blijft als prop bestaan (achterwaartse compat) maar is
+  // nu een no-op; de gedeelde "goed ingevuld = groen" is overal standaard.
   const wrapClassName = [
     'field-wrap',
-    showFilledState && value.trim() !== '' && validation.state !== 'invalid' && 'filled',
+    validation.state === 'valid' && 'filled',
     validation.state === 'invalid' && 'error',
     iconBefore && 'has-icon-before',
     iconAfter && 'has-icon-after',
