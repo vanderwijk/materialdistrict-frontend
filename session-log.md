@@ -2933,3 +2933,53 @@ Geverifieerd via esbuild-transpile (alle gewijzigde bestanden) + globals brace-c
 - Filter-**categorieën** (design-disciplines) als WC-taxonomie + aan boeken koppelen → de Category-sectie vult zich dan vanzelf (zelfde structuur als materials).
 - Extra label-facetten (New releases / Last items / Popular) vereisen publicatiedatum / voorraadaantal / verkoopdata in de Store-API-respons.
 - Prijs-range-facet vereist een range-UI (losse follow-up); nu Format/Publisher/On sale.
+## §PREFERRED-SOURCE — Google Preferred Sources knop · 17-06-2026
+Los, klein item op het verkeers-/Google-spoor. Staat los van de follow-laag en
+de datalaag; kan apart live.
+
+**Wat:** knop die lezers naar Google's source-preferences tool stuurt met ons
+domein voorgevuld (`google.com/preferences/source?q=materialdistrict.com`). Wie
+ons als voorkeursbron kiest, ziet ons vaker in Top Stories én in AI Overviews /
+AI Mode — sluit aan op het AI-proof-verhaal. ~2× meer doorklik naar een
+voorkeursbron; wereldwijd beschikbaar voor Top Stories, NL valt eronder.
+
+**Geleverd:**
+- `src/components/ui/PreferredSourceButton.tsx` (nieuw) — varianten `default` /
+  `compact`, inline 4-kleuren Google-G.
+- `src/lib/api/preferredSource.ts` (nieuw) — anoniem-veilige click-logging,
+  fire-and-forget naar `/api/events` (bestaat nog niet → faalt stil; telt
+  vanzelf mee zodra de generieke events-endpoint live is). Bewust los van
+  `interactions.ts` (die vereist login).
+- `src/styles/globals.css` — additief blok **§PREFERRED-SOURCE** onderaan
+  (+ `.footer-bottom-left` groep). Niets erboven geraakt.
+- `src/components/layout/Footer.tsx` — knop gewired in footer-bottom
+  (`variant="compact"`, `placement="footer"`).
+- `docs/preferred-sources-item.md` (nieuw) — rationale, eligibility-check,
+  plaatsing, Johan-noot.
+
+**Live nu:** footer-bottom. **Vervolgplekken (drop-in):** boven artikelen,
+homepage, digest-mail — `<PreferredSourceButton variant="default" placement="…" />`.
+
+**Validatie:** esbuild transform groen op alle drie de TS-bestanden.
+
+**Eenmalige check:** domein invoeren op https://google.com/preferences/source om
+te bevestigen dat materialdistrict.com in de tool staat.
+
+**Johan:** CSS volledig additief (los blok aanplakken kan); `/api/events` is de
+generieke events-endpoint uit het datalaag-plan — daarop haakt de click-log aan.
+
+## Datalaag + follow — backend-spec voor Johan · 17-06-2026
+Plannen vastgelegd (fase1-logging-datalaag-plan, deel2-follow-en-gepersonaliseerde-mail-plan;
+strategie-docs) en een build-ready backend-spec geschreven: `docs/backend-spec-datalaag-follow.md`.
+
+Spec haakt aan op de bestaande `/md/v2/…`-conventie en op het precedent
+`POST /md/v2/interactions/events`. Contracten (frontend stuurt/leest) liggen vast;
+tabel-opzet is voorstel (engine/intern = Johan). Inhoud: generiek events-endpoint
+(`POST /md/v2/events`, anoniem-vriendelijk), eventlaag + samenvattingen + leespatroon,
+rollup-cron, migratie view-tellers, follow-opslag + endpoints (`/md/v2/follows`,
+globale `mail_frequency`), en `followable` boolean op het brand-object (uit
+ManufacturerTier: betaald = volgbaar). AVG en mailtool als open knopen geflagd.
+
+Mail aan Johan herzien: korte cover-note die naar deze spec verwijst.
+
+_Addendum 17-06: concrete suggesties toegevoegd aan de spec (engine = MySQL-start, system-cron, migratie-scriptvorm, AVG-startpunt, mailtool = Sendy-op-SES als lead). Migratie-bron blijft "aansluiten op Johans teller-bron"._
