@@ -80,10 +80,25 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   // Eén rij: vier boeken (zie .book-morebooks in globals.css).
   const moreBooks = items.filter((b) => b.slug !== book.slug).slice(0, 4)
 
-  // Categorie-pills boven de titel (nu de product-tags; design-discipline-
-  // categorieën schuiven hier in zodra Johan ze als taxonomie levert).
+  // Categorie-pills boven de titel: de échte design-discipline-categorieën
+  // (deep-link → /book?category=<slug>, hetzelfde filter als de Category-sectie
+  // in de sidebar). Boeken zónder discipline (handmatig nog te categoriseren in
+  // WooCommerce) vallen terug op product-tags (→ /book?tag=<slug>), zodat de kop
+  // niet leeg is.
   const categoryPills: ReactNode =
-    book.tags.length > 0 ? (
+    book.disciplines.length > 0 ? (
+      <>
+        {book.disciplines.map((d) => (
+          <Link
+            key={d.slug}
+            href={`/book?category=${encodeURIComponent(d.slug)}`}
+            className="mat-detail-tag"
+          >
+            {d.name}
+          </Link>
+        ))}
+      </>
+    ) : book.tags.length > 0 ? (
       <>
         {book.tags.map((t) => (
           <Link
