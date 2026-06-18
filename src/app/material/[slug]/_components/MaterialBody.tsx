@@ -12,7 +12,7 @@
  * DOM-mutatie.
  */
 
-import { useRef } from 'react'
+import { Suspense, useRef } from 'react'
 import { BodyHighlighter } from '@/components/ui/BodyHighlighter'
 
 export interface MaterialBodyProps {
@@ -29,7 +29,9 @@ export function MaterialBody({ html }: MaterialBodyProps) {
         className="mat-body"
         dangerouslySetInnerHTML={{ __html: html }}
       />
-      <BodyHighlighter targetRef={ref} />
+      <Suspense fallback={null}>
+        <BodyHighlighter targetRef={ref} />
+      </Suspense>
     </>
   )
 }

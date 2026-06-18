@@ -1,23 +1,10 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
-import { cache, Suspense } from 'react'
+import { Suspense } from 'react'
 import { Schibsted_Grotesk } from 'next/font/google'
-import { HeaderShell } from '@/components/layout/HeaderShell'
-import { Footer } from '@/components/layout/Footer'
-import { ScrollToTop } from '@/components/layout/ScrollToTop'
+import { AppChrome } from '@/components/layout/AppChrome'
+import { AuthenticatedAppShell } from '@/components/layout/AuthenticatedAppShell'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
-import { AuthProvider } from '@/components/providers/AuthContext'
-import { CartProvider } from '@/components/providers/CartContext'
-import { BookmarksProvider } from '@/lib/hooks/useBookmarks'
-import { GateNoticeProvider } from '@/components/ui'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
-import {
-  getCurrentUser,
-  WordPressAuthError,
-} from '@/lib/api/wordpress'
-import { clearAuthCookie, getAuthCookie } from '@/lib/auth/cookies'
-import { isNonProductionHost } from '@/lib/seo/host'
-import type { User } from '@/types/shared'
 import '@/styles/globals.css'
 
 /**
@@ -38,9 +25,14 @@ const groteskDisplay = Schibsted_Grotesk({
   display: 'swap',
 })
 
+/** Preview / local builds must not be indexed; production domain is indexed. */
+function shouldBlockIndexing(): boolean {
+  if (process.env.NODE_ENV === 'development') return true
+  return process.env.VERCEL_ENV !== 'production'
+}
+
 export async function generateMetadata(): Promise<Metadata> {
-  const host = (await headers()).get('host') ?? ''
-  const blockIndexing = isNonProductionHost(host)
+  const blockIndexing = shouldBlockIndexing()
 
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://materialdistrict.com'),
@@ -87,47 +79,11 @@ const themeInitScript = `
 })();
 `
 
-/**
- * Server-side auth hydration.
- *
- * Wrapped in React.cache() so multiple components within the same render
- * (layout + page + RSC subtree) can call `getInitialUser()` and only one
- * WordPress request is actually issued. `cache()` resets between renders,
- * so there is no staleness — each new request fetches fresh data.
- *
- * Error handling:
- *  - No cookie → `null` (anonymous visitor).
- *  - Cookie present but rejected by WordPress (`WordPressAuthError`) →
- *    clear the cookie and return `null`. The next request is a clean
- *    anonymous state.
- *  - Unexpected backend failure (`WordPressError` or worse) → return
- *    `null` and log. The site stays up; the user appears logged out
- *    rather than seeing an error page for an auxiliary call.
- */
-const getInitialUser = cache(async (): Promise<User | null> => {
-  const token = await getAuthCookie()
-  if (!token) return null
-
-  try {
-    const auth = await getCurrentUser(token)
-    return auth.user
-  } catch (err) {
-    if (err instanceof WordPressAuthError) {
-      await clearAuthCookie()
-      return null
-    }
-    console.error('[layout] auth hydration failed', err)
-    return null
-  }
-})
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const initialUser = await getInitialUser()
-
   return (
     <html
       lang="en"
@@ -142,27 +98,14 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <ThemeProvider>
-          <AuthProvider initialUser={initialUser}>
-            <BookmarksProvider>
-              <CartProvider>
-              <GateNoticeProvider>
-              {/* Sessie 7 fix Punt 17: ScrollToTop reset window-scroll
-                  bij elke client-side route-change (PUSH/REPLACE).
-                  Bij browser back/forward laat hij het over aan de
-                  browser's native scroll-restoration. Eigen Suspense
-                  omdat de component `useSearchParams()` gebruikt — in
-                  Next.js 15+ moet die binnen een Suspense-boundary
-                  staan. */}
-              <Suspense fallback={null}>
-                <ScrollToTop />
-              </Suspense>
-              <HeaderShell />
-              <main id="main">{children}</main>
-              <Footer />
-              </GateNoticeProvider>
-              </CartProvider>
-            </BookmarksProvider>
-          </AuthProvider>
+          {/*
+            Auth + footer in Suspense: main content can stream before cookie
+            hydration and footer channel-catalog (Vercel cold-start guidance).
+            Fallback renders logged-out chrome — no flash for anonymous users.
+          */}
+          <Suspense fallback={<AppChrome initialUser={null}>{children}</AppChrome>}>
+            <AuthenticatedAppShell>{children}</AuthenticatedAppShell>
+          </Suspense>
         </ThemeProvider>
         {/* Global structured data — Organization + WebSite on every page.
             Per-page entities (Product/Article/Event/Book) live in the

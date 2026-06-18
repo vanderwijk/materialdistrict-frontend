@@ -80,6 +80,10 @@ const nextConfig: NextConfig = {
   compress: true,
   trailingSlash: true,
   allowedDevOrigins,
+  // Smaller serverless bundles — tree-shake icon barrels (Vercel cold-start KB).
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'react-icons'],
+  },
 
   images: {
     remotePatterns: [

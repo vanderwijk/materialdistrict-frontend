@@ -9,10 +9,6 @@
  * Wrapped in React.cache() so the layout and any nested Server Components that
  * call it within one render trigger a single WordPress request. `cache()`
  * resets per request, so there is no cross-request staleness.
- *
- * (The root layout currently defines an equivalent local helper; it can adopt
- * this one in a later pass — left untouched here to avoid editing a shared
- * file outside this session's scope.)
  */
 
 import { cache } from 'react'

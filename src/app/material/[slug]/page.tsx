@@ -72,6 +72,9 @@ interface MaterialDetailPageProps {
   params: Promise<{ slug: string }>
 }
 
+/** ISR — mirrors `MATERIAL_REVALIDATE` in `lib/api/wordpress.ts` (6 h). */
+export const revalidate = 21600
+
 export async function generateMetadata({
   params,
 }: MaterialDetailPageProps): Promise<Metadata> {
