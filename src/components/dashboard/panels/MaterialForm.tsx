@@ -12,7 +12,7 @@ import {
   VideoLinksField,
   GalleryField,
 } from '../fields'
-import { IconAdd, IconClose, IconUpload, IconDelete, IconImage } from '@/components/ui/icons'
+import { IconAdd, IconClose, IconUpload, IconDelete, IconImage, IconCheck } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { tierMeets } from '@/lib/dashboard/nav'
 import { canManufacturerAccess, type ManufacturerTier } from '@/lib/config/membership'
@@ -287,6 +287,7 @@ export function MaterialForm({
                     onClick={() => toggleIndoorOutdoor(o.value)}
                   >
                     {o.label}
+                    {on && <IconCheck size={15} className="toggle-check" aria-hidden="true" />}
                   </button>
                 )
               })}
@@ -321,12 +322,17 @@ export function MaterialForm({
               <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
             ) : (
               <BrandTierGate
-                variant="page"
+                variant="section"
                 required="plus"
                 title="Video links"
                 description="Add product videos, showreels and installation films to your material pages. Available from the Plus tier."
                 upgradeHref="../../membership"
-              />
+              >
+                <div className="asset-list" aria-hidden="true">
+                  <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://youtube.com/watch?v=…</span></span></div>
+                  <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://vimeo.com/…</span></span></div>
+                </div>
+              </BrandTierGate>
             )}
           </div>
         </div>
@@ -345,12 +351,17 @@ export function MaterialForm({
           />
         ) : (
           <BrandTierGate
-            variant="page"
+            variant="section"
             required="plus"
             title="Documents & downloads"
             description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
             upgradeHref="../../membership"
-          />
+          >
+            <div className="asset-list" aria-hidden="true">
+              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Technical datasheet.pdf</span></span></div>
+              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">EPD certificate.pdf</span></span></div>
+            </div>
+          </BrandTierGate>
         )}
       </div>
 
@@ -417,12 +428,19 @@ export function MaterialForm({
           </>
         ) : (
           <BrandTierGate
-            variant="page"
+            variant="section"
             required="plus"
             title="Keywords"
             description="Add discovery keywords so buyers find this material faster. Available from the Plus tier."
             upgradeHref="../../membership"
-          />
+          >
+            <div className="chip-group" aria-hidden="true">
+              <span className="chip is-on">acoustic</span>
+              <span className="chip is-on">recycled</span>
+              <span className="chip">fire-rated</span>
+              <span className="chip">bio-based</span>
+            </div>
+          </BrandTierGate>
         )}
       </div>
 
@@ -443,12 +461,20 @@ export function MaterialForm({
           />
         ) : (
           <BrandTierGate
-            variant="page"
+            variant="section"
             required="partner"
             title="Channel coupling"
             description="Link this material to editorial channels so it appears on channel pages alongside relevant articles, talks and brands. Available on the Partner tier."
             upgradeHref="../../membership"
-          />
+          >
+            <div className="chip-group" aria-hidden="true">
+              <span className="chip is-on">Biobased</span>
+              <span className="chip">Acoustic</span>
+              <span className="chip is-on">Sustainability</span>
+              <span className="chip">Lighting</span>
+              <span className="chip">Surfaces</span>
+            </div>
+          </BrandTierGate>
         )}
       </div>
 

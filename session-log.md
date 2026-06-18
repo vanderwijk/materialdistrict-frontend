@@ -12,8 +12,45 @@
 ---
 
 ## Laatste update
-Datum: 17-06-2026 — §PREFERRED-SOURCE: Google Preferred Sources-knop
-(footer-bottom live, component + click-logging + additief CSS-blok).
+Datum: 17-06-2026 — Dashboard review-ronde, deel 1 (visuele laag): §DASH-REVIEW.
+Afgeschermde secties compact + gekleurde overlay (zwarte upgrade / witte preview),
+"+ Add"-knoppen zwart (groen alleen voor Save changes), groene kaders van
+toegevoegde rijen weg, kruisje weg bij channel-chips, Indoor/Outdoor groene
+outline + vinkje, ruimere veldspatiëring. Eén append-only CSS-blok + 3 component-
+bestanden. NB: de Follow/Preferred-Sources-tak (volledig-17-06) is apart en niet
+geraakt — Johan kan beide takken los mergen (beide append-only §-blokken).
+
+#### §DASH-REVIEW — dashboard review-ronde deel 1 (17-06-2026)
+
+Gewijzigde bestanden:
+- `src/styles/globals.css` — nieuw append-only blok §DASH-REVIEW. Heft de
+  §DASH-POLISH-regel op die alle dashboard-`btn-primary` groen maakte: content/
+  sidebar-knoppen nu zwart (`--ink`), Save changes (`.sticky-footer .btn-primary`)
+  blijft groen. Gate-section: gekleurde overlay (lichtblauw, dark-mode-variant),
+  blur op de doorschijnende inhoud, Preview-knop wit/outline. `.asset-row`
+  neutraal (groen kader weg). Ruimere `.field-block`/`g2`/`g3`-spatiëring.
+  `.toggle-btn.is-on` groene outline + `.toggle-check`.
+- `src/components/dashboard/fields/ChannelPicker.tsx` — kruisje (×) weg bij
+  geselecteerde chips; klik toggelt aan/uit. Ongebruikte `IconClose`-import weg.
+- `src/components/dashboard/panels/MaterialForm.tsx` — Indoor/Outdoor: vinkje
+  (`IconCheck`) bij geselecteerde toggle; 4 in-form gates van `variant="page"`
+  naar `variant="section"` met doorschijnende voorbeeld-inhoud.
+- `src/components/dashboard/panels/BrandProfileForm.tsx` — 4 in-form gates van
+  `variant="page"` naar `variant="section"` met doorschijnende voorbeeld-inhoud.
+
+Validatie: esbuild-transform groen op alle 3 TSX-bestanden; globals.css
+brace-balans 0. Volle-pagina gates (Statistics, Lead routing) blijven bewust
+`variant="page"`. Crash-fix `wpRenderedHtml` in mappers.ts ongemoeid.
+
+Nog open (deel 2 van de review): sidebar-hergroepering (1), witregel boven
+invoice-blok (3), back-link boven het paneel (4), my-requests klikbaar naar
+detail (5, backend-veld verifiëren), saved-search zelf benoembaar (6, herkomst
+naam verifiëren), required-velden rood highlighten bij Save i.p.v. uitschakelen
+(8, form-state-wiring), VIES-validatie verifiëren/herstellen (9), minimum
+karakters + teller op descriptions (14, default 500), crop-functionaliteit
+logo 1:1 / avatar 1:1 / featured 16:9 (15, Johan voor opslag bijgesneden bestand).
+
+Deployed via Git.
 
 ---
 
@@ -2933,121 +2970,3 @@ Geverifieerd via esbuild-transpile (alle gewijzigde bestanden) + globals brace-c
 - Filter-**categorieën** (design-disciplines) als WC-taxonomie + aan boeken koppelen → de Category-sectie vult zich dan vanzelf (zelfde structuur als materials).
 - Extra label-facetten (New releases / Last items / Popular) vereisen publicatiedatum / voorraadaantal / verkoopdata in de Store-API-respons.
 - Prijs-range-facet vereist een range-UI (losse follow-up); nu Format/Publisher/On sale.
-
-## §PREFERRED-SOURCE — Google Preferred Sources knop · 17-06-2026
-Los, klein item op het verkeers-/Google-spoor. Staat los van de follow-laag en
-de datalaag; kan apart live.
-
-**Wat:** knop die lezers naar Google's source-preferences tool stuurt met ons
-domein voorgevuld (`google.com/preferences/source?q=materialdistrict.com`). Wie
-ons als voorkeursbron kiest, ziet ons vaker in Top Stories én in AI Overviews /
-AI Mode — sluit aan op het AI-proof-verhaal. ~2× meer doorklik naar een
-voorkeursbron; wereldwijd beschikbaar voor Top Stories, NL valt eronder.
-
-**Geleverd:**
-- `src/components/ui/PreferredSourceButton.tsx` (nieuw) — varianten `default` /
-  `compact`, inline 4-kleuren Google-G.
-- `src/lib/api/preferredSource.ts` (nieuw) — anoniem-veilige click-logging,
-  fire-and-forget naar `/api/events` (bestaat nog niet → faalt stil; telt
-  vanzelf mee zodra de generieke events-endpoint live is). Bewust los van
-  `interactions.ts` (die vereist login).
-- `src/styles/globals.css` — additief blok **§PREFERRED-SOURCE** onderaan
-  (+ `.footer-bottom-left` groep). Niets erboven geraakt.
-- `src/components/layout/Footer.tsx` — knop gewired in footer-bottom
-  (`variant="compact"`, `placement="footer"`).
-- `docs/preferred-sources-item.md` (nieuw) — rationale, eligibility-check,
-  plaatsing, Johan-noot.
-
-**Live nu:** footer-bottom. **Vervolgplekken (drop-in):** boven artikelen,
-homepage, digest-mail — `<PreferredSourceButton variant="default" placement="…" />`.
-
-**Validatie:** esbuild transform groen op alle drie de TS-bestanden.
-
-**Eenmalige check:** domein invoeren op https://google.com/preferences/source om
-te bevestigen dat materialdistrict.com in de tool staat.
-
-**Johan:** CSS volledig additief (los blok aanplakken kan); `/api/events` is de
-generieke events-endpoint uit het datalaag-plan — daarop haakt de click-log aan.
-
-## Datalaag + follow — backend-spec voor Johan · 17-06-2026
-Plannen vastgelegd (fase1-logging-datalaag-plan, deel2-follow-en-gepersonaliseerde-mail-plan;
-strategie-docs) en een build-ready backend-spec geschreven: `docs/backend-spec-datalaag-follow.md`.
-
-Spec haakt aan op de bestaande `/md/v2/…`-conventie en op het precedent
-`POST /md/v2/interactions/events`. Contracten (frontend stuurt/leest) liggen vast;
-tabel-opzet is voorstel (engine/intern = Johan). Inhoud: generiek events-endpoint
-(`POST /md/v2/events`, anoniem-vriendelijk), eventlaag + samenvattingen + leespatroon,
-rollup-cron, migratie view-tellers, follow-opslag + endpoints (`/md/v2/follows`,
-globale `mail_frequency`), en `followable` boolean op het brand-object (uit
-ManufacturerTier: betaald = volgbaar). AVG en mailtool als open knopen geflagd.
-
-Mail aan Johan herzien: korte cover-note die naar deze spec verwijst.
-
-_Addendum 17-06: concrete suggesties toegevoegd aan de spec (engine = MySQL-start, system-cron, migratie-scriptvorm, AVG-startpunt, mailtool = Sendy-op-SES als lead). Migratie-bron blijft "aansluiten op Johans teller-bron"._
-
-## §PREFERRED-SOURCE-ARTICLE + §CHANNEL-HERO-CONTRAST · 17-06-2026
-Einde-artikel Google-voorkeursbron-knop ingewired op de detailpagina (na de
-author-footer, vóór prev/next), variant default, placement="article", via de
-bestaande PreferredSourceButton. Plus contrast-fix op de channel-hero: de titel
-was al wit (erft van .channel-hero) — subtiele text-shadow op titel + eyebrow,
-alleen op de image-variant (niet is-plain), zodat-ie op lichte foto's niet
-wegvalt. Beide additieve §-blokken; esbuild groen.
-
-Footer-knop stond al live; homepage-plek bewust overgeslagen (footer + einde-
-artikel samen genoeg, digest is de sterkere derde plek). Volledige
-Preferred-Source-frontend nu in één zip (footer + artikel + component + helper +
-css + doc), supersedet de losse levering van eerder vandaag.
-
-## §FOLLOW — follow-core (events-rail + follow-plumbing + toggle) · 17-06-2026
-Doorgebouwd op verzoek. Geleverd:
-
-**Events-rail (werkt nu, ook anoniem):**
-- src/lib/api/events.ts — generieke logEvent + ensureAnonymousId (md_aid first-party cookie).
-- src/app/api/events/route.ts — anoniem-vriendelijke proxy → POST /md/v2/events
-  (Bearer als ingelogd, anders anonymous_id uit cookie; best-effort 202 bij WP-fout
-  of nog-niet-bestaand endpoint).
-- preferredSource.ts loopt nu via logEvent (DRY) → de Preferred-Source-knop logt
-  vanaf nu echt i.p.v. naar een 404 te schieten.
-
-**Follow-plumbing (contract-geïsoleerd):**
-- src/lib/api/follows.ts — client (followEntity/unfollowEntity/getFollows).
-- src/app/api/follows/route.ts — proxy GET/POST/DELETE → /md/v2/follows (login vereist).
-- src/lib/hooks/useFollow.tsx — optimistische follow-state per entiteit + follow-event.
-
-**Toggle (goedgekeurde interactie):**
-- src/components/ui/FollowToggle.tsx — schuifje + popover (2-koloms checklist met
-  defaults aan: material/story/talk; uit: book/event/brand) + globale frequentie-
-  pull-down + auto-close-balk + klik-buiten + account-catch (ink-knop) voor uitgelogd.
-- globals.css §FOLLOW (additief).
-
-esbuild transform groen op alle bestanden. Volledige tsc draait in Johans deploy-pipeline.
-
-**Nog te doen (volgende pass, klein):** placement van de FollowToggle in een channel-pill
-op channel- én detailpagina's (visuele check daar), het digest-blok dat de oude
-nieuwsbrief-box vervangt, en het "wat ik volg"-accountoverzicht. De data-bedrading
-landt zodra Johans /md/v2/events + /md/v2/follows + followable-veld live zijn —
-contracten bevestigen jullie morgen, daarna is het één tik om scherp te zetten.
-
-_Addendum 17-06: FollowToggle geplaatst op de channelpagina (in ChannelHero, entityType=channel, entityId=channel.id) + §FOLLOW-PLACEMENT. Detailpagina-pill (article/material/brand/talk/event/book) nog te doen._
-
-## §FOLLOW-DIGEST + detailpagina-knoppen + brand-toggle · 17-06-2026
-Alles wat zonder Johan kon, gebouwd en gevalideerd (esbuild groen):
-- **Google Preferred Source-knop op ALLE detailpagina's** (article/material/brand/
-  talk/event/book) via een herbruikbare PreferredSourceEndBlock (onderaan, vóór
-  prev/next). Article-pagina herbruikt nu ook deze component.
-- **Brand-detail: FollowToggle** ("follow this brand"), entityType=brand, gated op
-  followable — toont tenzij expliciet false, tot Johans veld op de brand-response staat.
-- **Footer: e-mailbox vervangen door FollowDigestBlock** — channel-chips, GEEN
-  e-mailveld, globale frequentie-pull-down, "Start following", account-catch voor
-  uitgelogd, bevestigingsregel voor ingelogd. Footer is nu async en haalt curated
-  channels via getChannelsIndex (featured eerst, max 6). NewsletterForm +
-  ClientNewsletterForm-import uit Footer verwijderd (ClientNewsletterForm.tsx blijft
-  als ongebruikt bestand staan).
-- Channelpagina-toggle stond al (vorige stap).
-
-CSS: §FOLLOW-DIGEST + .brand-follow-row (additief).
-
-Nog te doen: de follow-toggle ook op niet-brand detailpagina's via een channel-pill
-(per contenttype), het "wat ik volg"-accountoverzicht, en een visuele controle op
-de preview. De data-functie (echt opslaan, followable-gate, dashboards) wacht op
-Johans /md/v2/events + /md/v2/follows + followable-veld.

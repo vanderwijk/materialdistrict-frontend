@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { IconClose } from '@/components/ui/icons'
 
 interface ChannelPickerProps {
   options: readonly string[]
@@ -18,7 +17,7 @@ interface ChannelPickerProps {
  *
  * Eén component i.p.v. twee losse implementaties:
  *   - Klik op een chip = toggle (aan/uit).
- *   - Een geselecteerde chip toont een × (klik = verwijderen), niet meer een ✓.
+ *   - Een geselecteerde chip is gevuld; klik = uit. Geen × en geen ✓ — klik toggelt.
  *   - Klik je een extra chip aan boven het maximum, dan verschijnt een nette
  *     melding i.p.v. dat de overige chips stilletjes uitgrijzen.
  *   - Geen aparte "Active channel links"-lijst meer (die was dubbelop met de
@@ -62,9 +61,6 @@ export function ChannelPicker({
               onClick={() => toggle(channel)}
             >
               {channel}
-              {selected && (
-                <IconClose size={12} className="chip-x" aria-hidden="true" />
-              )}
             </button>
           )
         })}

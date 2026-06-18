@@ -15614,3 +15614,60 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .insight-card-desc{font-size:13px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .insight-card-meta{font-size:12px;color:var(--text-hint);margin-top:2px}
 .insight-card-action{margin-top:10px}
+/* ============================================================================
+   §DASH-REVIEW — dashboard review-ronde (17-06-2026), append-only.
+   Verfijnt §DASH-POLISH op basis van de design-review. Rode draad: groen is
+   uitsluitend voor de primaire actie per pagina (Save changes, sticky footer).
+   Al het andere in content/sidebar wordt zwart of outline. Uitsluitend
+   bestaande tokens; dark-mode-veilig.
+   ----------------------------------------------------------------------------
+   (10/7) Content- en sidebar-knoppen zwart; Save changes blijft groen. Heft de
+   §DASH-POLISH-regel op die alle dashboard-btn-primary groen maakte. De
+   upgrade-knoppen in de gates vallen ook onder .dash-content en worden zwart. */
+.dash-content .btn-primary,
+.dash-sidebar-wrap .btn-primary {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+.dash-content .btn-primary:hover:not(:disabled),
+.dash-sidebar-wrap .btn-primary:hover:not(:disabled) {
+  background: var(--ink);
+  opacity: 0.88;
+}
+.sticky-footer .btn-primary { background: var(--green-mid); color: #fff; }
+.sticky-footer .btn-primary:hover:not(:disabled) { background: var(--green); }
+
+/* (7) Afgeschermde secties (section-variant): lichte gekleurde overlay zodat de
+   echte content erachter in kleur doorschijnt; compacte hoogte; Preview wit
+   met zwarte tekst (Upgrade is al zwart via de regel hierboven). */
+.brand-tier-gate.is-section { min-height: 0; }
+.brand-tier-gate-content-blur { filter: blur(1.5px); pointer-events: none; user-select: none; }
+.brand-tier-gate-overlay { background: rgba(238, 242, 250, 0.78); }
+[data-theme="dark"] .brand-tier-gate-overlay { background: rgba(20, 28, 42, 0.82); }
+.brand-tier-gate-actions .btn-secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.brand-tier-gate-actions .btn-secondary:hover:not(:disabled) { background: var(--surface2); }
+
+/* (11) Toegevoegde rijen niet langer groen omkaderd, maar neutraal — net als de
+   overige velden. Groen blijft voorbehouden aan de primaire actie. */
+.asset-row { border-color: var(--border); background: var(--surface); }
+
+/* (2) Meer verticale ademruimte tussen velden/rijen, zodat de status-cirkels
+   niet meer tegen het veld erboven plakken. */
+.field-block { margin-top: 24px; }
+.dash-content .g2, .dash-content .g3 { row-gap: 22px; }
+
+/* (13) Indoor/Outdoor (en vergelijkbare toggle-groepen): geselecteerd = groene
+   outline + groen vinkje, identiek aan de "geldig veld"-taal — niet gevuld
+   groen, zodat het niet met Save changes concurreert. */
+.toggle-btn.is-on {
+  background: var(--surface);
+  border-color: var(--green-mid);
+  color: var(--green);
+}
+.toggle-btn.is-on:hover { border-color: var(--green-mid); }
+.toggle-check { margin-left: 7px; vertical-align: -1px; color: var(--green-mid); }
+/* ============================ einde §DASH-REVIEW ============================ */

@@ -366,12 +366,17 @@ export function BrandProfileForm({
               <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
             ) : (
               <BrandTierGate
-                variant="page"
+                variant="section"
                 required="plus"
                 title="Video links"
                 description="Add YouTube or Vimeo links to your brand page. Available from the Plus tier."
                 upgradeHref="./membership"
-              />
+              >
+                <div className="asset-list" aria-hidden="true">
+                  <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://youtube.com/watch?v=…</span></span></div>
+                  <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://vimeo.com/…</span></span></div>
+                </div>
+              </BrandTierGate>
             )}
           </div>
         </div>
@@ -392,12 +397,17 @@ export function BrandProfileForm({
           />
         ) : (
           <BrandTierGate
-            variant="page"
+            variant="section"
             required="plus"
             title="Downloads & brochures"
             description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
             upgradeHref="./membership"
-          />
+          >
+            <div className="asset-list" aria-hidden="true">
+              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Company brochure.pdf</span></span></div>
+              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Sustainability report.pdf</span></span></div>
+            </div>
+          </BrandTierGate>
         )}
       </div>
 
@@ -444,12 +454,19 @@ export function BrandProfileForm({
           </>
         ) : (
           <BrandTierGate
-            variant="page"
+            variant="section"
             required="plus"
             title="Keywords"
             description="Add discovery keywords to your brand and materials so buyers find you faster. Available from the Plus tier."
             upgradeHref="./membership"
-          />
+          >
+            <div className="chip-group" aria-hidden="true">
+              <span className="chip is-on">sustainable</span>
+              <span className="chip is-on">FSC</span>
+              <span className="chip">recycled</span>
+              <span className="chip">acoustic</span>
+            </div>
+          </BrandTierGate>
         )}
       </div>
 
@@ -470,12 +487,20 @@ export function BrandProfileForm({
           />
         ) : (
           <BrandTierGate
-            variant="page"
+            variant="section"
             required="partner"
             title="Channel coupling"
             description="Link your brand to editorial channels so it appears on channel pages alongside relevant materials, articles and talks. Available on the Partner tier."
             upgradeHref="./membership"
-          />
+          >
+            <div className="chip-group" aria-hidden="true">
+              <span className="chip is-on">Biobased</span>
+              <span className="chip">Acoustic</span>
+              <span className="chip is-on">Sustainability</span>
+              <span className="chip">Lighting</span>
+              <span className="chip">Surfaces</span>
+            </div>
+          </BrandTierGate>
         )}
       </div>
 
