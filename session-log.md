@@ -3013,3 +3013,10 @@ Geverifieerd via esbuild-transpile (alle gewijzigde bestanden) + globals brace-c
 - Filter-**categorieën** (design-disciplines) als WC-taxonomie + aan boeken koppelen → de Category-sectie vult zich dan vanzelf (zelfde structuur als materials).
 - Extra label-facetten (New releases / Last items / Popular) vereisen publicatiedatum / voorraadaantal / verkoopdata in de Store-API-respons.
 - Prijs-range-facet vereist een range-UI (losse follow-up); nu Format/Publisher/On sale.
+
+## 18-06-2026 — Fix: ontbrekende §-blokken in globals.css (follow + preferred-source)
+- **Symptoom (productie):** Preferred-Source-knop als paginabrede Google-G, follow-toggle als platte tekst "Follow", footer-digest met chips aan elkaar geplakt, einde-blok zonder opmaak.
+- **Oorzaak:** componenten stonden wél in main, maar de bijbehorende CSS-§-blokken waren nooit in globals.css beland. Mijn volledige bestand was destijds terecht niet wholesale toegepast (zou de §DASH-REVIEW-blokken hebben geclobberd), maar de blokken zijn daarna niet additief toegevoegd.
+- **Fix:** zes blokken additief achter de huidige globals.css geplakt: §PREFERRED-SOURCE, §PREFERRED-SOURCE-ARTICLE, §CHANNEL-HERO-CONTRAST, §FOLLOW, §FOLLOW-PLACEMENT, §FOLLOW-DIGEST. 15776 → 16025 regels; accolades 2815/2815; §DASH-REVIEW intact.
+- **Actie:** globals.css vervangen + redeploy.
+- **Open (vervolg-batch):** SVG-verharding Google-G (width/height-attrs op de SVG; PreferredSourceButton.tsx is identiek aan main → veilig), client-side dubbele follow-events verwijderen, frequency-PATCH koppelen.
