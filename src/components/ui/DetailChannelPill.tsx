@@ -21,7 +21,7 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useFollow, DEFAULT_FOLLOW_TYPES } from '@/lib/hooks/useFollow'
+import { useFollow, useMailFrequency, DEFAULT_FOLLOW_TYPES } from '@/lib/hooks/useFollow'
 import {
   setMailFrequency,
   type FollowContentType,
@@ -61,18 +61,27 @@ export function DetailChannelPill({
   createAccountHref = '/register',
   signInHref = '/sign-in',
 }: DetailChannelPillProps) {
-  const { isLoggedIn, following, busy, follow, unfollow, updateTypes } = useFollow({
+  const { isLoggedIn, following, busy, follow, unfollow, updateTypes, types } = useFollow({
     entityType: 'channel',
     entityId: id,
   })
 
   const [pop, setPop] = useState<null | 'follow' | 'catch'>(null)
   const [selected, setSelected] = useState<FollowContentType[]>(DEFAULT_FOLLOW_TYPES)
+  const hydratedFreq = useMailFrequency('weekly')
   const [freq, setFreq] = useState<MailFrequency>('weekly')
   const [caretX, setCaretX] = useState<number | null>(null)
   const rootRef = useRef<HTMLSpanElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    setSelected(types)
+  }, [types])
+
+  useEffect(() => {
+    setFreq(hydratedFreq)
+  }, [hydratedFreq])
 
   const closePop = useCallback(() => {
     setPop(null)

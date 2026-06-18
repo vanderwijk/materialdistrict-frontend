@@ -22,10 +22,17 @@
  * die overal op de site staat.
  */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
-import { followEntity, setMailFrequency, type MailFrequency } from '@/lib/api/follows'
-import { DEFAULT_FOLLOW_TYPES } from '@/lib/hooks/useFollow'
+import {
+  followEntity,
+  setMailFrequency,
+  loadFollows,
+  subscribeFollows,
+  getFollowsCache,
+  type MailFrequency,
+} from '@/lib/api/follows'
+import { DEFAULT_FOLLOW_TYPES, useMailFrequency } from '@/lib/hooks/useFollow'
 
 const FREQUENCIES: MailFrequency[] = ['daily', 'weekly', 'monthly']
 const FREQ_LABEL: Record<MailFrequency, string> = {
@@ -63,8 +70,37 @@ export function FollowDigestBlock({
 }: FollowDigestBlockProps) {
   const { isLoggedIn } = useAuth()
   const [selected, setSelected] = useState<Set<number>>(new Set())
+  const hydratedFrequency = useMailFrequency('weekly')
   const [frequency, setFrequency] = useState<MailFrequency>('weekly')
   const [status, setStatus] = useState<'idle' | 'catch' | 'busy' | 'done'>('idle')
+
+  useEffect(() => {
+    setFrequency(hydratedFrequency)
+  }, [hydratedFrequency])
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setSelected(new Set())
+      return
+    }
+
+    const apply = () => {
+      const cache = getFollowsCache()
+      if (!cache) return
+      const followedIds = new Set(
+        cache.follows
+          .filter((row) => row.entityType === 'channel')
+          .map((row) => Number(row.entityId)),
+      )
+      const preselected = channels.filter((channel) => followedIds.has(channel.id))
+      if (preselected.length > 0) {
+        setSelected(new Set(preselected.map((channel) => channel.id)))
+      }
+    }
+
+    void loadFollows().then(apply).catch(() => {})
+    return subscribeFollows(apply)
+  }, [isLoggedIn, channels])
 
   const toggle = (id: number) =>
     setSelected((prev) => {

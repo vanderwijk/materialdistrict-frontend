@@ -27,6 +27,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils/cn'
 import {
   useFollow,
+  useMailFrequency,
   DEFAULT_FOLLOW_TYPES,
 } from '@/lib/hooks/useFollow'
 import {
@@ -81,7 +82,7 @@ export function FollowToggle({
   signInHref = '/sign-in',
   className,
 }: FollowToggleProps) {
-  const { isLoggedIn, following, busy, follow, unfollow, updateTypes } = useFollow({
+  const { isLoggedIn, following, busy, follow, unfollow, updateTypes, types } = useFollow({
     entityType,
     entityId,
     initialFollowing,
@@ -92,11 +93,20 @@ export function FollowToggle({
   const [selected, setSelected] = useState<FollowContentType[]>(
     initialTypes ?? DEFAULT_FOLLOW_TYPES,
   )
+  const hydratedFreq = useMailFrequency(mailFrequency)
   const [freq, setFreq] = useState<MailFrequency>(mailFrequency)
   const [caretX, setCaretX] = useState<number | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
   const knobRef = useRef<HTMLSpanElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    setSelected(types)
+  }, [types])
+
+  useEffect(() => {
+    setFreq(hydratedFreq)
+  }, [hydratedFreq])
 
   const closePop = useCallback(() => {
     setPop(null)

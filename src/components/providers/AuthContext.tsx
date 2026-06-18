@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'next/navigation'
 import type { User } from '@/types/shared'
 import { isInsider as userIsInsider } from '@/lib/auth/user-helpers'
+import { invalidateFollowsCache } from '@/lib/api/follows'
 
 /**
  * AuthContext — auth state for the Next.js client.
@@ -109,6 +110,15 @@ export function AuthProvider({
 }) {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(initialUser)
+  const prevUserIdRef = useRef<number | null>(initialUser?.id ?? null)
+
+  useEffect(() => {
+    const nextUserId = user?.id ?? null
+    if (prevUserIdRef.current !== nextUserId) {
+      invalidateFollowsCache()
+      prevUserIdRef.current = nextUserId
+    }
+  }, [user?.id])
 
   /**
    * Server-state sync.
