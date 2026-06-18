@@ -14,6 +14,19 @@ import { DashboardMobileNav } from './DashboardMobileNav'
  * and the active panel are derived from the pathname — the URL is the single
  * source of truth, so there is no client routing state to keep in sync.
  *
+ * Layout structure (#16.1, robust rebuild):
+ *   .dash-shell                  ← outer frame (max-width, centering, padding)
+ *     #dash-header-band          ← full-width band; pages portal their <h1> here
+ *     .dash-layout               ← normal 256px / 1fr grid (sidebar | content)
+ *       .dash-sidebar-wrap
+ *       .dash-content            ← normal flex column
+ *
+ * The header lives in its own band above the grid, so the sidebar and content
+ * always stay two proper columns — in every state (loading skeleton, empty,
+ * multi-card). This replaces the earlier `display:contents` approach, which
+ * broke the columns whenever the header was absent or content spanned multiple
+ * cards.
+ *
  * Rendered by the (server) dashboard layout, which has already gated on auth
  * and passes the resolved user down.
  */
@@ -30,9 +43,12 @@ export function DashboardShell({
   return (
     <PreviewModeProvider>
       <DashboardMobileNav user={user} scope={scope} />
-      <div className="dash-layout fade-in">
-        <DashboardSidebar user={user} scope={scope} />
-        <div className="dash-content">{children}</div>
+      <div className="dash-shell fade-in">
+        <div id="dash-header-band" className="dash-header-band" />
+        <div className="dash-layout">
+          <DashboardSidebar user={user} scope={scope} />
+          <div className="dash-content">{children}</div>
+        </div>
       </div>
       <PreviewModeIndicator />
     </PreviewModeProvider>

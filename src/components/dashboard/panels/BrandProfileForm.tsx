@@ -323,26 +323,32 @@ export function BrandProfileForm({
       </div>
 
       {/* Sectors & applications — Plus+ (boven Social: belangrijker) */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Sectors &amp; applications</h2>
-        <p className="panel-section-desc">
-          In which application areas are your products used? This makes your brand findable when specifiers
-          filter by application — e.g. wall cladding, facade, or flooring.
-        </p>
-        {canApplications ? (
+      {canApplications ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Sectors &amp; applications</h2>
+          <p className="panel-section-desc">
+            In which application areas are your products used? This makes your brand findable when specifiers
+            filter by application — e.g. wall cladding, facade, or flooring.
+          </p>
           <ApplicationPicker value={form.applications} onChange={(next) => set('applications', next)} />
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="plus"
-            title="Sectors & applications"
-            description="Help architects and designers find your brand by the applications you serve. Available from the Plus tier."
-            upgradeHref="./membership"
-          >
-            <ApplicationPicker value={form.applications} onChange={() => {}} />
-          </BrandTierGate>
-        )}
-      </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="plus"
+          className="dash-panel"
+          title="Sectors & applications"
+          description="Help architects and designers find your brand by the applications you serve. Available from the Plus tier."
+          upgradeHref="./membership"
+        >
+          <h2 className="panel-section-title">Sectors &amp; applications</h2>
+          <p className="panel-section-desc">
+            In which application areas are your products used? This makes your brand findable when specifiers
+            filter by application — e.g. wall cladding, facade, or flooring.
+          </p>
+          <ApplicationPicker value={form.applications} onChange={() => {}} />
+        </BrandTierGate>
+      )}
 
       {/* Social channels */}
       <div className="dash-panel">
@@ -376,9 +382,11 @@ export function BrandProfileForm({
             />
           </div>
           <div>
-            <span className="field-subhead">Video links</span>
             {canVideos ? (
-              <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
+              <>
+                <span className="field-subhead">Video links</span>
+                <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
+              </>
             ) : (
               <BrandTierGate
                 variant="section"
@@ -387,6 +395,7 @@ export function BrandProfileForm({
                 description="Add YouTube or Vimeo links to your brand page. Available from the Plus tier."
                 upgradeHref="./membership"
               >
+                <span className="field-subhead">Video links</span>
                 <div className="asset-list" aria-hidden="true">
                   <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://youtube.com/watch?v=…</span></span></div>
                   <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://vimeo.com/…</span></span></div>
@@ -398,101 +407,110 @@ export function BrandProfileForm({
       </div>
 
       {/* Downloads & brochures — Plus+ */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Downloads &amp; brochures</h2>
-        <p className="panel-section-desc">
-          Upload company brochures, catalogues or sustainability reports. Visitors can download these directly from your brand page.
-        </p>
-        {canDownloads ? (
+      {canDownloads ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Downloads &amp; brochures</h2>
+          <p className="panel-section-desc">
+            Upload company brochures, catalogues or sustainability reports. Visitors can download these directly from your brand page.
+          </p>
           <DownloadsField
             value={form.downloads}
             onChange={(next) => set('downloads', next)}
             onUpload={(file) => uploadFile(file, 'document')}
             uploading={uploading}
           />
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="plus"
-            title="Downloads & brochures"
-            description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
-            upgradeHref="./membership"
-          >
-            <div className="asset-list" aria-hidden="true">
-              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Company brochure.pdf</span></span></div>
-              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Sustainability report.pdf</span></span></div>
-            </div>
-          </BrandTierGate>
-        )}
-      </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="plus"
+          className="dash-panel"
+          title="Downloads & brochures"
+          description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
+          upgradeHref="./membership"
+        >
+          <h2 className="panel-section-title">Downloads &amp; brochures</h2>
+          <p className="panel-section-desc">
+            Upload company brochures, catalogues or sustainability reports. Visitors can download these directly from your brand page.
+          </p>
+          <div className="asset-list" aria-hidden="true">
+            <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Company brochure.pdf</span></span></div>
+            <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Sustainability report.pdf</span></span></div>
+          </div>
+        </BrandTierGate>
+      )}
 
       {/* Keywords — Plus+ */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Keywords</h2>
-        {canKeywords ? (
-          <>
-            <p className="panel-section-desc">
-              Add keywords to help visitors find your brand. Think of materials, applications, sectors or
-              certifications. Keywords also apply to individual material pages.
-            </p>
-            <div className="kw-input-row">
-              <Input
-                label="Add keyword"
-                value={keywordDraft}
-                onChange={(e) => setKeywordDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addKeyword()
-                  }
-                }}
-              />
-              <button type="button" className="btn btn-primary" onClick={addKeyword} disabled={!keywordDraft.trim()}>
-                <IconAdd size={16} /> Add
-              </button>
-            </div>
-            <div className="chip-group">
-              {form.keywords.map((kw) => (
-                <span key={kw} className="chip is-on">
-                  {kw}
-                  <button
-                    type="button"
-                    className="chip-x"
-                    onClick={() => set('keywords', form.keywords.filter((k) => k !== kw))}
-                    aria-label={`Remove keyword ${kw}`}
-                  >
-                    <IconClose size={12} />
-                  </button>
-                </span>
-              ))}
-            </div>
-          </>
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="plus"
-            title="Keywords"
-            description="Add discovery keywords to your brand and materials so buyers find you faster. Available from the Plus tier."
-            upgradeHref="./membership"
-          >
-            <div className="chip-group" aria-hidden="true">
-              <span className="chip is-on">sustainable</span>
-              <span className="chip is-on">FSC</span>
-              <span className="chip">recycled</span>
-              <span className="chip">acoustic</span>
-            </div>
-          </BrandTierGate>
-        )}
-      </div>
+      {canKeywords ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Keywords</h2>
+          <p className="panel-section-desc">
+            Add keywords to help visitors find your brand. Think of materials, applications, sectors or
+            certifications. Keywords also apply to individual material pages.
+          </p>
+          <div className="kw-input-row">
+            <Input
+              label="Add keyword"
+              value={keywordDraft}
+              onChange={(e) => setKeywordDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addKeyword()
+                }
+              }}
+            />
+            <button type="button" className="btn btn-primary" onClick={addKeyword} disabled={!keywordDraft.trim()}>
+              <IconAdd size={16} /> Add
+            </button>
+          </div>
+          <div className="chip-group">
+            {form.keywords.map((kw) => (
+              <span key={kw} className="chip is-on">
+                {kw}
+                <button
+                  type="button"
+                  className="chip-x"
+                  onClick={() => set('keywords', form.keywords.filter((k) => k !== kw))}
+                  aria-label={`Remove keyword ${kw}`}
+                >
+                  <IconClose size={12} />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="plus"
+          className="dash-panel"
+          title="Keywords"
+          description="Add discovery keywords to your brand and materials so buyers find you faster. Available from the Plus tier."
+          upgradeHref="./membership"
+        >
+          <h2 className="panel-section-title">Keywords</h2>
+          <p className="panel-section-desc">
+            Add keywords to help visitors find your brand. Think of materials, applications, sectors or
+            certifications. Keywords also apply to individual material pages.
+          </p>
+          <div className="chip-group" aria-hidden="true">
+            <span className="chip is-on">sustainable</span>
+            <span className="chip is-on">FSC</span>
+            <span className="chip">recycled</span>
+            <span className="chip">acoustic</span>
+          </div>
+        </BrandTierGate>
+      )}
 
       {/* Channel coupling — Partner only */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Channel coupling</h2>
-        <p className="panel-section-desc">
-          Link your brand to up to {MAX_CHANNELS} editorial channels. Your brand will appear on those channel pages,
-          shown alongside curated materials, articles and talks.
-        </p>
-        {canChannels ? (
+      {canChannels ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Channel coupling</h2>
+          <p className="panel-section-desc">
+            Link your brand to up to {MAX_CHANNELS} editorial channels. Your brand will appear on those channel pages,
+            shown alongside curated materials, articles and talks.
+          </p>
           <ChannelPicker
             options={MATERIAL_CHANNEL_LABELS}
             value={form.channels}
@@ -500,24 +518,30 @@ export function BrandProfileForm({
             max={MAX_CHANNELS}
             note="Your brand will appear on these channel pages within 24 hours of saving."
           />
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="partner"
-            title="Channel coupling"
-            description="Link your brand to editorial channels so it appears on channel pages alongside relevant materials, articles and talks. Available on the Partner tier."
-            upgradeHref="./membership"
-          >
-            <div className="chip-group" aria-hidden="true">
-              <span className="chip is-on">Biobased</span>
-              <span className="chip">Acoustic</span>
-              <span className="chip is-on">Sustainability</span>
-              <span className="chip">Lighting</span>
-              <span className="chip">Surfaces</span>
-            </div>
-          </BrandTierGate>
-        )}
-      </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="partner"
+          className="dash-panel"
+          title="Channel coupling"
+          description="Link your brand to editorial channels so it appears on channel pages alongside relevant materials, articles and talks. Available on the Partner tier."
+          upgradeHref="./membership"
+        >
+          <h2 className="panel-section-title">Channel coupling</h2>
+          <p className="panel-section-desc">
+            Link your brand to up to {MAX_CHANNELS} editorial channels. Your brand will appear on those channel pages,
+            shown alongside curated materials, articles and talks.
+          </p>
+          <div className="chip-group" aria-hidden="true">
+            <span className="chip is-on">Biobased</span>
+            <span className="chip">Acoustic</span>
+            <span className="chip is-on">Sustainability</span>
+            <span className="chip">Lighting</span>
+            <span className="chip">Surfaces</span>
+          </div>
+        </BrandTierGate>
+      )}
 
       {logoCropFile && (
         <CropModal

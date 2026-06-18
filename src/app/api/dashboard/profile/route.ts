@@ -15,6 +15,21 @@ import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import { mapUserProfile, toWpUserProfile } from '@/lib/dashboard/mappers'
 import type { UserProfile } from '@/types/dashboard'
 
+function validateProfileBody(body: UserProfile): string | null {
+  if (!body.firstName?.trim() || !body.lastName?.trim() || !body.email?.trim()) {
+    return 'First name, last name and email are required.'
+  }
+  if (body.invoiceToCompany) {
+    if (!body.company?.trim()) {
+      return 'Company name is required when invoicing to a company.'
+    }
+    if (!body.vatNumber?.trim()) {
+      return 'VAT number is required when invoicing to a company.'
+    }
+  }
+  return null
+}
+
 export async function GET(): Promise<NextResponse> {
   const token = await getAuthCookie()
   if (!token) {
@@ -57,6 +72,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   } catch {
     return NextResponse.json(
       { code: 'md_dashboard_invalid_request', message: 'Invalid request body.' },
+      { status: 400 },
+    )
+  }
+
+  const validationError = validateProfileBody(body)
+  if (validationError) {
+    return NextResponse.json(
+      { code: 'md_dashboard_invalid_request', message: validationError },
       { status: 400 },
     )
   }

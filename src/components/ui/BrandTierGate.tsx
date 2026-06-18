@@ -2,25 +2,28 @@
 
 import { useId, type ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
-import { IconLock } from '@/components/ui/icons'
+import { IconLock, IconEye } from '@/components/ui/icons'
 import { usePreviewMode } from '@/lib/hooks/usePreviewMode'
 
 export type BrandTier = 'basis' | 'plus' | 'partner'
 
 interface BrandTierGateBaseProps {
-  /** Vereist tier — bepaalt welke kleur/icoon variant getoond wordt. */
+  /** Vereist tier — bepaalt de tekst ("requires Plus or Partner" / "requires Partner"). */
   required: BrandTier
-  /** Korte titel boven de gate (bv. "Statistics", "Lead routing"). */
+  /** Naam van de functionaliteit (bv. "Statistics", "Channel coupling"). */
   title: string
-  /**
-   * Beschrijvende tekst onder de titel — wat doet deze functionaliteit en
-   * waarom upgrade?
-   */
+  /** Korte upgrade-pitch onder de titel in de overlay. */
   description: ReactNode
   /** Upgrade-CTA href. */
   upgradeHref: string
   /** Override voor de CTA-tekst. Default: "Upgrade to {tier} →". */
   ctaLabel?: string
+  /**
+   * Extra klassen op de wrapper. Voor de section-variant geef je hier
+   * `dash-panel` mee zodat de gate de volle panelkaart wordt en de overlay
+   * (incl. de eigen sectietitel + velden erachter) de héle kaart bedekt —
+   * exact zoals de demo (mfGate over een `position:relative` paneel).
+   */
   className?: string
 }
 
@@ -31,8 +34,8 @@ interface BrandTierGatePageProps extends BrandTierGateBaseProps {
 interface BrandTierGateSectionProps extends BrandTierGateBaseProps {
   variant: 'section'
   /**
-   * De content die in preview-mode wordt onthuld. Vereist voor `section`
-   * variant — anders heeft preview geen inhoud om te tonen.
+   * De échte sectie-inhoud (titel + omschrijving + velden). Wordt vervaagd
+   * achter de overlay gerenderd en in preview-modus onthuld.
    */
   children: ReactNode
 }
@@ -42,40 +45,31 @@ type BrandTierGateProps = BrandTierGatePageProps | BrandTierGateSectionProps
 /**
  * BrandTierGate — functionaliteit-gate voor manufacturer-side dashboards.
  *
+ * Eén canonieke behandeling, 1-op-1 met de demo (`mfGate` / `pageGate`):
+ *   - bare grijs hangslot-icoon (géén gekleurde cirkel),
+ *   - titel = "{functionaliteit} requires {tier}",
+ *   - korte omschrijving,
+ *   - acties: zwarte "Upgrade to {tier} →" + outline "Preview" (oog-icoon).
+ *
+ * De upgrade-knop is bewust ZWART (niet de blauwe MF_TIERS-kleur uit de demo):
+ * groen/kleur is voorbehouden aan de enige primaire actie per pagina (Save
+ * changes). Dit is de enige doelbewuste afwijking van de demo.
+ *
  * Twee varianten:
- *   - `page`: hele dashboard-pagina afgeschermd (Statistics, Lead routing).
- *     Geen preview-modus — alleen upgrade-CTA.
- *   - `section`: inline overlay over een specifieke form-sectie binnen een
- *     dashboard-pagina. **Met preview-modus** — knop "Preview" onthult de
- *     content (read-only effectief), en het globale `<PreviewModeIndicator>`
- *     verschijnt onderaan de pagina.
+ *   - `section`: overlay over de héle sectiekaart. De echte inhoud (de eigen
+ *     titel + velden) staat vervaagd erachter; alleen de overlay-titel is
+ *     scherp — dus geen dubbele/overlappende titels meer. **Met preview-modus.**
+ *   - `page`: volle-breedte gate-kaart (surface2) voor een hele pagina
+ *     (Statistics, Lead routing). Alleen upgrade-CTA (geen preview).
  *
- * Onderscheid t.o.v. `<InsiderGate>`:
- *   - InsiderGate = content-gating voor specifiers/visitors (teal, "Become an Insider")
- *   - BrandTierGate = functionaliteit-gating voor brand-eigenaren (navy/grijs, "Upgrade to {tier}")
- *
- * Voor preview-coordinatie: wrap de pagina in `<PreviewModeProvider>`.
- *
- * @example Page-variant (geen preview):
- *   <BrandTierGate variant="page" required="plus" title="Statistics"
- *     description="See who views and downloads your samples."
- *     upgradeHref="/dashboard/billing" />
- *
- * @example Section-variant (met preview):
- *   <BrandTierGate variant="section" required="partner" title="Brochures"
- *     description="Upload PDF brochures with each material."
- *     upgradeHref="/dashboard/billing">
- *     <BrochureUploadForm />
- *   </BrandTierGate>
+ * Onderscheid t.o.v. `<InsiderGate>` (reader-side, teal "Become an Insider").
  */
 export function BrandTierGate(props: BrandTierGateProps) {
   const reactId = useId()
   const gateId = `brand-tier-gate-${reactId}`
   const { isEnabled, enable } = usePreviewMode()
 
-  // Is preview-mode geactiveerd voor deze section?
-  const previewActive =
-    props.variant === 'section' && isEnabled(gateId)
+  const previewActive = props.variant === 'section' && isEnabled(gateId)
 
   const tierLabel = {
     basis: 'Basis',
@@ -83,10 +77,15 @@ export function BrandTierGate(props: BrandTierGateProps) {
     partner: 'Partner',
   }[props.required]
 
+  // Demo-wording: "<feature> requires Plus or Partner" / "requires Partner".
+  const requirement =
+    props.required === 'partner'
+      ? 'Partner'
+      : props.required === 'basis'
+        ? 'Basis or higher'
+        : 'Plus or Partner'
+  const gateTitle = `${props.title} requires ${requirement}`
   const ctaLabel = props.ctaLabel ?? `Upgrade to ${tierLabel} →`
-
-  // Eén consistent icoon voor álle tiers — geen schild-voor-partner meer.
-  const TierIcon = IconLock
 
   // === Page variant ===
   if (props.variant === 'page') {
@@ -96,27 +95,25 @@ export function BrandTierGate(props: BrandTierGateProps) {
         aria-labelledby={`${gateId}-title`}
       >
         <div className="brand-tier-gate-inner">
-          <div className="brand-tier-gate-icon" aria-hidden="true">
-            <TierIcon size={28} strokeWidth={1.75} />
-          </div>
-          <div className="brand-tier-gate-tier">{tierLabel} feature</div>
-          <h2 id={`${gateId}-title`} className="brand-tier-gate-title t-display-md">
-            {props.title}
+          <span className="brand-tier-gate-icon" aria-hidden="true">
+            <IconLock size={36} strokeWidth={1.5} />
+          </span>
+          <h2 id={`${gateId}-title`} className="brand-tier-gate-title">
+            {gateTitle}
           </h2>
-          <p className="brand-tier-gate-description t-body">
-            {props.description}
-          </p>
-          <a href={props.upgradeHref} className="btn btn-green btn-md">
-            {ctaLabel}
-          </a>
+          <p className="brand-tier-gate-description">{props.description}</p>
+          <div className="brand-tier-gate-actions">
+            <a href={props.upgradeHref} className="btn btn-primary btn-sm">
+              {ctaLabel}
+            </a>
+          </div>
         </div>
       </section>
     )
   }
 
-  // === Section variant ===
+  // === Section variant — preview aan: gewoon de inhoud, geen overlay ===
   if (previewActive) {
-    // Preview is aan: render de content gewoon. Geen overlay meer.
     return (
       <div
         className={cn('brand-tier-gate is-section is-preview-active', props.className)}
@@ -127,38 +124,35 @@ export function BrandTierGate(props: BrandTierGateProps) {
     )
   }
 
+  // === Section variant — gated: echte inhoud vervaagd erachter + overlay erover ===
   return (
     <div
       className={cn('brand-tier-gate is-section', `is-${props.required}`, props.className)}
       aria-labelledby={`${gateId}-title`}
       data-preview-id={gateId}
     >
-      {/* Achterliggende content blurred renderen voor visuele context */}
-      <div className="brand-tier-gate-content-blur" aria-hidden="true">
+      <div className="brand-tier-gate-content" aria-hidden="true">
         {props.children}
       </div>
       <div className="brand-tier-gate-overlay">
-        <div className="brand-tier-gate-icon" aria-hidden="true">
-          <TierIcon size={22} strokeWidth={1.75} />
-        </div>
-        <div className="brand-tier-gate-tier">{tierLabel} feature</div>
-        <h3 id={`${gateId}-title`} className="brand-tier-gate-title t-display-sm">
-          {props.title}
+        <span className="brand-tier-gate-icon" aria-hidden="true">
+          <IconLock size={22} strokeWidth={1.5} />
+        </span>
+        <h3 id={`${gateId}-title`} className="brand-tier-gate-title">
+          {gateTitle}
         </h3>
-        <p className="brand-tier-gate-description t-body-sm">
-          {props.description}
-        </p>
+        <p className="brand-tier-gate-description">{props.description}</p>
         <div className="brand-tier-gate-actions">
+          <a href={props.upgradeHref} className="btn btn-primary btn-sm">
+            {ctaLabel}
+          </a>
           <button
             type="button"
             className="btn btn-secondary btn-sm"
             onClick={() => enable(gateId)}
           >
-            Preview
+            <IconEye size={14} /> Preview
           </button>
-          <a href={props.upgradeHref} className="btn btn-green btn-sm">
-            {ctaLabel}
-          </a>
         </div>
       </div>
     </div>

@@ -16058,18 +16058,47 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 
 /* ============================================================
-   §DASH-REVIEW-3B — Veldruimte in dashboard-formulieren (#3)
+   §DASH-REVIEW-3B — Veldruimte in dashboard-formulieren (#3) — HERSCHREVEN
    ------------------------------------------------------------
-   Het groene field-status-vinkje zit op top:0/right:0 van elke .field-group
-   (de labelregel). De verticale afstand tussen de velden wordt gestuurd door
-   de row-gap van de form-grid (.dash-content .g2/.g3, eerder 22px ~r15427).
-   Dat was te krap: het vinkje van het veld eronder plakte tegen het vak erboven.
-   Hier verhogen we de bepalende row-gap zodat het vinkje vrij staat — met echte
-   ademruimte, niet nét genoeg. Additief; identieke specificiteit, wint via volgorde.
+   De eerdere aanpak (row-gap op .dash-content .g2/.g3) had geen effect: de
+   React-formulieren stapelen meerdere lósse .g2-rijen onder elkaar, dus elke
+   grid heeft maar één rij — row-gap doet dan niets. De verticale afstand tussen
+   rijen wordt bepaald door de MARGE tussen die gestapelde blokken, en die
+   ontbrak → het groene vinkje van de rij eronder plakte tegen het veld erboven.
+
+   Demo-ritme (MaterialDistrict_MockUp_DEF.html): .g2{gap:14px} +
+   .form-field{margin-bottom:14px} ≈ 28px verticaal tussen rijen. Dat nemen we
+   hier letterlijk over: elke formulierrij (een .g2/.g3 met velden naast elkaar,
+   óf een los full-width .field-group) krijgt 28px marge eronder. Velden BINNEN
+   een rij-grid resetten naar 0 (anders dubbele marge). De laatste rij in een
+   paneel/sectie reset eveneens, zodat de paneel-padding klopt.
+
+   Scope: alléén formulier-panelen, via :has(.field-group) — raakt geen
+   tabellen/stat-panelen. Additief; latere volgorde + hogere specificiteit
+   winnen van de basis (.g2{gap:18px}, ~r11185).
    ============================================================ */
-.dash-content .g2,
-.dash-content .g3 {
-  row-gap: 30px;
+.dash-panel:has(.field-group) .g2,
+.dash-panel:has(.field-group) .g3,
+.dash-panel:has(.field-group) > .field-group,
+.dash-panel:has(.field-group) > .section-sep > .field-group,
+.dash-panel:has(.field-group) > .section-sep > .g2,
+.dash-panel:has(.field-group) .profile-billing-block > .field-group {
+  margin-bottom: 28px;
+}
+/* Velden binnen een rij-grid sturen de rij niet — die marge zit op de grid zelf. */
+.dash-panel:has(.field-group) .g2 .field-group,
+.dash-panel:has(.field-group) .g3 .field-group,
+.dash-panel:has(.field-group) .brand-details-grid .field-group,
+.dash-panel:has(.field-group) .material-basics-grid .field-group {
+  margin-bottom: 0;
+}
+/* Laatste rij van een paneel/sectie: geen trailing marge. */
+.dash-panel:has(.field-group) > .g2:last-child,
+.dash-panel:has(.field-group) > .g3:last-child,
+.dash-panel:has(.field-group) > .field-group:last-child,
+.dash-panel:has(.field-group) > .section-sep > .g2:last-child,
+.dash-panel:has(.field-group) > .section-sep > .field-group:last-child {
+  margin-bottom: 0;
 }
 
 /* ============================================================
@@ -16120,7 +16149,12 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   margin-top: 18px;
 }
 .sb-add-brand {
+  /* Gelijke afstand boven Add brand als de afstand tussen de scope-kaarten (#16.3-b). */
+  margin-top: 18px;
+  /* Duidelijker dan de vage stippel: solide rand + subtiele vulling, full-width,
+     gecentreerd, met +-icoon — secundair, niet de groene primaire actie (#16.3-c). */
   border: 1px solid var(--border);
+  background: var(--surface2);
   color: var(--text);
   font-weight: 600;
   justify-content: center;
@@ -16148,83 +16182,64 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 
 /* ============================================================
-   §DASH-REVIEW-3G — Volle-breedte paginakop-band (#16.1)
+   §DASH-REVIEW-3G — Volle-breedte paginakop-band (#16.1) — HERSCHREVEN
    ------------------------------------------------------------
-   De paginakop (H1 + breadcrumb eronder) staat nu in een band over de VOLLE
-   breedte bovenaan; sidebar-kaart én contentblokken beginnen daaronder op
-   dezelfde lijn ("samenvallen aan de bovenkant"). Vervangt de oude aanpak van
-   punt 2/10.2 (H1 uitlijnen mét de menu-top), zoals afgesproken.
+   De oude aanpak (.dash-content op display:contents om de kop in het grid te
+   tillen) was fundamenteel fragiel: zónder kop (laad-skelet) of bij meerdere
+   contentkaarten brak de kolom-indeling — de sidebar zakte onder de content en
+   er ontstonden lege gaten tussen kaarten. Vervangen door een robuuste
+   structuur: de kop staat in een eigen band BOVEN het grid; sidebar en content
+   blijven altijd twee nette kolommen, in elke staat (laden, leeg, meerdere
+   kaarten).
 
-   Techniek (puur CSS, SSR-bepaald — geen portal/markup/client-wijziging):
-   elke pagina rendert <DashboardPageHeader> al als eerste, direct kind van
-   .dash-content. Door .dash-content op `display:contents` te zetten worden
-   z'n kinderen directe grid-items van .dash-layout. De kop spant dan rij 1
-   over beide kolommen; de overige contentblokken vallen in kolom 2; de sidebar
-   zakt naar rij 2. De 24px grid-gap van .dash-layout levert de bandscheiding.
+   Structuur (zie DashboardShell + DashboardPageHeader):
+     .dash-shell                outer frame (max-width, centreren, padding)
+       #dash-header-band        volle-breedte band; pagina's portalen hun <h1> hierin
+       .dash-layout             normaal 256px / 1fr grid (ongewijzigd t.o.v. basis)
+         .dash-sidebar-wrap
+         .dash-content          normale flex-kolom (ongewijzigd)
 
-   Let op: display:contents heft de box van .dash-content op, dus z'n eigen
-   padding/gap vervallen — de inter-block-ruimte komt nu van de grid-gap, en de
-   mobiele zij-padding wordt hieronder hersteld op .dash-layout.
+   De band reserveert een responsieve min-height (≈ titel + breadcrumb) zodat er
+   geen layout-shift is vóór de client-portal van de kop mount.
    ============================================================ */
-.dash-content {
-  display: contents;
+.dash-shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 32px 100px;
 }
-.dash-content > * {
-  grid-column: 2;
+/* Het grid vult voortaan de shell; de buitenste kadering staat op .dash-shell. */
+.dash-shell .dash-layout {
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }
-.dash-content > .dash-page-header {
-  grid-column: 1 / -1;
-  grid-row: 1;
-}
-.dash-sidebar-wrap {
-  grid-column: 1;
-  grid-row: 2;
+.dash-header-band {
+  min-height: 83px;     /* titel (53px) + breadcrumb eronder */
+  margin-bottom: 24px;  /* zelfde scheiding als de grid-gap */
 }
 
+@media (max-width: 1024px) {
+  .dash-header-band { min-height: 62px; }  /* titel 35px */
+}
 @media (max-width: 768px) {
-  /* Eén kolom: kop én content in kolom 1 (anders maakt grid-column:2 een
-     spookkolom op mobiel). Zij-padding terug op de grid i.p.v. .dash-content. */
-  .dash-content > *,
-  .dash-content > .dash-page-header {
-    grid-column: 1;
-  }
-  .dash-layout {
-    padding: 0 14px 80px;
+  .dash-shell { padding: 0 0 80px; }
+  .dash-shell .dash-layout { padding: 0; }
+  .dash-header-band {
+    min-height: 50px;       /* titel 24px */
+    padding: 12px 14px 0;   /* zij-padding terug (shell heeft die niet op mobiel) */
+    margin-bottom: 16px;
   }
 }
 
 /* ============================================================
-   §DASH-REVIEW-3H — Sidebar-footer rustiger (#16.2)
+   §DASH-REVIEW-3H — Sidebar-footer (#16.2) — INGETROKKEN
    ------------------------------------------------------------
-   De onderste stapel oogde druk: twee outline-knoppen (Add brand + Back to
-   homepage) onder elkaar, plus Sign out. "Back to homepage" wordt nu een
-   rustige tekstlink — gelijk aan Sign out — zodat de footer één consistente,
-   secundaire utility-groep is. Daarmee is "Add brand" de enige (secundaire)
-   knop in dat gebied; de hiërarchie wordt: navigatie → Add brand → rustige
-   footer-links. Wat ademruimte boven de footer, géén scheidingslijn (kalm).
+   De sidebar-footer (Back to homepage + Sign out) is in deze ronde volledig uit
+   de markup verwijderd (DashboardSidebar): sign-out staat in de top-header en de
+   hoofdnavigatie is daar één klik weg — de footer was redundante clutter onder
+   de navigatie. De eerdere .sb-footer/.sb-back-btn-opmaak is daarmee dode CSS en
+   hier weggehaald. "Add brand" is nu de enige actie onder de scopes (zie §3E).
    ============================================================ */
-.sb-footer {
-  padding-top: 6px;
-}
-.sb-footer a.sb-back-btn {
-  width: 100%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  border-radius: 0;
-  transition: color 0.15s;
-}
-.sb-footer a.sb-back-btn:hover {
-  color: var(--text);
-  background: none;
-}
 
 /* ============================================================
    §DASH-REVIEW-3I — Membership-vergelijkingstabel (#12)
@@ -16739,3 +16754,177 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .detail-channel-pill.is-following .follow-switch-track { background: var(--green); }
 .detail-channel-pill.is-following .follow-switch-knob { transform: translateX(14px); }
 /* ============================ einde §CHANNEL-PILL-FOLLOW ============================ */
+
+/* ============================================================
+   §DASH-REVIEW-4 — Locked-feature gate, 1-op-1 met de demo (#9/#11) — ronde 2
+   ------------------------------------------------------------
+   Eén canonieke behandeling voor álle BrandTierGate's, exact zoals de demo
+   (mfGate / pageGate in MaterialDistrict_MockUp_DEF.html):
+     - kaal grijs hangslot-icoon (géén gekleurde cirkel),
+     - titel "{functionaliteit} requires {tier}",
+     - korte omschrijving,
+     - acties: Upgrade + Preview.
+   SECTION-variant: overlay (lichte wash + backdrop-blur) over de HÉLE paneel-
+   kaart; de echte sectie-inhoud (eigen titel + velden) staat vervaagd erachter
+   — dus geen dubbele/overlappende titels meer. PAGE-variant: surface2 gate-kaart.
+
+   AFWIJKING van de demo (bewust, jouw afspraak): de Upgrade-knop is ZWART
+   (--ink), niet de blauwe MF_TIERS-kleur uit de demo. Groen/kleur blijft
+   voorbehouden aan de enige primaire actie per pagina (Save changes). Preview
+   blijft outline.
+
+   Komt ná §44.x (de oorspronkelijke gate-CSS), §DASH-REVIEW en §DASH-REVIEW-3
+   in de bron en overschrijft die via cascade-volgorde (gelijke/hogere
+   specificiteit). Additief; raakt geen eerdere blokken aan.
+   ============================================================ */
+
+/* --- SECTION-variant: relatieve kaart, overlay erover, géén hoogte-cap --- */
+.brand-tier-gate.is-section {
+  position: relative;
+  overflow: hidden;
+  max-height: none;        /* heft de oude max-height:300px op (§44.8) */
+  border-radius: var(--radius-md);
+}
+/* Min-hoogte zodat de overlay-inhoud (icoon + titel + omschrijving + 2 knoppen)
+   altijd past — ook bij een korte sub-sectie zoals de video-links-kolom, die
+   géén paneel-padding heeft. Niet toepassen wanneer preview actief is. */
+.brand-tier-gate.is-section:not(.is-preview-active) {
+  min-height: 180px;
+}
+/* De echte inhoud blijft staan en wordt door de overlay (wash + backdrop-blur)
+   vervaagd; we filteren de inhoud zélf niet — matcht de demo. */
+.brand-tier-gate-content {
+  filter: none;
+}
+.brand-tier-gate-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(248, 250, 252, 0.93);   /* demo --gate-overlay (licht) */
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: none;                            /* heft de oude dashed rand op */
+  border-radius: var(--radius-md);
+}
+[data-theme="dark"] .brand-tier-gate-overlay {
+  background: rgba(22, 29, 43, 0.94);      /* demo --gate-overlay (donker) */
+}
+
+/* --- Kaal hangslot-icoon: geen gekleurde/grijze cirkel meer (overschrijft
+       §44.x basis + tier-accenten + §3) --- */
+.brand-tier-gate-icon,
+.brand-tier-gate.is-section .brand-tier-gate-icon,
+.brand-tier-gate.is-page .brand-tier-gate-icon,
+.brand-tier-gate.is-basis .brand-tier-gate-icon,
+.brand-tier-gate.is-plus .brand-tier-gate-icon,
+.brand-tier-gate.is-partner .brand-tier-gate-icon {
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--text-hint);
+}
+[data-theme="dark"] .brand-tier-gate.is-plus .brand-tier-gate-icon,
+[data-theme="dark"] .brand-tier-gate.is-partner .brand-tier-gate-icon,
+[data-theme="dark"] .brand-tier-gate-icon {
+  background: transparent;
+  color: var(--text-hint);
+}
+
+/* --- Titel + omschrijving (de t-* utility-klassen zijn uit de component
+       gehaald; hier dus volledig opgemaakt — body-font, niet display) --- */
+.brand-tier-gate-title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0;
+  color: var(--text);
+  margin: 0;
+}
+.brand-tier-gate-description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 380px;
+  margin: 0;
+}
+
+/* --- Acties: Upgrade (ZWART) + Preview (outline) --- */
+.brand-tier-gate-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+.brand-tier-gate-actions .btn-primary {
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 700;
+}
+.brand-tier-gate-actions .btn-primary:hover:not(:disabled) {
+  background: var(--ink);
+  opacity: 0.88;
+}
+.brand-tier-gate-actions .btn-secondary {
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.brand-tier-gate-actions .btn-secondary:hover:not(:disabled) {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+/* --- PAGE-variant: surface2 gate-kaart (demo pageGate) i.p.v. 50vh flexbox --- */
+.brand-tier-gate.is-page {
+  display: block;
+  min-height: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 48px 32px;
+  text-align: center;
+  margin-top: 8px;
+}
+.brand-tier-gate.is-page .brand-tier-gate-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: none;
+  text-align: center;
+}
+.brand-tier-gate.is-page .brand-tier-gate-icon {
+  margin: 0 auto 16px;
+}
+.brand-tier-gate.is-section .brand-tier-gate-title {
+  font-size: 14px;
+  margin: 0;
+}
+.brand-tier-gate.is-page .brand-tier-gate-title {
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+.brand-tier-gate.is-section .brand-tier-gate-description {
+  font-size: 13px;
+  max-width: 380px;
+  margin: 0;
+}
+.brand-tier-gate.is-page .brand-tier-gate-description {
+  max-width: 440px;
+  margin-bottom: 24px;
+}
+/* ============================ einde §DASH-REVIEW-4 ============================ */

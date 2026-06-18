@@ -338,9 +338,11 @@ export function MaterialForm({
             />
           </div>
           <div>
-            <span className="field-subhead">Video links</span>
             {canVideos ? (
-              <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
+              <>
+                <span className="field-subhead">Video links</span>
+                <VideoLinksField value={form.videos} onChange={(next) => set('videos', next)} />
+              </>
             ) : (
               <BrandTierGate
                 variant="section"
@@ -349,6 +351,7 @@ export function MaterialForm({
                 description="Add product videos, showreels and installation films to your material pages. Available from the Plus tier."
                 upgradeHref="../../membership"
               >
+                <span className="field-subhead">Video links</span>
                 <div className="asset-list" aria-hidden="true">
                   <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://youtube.com/watch?v=…</span></span></div>
                   <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">https://vimeo.com/…</span></span></div>
@@ -360,31 +363,34 @@ export function MaterialForm({
       </div>
 
       {/* 4. Documents & downloads */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Documents &amp; downloads</h2>
-        <p className="panel-section-desc">Upload brochures, technical datasheets, EPDs or installation guides.</p>
-        {canDownloads ? (
+      {canDownloads ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Documents &amp; downloads</h2>
+          <p className="panel-section-desc">Upload brochures, technical datasheets, EPDs or installation guides.</p>
           <DownloadsField
             value={form.downloads}
             onChange={(next) => set('downloads', next)}
             onUpload={(file) => uploadFile(file, 'document')}
             uploading={uploading}
           />
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="plus"
-            title="Documents & downloads"
-            description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
-            upgradeHref="../../membership"
-          >
-            <div className="asset-list" aria-hidden="true">
-              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Technical datasheet.pdf</span></span></div>
-              <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">EPD certificate.pdf</span></span></div>
-            </div>
-          </BrandTierGate>
-        )}
-      </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="plus"
+          className="dash-panel"
+          title="Documents & downloads"
+          description="Upload brochures, catalogues and sustainability reports. Available from the Plus tier."
+          upgradeHref="../../membership"
+        >
+          <h2 className="panel-section-title">Documents &amp; downloads</h2>
+          <p className="panel-section-desc">Upload brochures, technical datasheets, EPDs or installation guides.</p>
+          <div className="asset-list" aria-hidden="true">
+            <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">Technical datasheet.pdf</span></span></div>
+            <div className="asset-row"><span className="asset-row-main"><span className="asset-row-label">EPD certificate.pdf</span></span></div>
+          </div>
+        </BrandTierGate>
+      )}
 
       {/* 5. Search & filtering */}
       <div className="dash-panel">
@@ -410,69 +416,70 @@ export function MaterialForm({
       </div>
 
       {/* 6. Keywords */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Keywords</h2>
-        {canKeywords ? (
-          <>
-            <p className="panel-section-desc">Add keywords to improve findability. Think of material properties, applications or certifications.</p>
-            <div className="kw-input-row">
-              <Input
-                label="Add keyword"
-                value={keywordDraft}
-                onChange={(e) => setKeywordDraft(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addKeyword()
-                  }
-                }}
-              />
-              <button type="button" className="btn btn-primary" onClick={addKeyword} disabled={!keywordDraft.trim()}>
-                <IconAdd size={16} /> Add
-              </button>
-            </div>
-            <div className="chip-group">
-              {form.keywords.map((kw) => (
-                <span key={kw} className="chip is-on">
-                  {kw}
-                  <button
-                    type="button"
-                    className="chip-x"
-                    onClick={() => set('keywords', form.keywords.filter((k) => k !== kw))}
-                    aria-label={`Remove keyword ${kw}`}
-                  >
-                    <IconClose size={12} />
-                  </button>
-                </span>
-              ))}
-            </div>
-          </>
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="plus"
-            title="Keywords"
-            description="Add discovery keywords so buyers find this material faster. Available from the Plus tier."
-            upgradeHref="../../membership"
-          >
-            <div className="chip-group" aria-hidden="true">
-              <span className="chip is-on">acoustic</span>
-              <span className="chip is-on">recycled</span>
-              <span className="chip">fire-rated</span>
-              <span className="chip">bio-based</span>
-            </div>
-          </BrandTierGate>
-        )}
-      </div>
+      {canKeywords ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Keywords</h2>
+          <p className="panel-section-desc">Add keywords to improve findability. Think of material properties, applications or certifications.</p>
+          <div className="kw-input-row">
+            <Input
+              label="Add keyword"
+              value={keywordDraft}
+              onChange={(e) => setKeywordDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  addKeyword()
+                }
+              }}
+            />
+            <button type="button" className="btn btn-primary" onClick={addKeyword} disabled={!keywordDraft.trim()}>
+              <IconAdd size={16} /> Add
+            </button>
+          </div>
+          <div className="chip-group">
+            {form.keywords.map((kw) => (
+              <span key={kw} className="chip is-on">
+                {kw}
+                <button
+                  type="button"
+                  className="chip-x"
+                  onClick={() => set('keywords', form.keywords.filter((k) => k !== kw))}
+                  aria-label={`Remove keyword ${kw}`}
+                >
+                  <IconClose size={12} />
+                </button>
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="plus"
+          className="dash-panel"
+          title="Keywords"
+          description="Add discovery keywords so buyers find this material faster. Available from the Plus tier."
+          upgradeHref="../../membership"
+        >
+          <h2 className="panel-section-title">Keywords</h2>
+          <p className="panel-section-desc">Add keywords to improve findability. Think of material properties, applications or certifications.</p>
+          <div className="chip-group" aria-hidden="true">
+            <span className="chip is-on">acoustic</span>
+            <span className="chip is-on">recycled</span>
+            <span className="chip">fire-rated</span>
+            <span className="chip">bio-based</span>
+          </div>
+        </BrandTierGate>
+      )}
 
       {/* 7. Channel coupling — Partner only */}
-      <div className="dash-panel">
-        <h2 className="panel-section-title">Channel coupling</h2>
-        <p className="panel-section-desc">
-          Link this material to up to {MAX_CHANNELS} editorial channels. It will appear on those channel pages
-          alongside curated articles, talks and brands.
-        </p>
-        {canChannels ? (
+      {canChannels ? (
+        <div className="dash-panel">
+          <h2 className="panel-section-title">Channel coupling</h2>
+          <p className="panel-section-desc">
+            Link this material to up to {MAX_CHANNELS} editorial channels. It will appear on those channel pages
+            alongside curated articles, talks and brands.
+          </p>
           <ChannelPicker
             options={MATERIAL_CHANNEL_LABELS}
             value={form.channels}
@@ -480,24 +487,30 @@ export function MaterialForm({
             max={MAX_CHANNELS}
             note="This material will appear on these channel pages within 24 hours of saving."
           />
-        ) : (
-          <BrandTierGate
-            variant="section"
-            required="partner"
-            title="Channel coupling"
-            description="Link this material to editorial channels so it appears on channel pages alongside relevant articles, talks and brands. Available on the Partner tier."
-            upgradeHref="../../membership"
-          >
-            <div className="chip-group" aria-hidden="true">
-              <span className="chip is-on">Biobased</span>
-              <span className="chip">Acoustic</span>
-              <span className="chip is-on">Sustainability</span>
-              <span className="chip">Lighting</span>
-              <span className="chip">Surfaces</span>
-            </div>
-          </BrandTierGate>
-        )}
-      </div>
+        </div>
+      ) : (
+        <BrandTierGate
+          variant="section"
+          required="partner"
+          className="dash-panel"
+          title="Channel coupling"
+          description="Link this material to editorial channels so it appears on channel pages alongside relevant articles, talks and brands. Available on the Partner tier."
+          upgradeHref="../../membership"
+        >
+          <h2 className="panel-section-title">Channel coupling</h2>
+          <p className="panel-section-desc">
+            Link this material to up to {MAX_CHANNELS} editorial channels. It will appear on those channel pages
+            alongside curated articles, talks and brands.
+          </p>
+          <div className="chip-group" aria-hidden="true">
+            <span className="chip is-on">Biobased</span>
+            <span className="chip">Acoustic</span>
+            <span className="chip is-on">Sustainability</span>
+            <span className="chip">Lighting</span>
+            <span className="chip">Surfaces</span>
+          </div>
+        </BrandTierGate>
+      )}
 
       {isEdit && (
         <div className="dash-panel danger-panel">

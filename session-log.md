@@ -12,20 +12,48 @@
 ---
 
 ## Laatste update
-Datum: 18-06-2026 — Visuele ronde (volledig, punten 1 t/m 8). VERVANGT de eerder
-vandaag geleverde batch-1-zip (visuele-ronde-batch1-18-06) — gebruik alleen deze.
-Punten: (1) channel-hero-titel wit op foto-hero's, (2) dubbele description uit de
-hero weg, (3) follow-switch leest als een écht schuifje (track + glijdende knop),
-(4) follow-popover opent meteen (server vuurt op de achtergrond), (5) caret exact
-onder de knop (inline gemeten), (6) FollowDigestBlock op het prototype (crème kaart,
-donker-op-licht, hint boven chips, frequentie + samenvattingsregel onder de knop,
-witte genest account-catch met subregel, géén slot-emoji), (7) volgbare channel-
-pillen op alle detail-headers (naam linkt nog naar het channel; bel + mini-schuifje
-volgen; grijs→groen; overlay-popover; account-catch uitgelogd), (8) e-mail-nieuws-
-briefblok in de article-sidebar vervangen door het compacte digest-blok.
-CSS = twee append-only blokken §VISUAL-ROUND-18-06 + §CHANNEL-PILL-FOLLOW
-(samen in één snippet meegeleverd). Herijkt op de actuele main (Johan had de 5
-doelbestanden niet aangeraakt; zijn ~114 globals-regels raken mijn selectors niet).
+Datum: 18-06-2026 — Dashboard review-ronde 2 (los te mergen bovenop de visuele
+ronde). Herijkt op de actuele main (4c5465e): Johan had de dashboard-bestanden
+niet aangeraakt en zijn nieuwe globals-blokken (§VISUAL-ROUND-18-06,
+§CHANNEL-PILL-FOLLOW, S10.2 ronde-3) blijven intact — §DASH-REVIEW-4 staat
+erachter. Vijf punten: (1) paginakop-band hersteld (display:contents eruit →
+shell + eigen kop-band; kolommen blijven heel bij laden/leeg/meerdere kaarten),
+(2) gates 1-op-1 met de demo (overlay over hele kaart, echte titel/velden
+vervaagd erachter, zwarte Upgrade-knop, outline Preview), (3) sidebar-footer
+(Back to homepage + Sign out) weg, Add brand ruimer, (4) echte 28px-veldruimte
+tussen formulierrijen, (5) bedrijfsnaam + btw verplicht bij "Invoice to a company".
+
+#### Dashboard review-ronde 2 (18-06-2026)
+
+Levering bovenop de actuele main (HEAD 4c5465e). Gewijzigde bestanden t.o.v. de
+moedermap:
+- `src/components/dashboard/DashboardShell.tsx` — `.dash-shell` > lege
+  `#dash-header-band` + normaal `.dash-layout`-grid. `display:contents` eruit;
+  sidebar + content blijven altijd twee kolommen.
+- `src/components/dashboard/DashboardPageHeader.tsx` — client-component; portalt
+  de `<h1>` (+ breadcrumb/back-link) via `createPortal` in `#dash-header-band`.
+  Band reserveert responsieve min-height → geen layout-shift.
+- `src/components/dashboard/DashboardSidebar.tsx` — `.sb-footer` + imports
+  (useAuth, useRouter, IconLogout) verwijderd. Sign-out via de top-header.
+- `src/components/ui/BrandTierGate.tsx` — herbouwd naar de demo: kaal hangslot,
+  titel "{feature} requires {tier}", overlay over de hele kaart met echte inhoud
+  vervaagd erachter; zwarte Upgrade-knop + outline Preview. Page-variant =
+  surface2 gate-kaart.
+- `src/components/dashboard/panels/BrandProfileForm.tsx` — 5 gated secties: gate
+  wikkelt nu de hele sectie (titel + velden), overlay dekt alles (geen dubbele titel).
+- `src/components/dashboard/panels/MaterialForm.tsx` — idem voor de 4 gated secties.
+- `src/components/dashboard/panels/ProfileForm.tsx` — bedrijfsnaam + btw `required`
+  bij "Invoice to a company"; `requiredComplete` blokkeert Save tot beide ingevuld.
+- `src/styles/globals.css` (herijkt op 4c5465e — Johans nieuwe blokken intact):
+  §DASH-REVIEW-3B HERSCHREVEN (28px-veldritme via `:has(.field-group)`),
+  §DASH-REVIEW-3E (Add brand marge + vulling), §DASH-REVIEW-3G HERSCHREVEN (shell
+  + kop-band), §DASH-REVIEW-3H INGETROKKEN (footer weg), §DASH-REVIEW-4 NIEUW
+  (gate-behandeling, demo-conform, zwarte knop) — toegevoegd ná Johans blokken.
+
+NB merge: §3B/§3E/§3G/§3H zijn herschreven/ingetrokken (niet alleen toegevoegd).
+Deze globals.css is gebouwd op de actuele main (4c5465e), dus de hele file is
+veilig over te nemen; een diff toont alleen §3B/§3E/§3G/§3H + nieuw §4. Bewuste
+afwijking van de demo: Upgrade-knop ZWART i.p.v. blauw (kleur = alleen Save).
 
 #### §VISUAL-ROUND-18-06 + §CHANNEL-PILL-FOLLOW — visuele ronde (18-06-2026)
 

@@ -1,9 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import type { User } from '@/types/shared'
-import { useAuth } from '@/components/providers'
 import {
   USER_NAV,
   BRAND_NAV,
@@ -11,7 +9,7 @@ import {
   initialsFrom,
   type DashboardScope,
 } from '@/lib/dashboard/nav'
-import { IconChevronDown, IconChevronRight, IconArrowRight, IconAdd, IconLogout } from '@/components/ui/icons'
+import { IconChevronDown, IconChevronRight, IconArrowRight, IconAdd } from '@/components/ui/icons'
 
 /**
  * Adaptive dashboard sidebar.
@@ -21,6 +19,12 @@ import { IconChevronDown, IconChevronRight, IconArrowRight, IconAdd, IconLogout 
  * array → multi-brand). The active scope is expanded and shows its panel
  * list; the others collapse to a single scope button. Everything is a real
  * link — the active state comes from the resolved scope, not local state.
+ *
+ * The sidebar footer ("Back to homepage" + "Sign out") was removed (#16.2):
+ * sign-out stays available via the logout icon in the top header, and the main
+ * site nav is one click away in the same header — so the footer was redundant
+ * clutter under the navigation. "Add brand" is now the only action below the
+ * scopes.
  */
 export function DashboardSidebar({
   user,
@@ -30,13 +34,6 @@ export function DashboardSidebar({
   scope: DashboardScope
 }) {
   const isUserScope = scope.kind === 'user'
-  const { signOut } = useAuth()
-  const router = useRouter()
-
-  async function handleSignOut() {
-    await signOut()
-    router.push('/')
-  }
 
   return (
     <div className="dash-sidebar-wrap">
@@ -124,15 +121,6 @@ export function DashboardSidebar({
         <Link href="/dashboard/brands/new" className="sb-add-brand">
           <IconAdd size={16} /> Add brand
         </Link>
-      </div>
-
-      <div className="sb-footer">
-        <Link href="/" className="btn btn-outline sb-back-btn">
-          ← Back to homepage
-        </Link>
-        <button type="button" className="sb-signout" onClick={handleSignOut}>
-          <IconLogout size={16} /> Sign out
-        </button>
       </div>
     </div>
   )

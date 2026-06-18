@@ -64,10 +64,15 @@ export function ProfileForm({
 
   // Verplichte velden voor een persoonlijk profiel: voor- en achternaam + e-mail.
   // (Adres is hier bewust niet verplicht; dat hoort bij sample-aanvragen.)
+  // Zet de gebruiker "Invoice to a company" aan, dan worden bedrijfsnaam én
+  // btw-nummer óók verplicht (niet-leeg) — VIES-geldigheid blokkeert Save niet,
+  // dat blijft een zachte indicator (VIES kan tijdelijk onbereikbaar zijn).
   const requiredComplete =
     form.firstName.trim() !== '' &&
     form.lastName.trim() !== '' &&
-    form.email.trim() !== ''
+    form.email.trim() !== '' &&
+    (!form.invoiceToCompany ||
+      (form.company.trim() !== '' && form.vatNumber.trim() !== ''))
 
   async function handleSave() {
     setSaving(true)
@@ -274,13 +279,13 @@ export function ProfileForm({
               <div className="g2 profile-invoice-fields">
                 <Input
                   label="Company name"
+                  required
                   value={form.company}
                   onChange={(e) => set('company', e.target.value)}
-                  showFilledState
                 />
                 <Input
                   label="VAT number"
-                  optional
+                  required
                   value={form.vatNumber}
                   onChange={(e) => {
                     set('vatNumber', e.target.value)
