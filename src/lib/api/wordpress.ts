@@ -513,8 +513,14 @@ export interface WPMaterialRawResponse {
    */
   meta: {
     brand_id?: number
+    /** Brand-titel — meegeleverd door de plugin, geen aparte brand-fetch nodig. */
+    brand_name?: string | null
     /** Slug van het gekoppelde brand (Johan-handoff 27-05-2026). */
     brand_slug?: string | null
+    /** Keywords (post_tag) als `{ id, slug, label }[]`. */
+    tags?: WPMetaTermRaw[]
+    /** Channel-pills (theme) als `{ id, slug, label }[]`. */
+    channels?: WPMetaTermRaw[]
     /** Land van het gekoppelde brand als { code, label } (Johan-handoff). */
     brand_country?: { code: string; label: string } | null
     disable_sample_request?: boolean

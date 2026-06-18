@@ -53,6 +53,8 @@ import {
   mapEventListItem,
   mapFacetWPToFilterSections,
   mapMaterial,
+  mapMaterialChannelsFromRaw,
+  mapMaterialKeywordsFromRaw,
   mapMaterialListItem,
   mapMedia,
   mapPage,
@@ -75,7 +77,6 @@ import {
   getArticleRelated as fetchArticleRelatedRaw,
   RELATED_DEFAULT_LIMIT,
   getAttachmentsForPost,
-  getBrandById as fetchBrandByIdRaw,
   getBrandBySlug as fetchBrandBySlugRaw,
   getEventBySlug as fetchEventBySlugRaw,
   getMaterialBySlug as fetchMaterialBySlugRaw,
@@ -98,11 +99,11 @@ import {
 export interface GetMaterialOptions {
   /**
    * Resolves van relations:
-   *  - `gallery` (default true): haalt attachments op via `?parent=<id>` en bouwt Gallery
-   *  - `brand` (default true): haalt brand op via `meta.brand_id`. Niet gebruikt in de
-   *     huidige `Material` shape — brand-naam wordt op listings opgelost (Q.v.).
+   *  - `gallery` (default true): haalt attachments op via `?parent=<id>`
    *
-   * Zet alles op false voor maximaal lichtgewicht ophalen (bv. SEO-only).
+   * Brand-naam komt uit `meta.brand_name` op het material-object — geen
+   * aparte brand-fetch. Zet `gallery: false` voor maximaal lichtgewicht
+   * ophalen (bv. SEO-only).
    */
   resolve?: {
     gallery?: boolean
@@ -122,32 +123,18 @@ export async function getMaterial(
   if (!raw) return null
 
   const resolveGallery = options.resolve?.gallery ?? true
-  const brandId = typeof raw.meta?.brand_id === 'number' ? raw.meta.brand_id : null
-
-  // Brand-naam ophalen — parallel met gallery zodat het geen extra latency
-  // toevoegt. Faalbestendig: bij upstream-fout returnen we gewoon null en
-  // de detail-page valt terug op generieke "Get in touch" zonder brand.
-  const brandPromise: Promise<string | null> = brandId
-    ? fetchBrandByIdRaw(brandId)
-        .then((b) => (b ? b.title.rendered : null))
-        .catch(() => null)
-    : Promise.resolve(null)
 
   if (!resolveGallery) {
-    const brandName = await brandPromise
-    return mapMaterial(raw, { hero: null, thumbs: [], total: 0 }, brandName)
+    return mapMaterial(raw, { hero: null, thumbs: [], total: 0 })
   }
 
-  const [attachmentsRaw, brandName] = await Promise.all([
-    getAttachmentsForPost(raw.id),
-    brandPromise,
-  ])
+  const attachmentsRaw = await getAttachmentsForPost(raw.id)
   const attachments = attachmentsRaw
     .filter((a) => a.media_type === 'image')
     .map(mapMedia)
 
   const gallery = splitGallery(attachments, raw.featured_media)
-  return mapMaterial(raw, gallery, brandName)
+  return mapMaterial(raw, gallery)
 }
 
 // --------------------------------------------------------------------
@@ -174,68 +161,37 @@ export interface MaterialCategoryTerm {
 export interface MaterialDetailResult {
   material: Material
   /**
-   * Tag-taxonomie-termen, in dezelfde volgorde als WordPress ze teruggeeft
-   * (relevantie/alfabetisch — niet door ons gegarandeerd). Leeg array als
-   * het material geen tags heeft, of als de term-fetch faalde (zie jsdoc
-   * van `getMaterialDetail`).
+   * Tag-taxonomie-termen uit `meta.tags`. Leeg als het material geen tags
+   * heeft of de plugin het veld niet levert.
    */
   keywords: MaterialKeyword[]
   /**
-   * Material-category termen — opgelost van de taxonomy-IDs op het
-   * material naar { name, slug }. Sessie 7 Punt 13: nodig voor de
-   * tags-rij boven de h1. Lege array bij faal/ontbreken.
+   * Material-category termen — opgelost via REST (alleen IDs op het post-
+   * object). Lege array bij faal/ontbreken.
    */
   materialCategoryTerms: MaterialCategoryTerm[]
+  /**
+   * Channel-pills uit `meta.channels` — geen channel-catalog-fetch nodig.
+   */
+  channels: Array<{ id: number; slug: string; label: string }>
 }
 
 /**
  * Detail-orchestrator voor `/material/[slug]`.
  *
- * Sessie 6 (performance): vervangt het sequentiële paar
- * `getMaterial(slug)` → `getTerms('tags', { include: tag_ids })` op de
- * detail-page. Door alle drie de resolves (gallery, brand-naam, keywords)
- * parallel te draaien ná de initiële material-fetch besparen we één
- * round-trip op de TTFB van de page. Met WP-latency 150–400 ms per call
- * is dat een duidelijk merkbare winst.
- *
  * Sequentie:
- *   1. fetchMaterialBySlugRaw                (latency: X)
- *   2. parallel: gallery + brand + keywords  (latency: max(Y, Z, W))
+ *   1. fetchMaterialBySlugRaw
+ *   2. parallel: gallery + material_category-terms
  *
- * Voorheen was stap 2 stap 2+3:
- *   2. parallel: gallery + brand             (latency: max(Y, Z))
- *   3. keywords                              (latency: W)
- *   → totaal: X + max(Y, Z) + W
- *
- * Nu: X + max(Y, Z, W) — verschilt 100–400 ms in praktijk.
- *
- * Faalbestendigheid:
- *  - Material niet gevonden → return `null` (page roept `notFound()` aan).
- *  - Keywords-fetch faalt → `keywords: []`. Geen reden om de hele page te
- *    laten falen voor een nice-to-have list.
- *  - Brand/gallery faal → al afgehandeld door `getMaterial` zelf.
- *
- * Pages die alléén het material nodig hebben (bv. `generateMetadata`)
- * blijven `getMaterial(slug)` aanroepen — die functie wijzigt niet.
+ * Keywords, brand-naam en channel-pills komen uit embedded `meta` op het
+ * material-object (geen extra REST-roundtrips).
  */
 export async function getMaterialDetail(
   slug: string,
 ): Promise<MaterialDetailResult | null> {
-  // Stap 1: raw material — moeten we hebben vóór we tag-IDs kennen.
   const raw = await fetchMaterialBySlugRaw(slug)
   if (!raw) return null
 
-  // Tag-IDs extraheren — `taxonomies.tags` zit in de mapper, maar we hebben
-  // het hier sneller direct uit de raw response. WordPress noemt het veld
-  // `tags` op het material-CPT (de `post_tag`-taxonomie).
-  const rawTagIds = Array.isArray(raw.tags) ? raw.tags : []
-  const tagIds = rawTagIds.filter(
-    (id): id is number => typeof id === 'number' && id > 0,
-  )
-
-  // Sessie 7 Punt 13: material_category-IDs extraheren voor de tags-rij
-  // boven de h1. WP CPT-veld heet `material_category` op de material-post
-  // (zie WPMaterialRawResponse in api/wordpress.ts).
   const rawCategoryIds = Array.isArray(raw.material_category)
     ? raw.material_category
     : []
@@ -243,28 +199,6 @@ export async function getMaterialDetail(
     (id): id is number => typeof id === 'number' && id > 0,
   )
 
-  // Brand-ID + gallery zoals in `getMaterial`.
-  const brandId = typeof raw.meta?.brand_id === 'number' ? raw.meta.brand_id : null
-
-  const brandPromise: Promise<string | null> = brandId
-    ? fetchBrandByIdRaw(brandId)
-        .then((b) => (b ? b.title.rendered : null))
-        .catch(() => null)
-    : Promise.resolve(null)
-
-  // Keywords parallel — wordPress noemt de taxonomie-endpoint `tags`.
-  // Faalbestendig: bij upstream-fout een lege array zodat de page laadt.
-  const keywordsPromise: Promise<MaterialKeyword[]> =
-    tagIds.length > 0
-      ? getTerms('tags', { include: tagIds, perPage: 50 })
-          .then((terms: WPTermResponse[]) =>
-            terms.map((t) => ({ name: t.name, slug: t.slug })),
-          )
-          .catch(() => [])
-      : Promise.resolve([])
-
-  // Sessie 7 Punt 13: material_category-terms parallel. Faalbestendig
-  // op exact dezelfde manier als keywords.
   const categoryTermsPromise: Promise<MaterialCategoryTerm[]> =
     categoryIds.length > 0
       ? getTerms('material_category', {
@@ -277,23 +211,24 @@ export async function getMaterialDetail(
           .catch(() => [])
       : Promise.resolve([])
 
-  // Stap 2: alles parallel.
-  const [attachmentsRaw, brandName, keywords, materialCategoryTerms] =
-    await Promise.all([
-      getAttachmentsForPost(raw.id),
-      brandPromise,
-      keywordsPromise,
-      categoryTermsPromise,
-    ])
+  const [attachmentsRaw, materialCategoryTerms] = await Promise.all([
+    getAttachmentsForPost(raw.id),
+    categoryTermsPromise,
+  ])
 
   const attachments = attachmentsRaw
     .filter((a) => a.media_type === 'image')
     .map(mapMedia)
 
   const gallery = splitGallery(attachments, raw.featured_media)
-  const material = mapMaterial(raw, gallery, brandName)
+  const material = mapMaterial(raw, gallery)
 
-  return { material, keywords, materialCategoryTerms }
+  return {
+    material,
+    keywords: mapMaterialKeywordsFromRaw(raw),
+    materialCategoryTerms,
+    channels: mapMaterialChannelsFromRaw(raw),
+  }
 }
 
 export interface ListMaterialsResult {

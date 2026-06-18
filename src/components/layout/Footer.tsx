@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils/cn'
 import { FollowDigestBlock } from './FollowDigestBlock'
 import { PreferredSourceButton } from '@/components/ui/PreferredSourceButton'
-import { getChannelsIndex } from '@/lib/api/channels'
+import { getChannelCatalog } from '@/lib/api/channels'
 
 interface FooterLink {
   label: string
@@ -71,8 +71,9 @@ const SOCIAL_LINKS: FooterLink[] = [
  * is de form niet-werkend; in sessie 4 wordt dit vervangen door een Server Action.
  */
 export async function Footer({ className }: FooterProps) {
-  const channels = await getChannelsIndex().catch(() => [])
-  const digestChannels = channels
+  const channels = await getChannelCatalog().catch(() => [])
+  const digestChannels = [...channels]
+    .sort((a, b) => b.count - a.count)
     .slice(0, 6)
     .map((c) => ({ id: c.id, slug: c.slug, label: c.label }))
   return (

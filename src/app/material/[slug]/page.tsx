@@ -16,13 +16,12 @@
  *   │  ─ SampleRequestForm anchor         │                          │
  *   └────────────────────────────────────────────────────────────────┘
  *
- * Data (sessie 6 — performance):
- *  - `getMaterialDetail(slug)` voor hoofd-content + keywords in één
- *    parallelle orchestratie (gallery + brand-naam + tag-terms).
+ * Data (performance):
+ *  - `getMaterialDetail(slug)` — gallery + material_category-terms; keywords,
+ *    brand en channels uit embedded `meta` op het material-object.
  *  - `getMaterial(slug, { resolve: { gallery: false } })` in
- *    `generateMetadata` — lichtgewicht variant voor metadata. Beide
- *    calls hitten dezelfde WP-endpoint voor de raw material en delen
- *    daardoor Next.js' fetch-cache.
+ *    `generateMetadata` — lichtgewicht variant. WP-fetches worden door
+ *    Next.js fetch-cache gededupliceerd met de pagina-render waar mogelijk.
  *
  * Geparkeerd tot Johan brand-data levert:
  *  - Brand-info-card in sidebar
@@ -37,10 +36,10 @@
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
-import { getChannelCatalog } from '@/lib/api'
 import { MaterialGallery } from '@/components/materials'
 import { getMaterial, getMaterialDetail } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath } from '@/lib/seo'
@@ -118,17 +117,14 @@ export default async function MaterialDetailPage({
 }: MaterialDetailPageProps) {
   const { slug } = await params
 
-  // Sessie 6 (performance): één orchestrator-call die material, gallery,
-  // brand-naam én keyword-terms parallel ophaalt. Voorheen waren keywords
-  // een aparte sequentiële fetch ná `getMaterial`, wat 150–400 ms extra
-  // TTFB kostte. Zie `getMaterialDetail` voor de implementatie.
   const detail = await getMaterialDetail(slug)
 
   if (!detail) {
     notFound()
   }
 
-  const { material, keywords: keywordTerms, materialCategoryTerms } = detail
+  const { material, keywords: keywordTerms, materialCategoryTerms, channels } =
+    detail
   const publishedLabel = formatDate(material.date)
 
   // KeywordEntry shape is identiek aan MaterialKeyword — passthrough.
@@ -162,12 +158,8 @@ export default async function MaterialDetailPage({
   const hasAnyProperties = propertyGroups.some((g) =>
     g.entries.some((e) => e.rawValue !== ''),
   )
-  // §F2.8 punt 8: material's theme-IDs resolven naar channel-pills.
-  const channelCatalog = await getChannelCatalog()
-  const materialChannels = material.taxonomies.theme
-    .map((id) => channelCatalog.find((c) => c.id === id))
-    .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map((c) => ({ id: c.id, slug: c.slug, label: c.label }))
+  // §F2.8 punt 8: channel-pills uit `meta.channels` (geen catalog-fetch).
+  const materialChannels = channels
 
   // §F2.9 P1 + P2: taxonomie-pills (category + sustainability) verhuizen naar
   // de header-pill-rij (vóór de channels) en worden klikbaar zodra het facet
@@ -449,12 +441,14 @@ export default async function MaterialDetailPage({
         </div>
       </article>
 
-      <MoreFromBrand
-        brandId={material.brandId}
-        brandName={material.brandName}
-        brandSlug={material.brandSlug}
-        currentMaterialId={material.id}
-      />
+      <Suspense fallback={null}>
+        <MoreFromBrand
+          brandId={material.brandId}
+          brandName={material.brandName}
+          brandSlug={material.brandSlug}
+          currentMaterialId={material.id}
+        />
+      </Suspense>
 
       <MaterialDetailCompareBar
         material={{

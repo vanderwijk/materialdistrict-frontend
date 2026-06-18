@@ -279,7 +279,7 @@ export function mapMaterial(
     },
 
     brandId: typeof m.brand_id === 'number' && m.brand_id > 0 ? m.brand_id : null,
-    brandName: brandName ? decodeHtmlEntities(brandName) : null,
+    brandName: resolveMaterialBrandName(raw, brandName),
     brandSlug: stringOrNull(m.brand_slug),
     brandCountry: m.brand_country?.label ?? null,
 
@@ -310,6 +310,37 @@ export function mapMaterial(
     modified: raw.modified,
     publication: publicationFromMaterialRaw(raw),
   }
+}
+
+/** Brand-titel uit expliciete resolve of `meta.brand_name` (plugin levert beide). */
+function resolveMaterialBrandName(
+  raw: WPMaterialRawResponse,
+  brandName?: string | null,
+): string | null {
+  const resolved =
+    brandName ?? stringOrNull((raw.meta as { brand_name?: string | null }).brand_name)
+  return resolved ? decodeHtmlEntities(resolved) : null
+}
+
+/** Keywords uit `meta.tags` — geen aparte term-fetch nodig. */
+export function mapMaterialKeywordsFromRaw(
+  raw: WPMaterialRawResponse,
+): { name: string; slug: string }[] {
+  const tags = raw.meta?.tags
+  if (!Array.isArray(tags)) return []
+  return tags
+    .filter(
+      (t): t is WPMetaTermRaw =>
+        !!t && typeof t.slug === 'string' && t.slug.length > 0,
+    )
+    .map((t) => ({ name: decodeHtmlEntities(t.label), slug: t.slug }))
+}
+
+/** Channel-pills uit `meta.channels` — geen channel-catalog-fetch nodig. */
+export function mapMaterialChannelsFromRaw(
+  raw: WPMaterialRawResponse,
+): TaxonomyTerm[] {
+  return mapChannels(raw.meta?.channels)
 }
 
 // --------------------------------------------------------------------
