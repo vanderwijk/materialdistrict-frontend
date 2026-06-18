@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react'
-import Link from 'next/link'
 import {
   MANUFACTURER_PRICING,
   MANUFACTURER_TIER_COLORS,
@@ -10,6 +9,7 @@ import {
 } from '@/lib/config/membership'
 import { UNLIMITED_PUBLICATIONS } from '@/types/shared'
 import type { BrandMembership } from '@/types/shared'
+import { UpgradeRequestButton } from './UpgradeRequestButton'
 
 const TIERS: ManufacturerTier[] = ['free', 'basis', 'plus', 'partner']
 const TIER_LABEL: Record<ManufacturerTier, string> = {
@@ -30,6 +30,16 @@ const FEATURE_ROWS: ManufacturerFeature[] = [
   'Featured placement',
   'Exclusive Networking Events',
 ]
+
+// Review 12.5 — Free-model: deze features zijn voor Free conditioneel; ze worden
+// pas zichtbaar/actief zodra de brand minstens één materiaal publiceert. In de
+// tabel tonen we ze daarom met een "* met publicatie"-markering, niet als
+// onvoorwaardelijk vinkje.
+const FREE_CONDITIONAL = new Set<ManufacturerFeature>([
+  'Individual Brand Page',
+  'Individual Material Pages',
+  'Receive Sample & Info Requests',
+])
 
 function fmtPrice(amount: number): string {
   if (amount === 0) return 'Free'
@@ -88,6 +98,7 @@ export function BrandMembershipPanel({ brand }: { brand: BrandMembership }) {
                 <th>Feature</th>
                 {TIERS.map((t) => (
                   <th key={t} className={t === brand.tier ? 'plan-active-col' : undefined}>
+                    {t === brand.tier && <span className="plan-current-tag">Current</span>}
                     <span className="plan-name">{TIER_LABEL[t]}</span>
                     <span className="plan-price">{fmtPrice(MANUFACTURER_PRICING[t].annual)}</span>
                     {MANUFACTURER_PRICING[t].annual > 0 && <small className="plan-per">/year</small>}
@@ -107,23 +118,62 @@ export function BrandMembershipPanel({ brand }: { brand: BrandMembership }) {
               {FEATURE_ROWS.map((feature) => (
                 <tr key={feature}>
                   <td>{feature}</td>
-                  {TIERS.map((t) => (
-                    <td key={t} className={t === brand.tier ? 'plan-active-col' : undefined}>
-                      {canManufacturerAccess(t, feature) ? (
-                        <span className="memb-yes" aria-label="Included">✓</span>
-                      ) : (
-                        <span className="memb-no" aria-label="Not included">–</span>
-                      )}
-                    </td>
-                  ))}
+                  {TIERS.map((t) => {
+                    const included = canManufacturerAccess(t, feature)
+                    const conditional =
+                      t === 'free' && included && FREE_CONDITIONAL.has(feature)
+                    return (
+                      <td key={t} className={t === brand.tier ? 'plan-active-col' : undefined}>
+                        {conditional ? (
+                          <span
+                            className="memb-cond"
+                            aria-label="Included once you publish at least one material"
+                          >
+                            ✓<sup>*</sup>
+                          </span>
+                        ) : included ? (
+                          <span className="memb-yes" aria-label="Included">✓</span>
+                        ) : (
+                          <span className="memb-no" aria-label="Not included">–</span>
+                        )}
+                      </td>
+                    )
+                  })}
                 </tr>
               ))}
             </tbody>
+            <tfoot>
+              <tr className="memb-cta-row">
+                <td aria-hidden="true"></td>
+                {TIERS.map((t) => {
+                  const isCurrent = t === brand.tier
+                  const isHigher = TIERS.indexOf(t) > TIERS.indexOf(brand.tier)
+                  return (
+                    <td key={t} className={isCurrent ? 'plan-active-col' : undefined}>
+                      {isCurrent ? (
+                        <span className="memb-current-cell">Current plan</span>
+                      ) : isHigher ? (
+                        <UpgradeRequestButton
+                          brandId={brand.id}
+                          brandSlug={brand.slug}
+                          targetTier={t}
+                          targetLabel={TIER_LABEL[t]}
+                        />
+                      ) : null}
+                    </td>
+                  )
+                })}
+              </tr>
+            </tfoot>
           </table>
         </div>
         <p className="field-helper memb-note">
-          Plan changes are handled by our team — they cannot be switched here.{' '}
-          <Link href="/become-a-partner">Contact us about upgrading</Link>.
+          <sup>*</sup> Your free brand page, material pages and sample &amp; info
+          requests become visible once you publish at least one material.
+        </p>
+        <p className="field-helper memb-note-sub">
+          Plan changes are reviewed by our team — request an upgrade above and
+          we’ll be in touch.
         </p>
       </div>
     </>

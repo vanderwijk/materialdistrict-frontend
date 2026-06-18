@@ -15,6 +15,7 @@ import {
 } from '../fields'
 import { CropModal } from '../fields/CropModal'
 import { IconAdd, IconClose, IconUpload, IconDelete, IconImage, IconCheck } from '@/components/ui/icons'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { tierMeets } from '@/lib/dashboard/nav'
 import { canManufacturerAccess, type ManufacturerTier } from '@/lib/config/membership'
@@ -67,6 +68,8 @@ export function MaterialForm({
   const [uploading, setUploading] = useState(false)
   const [featuredCropFile, setFeaturedCropFile] = useState<File | null>(null)
   const [keywordDraft, setKeywordDraft] = useState('')
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const featuredInputRef = useRef<HTMLInputElement>(null)
 
   const canVideos = canManufacturerAccess(tier, 'Video uploads')
@@ -211,7 +214,7 @@ export function MaterialForm({
 
   async function handleDelete() {
     if (form.id === null) return
-    if (!window.confirm('Delete this material? This cannot be undone.')) return
+    setDeleting(true)
     try {
       const res = await fetch(`/api/dashboard/brands/${brandId}/materials/${form.id}`, {
         method: 'DELETE',
@@ -219,12 +222,16 @@ export function MaterialForm({
       if (!res.ok) {
         const err = await res.json().catch(() => null)
         setSaveError(err?.message ?? 'Could not delete the material. Please try again.')
+        setDeleting(false)
+        setConfirmDelete(false)
         return
       }
       router.push(`/dashboard/brands/${slug}/materials`)
       router.refresh()
     } catch {
       setSaveError('Could not delete the material. Please try again.')
+      setDeleting(false)
+      setConfirmDelete(false)
     }
   }
 
@@ -496,11 +503,27 @@ export function MaterialForm({
         <div className="dash-panel danger-panel">
           <h2 className="panel-section-title">Danger zone</h2>
           <p className="field-helper">Permanently delete this material.</p>
-          <button type="button" className="btn btn-danger" onClick={handleDelete}>
+          <button type="button" className="btn btn-danger" onClick={() => setConfirmDelete(true)}>
             <IconDelete size={16} /> Delete material
           </button>
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmDelete}
+        title="Delete material?"
+        description={
+          <>
+            <strong>{form.name || 'This material'}</strong> will be permanently
+            removed and will no longer appear in the materials directory. This
+            cannot be undone.
+          </>
+        }
+        confirmLabel="Delete material"
+        busy={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmDelete(false)}
+      />
 
       <DashboardStickyFooter
         progress={progress}

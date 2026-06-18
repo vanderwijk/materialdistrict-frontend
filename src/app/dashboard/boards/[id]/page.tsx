@@ -14,7 +14,14 @@ export default async function BoardDetailPage({ params }: BoardDetailPageProps) 
 
   return (
     <>
-      <DashboardPageHeader title="Boards" />
+      <DashboardPageHeader
+        title="Boards"
+        crumbs={[
+          { label: 'Account' },
+          { label: 'Boards', href: '/dashboard/boards' },
+          { label: board.name },
+        ]}
+      />
       <BoardDetailPanel board={board} />
     </>
   )

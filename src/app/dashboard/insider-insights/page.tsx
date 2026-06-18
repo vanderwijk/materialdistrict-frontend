@@ -8,7 +8,7 @@ export default async function InsiderInsightsPage() {
   const [user, insights] = await Promise.all([getInitialUser(), getInsiderInsights()])
   return (
     <>
-      <DashboardPageHeader title="Insider insights" />
+      <DashboardPageHeader title="Insider insights" crumbs={[{ label: 'Account' }, { label: 'Insider insights' }]} />
       <InsightsPanel insights={insights} isInsider={isInsider(user)} />
     </>
   )

@@ -16023,3 +16023,440 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 /* Follow-toggle-rij bovenaan brand-detail. */
 .brand-follow-row { margin: 0 0 var(--space-5); }
 /* ============================ einde §FOLLOW-DIGEST ============================ */
+
+/* ============================================================
+   §DASH-REVIEW-3 — Locked-feature consolidatie (deel 1: brand-side gates)
+   ------------------------------------------------------------
+   Eén canonieke behandeling voor álle BrandTierGate-tiers: hetzelfde
+   neutrale slot-icoon zónder tier-specifieke achtergrondkleur (geen blauwe
+   cirkel voor Plus, geen navy vlak/schild voor Partner). De upgrade-knop is
+   de groene primaire actie (.btn-green, gezet in de component); Preview blijft
+   outline/secundair. Additief — overschrijft de eerdere per-tier accenten
+   (§44.x, ~r5028) via cascade-volgorde; selectoren bewust identiek qua
+   specificiteit zodat dit blok wint.
+   ============================================================ */
+.brand-tier-gate.is-basis .brand-tier-gate-icon,
+.brand-tier-gate.is-plus .brand-tier-gate-icon,
+.brand-tier-gate.is-partner .brand-tier-gate-icon {
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+[data-theme="dark"] .brand-tier-gate.is-plus .brand-tier-gate-icon,
+[data-theme="dark"] .brand-tier-gate.is-partner .brand-tier-gate-icon {
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   §DASH-REVIEW-3B — Veldruimte in dashboard-formulieren (#3)
+   ------------------------------------------------------------
+   Het groene field-status-vinkje zit op top:0/right:0 van elke .field-group
+   (de labelregel). De verticale afstand tussen de velden wordt gestuurd door
+   de row-gap van de form-grid (.dash-content .g2/.g3, eerder 22px ~r15427).
+   Dat was te krap: het vinkje van het veld eronder plakte tegen het vak erboven.
+   Hier verhogen we de bepalende row-gap zodat het vinkje vrij staat — met echte
+   ademruimte, niet nét genoeg. Additief; identieke specificiteit, wint via volgorde.
+   ============================================================ */
+.dash-content .g2,
+.dash-content .g3 {
+  row-gap: 30px;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3C — Sidebar: rustiger bovenkant (#1)
+   ------------------------------------------------------------
+   De ACCOUNT/BRANDS-eyebrows (.sb-section-hd) droegen een border-bottom (en
+   BRANDS eerder een border-top). Die horizontale lijnen voegden weinig toe en
+   lazen als een "dubbele lijn" boven de witte kaart. Weg ermee — het label
+   draagt zelf de scheiding. Additief; latere volgorde wint.
+   (Het wel/niet behouden van de labels zelf — punt 16.2 — volgt in het
+   sidebar/header-blok.)
+   ============================================================ */
+.sb-section-hd {
+  border-bottom: none;
+  padding-bottom: 6px;
+}
+.sb-section-hd--brands {
+  border-top: none;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3D — Paginakop: breadcrumb onder de titel (#10.2)
+   ------------------------------------------------------------
+   De breadcrumb stond bóven de H1; staat nu eronder, zodat de H1 bovenaan komt.
+   Dit is de opmaak-kant; de volle-breedte header-band (#16.1) — die de kop boven
+   béide kolommen tilt — volgt als aparte structurele stap in de shell-layout.
+   Additief.
+   ============================================================ */
+.dash-page-header .page-title {
+  margin-bottom: 0;
+}
+.breadcrumbs--under-title {
+  margin-top: 6px;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3E — Sidebar declutter (#16.2 / #16.3)
+   ------------------------------------------------------------
+   ACCOUNT/BRANDS eyebrow-labels zijn uit de markup verwijderd (redundant — de
+   kaarten tonen zelf "Personal account" / "Brand account"). De sectie-scheiding
+   tussen account en brands loopt nu via een marge tussen de scopes i.p.v. een
+   labelkop. Add brand-knop duidelijker: solide outline-knop i.p.v. vage stippel,
+   leesbare tekst, gecentreerd — secundair (niet de groene primaire actie).
+   Additief; identieke specificiteit, wint via volgorde.
+   ============================================================ */
+.sb-section .sb-scope + .sb-scope {
+  margin-top: 18px;
+}
+.sb-add-brand {
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+  justify-content: center;
+}
+.sb-add-brand:hover {
+  background: var(--surface2);
+  border-color: var(--text-hint);
+}
+
+/* ============================================================
+   §DASH-REVIEW-3F — Insider-gate backing surface in dashboard (#5)
+   ------------------------------------------------------------
+   De panel-gate toont een witte kaart (--surface, #fff) die op de paper-canvas
+   (--bg, #fbfaf7) bijna geen contrast had → "stond verloren" (wit-op-wit).
+   In het dashboard krijgt het gate-gebied nu een subtiel getinte backing
+   (--surface2) met rand + radius, zodat de witte kaart duidelijk gegrond staat.
+   Bewust géén witte backing (dat zou de wit-op-wit juist herhalen).
+   Alleen binnen .dash-content gescoped; hogere specificiteit dan de basisregel.
+   ============================================================ */
+.dash-content .insider-gate.is-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  min-height: 440px;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3G — Volle-breedte paginakop-band (#16.1)
+   ------------------------------------------------------------
+   De paginakop (H1 + breadcrumb eronder) staat nu in een band over de VOLLE
+   breedte bovenaan; sidebar-kaart én contentblokken beginnen daaronder op
+   dezelfde lijn ("samenvallen aan de bovenkant"). Vervangt de oude aanpak van
+   punt 2/10.2 (H1 uitlijnen mét de menu-top), zoals afgesproken.
+
+   Techniek (puur CSS, SSR-bepaald — geen portal/markup/client-wijziging):
+   elke pagina rendert <DashboardPageHeader> al als eerste, direct kind van
+   .dash-content. Door .dash-content op `display:contents` te zetten worden
+   z'n kinderen directe grid-items van .dash-layout. De kop spant dan rij 1
+   over beide kolommen; de overige contentblokken vallen in kolom 2; de sidebar
+   zakt naar rij 2. De 24px grid-gap van .dash-layout levert de bandscheiding.
+
+   Let op: display:contents heft de box van .dash-content op, dus z'n eigen
+   padding/gap vervallen — de inter-block-ruimte komt nu van de grid-gap, en de
+   mobiele zij-padding wordt hieronder hersteld op .dash-layout.
+   ============================================================ */
+.dash-content {
+  display: contents;
+}
+.dash-content > * {
+  grid-column: 2;
+}
+.dash-content > .dash-page-header {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.dash-sidebar-wrap {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+@media (max-width: 768px) {
+  /* Eén kolom: kop én content in kolom 1 (anders maakt grid-column:2 een
+     spookkolom op mobiel). Zij-padding terug op de grid i.p.v. .dash-content. */
+  .dash-content > *,
+  .dash-content > .dash-page-header {
+    grid-column: 1;
+  }
+  .dash-layout {
+    padding: 0 14px 80px;
+  }
+}
+
+/* ============================================================
+   §DASH-REVIEW-3H — Sidebar-footer rustiger (#16.2)
+   ------------------------------------------------------------
+   De onderste stapel oogde druk: twee outline-knoppen (Add brand + Back to
+   homepage) onder elkaar, plus Sign out. "Back to homepage" wordt nu een
+   rustige tekstlink — gelijk aan Sign out — zodat de footer één consistente,
+   secundaire utility-groep is. Daarmee is "Add brand" de enige (secundaire)
+   knop in dat gebied; de hiërarchie wordt: navigatie → Add brand → rustige
+   footer-links. Wat ademruimte boven de footer, géén scheidingslijn (kalm).
+   ============================================================ */
+.sb-footer {
+  padding-top: 6px;
+}
+.sb-footer a.sb-back-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-radius: 0;
+  transition: color 0.15s;
+}
+.sb-footer a.sb-back-btn:hover {
+  color: var(--text);
+  background: none;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3I — Membership-vergelijkingstabel (#12)
+   ------------------------------------------------------------
+   12.1 Gelijke kolombreedtes (table-layout:fixed; Feature-kolom 30%, de vier
+        plan-kolommen delen de rest gelijk).
+   12.2 Prijs op een eigen regel: plannaam (block) op regel 1, prijs + /year
+        eronder op regel 2.
+   12.3 Huidig plan zichtbaar: de actieve kolom kreeg surface2 — gelijk aan álle
+        th-cellen, dus onzichtbaar. Nu een eigen tint + navy accent-balk bovenaan
+        + een "Current"-tag in de kop.
+   12.5 Conditionele Free-markering (✓*) — styling van het sterretje + voetnoot.
+   12.4 Upgrade-aanvraag-CTA-rij (tfoot) styling.
+   ============================================================ */
+.memb-table {
+  table-layout: fixed;
+}
+.memb-table th:first-child,
+.memb-table td:first-child {
+  width: 30%;
+}
+
+/* 12.2 — naam op regel 1, prijs + /year op regel 2 */
+.memb-table .plan-name {
+  display: block;
+  margin: 0 0 4px;
+}
+.memb-table .plan-per {
+  display: inline;
+  margin-left: 3px;
+}
+
+/* 12.3 — zichtbare highlight van de huidige kolom */
+.memb-table .plan-active-col {
+  background: #eef4fb !important;
+}
+.memb-table thead th.plan-active-col {
+  border-top: 3px solid var(--navy);
+}
+[data-theme="dark"] .memb-table .plan-active-col {
+  background: #1a2838 !important;
+}
+.plan-current-tag {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+[data-theme="dark"] .plan-current-tag {
+  color: #93c5fd;
+}
+
+/* 12.5 — conditionele Free-markering */
+.memb-cond {
+  color: var(--green-mid);
+  font-weight: 700;
+}
+.memb-cond sup {
+  font-size: 0.7em;
+}
+.memb-note-sub {
+  margin-top: 6px;
+}
+
+/* 12.4 — upgrade-aanvraag CTA-rij */
+.memb-cta-row td {
+  padding-top: 16px;
+  text-align: center;
+  vertical-align: top;
+  border-right: 1px solid var(--border);
+}
+.memb-cta-row td:first-child {
+  border-right: none;
+}
+.memb-upgrade-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.memb-upgrade-btn {
+  white-space: nowrap;
+}
+.memb-upgrade-done {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green-mid);
+}
+.memb-current-cell {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.memb-upgrade-error {
+  font-size: 12px;
+  color: var(--red);
+  line-height: 1.3;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3J — ConfirmDialog (#13)
+   ------------------------------------------------------------
+   Standaard in-app bevestigingsdialoog voor gewone deletes (material,
+   saved-search, board) — vervangt native window.confirm(). Type-to-confirm
+   blijft alleen voor brand-delete. Backdrop/centering gelijk aan de bestaande
+   modal-overlay.
+   ============================================================ */
+.confirm-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 31, 45, 0.55);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.confirm-dialog {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 440px;
+  padding: 28px;
+}
+.confirm-dialog-title {
+  margin: 0 0 10px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--text);
+}
+.confirm-dialog-desc {
+  margin: 0 0 22px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3K — Saved-search naam-popover (#7)
+   ------------------------------------------------------------
+   Lichte, vóóringevulde naam-stap bij het opslaan van een zoekopdracht
+   (geen zware modal). Leeg laten valt terug op de slimme default.
+   ============================================================ */
+.ss-name-pop-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 31, 45, 0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.ss-name-pop {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 380px;
+  padding: 22px;
+}
+.ss-name-pop-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.ss-name-pop-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--surface);
+}
+.ss-name-pop-input:focus {
+  outline: none;
+  border-color: var(--green);
+}
+.ss-name-pop-hint {
+  margin: 8px 0 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.ss-name-pop-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3L — Invoices: type-label-kolom (#8)
+   ------------------------------------------------------------
+   Eén chronologische lijst met een Type-kolom (Membership/Order). Nu alleen
+   Membership (Stripe); Order volgt met de geparkeerde WooCommerce-checkout.
+   Override van het kolomtemplate (Date · Type · Description · Amount · Status ·
+   Invoice) — additief, wint op bronvolgorde van het oude 5-koloms template.
+   ============================================================ */
+.t-invoices .t-head,
+.t-invoices .t-row {
+  grid-template-columns: 120px 110px 1fr 110px 110px 80px;
+}
+
+/* ============================================================
+   §DASH-REVIEW-3M — become-a-partner parity-tweaks (#15/#17)
+   ------------------------------------------------------------
+   Tarief-rij vet (afgesproken nadruk), conditionele Free-markering (✓*) gelijk
+   aan het dashboard (#12.5), en de bijbehorende voetnoot. Data zelf komt al uit
+   membership.ts (één bron van waarheid).
+   ============================================================ */
+.compare-table .cmp-rate-row td {
+  font-weight: 700;
+}
+.cmp-cond {
+  display: inline-flex;
+  align-items: center;
+}
+.cmp-cond sup {
+  font-size: 0.7em;
+  margin-left: 1px;
+  color: var(--ct-member);
+  font-weight: 700;
+}
+.mkt-footnote {
+  max-width: 760px;
+  margin: 14px auto 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-align: center;
+}

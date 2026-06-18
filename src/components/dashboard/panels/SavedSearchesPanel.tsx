@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconSearch, IconDelete, IconBell } from '@/components/ui/icons'
 import type { SavedSearch } from '@/types/dashboard'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /**
  * Saved searches panel (Insider) — catalogus-weergave.
@@ -58,6 +59,7 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
   const [previews, setPreviews] = useState<Record<string, Preview>>({})
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftName, setDraftName] = useState('')
+  const [confirmId, setConfirmId] = useState<string | null>(null)
 
   // Eénmalig de thumbnails + live tellingen ophalen per opgeslagen zoekopdracht.
   useEffect(() => {
@@ -118,8 +120,8 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
     }
   }
 
-  async function remove(id: string) {
-    if (!window.confirm('Delete this saved search? This cannot be undone.')) return
+  async function doRemove(id: string) {
+    setConfirmId(null)
     const prev = searches
     setSearches((list) => list.filter((s) => s.id !== id)) // optimistic
     try {
@@ -171,7 +173,10 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
     )
   }
 
+  const confirmTarget = searches.find((s) => s.id === confirmId) ?? null
+
   return (
+    <>
     <div className="dash-panel">
       <h2 className="panel-section-title">Saved searches</h2>
       <div className="ss-grid">
@@ -226,7 +231,7 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
                   <button
                     type="button"
                     className="icon-btn is-sm is-ghost is-delete"
-                    onClick={() => remove(s.id)}
+                    onClick={() => setConfirmId(s.id)}
                     aria-label={`Delete saved search ${s.name}`}
                   >
                     <IconDelete size={16} />
@@ -264,5 +269,21 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
         })}
       </div>
     </div>
+    <ConfirmDialog
+      open={confirmId !== null}
+      title="Delete saved search?"
+      description={
+        <>
+          <strong>{confirmTarget?.name ?? 'This saved search'}</strong> and its
+          alert preference will be removed. This cannot be undone.
+        </>
+      }
+      confirmLabel="Delete"
+      onConfirm={() => {
+        if (confirmId) void doRemove(confirmId)
+      }}
+      onCancel={() => setConfirmId(null)}
+    />
+    </>
   )
 }

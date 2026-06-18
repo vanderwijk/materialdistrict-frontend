@@ -71,6 +71,17 @@ const COMPARE_FEATURES: readonly ManufacturerFeature[] = [
   'Exclusive Networking Events',
 ]
 
+/**
+ * Free-model parity met het dashboard (review 12.5): voor Free zijn dit
+ * conditionele features — pas zichtbaar zodra de brand minstens één materiaal
+ * publiceert. In de tabel tonen we ze met een "* met publicatie"-markering.
+ */
+const FREE_CONDITIONAL = new Set<ManufacturerFeature>([
+  'Listed in Brand Directory',
+  'Individual Brand Page',
+  'Receive Sample & Info Requests',
+])
+
 function eur(amount: number): string {
   return `€${amount.toLocaleString('nl-NL')}`
 }
@@ -91,6 +102,16 @@ function Yes() {
 }
 function No() {
   return <span className="cmp-no" aria-label="Not included">—</span>
+}
+function Cond() {
+  return (
+    <span className="cmp-cond" aria-label="Included once you publish at least one material">
+      <svg className="cmp-yes" width="16" height="16" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12" stroke="currentColor" strokeWidth="2.5" fill="none" />
+      </svg>
+      <sup>*</sup>
+    </span>
+  )
 }
 
 export default function BecomeAPartnerPage() {
@@ -116,7 +137,7 @@ export default function BecomeAPartnerPage() {
           const accent = MANUFACTURER_TIER_COLORS[tier]
           const href = tier === 'partner' ? '/contact' : '/register?next=/become-a-partner'
           const ctaLabel =
-            tier === 'partner' ? 'Contact us' : isFree ? 'Start free' : `Choose ${TIER_LABELS[tier]}`
+            tier === 'partner' ? 'Choose Partner' : isFree ? 'Start free' : `Choose ${TIER_LABELS[tier]}`
 
           return (
             <div
@@ -174,11 +195,16 @@ export default function BecomeAPartnerPage() {
             {COMPARE_FEATURES.map((feature) => (
               <tr key={feature}>
                 <td>{feature}</td>
-                {TIER_ORDER.map((tier) => (
-                  <td key={tier} className="col-val">
-                    {canManufacturerAccess(tier, feature) ? <Yes /> : <No />}
-                  </td>
-                ))}
+                {TIER_ORDER.map((tier) => {
+                  const included = canManufacturerAccess(tier, feature)
+                  const conditional =
+                    tier === 'free' && included && FREE_CONDITIONAL.has(feature)
+                  return (
+                    <td key={tier} className="col-val">
+                      {conditional ? <Cond /> : included ? <Yes /> : <No />}
+                    </td>
+                  )
+                })}
               </tr>
             ))}
             <tr>
@@ -189,7 +215,7 @@ export default function BecomeAPartnerPage() {
                 </td>
               ))}
             </tr>
-            <tr>
+            <tr className="cmp-rate-row">
               <td>Yearly rate</td>
               {TIER_ORDER.map((tier) => (
                 <td key={tier} className="col-val">
@@ -200,6 +226,12 @@ export default function BecomeAPartnerPage() {
           </tbody>
         </table>
       </div>
+
+      <p className="mkt-footnote">
+        <sup>*</sup> Free brand visibility — brand directory listing, brand page
+        and sample &amp; info requests — activates once you publish at least one
+        material.
+      </p>
 
       <p className="mkt-lede" style={{ textAlign: 'center', marginTop: '20px' }}>
         All prices excl. VAT · annual commitment. Need a tailored Partner

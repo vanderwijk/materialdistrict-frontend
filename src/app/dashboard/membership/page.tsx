@@ -21,7 +21,7 @@ export default async function ReaderMembershipPage({
 
   return (
     <>
-      <DashboardPageHeader title="Insider membership" />
+      <DashboardPageHeader title="Insider membership" crumbs={[{ label: 'Account' }, { label: 'Insider membership' }]} />
       {checkout === 'already' && (
         <div className="form-banner is-success" role="status">
           <strong>You&rsquo;re already an Insider.</strong> Manage your

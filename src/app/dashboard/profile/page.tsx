@@ -9,7 +9,7 @@ export default async function ProfilePage() {
   ])
   return (
     <>
-      <DashboardPageHeader title="My profile" />
+      <DashboardPageHeader title="My profile" crumbs={[{ label: 'Account' }, { label: 'My profile' }]} />
       <ProfileForm initial={profile} options={options} />
     </>
   )

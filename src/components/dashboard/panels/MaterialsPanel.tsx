@@ -123,7 +123,7 @@ export function MaterialsPanel({
         </div>
         <Link
           href={`/dashboard/brands/${slug}/materials/new`}
-          className="btn btn-primary btn-sm"
+          className={`btn btn-sm ${materials.length > 0 && !atLimit ? 'btn-green' : 'btn-outline'}`}
           aria-disabled={atLimit}
         >
           <IconAdd size={16} /> Add material
@@ -166,8 +166,8 @@ export function MaterialsPanel({
           title="No materials yet"
           description="Add your first material to start appearing in the materials directory."
           actions={
-            <Link href={`/dashboard/brands/${slug}/materials/new`} className="btn btn-primary">
-              Add material
+            <Link href={`/dashboard/brands/${slug}/materials/new`} className="btn btn-green">
+              <IconAdd size={16} /> Add material
             </Link>
           }
         />

@@ -41,8 +41,7 @@ export function DashboardSidebar({
   return (
     <div className="dash-sidebar-wrap">
       <div className="sb-section">
-        {/* Account scope */}
-        <div className="sb-section-hd">Account</div>
+        {/* Account scope — eyebrow-label verwijderd (#16.2); de kaart toont zelf "Personal account". */}
         <div className={`sb-scope ${isUserScope ? 'active' : ''}`}>
           <Link href="/dashboard/profile" className="sb-scope-btn">
             <span className="sb-scope-id">
@@ -71,8 +70,8 @@ export function DashboardSidebar({
           )}
         </div>
 
-        {/* Brand scopes — one per managed brand */}
-        <div className="sb-section-hd sb-section-hd--brands">Brands</div>
+        {/* Brand scopes — one per managed brand. Eyebrow-label verwijderd (#16.2);
+            elke kaart toont zelf "Brand account". Sectie-scheiding via marge (CSS). */}
         {user.brands.map((brand) => {
           const isOpen = scope.kind === 'brand' && scope.slug === brand.slug
           // A draft/new brand can have an empty slug — its pages don't exist

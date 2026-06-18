@@ -24,6 +24,7 @@ import type {
   SavedSearch,
   InsightReport,
   Invoice,
+  InvoiceKind,
   InvoiceStatus,
   MaterialFormData,
   MaterialCategoryPath,
@@ -465,6 +466,7 @@ interface RawInvoice {
   amount?: number
   currency?: string
   status?: InvoiceStatus
+  kind?: InvoiceKind
   pdf_url?: string | null
 }
 
@@ -476,6 +478,7 @@ export function mapInvoice(raw: RawInvoice): Invoice {
     amount: raw.amount ?? 0,
     currency: raw.currency ?? 'EUR',
     status: raw.status ?? 'open',
+    kind: raw.kind ?? 'membership',
     pdfUrl: raw.pdf_url ?? null,
   }
 }

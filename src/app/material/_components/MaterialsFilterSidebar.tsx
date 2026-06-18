@@ -247,6 +247,8 @@ export function MaterialsFilterSidebar({
 
   // Saved-search state
   const [gateOpen, setGateOpen] = useState(false)
+  const [nameOpen, setNameOpen] = useState(false)
+  const [nameDraft, setNameDraft] = useState('')
   const [savingSearch, setSavingSearch] = useState(false)
   const [saveNotice, setSaveNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(
     null,
@@ -445,16 +447,30 @@ export function MaterialsFilterSidebar({
       setGateOpen(true)
       return
     }
-    const query = currentQueryString()
-    if (!query) return
+    if (!currentQueryString()) return
+    // #7 — niet stil opslaan onder een afgeleide naam: toon een lichte,
+    // vóóringevulde naam-stap. Leeg laten valt terug op de slimme default
+    // (nooit blokkerend).
+    setNameDraft(suggestedName())
+    setSaveNotice(null)
+    setNameOpen(true)
+  }
 
+  async function confirmSaveSearch() {
+    const query = currentQueryString()
+    if (!query) {
+      setNameOpen(false)
+      return
+    }
+    const name = nameDraft.trim() || suggestedName()
+    setNameOpen(false)
     setSavingSearch(true)
     setSaveNotice(null)
     try {
       const res = await fetch('/api/dashboard/saved-searches', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: suggestedName(), query }),
+        body: JSON.stringify({ name, query }),
       })
       if (!res.ok) throw new Error('save failed')
       setSaveNotice({ kind: 'ok', text: 'Search saved — find it in your dashboard.' })
@@ -692,6 +708,57 @@ export function MaterialsFilterSidebar({
         onClose={() => setGateOpen(false)}
         ctaHref="/dashboard/membership"
       />
+
+      {nameOpen && (
+        <div
+          className="ss-name-pop-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Name this search"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setNameOpen(false)
+          }}
+        >
+          <div className="ss-name-pop">
+            <label className="ss-name-pop-label" htmlFor="ss-name-input">
+              Name this search
+            </label>
+            <input
+              id="ss-name-input"
+              className="ss-name-pop-input"
+              value={nameDraft}
+              autoFocus
+              placeholder={suggestedName()}
+              onChange={(e) => setNameDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  void confirmSaveSearch()
+                } else if (e.key === 'Escape') {
+                  setNameOpen(false)
+                }
+              }}
+            />
+            <p className="ss-name-pop-hint">Leave blank to use the suggested name.</p>
+            <div className="ss-name-pop-actions">
+              <button
+                type="button"
+                className="btn btn-outline btn-sm"
+                onClick={() => setNameOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn btn-green btn-sm"
+                onClick={() => void confirmSaveSearch()}
+              >
+                Save search
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -31,9 +31,10 @@ export function DashboardPageHeader({
   backLabel?: string
 }) {
   return (
-    <header>
+    <header className="dash-page-header">
+      <h1 className="page-title">{title}</h1>
       {crumbs && crumbs.length > 0 && (
-        <nav className="breadcrumbs" aria-label="Breadcrumb">
+        <nav className="breadcrumbs breadcrumbs--under-title" aria-label="Breadcrumb">
           {crumbs.map((c, i) => {
             const isLast = i === crumbs.length - 1
             return (
@@ -49,7 +50,6 @@ export function DashboardPageHeader({
           })}
         </nav>
       )}
-      <h1 className="page-title">{title}</h1>
       {backHref && backLabel && (
         <Link href={backHref} className="detail-header-back">
           <IconArrowLeft size={14} />

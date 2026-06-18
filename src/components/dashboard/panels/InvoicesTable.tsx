@@ -1,12 +1,17 @@
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconDownload, IconBook } from '@/components/ui/icons'
-import type { Invoice, InvoiceStatus } from '@/types/dashboard'
+import type { Invoice, InvoiceStatus, InvoiceKind } from '@/types/dashboard'
 
 const STATUS_BADGE: Record<InvoiceStatus, string> = {
   paid: 'b-green',
   open: 'b-blue',
   overdue: 'b-red',
   refunded: 'b-gray',
+}
+
+const KIND_LABEL: Record<InvoiceKind, string> = {
+  membership: 'Membership',
+  order: 'Order',
 }
 
 function fmtAmount(amount: number, currency: string): string {
@@ -36,6 +41,7 @@ export function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
     <div className="table-wrap t-invoices">
       <div className="t-head">
         <span>Date</span>
+        <span>Type</span>
         <span>Description</span>
         <span>Amount</span>
         <span>Status</span>
@@ -44,6 +50,9 @@ export function InvoicesTable({ invoices }: { invoices: Invoice[] }) {
       {invoices.map((inv, i) => (
         <div key={inv.id} className={`t-row ${i % 2 === 1 ? 'alt' : ''}`}>
           <span>{fmtDate(inv.date)}</span>
+          <span>
+            <span className="tag">{KIND_LABEL[inv.kind ?? 'membership']}</span>
+          </span>
           <span>{inv.description}</span>
           <span>{fmtAmount(inv.amount, inv.currency)}</span>
           <span>

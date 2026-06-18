@@ -6,7 +6,7 @@ export default async function BookmarksPage() {
   const bookmarks = await getBookmarks()
   return (
     <>
-      <DashboardPageHeader title="Bookmarks" />
+      <DashboardPageHeader title="Bookmarks" crumbs={[{ label: 'Account' }, { label: 'Bookmarks' }]} />
       <BookmarksPanel initial={bookmarks} />
     </>
   )

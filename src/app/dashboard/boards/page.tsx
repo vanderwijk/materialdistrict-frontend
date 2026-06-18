@@ -11,7 +11,7 @@ export default async function BoardsPage() {
   if (!isInsider(user)) {
     return (
       <>
-        <DashboardPageHeader title="Boards" />
+        <DashboardPageHeader title="Boards" crumbs={[{ label: 'Account' }, { label: 'Boards' }]} />
         <InsiderGate variant="panel" feature="boards" ctaHref="/dashboard/membership" />
       </>
     )
@@ -20,7 +20,7 @@ export default async function BoardsPage() {
   const boards = await getBoards()
   return (
     <>
-      <DashboardPageHeader title="Boards" />
+      <DashboardPageHeader title="Boards" crumbs={[{ label: 'Account' }, { label: 'Boards' }]} />
       <BoardsPanel initial={boards} />
     </>
   )

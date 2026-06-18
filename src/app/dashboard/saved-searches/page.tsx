@@ -11,7 +11,7 @@ export default async function SavedSearchesPage() {
   if (!isInsider(user)) {
     return (
       <>
-        <DashboardPageHeader title="Saved searches" />
+        <DashboardPageHeader title="Saved searches" crumbs={[{ label: 'Account' }, { label: 'Saved searches' }]} />
         <InsiderGate variant="panel" feature="savedSearch" ctaHref="/dashboard/membership" />
       </>
     )
@@ -20,7 +20,7 @@ export default async function SavedSearchesPage() {
   const searches = await getSavedSearches()
   return (
     <>
-      <DashboardPageHeader title="Saved searches" />
+      <DashboardPageHeader title="Saved searches" crumbs={[{ label: 'Account' }, { label: 'Saved searches' }]} />
       <SavedSearchesPanel initial={searches} />
     </>
   )

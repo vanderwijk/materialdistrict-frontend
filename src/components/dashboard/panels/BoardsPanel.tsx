@@ -6,6 +6,7 @@ import type { CSSProperties } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconBoard, IconAdd, IconDelete } from '@/components/ui/icons'
 import type { Board } from '@/types/dashboard'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /**
  * Boards panel (Insider). Project folders grouping saved materials/articles.
@@ -14,6 +15,7 @@ import type { Board } from '@/types/dashboard'
  */
 export function BoardsPanel({ initial }: { initial: Board[] }) {
   const [boards, setBoards] = useState(initial)
+  const [confirmId, setConfirmId] = useState<string | null>(null)
 
   async function createBoard() {
     const name = window.prompt('Board name')?.trim()
@@ -32,8 +34,8 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
     }
   }
 
-  async function remove(id: string) {
-    if (!window.confirm('Delete this board? Its saved items will be removed from the board.')) return
+  async function doRemove(id: string) {
+    setConfirmId(null)
     const prev = boards
     setBoards((b) => b.filter((x) => x.id !== id)) // optimistic
     try {
@@ -44,7 +46,10 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
     }
   }
 
+  const confirmTarget = boards.find((b) => b.id === confirmId) ?? null
+
   return (
+    <>
     <div className="dash-panel">
       <div className="panel-head-row">
         <h2 className="panel-section-title">Your boards</h2>
@@ -88,7 +93,7 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
                 <button
                   type="button"
                   className="board-remove"
-                  onClick={() => remove(board.id)}
+                  onClick={() => setConfirmId(board.id)}
                   aria-label={`Delete board ${board.name}`}
                 >
                   <IconDelete size={16} />
@@ -99,5 +104,22 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
         </div>
       )}
     </div>
+    <ConfirmDialog
+      open={confirmId !== null}
+      title="Delete board?"
+      description={
+        <>
+          <strong>{confirmTarget?.name ?? 'This board'}</strong> will be deleted
+          and its saved items will be removed from the board. This cannot be
+          undone.
+        </>
+      }
+      confirmLabel="Delete"
+      onConfirm={() => {
+        if (confirmId) void doRemove(confirmId)
+      }}
+      onCancel={() => setConfirmId(null)}
+    />
+    </>
   )
 }

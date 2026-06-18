@@ -32,6 +32,13 @@ export type MaterialPublicationStatus = 'online' | 'offline' | 'draft'
 export type InvoiceStatus = 'paid' | 'open' | 'overdue' | 'refunded'
 
 /**
+ * Invoice source. Today only 'membership' (Stripe subscriptions) exists; 'order'
+ * arrives with the parked WooCommerce checkout. Drives the Type label in the
+ * unified invoice list (review point 8).
+ */
+export type InvoiceKind = 'membership' | 'order'
+
+/**
  * One invoice line. Shared by the personal account and per-brand invoice
  * panels — the only difference is the source scope (see the data layer).
  *
@@ -47,6 +54,11 @@ export interface Invoice {
   amount: number
   currency: string
   status: InvoiceStatus
+  /**
+   * Source of this invoice. Defaults to 'membership' when absent (all current
+   * invoices are Stripe membership charges).
+   */
+  kind?: InvoiceKind
   /** Signed download URL, or `null` while not yet generated. */
   pdfUrl: string | null
 }

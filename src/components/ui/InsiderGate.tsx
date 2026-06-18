@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
 import { usePreviewMode } from '@/lib/hooks/usePreviewMode'
+import { useAuth } from '@/components/providers/AuthContext'
 import { InsiderMark } from './InsiderMark'
 
 // ============================================================
@@ -204,6 +205,7 @@ export function InsiderGate(props: InsiderGateProps & LegacyModeAlias) {
   const reactId = useId()
   const gateId = `insider-gate-${reactId}`
   const { isEnabled, enable } = usePreviewMode()
+  const { isLoggedIn } = useAuth()
 
   // Backward-compat: oude `mode` prop → nieuwe `variant` prop
   // (TS struggles with the union narrow here; cast to a permissive shape)
@@ -345,9 +347,11 @@ export function InsiderGate(props: InsiderGateProps & LegacyModeAlias) {
         <Link href={ctaHref} className="btn btn-insider btn-sm insider-gate-cta">
           {ctaLabel}
         </Link>
-        <a href={signInHref} className="insider-gate-signin-link">
-          Already an Insider? Sign in →
-        </a>
+        {!isLoggedIn && (
+          <a href={signInHref} className="insider-gate-signin-link">
+            Already an Insider? Sign in →
+          </a>
+        )}
       </div>
     </aside>
   )
@@ -404,6 +408,7 @@ function GateBody({
   onDismissForever?: (checked: boolean) => void
   initialDismissed?: boolean
 }) {
+  const { isLoggedIn } = useAuth()
   return (
     <div className="insider-gate-body">
       <div className="insider-gate-list-label">Included with Insider</div>
@@ -419,9 +424,11 @@ function GateBody({
       <Link href={ctaHref} className="btn btn-insider btn-md insider-gate-cta">
         {ctaLabel}
       </Link>
-      <a href={signInHref} className="insider-gate-signin-link">
-        Already an Insider? Sign in →
-      </a>
+      {!isLoggedIn && (
+        <a href={signInHref} className="insider-gate-signin-link">
+          Already an Insider? Sign in →
+        </a>
+      )}
       {onDismiss && (
         <button
           type="button"

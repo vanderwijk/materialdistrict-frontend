@@ -2,7 +2,7 @@
 
 import { useId, type ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
-import { IconLock, IconShield, IconArrowRight } from '@/components/ui/icons'
+import { IconLock } from '@/components/ui/icons'
 import { usePreviewMode } from '@/lib/hooks/usePreviewMode'
 
 export type BrandTier = 'basis' | 'plus' | 'partner'
@@ -85,9 +85,8 @@ export function BrandTierGate(props: BrandTierGateProps) {
 
   const ctaLabel = props.ctaLabel ?? `Upgrade to ${tierLabel} →`
 
-  // Tier bepaalt het icoon: hoger tier = strenger lock
-  const TierIcon =
-    props.required === 'partner' ? IconShield : IconLock
+  // Eén consistent icoon voor álle tiers — geen schild-voor-partner meer.
+  const TierIcon = IconLock
 
   // === Page variant ===
   if (props.variant === 'page') {
@@ -107,7 +106,7 @@ export function BrandTierGate(props: BrandTierGateProps) {
           <p className="brand-tier-gate-description t-body">
             {props.description}
           </p>
-          <a href={props.upgradeHref} className="btn btn-primary btn-md">
+          <a href={props.upgradeHref} className="btn btn-green btn-md">
             {ctaLabel}
           </a>
         </div>
@@ -157,7 +156,7 @@ export function BrandTierGate(props: BrandTierGateProps) {
           >
             Preview
           </button>
-          <a href={props.upgradeHref} className="btn btn-primary btn-sm">
+          <a href={props.upgradeHref} className="btn btn-green btn-sm">
             {ctaLabel}
           </a>
         </div>
