@@ -22,7 +22,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { BrandTile, ContentCard } from '@/components/ui'
-import { getChannelCatalog, getChannelHub, getChannelTerm } from '@/lib/api'
+import { getChannelHub, getChannelTerm } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
@@ -31,6 +31,13 @@ import { ChannelHero } from './_components/ChannelHero'
 import { ChannelStrip } from './_components/ChannelStrip'
 
 const STRIP_LIMIT = 8
+
+/**
+ * On-demand ISR — geen build-time prerender van alle ~20 channels.
+ * `generateStaticParams` veroorzaakte een WP-request-storm tijdens Vercel
+ * build (429 Too Many Requests op batch media-fetches).
+ */
+export const revalidate = 3600
 
 interface ChannelHubPageProps {
   params: Promise<{ slug: string }>
@@ -70,13 +77,8 @@ function countLabel(n: number, singular: string, plural: string): string {
 }
 
 // --------------------------------------------------------------------
-// Static params + metadata
+// Metadata
 // --------------------------------------------------------------------
-
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const catalog = await getChannelCatalog()
-  return catalog.map((c) => ({ slug: c.slug }))
-}
 
 export async function generateMetadata({
   params,

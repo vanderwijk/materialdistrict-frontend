@@ -1027,10 +1027,14 @@ async function fetchMediaMap(
 ): Promise<Map<number, ReturnType<typeof mapMedia>>> {
   const map = new Map<number, ReturnType<typeof mapMedia>>()
   if (ids.length === 0) return map
-  const { getMediaBatch } = await import('./wordpress')
-  const items = await getMediaBatch(ids)
-  for (const raw of items) {
-    map.set(raw.id, mapMedia(raw))
+  try {
+    const { getMediaBatch } = await import('./wordpress')
+    const items = await getMediaBatch(ids)
+    for (const raw of items) {
+      map.set(raw.id, mapMedia(raw))
+    }
+  } catch {
+    // Faalbestendig bij WP rate limits (429) — cards zonder hero i.p.v. 500.
   }
   return map
 }
@@ -1042,12 +1046,16 @@ async function fetchMediaMap(
 async function fetchBrandNameMap(ids: number[]): Promise<Map<number, string>> {
   const map = new Map<number, string>()
   if (ids.length === 0) return map
-  const { items } = await listBrandsRaw({
-    include: ids,
-    perPage: ids.length,
-  })
-  for (const raw of items) {
-    map.set(raw.id, raw.title.rendered)
+  try {
+    const { items } = await listBrandsRaw({
+      include: ids,
+      perPage: ids.length,
+    })
+    for (const raw of items) {
+      map.set(raw.id, raw.title.rendered)
+    }
+  } catch {
+    // Faalbestendig bij WP rate limits — cards zonder brand-naam i.p.v. 500.
   }
   return map
 }

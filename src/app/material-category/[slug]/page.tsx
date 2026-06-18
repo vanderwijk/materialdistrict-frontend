@@ -16,11 +16,14 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ContentCard, EmptyState } from '@/components/ui'
-import { getTerm, getTerms, listMaterialsWithFacets } from '@/lib/api'
+import { getTerm, listMaterialsWithFacets } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 const PER_PAGE = 24
+
+/** On-demand ISR — voorkomt build-time FacetWP/WP-storm (zelfde patroon als channels). */
+export const revalidate = 3600
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -31,15 +34,6 @@ function toPlainText(html: string): string {
   return decodeHtmlEntities(html.replace(/<[^>]*>/g, ' '))
     .replace(/\s+/g, ' ')
     .trim()
-}
-
-// --------------------------------------------------------------------
-// Static params
-// --------------------------------------------------------------------
-
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const terms = await getTerms('material_category', { perPage: 100, hide_empty: true })
-  return terms.map((t) => ({ slug: t.slug }))
 }
 
 // --------------------------------------------------------------------
