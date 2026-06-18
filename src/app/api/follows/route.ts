@@ -19,6 +19,30 @@ export const dynamic = 'force-dynamic'
 
 const VALID_ENTITY = new Set(['channel', 'brand'])
 
+type WpFollowRecord = {
+  entity_type?: string
+  entity_id?: number | string
+  types?: string[]
+}
+
+type WpFollowsResponse = {
+  follows?: WpFollowRecord[]
+  mail_frequency?: string
+}
+
+function mapFollowsResponse(raw: WpFollowsResponse) {
+  return {
+    follows: Array.isArray(raw.follows)
+      ? raw.follows.map((row) => ({
+          entityType: row.entity_type,
+          entityId: row.entity_id,
+          types: Array.isArray(row.types) ? row.types : [],
+        }))
+      : [],
+    mailFrequency: raw.mail_frequency ?? 'weekly',
+  }
+}
+
 function unauthorized(): NextResponse {
   return NextResponse.json(
     { code: 'md_unauthorized', message: 'Please sign in to follow.' },
@@ -47,8 +71,8 @@ export async function GET(): Promise<NextResponse> {
   const token = await getAuthCookie()
   if (!token) return unauthorized()
   try {
-    const result = await wpDashboardFetch('/md/v2/follows', { method: 'GET', bearer: token })
-    return NextResponse.json(result)
+    const result = await wpDashboardFetch<WpFollowsResponse>('/md/v2/follows', { method: 'GET', bearer: token })
+    return NextResponse.json(mapFollowsResponse(result))
   } catch (err) {
     return fail(err)
   }

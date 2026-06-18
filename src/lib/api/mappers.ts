@@ -409,6 +409,7 @@ export function mapBrand(
 
     partner: truthyFlag(m.partner, m._partner),
     featured: truthyFlag(m.featured, m._featured),
+    followable: m.followable === true,
 
     date: raw.date,
     modified: raw.modified,

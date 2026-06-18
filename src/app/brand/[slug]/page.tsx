@@ -164,9 +164,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
 
           {/* Main column */}
           <div>
-            {/* Follow this brand — alleen bij membership (followable). Tot het
-                veld op de brand-response staat: tonen tenzij expliciet false. */}
-            {((brand as { followable?: boolean }).followable ?? true) && (
+            {brand.followable && (
               <div className="brand-follow-row">
                 <FollowToggle entityType="brand" entityId={brand.id} entityName={brand.name} />
               </div>

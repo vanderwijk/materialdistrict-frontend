@@ -79,6 +79,8 @@ export interface BrandMeta {
   primary_user_id?: number | null
   /** Brand-membership-blok (Fase 2). Shape nog niet hard vastgelegd. */
   membership?: unknown
+  /** Of gebruikers deze brand mogen volgen (betaalde membership). */
+  followable?: boolean
 
   // --- Raw underscore (alleen rollout-fallback) ---
   _partner?: boolean | string | null
@@ -174,6 +176,9 @@ export interface Brand {
   /** Status-vlaggen. */
   partner: boolean
   featured: boolean
+
+  /** Betaalde brand-membership — volgbaar via follow-toggle. */
+  followable: boolean
 
   date: string
   modified: string
