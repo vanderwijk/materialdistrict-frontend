@@ -165,9 +165,8 @@ export interface MaterialMeta {
   _material_brand?: string | null
   _material_code?: string | null
   /**
-   * Publication-status — geleverd door WP als genest object via
-   * `md_extend_material_rest_meta` (rest-post-meta.php). Optioneel voor
-   * backward-compat; mapper geeft een placeholder als het veld ontbreekt.
+   * Publication-status — top-level REST field and/or `meta.publication`
+   * (see `md_material_rest_publication_payload` in rest-post-meta.php).
    */
   publication?: MaterialPublication
 }

@@ -667,4 +667,4 @@ en toont offline materialen toch. Backend moet `meta.publication.isOnline` bloot
 
 ## §S10.2 ronde-3 — open punten (18-06-2026)
 - Featured materials: blok is bewust verborgen tot er materialen met de WP `featured`-vlag zijn. Content-actie: een paar materialen aanvinken.
-- Offline materiaal: homepage filtert op `meta.publication.isOnline`, maar dat veld komt nog niet mee in de material-respons → backend moet het blootleggen.
+- ~~Offline materiaal: homepage filtert op `meta.publication.isOnline`~~ → **opgelost**: `meta.publication` + top-level `publication` in `/wp/v2/material` (plugin `md_material_rest_publication_payload`). Offline materialen staan als `draft` en komen niet in anonieme REST-lijsten; `isOnline:false` voor edge-cases.

@@ -170,22 +170,15 @@ export function splitGallery(
 // --------------------------------------------------------------------
 
 /**
- * Leest het `publication`-object uit de WP REST meta en valideert de shape.
+ * Leest het `publication`-object uit de WP REST response en valideert de shape.
  *
- * WP levert `meta.publication` als genest object met `isOnline`, `source` en
- * `validUntil` (zie `md_extend_material_rest_meta` in rest-post-meta.php).
- * `isOnline` is gebaseerd op WordPress post_status ('publish' → true).
- *
- * Fallback (isPlaceholder: true) treedt op als het veld ontbreekt — bijv.
- * bij lokale test-data of als de plugin niet actief is. In dat geval
- * behandelen we het material als online zodat niets onbedoeld verborgen wordt.
+ * WP levert `meta.publication` (en sinds plugin fc7812d+ ook top-level
+ * `publication`) als genest object met `isOnline`, `source` en `validUntil`.
  */
-function publicationFromMeta(
-  meta: WPMaterialRawResponse['meta'] | undefined,
+function publicationFromMaterialRaw(
+  raw: Pick<WPMaterialRawResponse, 'meta'> & { publication?: unknown },
 ): MaterialPublication {
-  // `meta.publication` is `unknown` (catch-all index-signature). Runtime-check
-  // de shape voor we hem doorgeven; anders fallback op de placeholder.
-  const pub = meta?.publication
+  const pub = raw.publication ?? raw.meta?.publication
   if (
     pub &&
     typeof pub === 'object' &&
@@ -230,7 +223,7 @@ export function mapMaterialListItem(
     featured: Boolean(raw.meta?.featured),
     date: raw.date,
     modified: raw.modified,
-    publication: publicationFromMeta(raw.meta),
+    publication: publicationFromMaterialRaw(raw),
   }
 }
 
@@ -315,7 +308,7 @@ export function mapMaterial(
 
     date: raw.date,
     modified: raw.modified,
-    publication: publicationFromMeta(raw.meta),
+    publication: publicationFromMaterialRaw(raw),
   }
 }
 
