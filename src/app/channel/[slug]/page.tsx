@@ -7,7 +7,7 @@
  * (Materials → Stories → Brands → Events → Talks; Books later, tussen Events en
  * Talks). Elke strip: de eerste 8 items + een "view all … in {channel}"-deeplink
  * naar het in-place gefilterde overzicht (`/material?channel=…`, enz.). Lege
- * types vallen weg.
+ * types vallen weg. Materials-strip gebruikt WP REST (`?theme=<id>`), geen FacetWP.
  *
  * SEO: BreadcrumbList + CollectionPage (ItemList van de getoonde items als
  * interne cluster-links), unieke metadata + canonical per channel.

@@ -1002,7 +1002,7 @@ export interface ChannelHub {
  *
  * Alle data-bronnen draaien parallel (`Promise.all`):
  *  - hero-term via `/wp/v2/theme/{id}`
- *  - materials via de FacetWP `theme`-facet (slug) — zelfde pad als de bar
+ *  - materials via `?theme=<id>` op de material-collectie (geen FacetWP)
  *  - stories/brands/events/talks via `?theme=<id>` op hun collectie
  *
  * Per strip de eerste `perStrip` items (default 8, keuze 1) + het totaal voor
@@ -1019,7 +1019,7 @@ export async function getChannelHub(
 
   const [term, materials, stories, brands, events, talks] = await Promise.all([
     getChannelTerm(id),
-    listMaterialsWithFacets({ selection: { theme: [slug] }, perPage: perStrip }),
+    listMaterials({ theme: [id], perPage: perStrip }),
     listArticles({ theme: id, perPage: perStrip }),
     listBrands({ theme: id, perPage: perStrip }),
     listEvents({ theme: id, perPage: perStrip }),
@@ -1037,7 +1037,7 @@ export async function getChannelHub(
 
   const materialsStrip: ChannelHubStrip<MaterialListItem> = {
     items: materials.items,
-    total: materials.pager.totalRows,
+    total: materials.total > 0 ? materials.total : entry.count,
   }
   const storiesStrip: ChannelHubStrip<ArticleListItem> = {
     items: stories.items,
