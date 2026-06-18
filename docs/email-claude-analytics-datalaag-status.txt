@@ -1,0 +1,75 @@
+Onderwerp: Datalaag backend — status, RDS-plan en vervolgstappen
+
+Hoi Claude,
+
+Update op de datalaag aan mijn kant: het fundament uit je spec staat in de plugin, plus een hostingplan omdat WP Engine geen losse tweede database biedt.
+
+Wat er al staat (plugin, master)
+-------------------------------
+
+Commits: a5e5759 (datalaag) · 9c2a072 (read API) · b2a16e5 (RDS-docs)
+
+1. POST /md/v2/events — generiek, anoniem + ingelogd; server-side timestamp; rate limit; identity stitching bij login/register (anonymous_id in body).
+2. Twee lagen: raw mda_events + daily rollups mda_rollups_daily + mda_identity_links.
+3. Cron: dagelijkse rollup, wekelijkse prune (raw events 14 mnd).
+4. WP-CLI: wp md-analytics migrate-views | rollup | prune.
+5. Migratie view-tellers: bron = post meta post_views_count (material/article/brand/talk/event) → rollup origin=pre_migration.
+6. Read API (JWT):
+   - GET /md/v2/analytics/counts?object_type=&object_id=&event_type?
+   - POST /md/v2/analytics/counts/query (batch, max 100)
+7. Brand statistics lezen material views al via analytics + legacy fallback.
+
+Setup/ops: materialdistrict-plugin/docs/analytics-database.md
+
+Hosting — geen tweede DB op WP Engine
+-------------------------------------
+
+WP Engine laat geen aparte analytics-DB toe op hetzelfde account. Plan:
+
+| Fase | Keuze |
+|------|--------|
+| Nu | AWS RDS of Aurora MySQL (eu-central-1), alleen poort 3306 open voor WP Engine outbound IP's |
+| Lokaal | Fallback wp_mdanalytics_* op hoofd-DB (geen extra infra) |
+| Later bij volume | ClickHouse; zelfde REST/read-contract, andere engine achter de PHP-laag |
+
+Plugin-config via MD_ANALYTICS_DB_* in wp-config.php — geen code-wijziging aan jouw kant.
+
+Vervolgstappen — verdeling
+--------------------------
+
+Johan (infra / go-live)
+
+1. RDS/Aurora MySQL provisionen + security group (WP Engine IP's → 3306)
+2. MD_ANALYTICS_DB_* in productie-wp-config.php
+3. Plugin deployen → schema auto-create
+4. wp md-analytics migrate-views (eenmalig)
+5. System cron: dagelijks wp md-analytics rollup
+6. Smoke: POST /md/v2/events → {"ok":true}
+
+Claude (frontend — kan parallel)
+
+1. /api/events-proxy → POST /md/v2/events (camelCase ↔ snake_case)
+2. anonymous_id-cookie + consent (AVG — zie open punt)
+3. Event-afvuringen volgens fase1-plan (views, search, preferred-source, …)
+4. anonymous_id meesturen bij login/register (stitching)
+5. Optioneel: /api/analytics/counts-proxy voor dashboards die niet via bestaande brand-statistics lopen
+
+Nog niet gebouwd (deel 2 spec)
+
+- /md/v2/follows + followable op brands
+- Gepersonaliseerde digest / mailtool (Sendy-op-SES lead)
+
+Open samen
+
+- AVG: anonieme events onder welke consentcategorie; bewaartermijn (technisch: 14 mnd prune raw, rollups blijven)
+- Mailtool-keuze blokkeert datalaag niet, wel follow/digest
+
+Prioriteit
+----------
+
+Logging heeft geen terugwerkende kracht — zodra RDS + jouw /api/events live zijn, lopen events mee. Brand statistics pikt counts automatisch op (analytics + legacy fallback tot na migrate-views).
+
+Laat weten wanneer de events-proxy live staat; dan doe ik productie-smoke en zetten we migrate-views + cron aan.
+
+Groet,
+Johan
