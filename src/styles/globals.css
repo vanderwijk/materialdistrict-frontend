@@ -802,10 +802,10 @@ h4 {
 }
 
 .field-wrap.error {
-  /* Batch 2: rode border behouden naast de status-cirkel — dubbele
-     visuele feedback bij invalid (gebruiker-keuze sessie 3A). */
+  /* Veldstatus: fout = grijze achtergrond + rode rand + rood kruisje.
+     Wit is uitsluitend het "goed ingevuld"-signaal (.filled). */
   border-color: var(--red);
-  background: var(--surface);
+  background: var(--surface2);
 }
 
 .field-wrap input,
@@ -968,8 +968,8 @@ h4 {
   position: absolute;
   top: -4px;
   right: -4px;
-  background: var(--ct-article);
-  color: white;
+  background: var(--ink);
+  color: var(--on-ink);
   font-size: 9px;
   font-weight: 700;
   border-radius: 50%;
@@ -3180,6 +3180,11 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  /* Rustige sentence-case labels (checkout-stijl), site-breed. Heft de
+     hoofdletter-behandeling + letterspatiëring van de gegroepeerde
+     .field-label/.login-eyebrow-regel op; .login-eyebrow blijft uppercase. */
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .field-label .field-required {
@@ -4301,10 +4306,10 @@ a:focus-visible {
 }
 
 .tab-item.is-active {
-  /* Sessie 3B correctie 1C — actieve tab kleur+border via --link token
-     zodat het in dark mode lichter blauw wordt en leesbaar blijft. */
-  color: var(--link);
-  border-bottom-color: var(--link);
+  /* Actieve tab via --ink i.p.v. --link: zwart selectie-accent dat overal in
+     het dashboard consistent is. --ink keert in dark mode vanzelf om naar licht. */
+  color: var(--ink);
+  border-bottom-color: var(--ink);
 }
 
 .tab-item:focus-visible {
@@ -4333,8 +4338,8 @@ a:focus-visible {
 }
 
 .tab-item.is-active .tab-item-count {
-  background: var(--link);
-  color: white;
+  background: var(--ink);
+  color: var(--on-ink);
 }
 
 /* ------------------------------------------------------------
@@ -5064,6 +5069,10 @@ a:focus-visible {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
+  /* Hoogte afkappen: de gelockte sectie nam de volle hoogte van het echte
+     formulier erachter aan en werd daardoor veel te hoog. Nu een compacte
+     preview-strook; de doorschijnende inhoud erachter wordt netjes geclipt. */
+  max-height: 300px;
 }
 
 .brand-tier-gate-content-blur {
@@ -5076,7 +5085,9 @@ a:focus-visible {
 .brand-tier-gate-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.85);
+  /* Minder dekkend wit (was 0.85) zodat de vervaagde inhoud erachter
+     doorschijnt — de "sneak preview" met duidelijk contrast, zoals de demo. */
+  background: rgba(255, 255, 255, 0.58);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
   display: flex;
@@ -11153,13 +11164,14 @@ mark.search-mark {
 .dash-sidebar-wrap{position:sticky;top:82px}
 .sb-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px}
 .sb-section-hd{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-hint)}
-.sb-scope{border-radius:var(--radius);border:1px solid var(--border);margin:8px;transition:all 0.15s}
+.sb-scope{border-radius:var(--radius);border:1px solid var(--border);margin:8px;transition:all 0.15s;background:var(--surface)}
 .sb-scope.active{border-color:var(--navy-light);background:var(--surface2)}
 .sb-scope-btn{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;width:100%;border-radius:var(--radius)}
 .sb-scope-btn:hover{background:var(--surface2)}
 .sb-avatar{width:36px;height:36px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-hint);flex-shrink:0}
-.sb-scope-name{font-size:14px;font-weight:600;color:var(--text)}
-.sb-scope-sub{font-size:12px;color:var(--text-hint);margin-top:1px}
+.sb-scope-text{display:flex;flex-direction:column;min-width:0}
+.sb-scope-name{display:block;font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-scope-sub{display:block;font-size:12px;color:var(--text-hint);margin-top:1px}
 .sb-nav{padding:4px 8px 8px}
 .sb-nav-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--radius);font-size:14px;color:var(--text-muted);transition:all 0.12s;cursor:pointer;width:100%;text-align:left}
 .sb-nav-item:hover{background:var(--surface2);color:var(--text)}
@@ -11170,8 +11182,8 @@ mark.search-mark {
 .dash-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:26px;box-shadow:var(--shadow)}
 .panel-section-title{font-size:15px;font-weight:700;color:var(--text)}
 .panel-section-desc{font-size:13px;color:var(--text-hint);margin-top:3px;margin-bottom:16px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
 .col2{grid-column:span 2}
 .col3{grid-column:span 3}
 .section-sep{border-top:1px solid var(--border);padding-top:22px;margin-top:22px}
@@ -11208,7 +11220,7 @@ mark.search-mark {
 .ip-body{padding:22px 24px;flex:1}
 .ip-section{margin-bottom:24px}
 .ip-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-hint);margin-bottom:12px}
-.ip-bg{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px}
+.ip-bg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px}
 .ip-row{display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:10px;font-size:14px}
 .ip-row:last-child{margin-bottom:0}
 .ip-label{font-weight:600;color:var(--text-muted)}
@@ -11364,7 +11376,7 @@ mark.search-mark {
 .chip-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:100px;border:1px solid var(--border);background:var(--surface);font-size:14px;color:var(--text-muted);cursor:pointer;transition:all 0.15s}
 .chip:hover{border-color:var(--navy-light)}
-.chip.is-on{background:var(--navy);border-color:var(--navy);color:#fff;cursor:default}
+.chip.is-on{background:var(--navy);border-color:var(--navy);color:#fff;cursor:pointer}
 .chip-x{display:inline-flex;align-items:center;justify-content:center;color:inherit;opacity:0.8}
 .chip-x:hover{opacity:1}
 .kw-input-row{display:flex;align-items:flex-end;gap:10px}
@@ -11392,7 +11404,7 @@ mark.search-mark {
 .cat-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end;margin-bottom:10px}
 .cat-remove{align-self:center;margin-bottom:2px}
 .asset-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-.asset-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px}
+.asset-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border:1px solid var(--green-mid);background:var(--green-pale);border-radius:var(--radius);font-size:14px}
 .danger-panel{border-color:var(--red)}
 
 /* --- Interactions drawer --- */
@@ -11960,22 +11972,22 @@ mark.search-mark {
   border-bottom-color: var(--ink);
 }
 
-/* --- Knoppen: zwart als primair in het hele dashboard (spiegelt
-   .header-actions .btn-primary uit §F2.1). De save-knop in de sticky-
-   footer gebruikt nu .btn-primary i.p.v. .btn-green en wordt hierdoor
-   ink. Teal (.btn-insider) en rood (.btn-danger) blijven hun eigen
-   accent houden — die markeren bewust iets aparts. --- */
+/* --- Knoppen: GROEN als primaire actie in het hele dashboard (jouw afspraak:
+   primaire CTA per pagina = groen). Save changes, Add board/material, upgrade-
+   CTA's e.d. Gebruikt dezelfde tokens als .btn-green voor 1-op-1 consistentie.
+   Teal (.btn-insider) en rood (.btn-danger) blijven hun eigen accent houden —
+   die markeren bewust iets aparts. --- */
 .dash-content .btn-primary,
 .dash-sidebar-wrap .btn-primary,
 .sticky-footer .btn-primary {
-  background: var(--ink);
-  color: var(--on-ink);
+  background: var(--green-mid);
+  color: white;
 }
 .dash-content .btn-primary:hover:not(:disabled),
 .dash-sidebar-wrap .btn-primary:hover:not(:disabled),
 .sticky-footer .btn-primary:hover:not(:disabled) {
-  background: var(--ink);
-  opacity: 0.88;
+  background: var(--green);
+  opacity: 1;
 }
 
 /* --- Dark-mode: neutraliseer de oude navy-actief-overrides uit de
@@ -15143,6 +15155,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 @media (max-width: 520px) {
   .hp-brand-logos { grid-template-columns: repeat(2, 1fr); }
 }
+
 /* ============================================================================
    §BOOKS-DETAIL-SHEET — book-detailpagina op de materials-shell (16-06-2026)
    ----------------------------------------------------------------------------
@@ -15319,254 +15332,6 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 /* ============================ einde §BOOKS-DETAIL-SHEET ====================== */
 
-/* ============================================================
-   §PREFERRED-SOURCE — Google Preferred Sources CTA
-   ------------------------------------------------------------
-   Knop die lezers naar Google's source-preferences tool stuurt
-   (PreferredSourceButton.tsx). Volledig additief blok — niets
-   erboven wordt geraakt. Twee varianten: --default (volle CTA,
-   homepage/boven artikelen/digest) en --compact (kleine pill
-   voor de footer-bottom / inline rijen).
-   ============================================================ */
-.pref-source-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-body);
-  font-weight: 600;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  text-decoration: none;
-  cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.pref-source-btn:hover {
-  border-color: var(--text-hint);
-  box-shadow: var(--shadow);
-}
-.pref-source-btn:active {
-  transform: translateY(1px);
-}
-.pref-source-btn:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 2px;
-}
-.pref-source-btn-g {
-  flex: none;
-}
-.pref-source-btn-label {
-  line-height: 1.2;
-}
-
-/* Default — volle CTA. */
-.pref-source-btn--default {
-  padding: var(--space-3) var(--space-4);
-  font-size: var(--text-base);
-}
-.pref-source-btn--default .pref-source-btn-g {
-  width: 20px;
-  height: 20px;
-}
-
-/* Compact — kleine pill (footer-bottom, inline rijen). */
-.pref-source-btn--compact {
-  padding: var(--space-1) var(--space-3);
-  font-size: var(--text-xs);
-}
-.pref-source-btn--compact .pref-source-btn-g {
-  width: 15px;
-  height: 15px;
-}
-
-/* Footer-bottom: © + voorkeursbron-knop als linkergroep, legal blijft rechts. */
-.footer-bottom-left {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-4);
-  flex-wrap: wrap;
-}
-/* ============================ einde §PREFERRED-SOURCE ============================ */
-
-/* ============================================================
-   §PREFERRED-SOURCE-ARTICLE — einde-tekst CTA-blok op detailpagina's
-   ------------------------------------------------------------
-   Additief. Rustig blok ná de tekst (vóór prev/next + related);
-   gebruikt de bestaande .pref-source-btn--default.
-   ============================================================ */
-.pref-source-endblock {
-  margin-top: var(--space-6);
-  padding: var(--space-4) var(--space-5);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3) var(--space-5);
-  flex-wrap: wrap;
-}
-.pref-source-endblock-txt {
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.pref-source-endblock-h {
-  font-weight: 600;
-  font-size: var(--text-base);
-}
-.pref-source-endblock-sub {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-}
-/* ===================== einde §PREFERRED-SOURCE-ARTICLE ===================== */
-
-/* ============================================================
-   §CHANNEL-HERO-CONTRAST — titel/eyebrow leesbaar op lichte hero's
-   ------------------------------------------------------------
-   Additief. De titel was al wit (erft van .channel-hero); op lichte
-   foto's viel-ie weg omdat de donkere overlay bovenin het dunst is,
-   precies waar de titel staat. Subtiele schaduw helpt daar en doet
-   niets op donkere foto's. Niet op is-plain (donkere tekst op surface).
-   ============================================================ */
-.channel-hero:not(.is-plain) .channel-hero-title,
-.channel-hero:not(.is-plain) .channel-hero-eyebrow {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
-}
-.channel-hero:not(.is-plain) .channel-hero-eyebrow {
-  opacity: 1;
-}
-/* ===================== einde §CHANNEL-HERO-CONTRAST ===================== */
-
-/* ============================================================
-   §FOLLOW — follow-schuifje + popover + account-catch
-   ------------------------------------------------------------
-   Additief. Hoort bij FollowToggle.tsx. Visueel nog te verifiëren
-   zodra de toggle in de channel-pill is geplaatst.
-   ============================================================ */
-.follow-toggle { position: relative; display: inline-block; }
-
-.follow-switch {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 12px 6px 14px;
-  border: 1px solid var(--border); background: var(--surface); color: var(--text);
-  border-radius: 999px; font-family: var(--font-body); font-weight: 600;
-  font-size: var(--text-sm); line-height: 1; cursor: pointer;
-  transition: background .18s ease, border-color .18s ease, color .18s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.follow-switch:hover { border-color: var(--text-hint); }
-.follow-switch:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-.follow-switch:disabled { opacity: .6; cursor: default; }
-.follow-switch-knob {
-  width: 16px; height: 16px; border-radius: 50%; background: var(--text-hint);
-  transition: background .18s ease, transform .18s ease;
-}
-.follow-switch.is-on { background: var(--green); border-color: var(--green); color: #fff; }
-.follow-switch.is-on .follow-switch-knob { background: #fff; transform: translateX(2px); }
-
-/* Popover + catch delen de kaart-shell. Geen overflow:hidden → caret blijft heel. */
-.follow-pop, .follow-catch {
-  position: absolute; top: calc(100% + 10px); left: 0; z-index: 40;
-  width: 264px; background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
-  padding: 16px 16px 14px;
-}
-.follow-pop-caret {
-  position: absolute; top: -7px; left: 22px; width: 12px; height: 12px;
-  background: var(--surface); border-left: 1px solid var(--border);
-  border-top: 1px solid var(--border); transform: rotate(45deg);
-}
-.follow-pop-bar {
-  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-  background: var(--green);
-  border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg);
-  transform-origin: left; animation: followPopDeplete 6s linear forwards;
-}
-@keyframes followPopDeplete { from { transform: scaleX(1); } to { transform: scaleX(0); } }
-
-.follow-pop-title { margin: 6px 0 10px; font-weight: 600; font-size: var(--text-sm); color: var(--text); }
-.follow-pop-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
-.follow-pop-item { display: flex; align-items: center; gap: 8px; font-size: var(--text-sm); color: var(--text); cursor: pointer; }
-.follow-pop-item input { width: 16px; height: 16px; accent-color: var(--green); cursor: pointer; }
-
-.follow-pop-freq {
-  margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 6px; font-size: var(--text-sm); color: var(--text-muted);
-}
-.follow-pop-freq-select {
-  border: none; background: transparent; color: var(--green);
-  font-family: var(--font-body); font-weight: 600; font-size: var(--text-sm);
-  cursor: pointer; padding: 2px 4px; border-radius: var(--radius);
-}
-.follow-pop-freq-select:hover { background: var(--green-pale); }
-
-.follow-catch { text-align: center; }
-.follow-catch-lock { font-size: 22px; display: block; margin: 2px 0 8px; }
-.follow-catch-title { margin: 0 0 4px; font-weight: 700; font-size: var(--text-base); color: var(--text); }
-.follow-catch-sub { margin: 0 0 12px; font-size: var(--text-xs); color: var(--text-muted); line-height: 1.4; }
-.follow-catch-btn {
-  display: block; width: 100%; padding: 10px 14px; background: var(--ink); color: var(--on-ink);
-  border-radius: var(--radius-md); text-decoration: none; font-weight: 600; font-size: var(--text-sm);
-  transition: opacity .15s ease;
-}
-.follow-catch-btn:hover { opacity: .9; }
-.follow-catch-login { display: inline-block; margin-top: 10px; font-size: var(--text-xs); color: var(--text-muted); text-decoration: underline; }
-/* ============================ einde §FOLLOW ============================ */
-
-/* §FOLLOW-PLACEMENT — follow-toggle in de channel-hero (additief). */
-.channel-hero-follow { margin-top: var(--space-4); }
-
-/* ============================================================
-   §FOLLOW-DIGEST — footer-digestblok (vervangt de e-mailbox)
-   ------------------------------------------------------------
-   Additief. Staat op de donkere footer → lichte tekst/chips.
-   Hoort bij FollowDigestBlock.tsx. + .brand-follow-row.
-   ============================================================ */
-.follow-digest { max-width: 340px; }
-.follow-digest-eyebrow {
-  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.6); margin: 0 0 6px;
-}
-.follow-digest-title { font-size: var(--text-lg); font-weight: 600; color: #fff; margin: 0 0 12px; }
-.follow-digest-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.follow-digest-chip {
-  border: 1px solid rgba(255, 255, 255, 0.25); background: transparent;
-  color: rgba(255, 255, 255, 0.85); border-radius: 999px; padding: 5px 12px;
-  font-size: var(--text-xs); font-weight: 600; cursor: pointer; font-family: var(--font-body);
-  transition: background .15s ease, border-color .15s ease, color .15s ease;
-}
-.follow-digest-chip:hover { border-color: rgba(255, 255, 255, 0.5); }
-.follow-digest-chip.is-on { background: var(--green); border-color: var(--green); color: #fff; }
-.follow-digest-hint { font-size: var(--text-xs); color: rgba(255, 255, 255, 0.55); margin: 10px 0 12px; }
-.follow-digest-freq {
-  display: flex; align-items: center; gap: 6px; font-size: var(--text-sm);
-  color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;
-}
-.follow-digest-start {
-  display: inline-flex; align-items: center; justify-content: center;
-  background: var(--green); color: #fff; border: none; border-radius: var(--radius-md);
-  padding: 9px 16px; font-family: var(--font-body); font-weight: 600; font-size: var(--text-sm);
-  cursor: pointer; transition: background .15s ease, opacity .15s ease;
-}
-.follow-digest-start:hover { background: var(--green-mid); }
-.follow-digest-start:disabled { opacity: 0.5; cursor: default; }
-.follow-digest-done { font-size: var(--text-sm); color: rgba(255, 255, 255, 0.85); line-height: 1.5; margin: 0; }
-
-/* Inline account-catch in de footer (lichte knop op donkere footer). */
-.follow-digest-catch { margin-top: 4px; }
-.follow-digest-catch .follow-catch-title { color: #fff; }
-.follow-digest-catch .follow-catch-btn {
-  background: #fff; color: var(--ink); display: inline-block; width: auto; margin-top: 8px;
-}
-.follow-digest-catch .follow-catch-login { color: rgba(255, 255, 255, 0.7); }
-
-/* Follow-toggle-rij bovenaan brand-detail. */
-.brand-follow-row { margin: 0 0 var(--space-5); }
-/* ============================ einde §FOLLOW-DIGEST ============================ */
 /* ============================================================================
    §DASH-POLISH — dashboard polish (16-06-2026), append-only.
    Kleine aanvullende regels bij de dashboard-polish-sessie. Gebruikt
@@ -15614,6 +15379,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .insight-card-desc{font-size:13px;color:var(--text-muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .insight-card-meta{font-size:12px;color:var(--text-hint);margin-top:2px}
 .insight-card-action{margin-top:10px}
+
 /* ============================================================================
    §DASH-REVIEW — dashboard review-ronde (17-06-2026), append-only.
    Verfijnt §DASH-POLISH op basis van de design-review. Rode draad: groen is
@@ -15671,3 +15437,340 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .toggle-btn.is-on:hover { border-color: var(--green-mid); }
 .toggle-check { margin-left: 7px; vertical-align: -1px; color: var(--green-mid); }
 /* ============================ einde §DASH-REVIEW ============================ */
+
+/* ============================================================================
+   §DASH-REVIEW-2 — dashboard review-ronde deel 2 (17-06-2026), append-only.
+   Aanvullend op §DASH-REVIEW. Uitsluitend bestaande tokens; dark-mode-veilig.
+   ----------------------------------------------------------------------------
+   (8) Save changes blijft klikbaar; bij een onvolledige form wordt hij rood
+   (.is-form-error). Omdat §DASH-REVIEW de sticky-footer-Save groen maakt bij
+   gelijke specificiteit, wint die het anders van de rode error-stijl — deze
+   regel met hogere specificiteit zet 'm bij error alsnog rood. */
+.sticky-footer .btn-primary.is-form-error {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.sticky-footer .btn-primary.is-form-error:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--red) 88%, black);
+  border-color: color-mix(in srgb, var(--red) 88%, black);
+}
+
+/* (3) Witregel boven het "Invoice to a company"-blok in het profiel. */
+.profile-billing-block { margin-top: 22px; }
+
+/* (14) Live karakter-teller onder een description-textarea. Subtiel; rood
+   zolang het minimum nog niet gehaald is. */
+.textarea-counter {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-hint);
+  text-align: right;
+}
+.textarea-counter.is-short { color: var(--red); }
+/* ============================ einde §DASH-REVIEW-2 ============================ */
+
+/* ============================================================================
+   §DASH-REVIEW-SIDEBAR — (1) actief account als één omkaderd blok (17-06-2026).
+   De polish-ronde haalde de rand van .sb-scope weg; het actieve account
+   (header + nav) leest daardoor niet meer als één blok. Hier krijgt het
+   actieve scope-blok zijn kader + vlak terug; inactieve scopes blijven een
+   kale, klikbare rij (alleen hover). Append-only, wint via cascade.
+   ============================================================================ */
+.sb-scope.active {
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+[data-theme="dark"] .sb-scope.active {
+  border: 1px solid var(--border);
+  background: var(--surface2);
+}
+/* ===================== einde §DASH-REVIEW-SIDEBAR ===================== */
+
+/* ============================================================================
+   §DASH-REVIEW-PANELS — (5) klikbare request-rijen met detail; (6) hernoembare
+   saved-search-naam (17-06-2026), append-only. Uitsluitend bestaande tokens.
+   ============================================================================ */
+/* (5) My requests — rij klikbaar, detail eronder. */
+.t-row.is-clickable { cursor: pointer; }
+.t-row-caret { display: inline-flex; vertical-align: -2px; margin-right: 6px; color: var(--text-hint); }
+.t-req-detail {
+  padding: 14px 16px 16px 38px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.t-req-group:last-child .t-req-detail { border-bottom: none; }
+.t-req-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px 24px;
+  margin: 0;
+}
+.t-req-detail-meta dt { font-size: 12px; color: var(--text-hint); }
+.t-req-detail-meta dd { margin: 2px 0 0; font-size: 14px; color: var(--text); }
+.t-req-detail-message p { margin: 4px 0 0; font-size: 14px; color: var(--text); line-height: 1.5; }
+
+/* (6) Saved-search naam — inline hernoembaar. De naam-knop ziet eruit als de
+   kop; in edit-modus een compact tekstveld. */
+.ss-name-btn {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: text;
+  border-radius: var(--radius);
+}
+.ss-name-btn:hover { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.ss-name-input {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--green-mid);
+  border-radius: var(--radius);
+  padding: 3px 8px;
+  width: 100%;
+  max-width: 220px;
+}
+/* ===================== einde §DASH-REVIEW-PANELS ===================== */
+
+/* ============================================================================
+   §DASH-REVIEW-CROP — (15) client-side crop-modal vóór upload (17-06-2026),
+   append-only. Dynamische geometrie (beeldgrootte + pan-offset + viewport-
+   verhouding) komt via CSS-variabelen binnen; de styling staat hier.
+   ============================================================================ */
+.crop-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 38, 0.55);
+}
+.crop-modal {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-lg, 0 12px 40px rgba(0, 0, 0, 0.25));
+}
+.crop-modal-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--text); }
+.crop-modal-hint { margin: 4px 0 14px; font-size: 13px; color: var(--text-muted); }
+.crop-viewport {
+  position: relative;
+  width: var(--crop-w);
+  aspect-ratio: var(--crop-aspect);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface2);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.crop-viewport:active { cursor: grabbing; }
+.crop-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cw);
+  height: var(--ch);
+  max-width: none;
+  transform: translate(var(--cx), var(--cy));
+  pointer-events: none;
+}
+.crop-zoom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.crop-zoom input[type="range"] { flex: 1; }
+.crop-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+/* ===================== einde §DASH-REVIEW-CROP ===================== */
+/* ============================================================================
+   §DASH-REVIEW-2 — dashboard review-ronde deel 2 (17-06-2026), append-only.
+   Aanvullend op §DASH-REVIEW. Uitsluitend bestaande tokens; dark-mode-veilig.
+   ----------------------------------------------------------------------------
+   (8) Save changes blijft klikbaar; bij een onvolledige form wordt hij rood
+   (.is-form-error). Omdat §DASH-REVIEW de sticky-footer-Save groen maakt bij
+   gelijke specificiteit, wint die het anders van de rode error-stijl — deze
+   regel met hogere specificiteit zet 'm bij error alsnog rood. */
+.sticky-footer .btn-primary.is-form-error {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+.sticky-footer .btn-primary.is-form-error:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--red) 88%, black);
+  border-color: color-mix(in srgb, var(--red) 88%, black);
+}
+
+/* (3) Witregel boven het "Invoice to a company"-blok in het profiel. */
+.profile-billing-block { margin-top: 22px; }
+
+/* (14) Live karakter-teller onder een description-textarea. Subtiel; rood
+   zolang het minimum nog niet gehaald is. */
+.textarea-counter {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-hint);
+  text-align: right;
+}
+.textarea-counter.is-short { color: var(--red); }
+/* ============================ einde §DASH-REVIEW-2 ============================ */
+
+/* ============================================================================
+   §DASH-REVIEW-SIDEBAR — (1) actief account als één omkaderd blok (17-06-2026).
+   De polish-ronde haalde de rand van .sb-scope weg; het actieve account
+   (header + nav) leest daardoor niet meer als één blok. Hier krijgt het
+   actieve scope-blok zijn kader + vlak terug; inactieve scopes blijven een
+   kale, klikbare rij (alleen hover). Append-only, wint via cascade.
+   ============================================================================ */
+.sb-scope.active {
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+[data-theme="dark"] .sb-scope.active {
+  border: 1px solid var(--border);
+  background: var(--surface2);
+}
+/* ===================== einde §DASH-REVIEW-SIDEBAR ===================== */
+
+/* ============================================================================
+   §DASH-REVIEW-PANELS — (5) klikbare request-rijen met detail; (6) hernoembare
+   saved-search-naam (17-06-2026), append-only. Uitsluitend bestaande tokens.
+   ============================================================================ */
+/* (5) My requests — rij klikbaar, detail eronder. */
+.t-row.is-clickable { cursor: pointer; }
+.t-row-caret { display: inline-flex; vertical-align: -2px; margin-right: 6px; color: var(--text-hint); }
+.t-req-detail {
+  padding: 14px 16px 16px 38px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.t-req-group:last-child .t-req-detail { border-bottom: none; }
+.t-req-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px 24px;
+  margin: 0;
+}
+.t-req-detail-meta dt { font-size: 12px; color: var(--text-hint); }
+.t-req-detail-meta dd { margin: 2px 0 0; font-size: 14px; color: var(--text); }
+.t-req-detail-message p { margin: 4px 0 0; font-size: 14px; color: var(--text); line-height: 1.5; }
+
+/* (6) Saved-search naam — inline hernoembaar. De naam-knop ziet eruit als de
+   kop; in edit-modus een compact tekstveld. */
+.ss-name-btn {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: text;
+  border-radius: var(--radius);
+}
+.ss-name-btn:hover { text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+.ss-name-input {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--green-mid);
+  border-radius: var(--radius);
+  padding: 3px 8px;
+  width: 100%;
+  max-width: 220px;
+}
+/* ===================== einde §DASH-REVIEW-PANELS ===================== */
+
+/* ============================================================================
+   §DASH-REVIEW-CROP — (15) client-side crop-modal vóór upload (17-06-2026),
+   append-only. Dynamische geometrie (beeldgrootte + pan-offset + viewport-
+   verhouding) komt via CSS-variabelen binnen; de styling staat hier.
+   ============================================================================ */
+.crop-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 38, 0.55);
+}
+.crop-modal {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-lg, 0 12px 40px rgba(0, 0, 0, 0.25));
+}
+.crop-modal-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--text); }
+.crop-modal-hint { margin: 4px 0 14px; font-size: 13px; color: var(--text-muted); }
+.crop-viewport {
+  position: relative;
+  width: var(--crop-w);
+  aspect-ratio: var(--crop-aspect);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--surface2);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.crop-viewport:active { cursor: grabbing; }
+.crop-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cw);
+  height: var(--ch);
+  max-width: none;
+  transform: translate(var(--cx), var(--cy));
+  pointer-events: none;
+}
+.crop-zoom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.crop-zoom input[type="range"] { flex: 1; }
+.crop-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+/* ===================== einde §DASH-REVIEW-CROP ===================== */

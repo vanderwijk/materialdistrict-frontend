@@ -20,6 +20,8 @@ export default async function NewMaterialPage({
     <>
       <DashboardPageHeader
         title="Add material"
+        backHref={`/dashboard/brands/${brandSlug}/materials`}
+        backLabel="Back to materials"
         crumbs={[
           { label: brand.name },
           { label: 'Materials', href: `/dashboard/brands/${brandSlug}/materials` },

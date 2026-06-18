@@ -186,7 +186,7 @@ export function LeadRoutingPanel({
         </div>
       </div>
 
-      <DashboardStickyFooter progress={100} saving={saving} disabled={!routesComplete} showPreview={false} onSave={handleSave} />
+      <DashboardStickyFooter progress={100} saving={saving} invalid={!routesComplete} showPreview={false} onSave={handleSave} />
     </>
   )
 }

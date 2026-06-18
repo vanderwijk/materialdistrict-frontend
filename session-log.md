@@ -12,15 +12,58 @@
 ---
 
 ## Laatste update
-Datum: 17-06-2026 — Dashboard review-ronde, deel 1 (visuele laag): §DASH-REVIEW.
-Afgeschermde secties compact + gekleurde overlay (zwarte upgrade / witte preview),
-"+ Add"-knoppen zwart (groen alleen voor Save changes), groene kaders van
-toegevoegde rijen weg, kruisje weg bij channel-chips, Indoor/Outdoor groene
-outline + vinkje, ruimere veldspatiëring. Eén append-only CSS-blok + 3 component-
-bestanden. NB: de Follow/Preferred-Sources-tak (volledig-17-06) is apart en niet
-geraakt — Johan kan beide takken los mergen (beide append-only §-blokken).
+Datum: 17-06-2026 — Dashboard review-ronde, deel 1 + deel 2 (samengevoegde levering).
+Deel 1 (visueel): afgeschermde secties compact + gekleurde overlay (zwarte
+upgrade / witte preview), "+ Add"-knoppen zwart (groen alleen voor Save changes),
+groene kaders van toegevoegde rijen weg, kruisje weg bij channel-chips,
+Indoor/Outdoor groene outline + vinkje, ruimere veldspatiëring.
+Deel 2 (gedrag/feature): actief account één omkaderd blok (sidebar), witregel
+boven invoice-blok, back-link onder de titel op materiaal-pagina's, my-requests
+klikbaar met detail, saved-search inline hernoembaar, Save blijft klikbaar +
+highlight bij klik (form-state), VIES geverifieerd (intact), minimum 500 tekens
++ teller op descriptions, client-side crop (logo 1:1 / featured 16:9) vóór upload.
+Append-only CSS-blokken §DASH-REVIEW / -2 / -SIDEBAR / -PANELS / -CROP.
+NB: de Follow/Preferred-Sources-tak (volledig-17-06) is apart en niet geraakt —
+beide takken los te mergen (allemaal append-only §-blokken).
 
-#### §DASH-REVIEW — dashboard review-ronde deel 1 (17-06-2026)
+#### §DASH-REVIEW deel 2 — dashboard review-ronde deel 2 (17-06-2026)
+
+Cumulatieve levering (bevat deel 1 + deel 2). Gewijzigde bestanden t.o.v. de
+moedermap:
+- `src/styles/globals.css` — append-only blokken §DASH-REVIEW (deel 1),
+  §DASH-REVIEW-2 (punt 8 rode-Save-fix bij gelijke specificiteit, 3, 14),
+  §DASH-REVIEW-SIDEBAR (1), §DASH-REVIEW-PANELS (5, 6), §DASH-REVIEW-CROP (15).
+- `src/components/ui/form/Textarea.tsx` — `minChars`-prop: live teller + validatie.
+- `src/components/dashboard/DashboardStickyFooter.tsx` — Save blijft klikbaar,
+  triggert validatie via FormStateContext, wordt rood bij onvolledige form,
+  slaat alleen op als compleet (`invalid`-prop i.p.v. `disabled`).
+- `src/components/dashboard/DashboardPageHeader.tsx` — optionele
+  `backHref`/`backLabel` → `.detail-header-back` onder de titel.
+- `src/components/dashboard/panels/ProfileForm.tsx` — FormStateProvider-wrap;
+  witregel-class boven invoice-blok. (VIES bleek intact — geen wijziging.)
+- `src/components/dashboard/panels/BrandProfileForm.tsx` — FormStateProvider-wrap;
+  description `minChars={500}`; logo-crop (1:1) via CropModal; + deel-1 gate→section.
+- `src/components/dashboard/panels/MaterialForm.tsx` — idem; featured-crop (16:9);
+  + deel-1 Indoor/Outdoor-vinkje en gate→section.
+- `src/components/dashboard/panels/RequestsPanel.tsx` — client-component; rijen
+  klikbaar, klappen uit naar detail (gebruikt bestaande `message`-data).
+- `src/components/dashboard/panels/SavedSearchesPanel.tsx` — inline hernoemen
+  (PATCH `name`, optimistisch + revert).
+- `src/components/dashboard/fields/CropModal.tsx` — NIEUW; dependency-vrije
+  crop-modal (pan + zoom + canvas-export naar nieuw File).
+- `src/components/dashboard/fields/ChannelPicker.tsx` — deel-1 (× weg).
+- `src/app/dashboard/brands/[brandSlug]/materials/new|.../edit/page.tsx` —
+  back-link "Back to materials".
+
+Validatie: esbuild-transform groen op alle 12 TSX-bestanden; globals.css
+brace-balans 0. Crash-fix `wpRenderedHtml` in mappers.ts ongemoeid.
+
+Bewust niet verbouwd: er bestaat geen avatar-upload in het persoonlijke profiel,
+dus de avatar-crop (1:1) verviel. Crop draait volledig client-side: de bestaande
+media-endpoint krijgt simpelweg een al-bijgesneden bestand binnen — geen
+backend-wijziging nodig.
+
+Deployed via Git.
 
 Gewijzigde bestanden:
 - `src/styles/globals.css` — nieuw append-only blok §DASH-REVIEW. Heft de

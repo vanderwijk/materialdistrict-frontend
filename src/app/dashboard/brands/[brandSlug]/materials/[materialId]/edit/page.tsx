@@ -25,6 +25,8 @@ export default async function EditMaterialPage({
     <>
       <DashboardPageHeader
         title="Edit material"
+        backHref={`/dashboard/brands/${brandSlug}/materials`}
+        backLabel="Back to materials"
         crumbs={[
           { label: brand.name },
           { label: 'Materials', href: `/dashboard/brands/${brandSlug}/materials` },

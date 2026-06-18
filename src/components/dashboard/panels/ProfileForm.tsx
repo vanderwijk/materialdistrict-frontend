@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Input, Select, Checkbox } from '@/components/ui/form'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
+import { FormStateProvider } from '@/components/ui/form/FormStateContext'
 import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import { withCurrentSelectValue } from '@/lib/config/profile-options'
 import { checkCheckoutVat } from '@/lib/api/checkout-account'
@@ -155,7 +156,7 @@ export function ProfileForm({
   }, [form.country, form.invoiceToCompany, form.vatNumber, vatTouched])
 
   return (
-    <>
+    <FormStateProvider>
       <div className="dash-panel">
         <h2 className="panel-section-title">Personal details</h2>
         {saveError && <p className="form-error" role="alert">{saveError}</p>}
@@ -254,7 +255,7 @@ export function ProfileForm({
             showFilledState
           />
 
-          <div className="ip-bg">
+          <div className="ip-bg profile-billing-block">
             <Checkbox
               label="Invoice to a company"
               description="For business invoices — used automatically at your next payment."
@@ -300,10 +301,10 @@ export function ProfileForm({
       <DashboardStickyFooter
         progress={progress}
         saving={saving}
-        disabled={!requiredComplete}
+        invalid={!requiredComplete}
         showPreview={false}
         onSave={handleSave}
       />
-    </>
+    </FormStateProvider>
   )
 }

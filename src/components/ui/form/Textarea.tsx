@@ -27,6 +27,8 @@ export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElemen
   showFilledState?: boolean
   validate?: (value: string) => boolean | string | undefined
   valid?: boolean
+  /** Minimum aantal karakters; toont een live teller en valideert. */
+  minChars?: number
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -40,6 +42,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       showFilledState,
       validate,
       valid,
+      minChars,
       defaultValue,
       value: controlledValue,
       onChange,
@@ -57,10 +60,21 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     )
     const value = isControlled ? String(controlledValue ?? '') : internalValue
 
+    // Combineer de optionele custom validator met de minimum-lengte-check.
+    // De min-check geldt alleen voor niet-lege waarden; lege required velden
+    // worden al door `required` zelf afgehandeld.
+    const trimmedLength = value.trim().length
+    const effectiveValidate = (v: string): boolean | string | undefined => {
+      if (minChars && v.trim().length > 0 && v.trim().length < minChars) {
+        return `Minimum ${minChars} characters.`
+      }
+      return validate ? validate(v) : undefined
+    }
+
     const validation = useFieldValidation({
       value,
       required,
-      validate,
+      validate: effectiveValidate,
       externalError: error,
       externalValid: valid,
     })
@@ -119,6 +133,14 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
               aria-errormessage={errorMessageId}
               {...rest}
             />
+            {minChars ? (
+              <div
+                className={`textarea-counter${trimmedLength < minChars ? ' is-short' : ''}`}
+                aria-hidden="true"
+              >
+                {trimmedLength} / {minChars} min
+              </div>
+            ) : null}
           </div>
         )}
       </FieldGroup>

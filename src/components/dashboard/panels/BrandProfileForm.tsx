@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
+import { FormStateProvider } from '@/components/ui/form/FormStateContext'
 import { CurrentPlanBanner } from '../CurrentPlanBanner'
 import {
   ApplicationPicker,
@@ -13,6 +14,7 @@ import {
   VideoLinksField,
   GalleryField,
 } from '../fields'
+import { CropModal } from '../fields/CropModal'
 import { IconAdd, IconClose, IconUpload, IconImage } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
@@ -53,6 +55,7 @@ export function BrandProfileForm({
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [logoCropFile, setLogoCropFile] = useState<File | null>(null)
   const logoInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
@@ -112,6 +115,18 @@ export function BrandProfileForm({
     if (!asset) return
     setForm((f) => ({ ...f, logoUrl: asset.url, logoName: asset.name, logoId: asset.id }))
     if (logoInputRef.current) logoInputRef.current.value = ''
+  }
+
+  // Logo wordt vierkant (1:1) bijgesneden vóór upload. SVG kan niet naar canvas
+  // en gaat ongecropt door.
+  function onLogoPick(file: File | null) {
+    if (logoInputRef.current) logoInputRef.current.value = ''
+    if (!file) return
+    if (file.type === 'image/svg+xml') {
+      void handleLogoChange(file)
+      return
+    }
+    setLogoCropFile(file)
   }
 
   const progress = useMemo(() => {
@@ -213,7 +228,7 @@ export function BrandProfileForm({
   }, [form.country, form.vatNumber, vatTouched])
 
   return (
-    <>
+    <FormStateProvider>
       <CurrentPlanBanner tier={tier} />
 
       {/* Brand details + logo */}
@@ -222,7 +237,7 @@ export function BrandProfileForm({
         <div className="brand-details-grid">
           <div className="brand-details-main">
             <Input label="Brand name" required value={form.brandName} onChange={(e) => set('brandName', e.target.value)} />
-            <Textarea label="Brand description" required value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
+            <Textarea label="Brand description" required minChars={500} value={form.description} onChange={(e) => set('description', e.target.value)} rows={4} />
           </div>
           <div className="brand-logo-field">
             <label htmlFor="brand-logo-input" className="field-label">Logo <span className="field-required" aria-hidden="true">*</span></label>
@@ -243,7 +258,7 @@ export function BrandProfileForm({
               type="file"
               accept="image/*"
               className="sr-only"
-              onChange={(e) => handleLogoChange(e.target.files?.[0] ?? null)}
+              onChange={(e) => onLogoPick(e.target.files?.[0] ?? null)}
             />
             <button
               type="button"
@@ -504,7 +519,20 @@ export function BrandProfileForm({
         )}
       </div>
 
-      <DashboardStickyFooter progress={progress} saving={saving} disabled={!requiredComplete} onSave={handleSave} />
-    </>
+      {logoCropFile && (
+        <CropModal
+          file={logoCropFile}
+          aspect={1}
+          title="Crop logo"
+          onCancel={() => setLogoCropFile(null)}
+          onConfirm={(cropped) => {
+            setLogoCropFile(null)
+            void handleLogoChange(cropped)
+          }}
+        />
+      )}
+
+      <DashboardStickyFooter progress={progress} saving={saving} invalid={!requiredComplete} onSave={handleSave} />
+    </FormStateProvider>
   )
 }

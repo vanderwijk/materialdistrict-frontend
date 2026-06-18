@@ -56,6 +56,8 @@ interface Preview {
 export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
   const [searches, setSearches] = useState(initial)
   const [previews, setPreviews] = useState<Record<string, Preview>>({})
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [draftName, setDraftName] = useState('')
 
   // Eénmalig de thumbnails + live tellingen ophalen per opgeslagen zoekopdracht.
   useEffect(() => {
@@ -128,6 +130,30 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
     }
   }
 
+  function startRename(s: SavedSearch) {
+    setEditingId(s.id)
+    setDraftName(s.name)
+  }
+
+  async function commitRename(id: string) {
+    const trimmed = draftName.trim()
+    setEditingId(null)
+    const target = searches.find((s) => s.id === id)
+    if (!target || trimmed === '' || trimmed === target.name) return
+    const prev = searches
+    setSearches((list) => list.map((s) => (s.id === id ? { ...s, name: trimmed } : s))) // optimistic
+    try {
+      const res = await fetch(`/api/dashboard/saved-searches/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trimmed }),
+      })
+      if (!res.ok) setSearches(prev)
+    } catch {
+      setSearches(prev)
+    }
+  }
+
   if (searches.length === 0) {
     return (
       <div className="dash-panel">
@@ -170,7 +196,33 @@ export function SavedSearchesPanel({ initial }: { initial: SavedSearch[] }) {
 
               <div className="ss-card-body">
                 <div className="ss-card-head">
-                  <h3 className="ss-name">{s.name}</h3>
+                  {editingId === s.id ? (
+                    <input
+                      className="ss-name-input"
+                      value={draftName}
+                      autoFocus
+                      onChange={(e) => setDraftName(e.target.value)}
+                      onBlur={() => commitRename(s.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault()
+                          commitRename(s.id)
+                        } else if (e.key === 'Escape') {
+                          setEditingId(null)
+                        }
+                      }}
+                      aria-label="Saved search name"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      className="ss-name ss-name-btn"
+                      onClick={() => startRename(s)}
+                      title="Rename this search"
+                    >
+                      {s.name}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="icon-btn is-sm is-ghost is-delete"

@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import Link from 'next/link'
+import { IconArrowLeft } from '@/components/ui/icons'
 
 export interface Crumb {
   label: string
@@ -7,9 +8,11 @@ export interface Crumb {
 }
 
 /**
- * Panel header: optional breadcrumb trail + an h1 page title. Server-safe
- * (no client hooks) so panels can render it directly. Reuses the existing
- * `.breadcrumbs` / `.bc-sep` / `.bc-last` / `.page-title` classes.
+ * Panel header: optional breadcrumb trail + an h1 page title, with an optional
+ * contextual "Back to …" link rendered under the title (above the panel).
+ * Server-safe (no client hooks) so panels can render it directly. Reuses the
+ * existing `.breadcrumbs` / `.bc-sep` / `.bc-last` / `.page-title` /
+ * `.detail-header-back` classes.
  *
  * Crumbs render flat (no per-item wrapper) so the `.breadcrumbs` flex gap
  * stays even across links and separators.
@@ -17,9 +20,15 @@ export interface Crumb {
 export function DashboardPageHeader({
   title,
   crumbs,
+  backHref,
+  backLabel,
 }: {
   title: string
   crumbs?: Crumb[]
+  /** Optional contextual back-link target, e.g. the parent list. */
+  backHref?: string
+  /** Label for the back-link, e.g. "Back to materials". */
+  backLabel?: string
 }) {
   return (
     <header>
@@ -41,6 +50,12 @@ export function DashboardPageHeader({
         </nav>
       )}
       <h1 className="page-title">{title}</h1>
+      {backHref && backLabel && (
+        <Link href={backHref} className="detail-header-back">
+          <IconArrowLeft size={14} />
+          {backLabel}
+        </Link>
+      )}
     </header>
   )
 }

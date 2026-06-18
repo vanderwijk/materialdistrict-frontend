@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Input, Textarea, Select } from '@/components/ui/form'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
 import { DashboardStickyFooter } from '../DashboardStickyFooter'
+import { FormStateProvider } from '@/components/ui/form/FormStateContext'
 import {
   ApplicationPicker,
   ChannelPicker,
@@ -12,6 +13,7 @@ import {
   VideoLinksField,
   GalleryField,
 } from '../fields'
+import { CropModal } from '../fields/CropModal'
 import { IconAdd, IconClose, IconUpload, IconDelete, IconImage, IconCheck } from '@/components/ui/icons'
 import { MATERIAL_CHANNEL_LABELS } from '@/lib/config/material-channels'
 import { tierMeets } from '@/lib/dashboard/nav'
@@ -63,6 +65,7 @@ export function MaterialForm({
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [featuredCropFile, setFeaturedCropFile] = useState<File | null>(null)
   const [keywordDraft, setKeywordDraft] = useState('')
   const featuredInputRef = useRef<HTMLInputElement>(null)
 
@@ -118,6 +121,17 @@ export function MaterialForm({
     const asset = await uploadFile(file)
     if (asset) set('featuredImage', asset)
     if (featuredInputRef.current) featuredInputRef.current.value = ''
+  }
+
+  // Featured image wordt 16:9 bijgesneden vóór upload. SVG gaat ongecropt door.
+  function onFeaturedPick(file: File | null) {
+    if (featuredInputRef.current) featuredInputRef.current.value = ''
+    if (!file) return
+    if (file.type === 'image/svg+xml') {
+      void handleFeaturedChange(file)
+      return
+    }
+    setFeaturedCropFile(file)
   }
 
   /** Only bind Select to a value that exists in the catalogue (avoids controlled-select warnings). */
@@ -215,7 +229,7 @@ export function MaterialForm({
   }
 
   return (
-    <>
+    <FormStateProvider>
       {/* 1. Basic information */}
       <div className="dash-panel">
         <h2 className="panel-section-title">Basic information</h2>
@@ -223,7 +237,7 @@ export function MaterialForm({
         <div className="material-basics-grid">
           <div className="material-basics-main">
             <Input label="Material name" required value={form.name} onChange={(e) => set('name', e.target.value)} />
-            <Textarea label="Material description" required value={form.description} onChange={(e) => set('description', e.target.value)} rows={5} />
+            <Textarea label="Material description" required minChars={500} value={form.description} onChange={(e) => set('description', e.target.value)} rows={5} />
           </div>
           <div className="material-featured-field">
             <span className="field-label">Featured image <span className="field-required" aria-hidden="true">*</span></span>
@@ -491,10 +505,10 @@ export function MaterialForm({
       <DashboardStickyFooter
         progress={progress}
         saving={saving}
-        disabled={!requiredComplete}
+        invalid={!requiredComplete}
         onSave={handleSave}
         saveLabel={isEdit ? 'Save changes' : 'Publish material'}
       />
-    </>
+    </FormStateProvider>
   )
 }
