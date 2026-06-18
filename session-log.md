@@ -12,17 +12,54 @@
 ---
 
 ## Laatste update
-Datum: 17-06-2026 — Dashboard review-ronde, deel 1 + deel 2 (samengevoegde levering).
-Deel 1 (visueel): afgeschermde secties compact + gekleurde overlay (zwarte
-upgrade / witte preview), "+ Add"-knoppen zwart (groen alleen voor Save changes),
-groene kaders van toegevoegde rijen weg, kruisje weg bij channel-chips,
-Indoor/Outdoor groene outline + vinkje, ruimere veldspatiëring.
-Deel 2 (gedrag/feature): actief account één omkaderd blok (sidebar), witregel
-boven invoice-blok, back-link onder de titel op materiaal-pagina's, my-requests
-klikbaar met detail, saved-search inline hernoembaar, Save blijft klikbaar +
-highlight bij klik (form-state), VIES geverifieerd (intact), minimum 500 tekens
-+ teller op descriptions, client-side crop (logo 1:1 / featured 16:9) vóór upload.
-Append-only CSS-blokken §DASH-REVIEW / -2 / -SIDEBAR / -PANELS / -CROP.
+Datum: 18-06-2026 — Visuele ronde (volledig, punten 1 t/m 8). VERVANGT de eerder
+vandaag geleverde batch-1-zip (visuele-ronde-batch1-18-06) — gebruik alleen deze.
+Punten: (1) channel-hero-titel wit op foto-hero's, (2) dubbele description uit de
+hero weg, (3) follow-switch leest als een écht schuifje (track + glijdende knop),
+(4) follow-popover opent meteen (server vuurt op de achtergrond), (5) caret exact
+onder de knop (inline gemeten), (6) FollowDigestBlock op het prototype (crème kaart,
+donker-op-licht, hint boven chips, frequentie + samenvattingsregel onder de knop,
+witte genest account-catch met subregel, géén slot-emoji), (7) volgbare channel-
+pillen op alle detail-headers (naam linkt nog naar het channel; bel + mini-schuifje
+volgen; grijs→groen; overlay-popover; account-catch uitgelogd), (8) e-mail-nieuws-
+briefblok in de article-sidebar vervangen door het compacte digest-blok.
+CSS = twee append-only blokken §VISUAL-ROUND-18-06 + §CHANNEL-PILL-FOLLOW
+(samen in één snippet meegeleverd). Herijkt op de actuele main (Johan had de 5
+doelbestanden niet aangeraakt; zijn ~114 globals-regels raken mijn selectors niet).
+
+#### §VISUAL-ROUND-18-06 + §CHANNEL-PILL-FOLLOW — visuele ronde (18-06-2026)
+
+Gewijzigde/nieuwe bestanden t.o.v. de moedermap:
+- `globals-append-VISUELE-RONDE-18-06.css` — NIEUW snippet; beide append-only
+  blokken achteraan `src/styles/globals.css` plakken. Override-only; raken geen
+  eerder blok aan. Géén volledige globals.css meegeleverd.
+- `src/components/ui/DetailChannelPill.tsx` — NIEUW; volgbare channel-pil (punt 7).
+  Hergebruikt useFollow + .follow-pop/.follow-catch/.follow-switch-track shells.
+- `src/components/layout/DetailHeader.tsx` — channels-prop krijgt `id`; rendert
+  `DetailChannelPill` i.p.v. de inline channel-`Link` (Link-import verwijderd).
+- `src/app/{material,article,brand,event,talk,book}/[slug]/page.tsx` — geven nu
+  channel-`id` mee aan DetailHeader (punt 7). article-page bevat óók de batch-1
+  sidebar-wijziging (punt 8).
+- `src/app/channel/[slug]/_components/ChannelHero.tsx` — teaser weg (punt 2).
+- `src/components/ui/FollowToggle.tsx` — track (punt 3), popover meteen (punt 4),
+  caret inline gemeten (punt 5), slot-emoji weg.
+- `src/components/layout/FollowDigestBlock.tsx` — prototype-layout (punt 6) + `compact`.
+- `src/app/article/[slug]/_components/ArticleDetailSidebar.tsx` — digest-blok i.p.v.
+  e-mailveld (punt 8); verplichte `channels`-prop.
+
+Validatie: esbuild-transform groen op alle TSX/TS (incl. de 6 detailpagina's en het
+nieuwe component); globals.css na append brace-balans 2943/2943; eerdere blokken
+ongemoeid; crash-fix `wpRenderedHtml` in mappers.ts intact. Channels dragen overal
+`id` op type-niveau (TaxonomyTerm / Channel / WCStoreTerm). DetailHeader-callers
+zonder channels (style-guide) onaangetast.
+NB: oude `.detail-header-channel`- en `.article-side-newsletter`-CSS zijn nu dode
+CSS (geen markup meer) — bewust niet aangeraakt; ongevaarlijk, later op te ruimen.
+
+---
+
+#### Vorige update — 17-06-2026 — Dashboard review-ronde, deel 1 + deel 2.
+Visueel + gedrag (samengevoegde levering); append-only CSS-blokken §DASH-REVIEW /
+-2 / -SIDEBAR / -PANELS / -CROP. Detail in de §DASH-REVIEW-sectie hieronder.
 NB: de Follow/Preferred-Sources-tak (volledig-17-06) is apart en niet geraakt —
 beide takken los te mergen (allemaal append-only §-blokken).
 

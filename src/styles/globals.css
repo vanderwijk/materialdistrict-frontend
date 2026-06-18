@@ -16615,3 +16615,127 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   font-weight: 500;
   color: var(--text-hint);
 }
+/* ------------------------------------------------------------------
+   PLAK-INSTRUCTIE (Johan): voeg BEIDE blokken hieronder ongewijzigd toe
+   aan het EINDE van src/styles/globals.css. Append-only, override-only —
+   ze raken geen eerder blok aan. Geen volledige globals.css meegeleverd.
+   §VISUAL-ROUND-18-06 = punten 1/3/6 ; §CHANNEL-PILL-FOLLOW = punt 7.
+   ------------------------------------------------------------------ */
+
+/* ============================================================
+   §VISUAL-ROUND-18-06 — visuele ronde (channel-hero + follow + digest)
+   ------------------------------------------------------------
+   Additief, override-only. Raakt geen eerder blok aan; staat bewust
+   ná §FOLLOW / §FOLLOW-DIGEST / §CHANNEL-HERO-CONTRAST zodat gelijk-
+   specifieke regels hier winnen.
+   Punten: 1 (hero-titel wit op foto), 3 (follow-switch leest als
+   schuifje), 5 (caret onder de knop — positie inline in FollowToggle),
+   6 (digest = crème kaart, donker-op-licht, prototype-layout).
+   ============================================================ */
+
+/* punt 1 — titel wit op foto-hero's (de globale h1-kleur won van de
+   overgeërfde #fff). is-plain (zonder foto) blijft donker. */
+.channel-hero:not(.is-plain) .channel-hero-title { color: #fff; }
+
+/* punt 3 — echte switch: aparte track + knop die links (uit) / rechts
+   (aan) glijdt. Pill neutraal in uit-stand, subtiel groen in aan-stand. */
+.follow-switch-track {
+  position: relative; flex-shrink: 0;
+  width: 30px; height: 16px; border-radius: 999px;
+  background: var(--text-hint);
+  transition: background .18s ease;
+}
+.follow-switch-knob {
+  position: absolute; top: 2px; left: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform .18s ease;
+}
+.follow-switch.is-on {
+  background: var(--green-pale); border-color: var(--green); color: var(--green);
+}
+.follow-switch.is-on .follow-switch-track { background: var(--green); }
+.follow-switch.is-on .follow-switch-knob { background: #fff; transform: translateX(14px); }
+
+/* punt 6 — digest als zelfstandige crème kaart, donkere tekst.
+   Overschrijft de donkere footer-styling uit §FOLLOW-DIGEST. */
+.follow-digest {
+  max-width: 360px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 20px 18px;
+}
+.follow-digest.is-compact { max-width: 100%; }
+.follow-digest-eyebrow { color: var(--text-muted); }
+.follow-digest-title { color: var(--text); }
+.follow-digest-hint { color: var(--text-muted); margin: 0 0 12px; }
+.follow-digest-chips { margin-bottom: 14px; }
+.follow-digest-chip {
+  border: 1px solid var(--border); background: var(--surface); color: var(--text);
+}
+.follow-digest-chip:hover { border-color: var(--text-hint); }
+.follow-digest-chip.is-on { background: var(--green); border-color: var(--green); color: #fff; }
+.follow-digest-start { display: flex; width: 100%; padding: 11px 16px; border-radius: var(--radius-md); }
+.follow-digest-meta { margin-top: 10px; font-size: var(--text-xs); color: var(--text-muted); line-height: 1.5; }
+.follow-digest-freq { display: inline; color: var(--text-muted); }
+.follow-digest .follow-pop-freq-select { font-size: var(--text-xs); }
+.follow-digest-summary { color: var(--text-muted); }
+
+/* punt 6 — account-catch: wit genest kaartje op de crème kaart. */
+.follow-digest-catch {
+  margin-top: 4px; padding: 14px; text-align: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
+}
+.follow-digest-catch .follow-catch-title { color: var(--text); }
+.follow-digest-catch .follow-catch-sub {
+  margin: 4px 0 12px; font-size: var(--text-xs); color: var(--text-muted); line-height: 1.4;
+}
+.follow-digest-catch .follow-catch-btn {
+  background: var(--ink); color: var(--on-ink); display: block; width: 100%; margin-top: 0;
+}
+.follow-digest-catch .follow-catch-login { color: var(--text-muted); margin-top: 10px; }
+.follow-digest-done { color: var(--text); }
+/* ============================ einde §VISUAL-ROUND-18-06 ============================ */
+
+
+/* ============================================================
+   §CHANNEL-PILL-FOLLOW — volgbare channel-pil op detail-headers (punt 7)
+   ------------------------------------------------------------
+   Additief. Hoort bij DetailChannelPill.tsx. Eén pil, geen binnenkader:
+   naam-link + bel + mini-schuifje. Grijs (uit) → groen (volgend).
+   Hergebruikt .follow-pop / .follow-catch / .follow-switch-track uit
+   §FOLLOW / §VISUAL-ROUND voor de overlay-popover en het schuifje.
+   ============================================================ */
+.detail-channel-pill {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 11px;
+  border-radius: 999px;
+  background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.detail-channel-pill-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: inherit; text-decoration: none;
+}
+.detail-channel-pill-link svg { color: var(--text-muted); flex-shrink: 0; }
+.detail-channel-pill-link:hover { text-decoration: underline; }
+.detail-channel-pill-follow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 2px 2px 0; background: transparent; border: none;
+  color: var(--text-hint); cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.detail-channel-pill-follow:disabled { opacity: .6; cursor: default; }
+.detail-channel-pill-follow:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 999px; }
+.detail-channel-pill-bell { flex-shrink: 0; }
+
+/* Volgend → groen: pil-tint, naam-icoon, bel én schuifje. */
+.detail-channel-pill.is-following {
+  background: var(--green-pale); border-color: var(--green); color: var(--green);
+}
+.detail-channel-pill.is-following .detail-channel-pill-link svg { color: var(--green); }
+.detail-channel-pill.is-following .detail-channel-pill-follow { color: var(--green); }
+.detail-channel-pill.is-following .follow-switch-track { background: var(--green); }
+.detail-channel-pill.is-following .follow-switch-knob { transform: translateX(14px); }
+/* ============================ einde §CHANNEL-PILL-FOLLOW ============================ */

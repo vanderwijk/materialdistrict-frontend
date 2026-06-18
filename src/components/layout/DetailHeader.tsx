@@ -1,12 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { IconChevronLeft } from '@/components/ui/icons'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
 import { Tag } from '@/components/ui/Tag'
 import { InsiderBadge } from '@/components/ui/InsiderBadge'
+import { DetailChannelPill } from '@/components/ui/DetailChannelPill'
 
 // ============================================================
 // Types
@@ -61,8 +61,9 @@ interface DetailHeaderProps {
   meta?: ReactNode
   /** Action-knoppen rechts (Save, Compare, Share, etc.) — typisch via <DetailActions />. */
   actions?: ReactNode
-  /** §F2.8 punt 8: channel-pills boven de titel; linken naar /channels/<slug>. */
-  channels?: Array<{ slug: string; label: string }>
+  /** §F2.8 punt 8: channel-pills boven de titel; linken naar /channels/<slug>.
+   *  §VISUAL-ROUND-18-06 punt 7: volgbaar gemaakt → `id` vereist. */
+  channels?: Array<{ id: number; slug: string; label: string }>
   /**
    * §F2.9 P1: extra pills (bv. material-taxonomie) die VOOR de channels op
    * dezelfde rij verschijnen, met een dunne scheiding ertussen. Door de
@@ -132,27 +133,12 @@ export function DetailHeader({
                   <span className="detail-header-tagsep" aria-hidden="true" />
                 )}
                 {channels?.map((c) => (
-                  <Link
+                  <DetailChannelPill
                     key={c.slug}
-                    href={`/channel/${c.slug}`}
-                    className="detail-header-channel"
-                  >
-                    <svg
-                      width="13"
-                      height="13"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      aria-hidden="true"
-                    >
-                      <rect x="3" y="3" width="7" height="7" rx="1" />
-                      <rect x="14" y="3" width="7" height="7" rx="1" />
-                      <rect x="3" y="14" width="7" height="7" rx="1" />
-                      <rect x="14" y="14" width="7" height="7" rx="1" />
-                    </svg>
-                    {c.label}
-                  </Link>
+                    id={c.id}
+                    slug={c.slug}
+                    label={c.label}
+                  />
                 ))}
                 {tags?.map((t, i) =>
                   t.type === 'insider' ? (

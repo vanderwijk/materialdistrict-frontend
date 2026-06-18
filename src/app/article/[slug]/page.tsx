@@ -240,7 +240,7 @@ export default async function ArticleDetailPage({
           <div className="detail-sheet">
         <DetailHeader
           tags={headerTags}
-          channels={article.channels.map((c) => ({ slug: c.slug, label: c.label }))}
+          channels={article.channels.map((c) => ({ id: c.id, slug: c.slug, label: c.label }))}
           title={article.title}
           meta={
             <>
@@ -322,6 +322,11 @@ export default async function ArticleDetailPage({
           {/* Sidebar */}
           <ArticleDetailSidebar
             latestMaterials={sidebarMaterials}
+            channels={article.channels.map((c) => ({
+              id: c.id,
+              slug: c.slug,
+              label: c.label,
+            }))}
           />
 
           {/* §F2.12 P2: prev/next BOVEN related (was eronder), met thumbnails. */}

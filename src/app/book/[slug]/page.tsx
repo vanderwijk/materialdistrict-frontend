@@ -114,7 +114,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
       </>
     ) : undefined
 
-  const channelPills = book.channels.map((c) => ({ slug: c.slug, label: c.name }))
+  const channelPills = book.channels.map((c) => ({ id: c.id, slug: c.slug, label: c.name }))
 
   // Meta-regel: by [Publisher] · [n] pages · [year] — alleen ingevulde delen.
   const metaBits: ReactNode[] = [

@@ -151,7 +151,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
           <div className="detail-sheet">
         <DetailHeader
           tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
-          channels={brand.channels.map((c) => ({ slug: c.slug, label: c.label }))}
+          channels={brand.channels.map((c) => ({ id: c.id, slug: c.slug, label: c.label }))}
           title={brand.name}
           meta={metaParts.length > 0 ? <>{metaParts.join(' · ')}</> : undefined}
           actions={

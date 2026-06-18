@@ -182,7 +182,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
           <div className="detail-sheet">
         <DetailHeader
           tags={headerTags}
-          channels={talk.channels.map((c) => ({ slug: c.slug, label: c.label }))}
+          channels={talk.channels.map((c) => ({ id: c.id, slug: c.slug, label: c.label }))}
           title={talk.title}
           meta={
             <>

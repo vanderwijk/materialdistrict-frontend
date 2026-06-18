@@ -196,7 +196,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           <div className="detail-sheet">
         <DetailHeader
           tags={[]}  /* §F2.8 punt 1: content-type-badge weg */
-          channels={event.channels.map((c) => ({ slug: c.slug, label: c.label }))}
+          channels={event.channels.map((c) => ({ id: c.id, slug: c.slug, label: c.label }))}
           title={event.title}
           meta={metaParts.join(' · ')}
           actions={

@@ -167,7 +167,7 @@ export default async function MaterialDetailPage({
   const materialChannels = material.taxonomies.theme
     .map((id) => channelCatalog.find((c) => c.id === id))
     .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map((c) => ({ slug: c.slug, label: c.label }))
+    .map((c) => ({ id: c.id, slug: c.slug, label: c.label }))
 
   // §F2.9 P1 + P2: taxonomie-pills (category + sustainability) verhuizen naar
   // de header-pill-rij (vóór de channels) en worden klikbaar zodra het facet

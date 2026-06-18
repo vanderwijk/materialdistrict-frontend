@@ -26,6 +26,10 @@
 
 import { useAuth } from '@/components/providers/AuthContext'
 import { Button } from '@/components/ui'
+import {
+  FollowDigestBlock,
+  type DigestChannel,
+} from '@/components/layout/FollowDigestBlock'
 
 export interface ArticleSidebarMaterial {
   id: number
@@ -37,10 +41,13 @@ export interface ArticleSidebarMaterial {
 
 export interface ArticleDetailSidebarProps {
   latestMaterials: ArticleSidebarMaterial[]
+  /** §VISUAL-ROUND-18-06 punt 8: channels van het artikel, voor het digest-blok. */
+  channels: DigestChannel[]
 }
 
 export function ArticleDetailSidebar({
   latestMaterials,
+  channels,
 }: ArticleDetailSidebarProps) {
   const { isMember } = useAuth()
 
@@ -84,34 +91,8 @@ export function ArticleDetailSidebar({
         </div>
       )}
 
-      {/* Newsletter */}
-      <div className="article-side-newsletter">
-        <div className="article-side-newsletter-eyebrow">Newsletter</div>
-        <div className="article-side-newsletter-title">
-          Twice-weekly materials digest
-        </div>
-        <p className="article-side-newsletter-body">
-          New materials and articles twice a week. No spam.
-        </p>
-        <div className="article-side-newsletter-row">
-          <label
-            className="u-visually-hidden"
-            htmlFor="article-newsletter-email"
-          >
-            Your email
-          </label>
-          <input
-            id="article-newsletter-email"
-            type="email"
-            placeholder="Your email"
-            className="article-side-newsletter-input"
-            autoComplete="email"
-          />
-          <Button variant="green" size="sm">
-            Sign up
-          </Button>
-        </div>
-      </div>
+      {/* §VISUAL-ROUND-18-06 punt 8: digest-blok i.p.v. het oude e-mailveld. */}
+      <FollowDigestBlock channels={channels} compact />
 
       {/* Insider upsell — alleen voor niet-members */}
       {!isMember && (

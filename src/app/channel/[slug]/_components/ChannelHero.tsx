@@ -4,23 +4,18 @@
  * Achtergrond = `theme_thumbnail` via het toegestane custom-property-patroon
  * (`--channel-hero-img`, net als `--story-thumb`) — geen inline background.
  * Ontbreekt de thumbnail, dan valt de hero terug op de `is-plain`-variant
- * (effen surface). Toont de naam + een op 2 regels afgekapte teaser; de
- * volledige description rendert als prose ónder de hero (in de page).
+ * (effen surface).
+ *
+ * §VISUAL-ROUND-18-06 punt 2: de hero toont GEEN teaser meer. De volledige
+ * description rendert al als prose ónder de hero (in de page); de afgekapte
+ * teaser hier was een letterlijke dubbeling. Naam + follow-toggle blijven.
  */
 
 import type { CSSProperties } from 'react'
 import type { ChannelTerm } from '@/lib/api'
-import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { FollowToggle } from '@/components/ui/FollowToggle'
 
-function toPlainText(html: string): string {
-  return decodeHtmlEntities(html.replace(/<[^>]*>/g, ' '))
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
 export function ChannelHero({ channel }: { channel: ChannelTerm }) {
-  const teaser = channel.description ? toPlainText(channel.description) : ''
   const heroStyle = channel.thumbnailUrl
     ? ({ '--channel-hero-img': `url(${channel.thumbnailUrl})` } as CSSProperties)
     : undefined
@@ -33,7 +28,6 @@ export function ChannelHero({ channel }: { channel: ChannelTerm }) {
       <div className="channel-hero-inner">
         <p className="channel-hero-eyebrow">Channel</p>
         <h1 className="channel-hero-title">{channel.label}</h1>
-        {teaser && <p className="channel-hero-desc">{teaser}</p>}
         <div className="channel-hero-follow">
           <FollowToggle
             entityType="channel"

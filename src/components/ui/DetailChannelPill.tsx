@@ -1,38 +1,30 @@
 'use client'
 
 /**
- * FollowToggle — het follow-schuifje met popover (channel/brand).
+ * DetailChannelPill — volgbare channel-pil op de detail-headers (punt 7).
  * ----------------------------------------------------------------------
- * Goedgekeurde interactie:
- *  - Een speels schuifje (Follow / Following).
- *  - INGELOGD: tik → meteen gevolgd + een popover die uit de toggle groeit met
- *    een 2-koloms checklist "What do you want to follow?" (Materials, Stories,
- *    Talks aan; Books, Events, Brands uit) en onderaan "Updates: <frequentie>"
- *    waarbij de frequentie een inline groene pull-down is (globaal). Een dunne
- *    groene balk telt af (~6s) en sluit dan; klik-buiten sluit ook.
- *  - NIET INGELOGD: het schuifje gaat NIET aan; in plaats daarvan verschijnt
- *    een duidelijk andere account-catch (slot, kop, donkere "Create account",
- *    "Already have one? Log in").
+ * Eén pil, geen binnenkader. Links: het grid-icoon + de channel-naam, die nog
+ * steeds naar /channel/<slug> linkt. Rechts, dicht bij elkaar: een bel + een
+ * mini-schuifje (zonder "Follow"-tekst). De pil is grijs als je niet volgt en
+ * groen (icoon + bel + schuifje + subtiele tint/rand) zodra je volgt.
  *
- * §VISUAL-ROUND-18-06:
- *  - punt 3: de uit-stand leest als een écht schuifje — een aparte track met
- *    een knop die naar links (uit) / rechts (aan) glijdt, i.p.v. een losse stip.
- *  - punt 4: de popover opent METEEN bij klik; het volgen vuurt op de
- *    achtergrond (niet meer wachten op de server-response).
- *  - punt 5: de caret staat exact onder de knop — gemeten op het moment dat
- *    de popover opent (knop-positie t.o.v. de toggle-root → inline `left`).
+ * Klik op het volg-deel:
+ *  - INGELOGD: meteen volgen + een popover die als OVERLAY over de titel zweeft
+ *    (duwt de pagina niet omlaag), met de checklist + frequentie. Caret onder
+ *    het schuifje (inline gemeten). Telt af (~6s) en sluit; klik-buiten sluit ook.
+ *  - NIET INGELOGD: dezelfde account-catch als elders (kop, subregel, donkere
+ *    "Create account", "Already have one? Log in").
+ *
+ * Hergebruikt useFollow + de .follow-pop / .follow-catch / .follow-switch-track
+ * shells uit §FOLLOW / §VISUAL-ROUND; pil-specifieke styling in §CHANNEL-PILL-FOLLOW.
  */
 
+import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { cn } from '@/lib/utils/cn'
-import {
-  useFollow,
-  DEFAULT_FOLLOW_TYPES,
-} from '@/lib/hooks/useFollow'
+import { useFollow, DEFAULT_FOLLOW_TYPES } from '@/lib/hooks/useFollow'
 import {
   setMailFrequency,
   type FollowContentType,
-  type FollowEntityType,
   type MailFrequency,
 } from '@/lib/api/follows'
 
@@ -54,48 +46,32 @@ const FREQ_LABEL: Record<MailFrequency, string> = {
   monthly: 'Monthly',
 }
 
-export interface FollowToggleProps {
-  entityType: FollowEntityType
-  entityId: number | string
-  /** Naam van het channel/brand, voor de account-catch-tekst. */
-  entityName?: string
-  initialFollowing?: boolean
-  initialTypes?: FollowContentType[]
-  /** Globale mail-frequentie (één per gebruiker). */
-  mailFrequency?: MailFrequency
-  onMailFrequencyChange?: (freq: MailFrequency) => void
+export interface DetailChannelPillProps {
+  id: number
+  slug: string
+  label: string
   createAccountHref?: string
   signInHref?: string
-  className?: string
 }
 
-export function FollowToggle({
-  entityType,
-  entityId,
-  entityName,
-  initialFollowing = false,
-  initialTypes,
-  mailFrequency = 'weekly',
-  onMailFrequencyChange,
+export function DetailChannelPill({
+  id,
+  slug,
+  label,
   createAccountHref = '/register',
   signInHref = '/sign-in',
-  className,
-}: FollowToggleProps) {
+}: DetailChannelPillProps) {
   const { isLoggedIn, following, busy, follow, unfollow, updateTypes } = useFollow({
-    entityType,
-    entityId,
-    initialFollowing,
-    initialTypes,
+    entityType: 'channel',
+    entityId: id,
   })
 
   const [pop, setPop] = useState<null | 'follow' | 'catch'>(null)
-  const [selected, setSelected] = useState<FollowContentType[]>(
-    initialTypes ?? DEFAULT_FOLLOW_TYPES,
-  )
-  const [freq, setFreq] = useState<MailFrequency>(mailFrequency)
+  const [selected, setSelected] = useState<FollowContentType[]>(DEFAULT_FOLLOW_TYPES)
+  const [freq, setFreq] = useState<MailFrequency>('weekly')
   const [caretX, setCaretX] = useState<number | null>(null)
-  const rootRef = useRef<HTMLDivElement>(null)
-  const knobRef = useRef<HTMLSpanElement>(null)
+  const rootRef = useRef<HTMLSpanElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const closePop = useCallback(() => {
@@ -103,7 +79,7 @@ export function FollowToggle({
     if (timerRef.current) clearTimeout(timerRef.current)
   }, [])
 
-  // Klik-buiten sluit de popover.
+  // Klik-buiten sluit.
   useEffect(() => {
     if (!pop) return
     function onDown(e: MouseEvent) {
@@ -122,17 +98,15 @@ export function FollowToggle({
     }
   }, [pop, closePop])
 
-  // §VISUAL-ROUND punt 5: caret exact onder de knop. Meet de knop-positie
-  // t.o.v. de toggle-root zodra de popover opent (label-breedte varieert,
-  // dus een vaste offset zou ernaast zitten).
+  // Caret exact onder het schuifje (positie gemeten zodra de popover opent).
   useEffect(() => {
-    if (!pop || !rootRef.current || !knobRef.current) return
+    if (!pop || !rootRef.current || !toggleRef.current) return
     const root = rootRef.current.getBoundingClientRect()
-    const knob = knobRef.current.getBoundingClientRect()
-    setCaretX(knob.left - root.left + knob.width / 2 - 6)
+    const tgl = toggleRef.current.getBoundingClientRect()
+    setCaretX(tgl.left - root.left + tgl.width / 2 - 6)
   }, [pop])
 
-  const onToggle = useCallback(async () => {
+  const onFollowClick = useCallback(async () => {
     if (!isLoggedIn) {
       setPop('catch')
       return
@@ -142,7 +116,6 @@ export function FollowToggle({
       closePop()
       return
     }
-    // §VISUAL-ROUND punt 4: popover meteen open, follow vuurt op de achtergrond.
     setPop('follow')
     void follow(selected)
   }, [isLoggedIn, following, follow, unfollow, selected, closePop])
@@ -160,30 +133,62 @@ export function FollowToggle({
     [updateTypes],
   )
 
-  const onFreqChange = useCallback(
-    (next: MailFrequency) => {
-      setFreq(next)
-      void setMailFrequency(next)
-      onMailFrequencyChange?.(next)
-    },
-    [onMailFrequencyChange],
-  )
+  const onFreqChange = useCallback((next: MailFrequency) => {
+    setFreq(next)
+    void setMailFrequency(next)
+  }, [])
 
   const caretStyle = caretX != null ? { left: caretX } : undefined
 
   return (
-    <div className={cn('follow-toggle', className)} ref={rootRef}>
+    <span
+      className={`detail-channel-pill${following ? ' is-following' : ''}`}
+      ref={rootRef}
+    >
+      <Link href={`/channel/${slug}`} className="detail-channel-pill-link">
+        <svg
+          width="13"
+          height="13"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+        </svg>
+        {label}
+      </Link>
+
       <button
         type="button"
-        className={cn('follow-switch', following && 'is-on')}
+        className="detail-channel-pill-follow"
+        ref={toggleRef}
         role="switch"
         aria-checked={following}
-        aria-label={following ? 'Following — tap to unfollow' : 'Follow'}
+        aria-label={following ? `Following ${label} — tap to unfollow` : `Follow ${label}`}
         disabled={busy}
-        onClick={onToggle}
+        onClick={onFollowClick}
       >
-        <span className="follow-switch-label">{following ? 'Following' : 'Follow'}</span>
-        <span className="follow-switch-track" ref={knobRef} aria-hidden="true">
+        <svg
+          className="detail-channel-pill-bell"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+          <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+        </svg>
+        <span className="follow-switch-track" aria-hidden="true">
           <span className="follow-switch-knob" />
         </span>
       </button>
@@ -194,19 +199,16 @@ export function FollowToggle({
           <span className="follow-pop-bar" aria-hidden="true" />
           <p className="follow-pop-title">What do you want to follow?</p>
           <div className="follow-pop-list">
-            {CONTENT_TYPES.map(({ key, label }) => {
-              const on = selected.includes(key)
-              return (
-                <label key={key} className="follow-pop-item">
-                  <input
-                    type="checkbox"
-                    checked={on}
-                    onChange={() => toggleType(key)}
-                  />
-                  <span>{label}</span>
-                </label>
-              )
-            })}
+            {CONTENT_TYPES.map(({ key, label: ctLabel }) => (
+              <label key={key} className="follow-pop-item">
+                <input
+                  type="checkbox"
+                  checked={selected.includes(key)}
+                  onChange={() => toggleType(key)}
+                />
+                <span>{ctLabel}</span>
+              </label>
+            ))}
           </div>
           <div className="follow-pop-freq">
             <span>Updates:</span>
@@ -231,9 +233,7 @@ export function FollowToggle({
           <span className="follow-pop-caret" style={caretStyle} aria-hidden="true" />
           <p className="follow-catch-title">Create a free account to follow</p>
           <p className="follow-catch-sub">
-            {entityName
-              ? `Get updates from ${entityName} and everything you follow.`
-              : 'Your follows and digest live in your account.'}
+            Get updates from {label} and everything you follow.
           </p>
           <a className="follow-catch-btn" href={createAccountHref}>
             Create account
@@ -243,6 +243,6 @@ export function FollowToggle({
           </a>
         </div>
       )}
-    </div>
+    </span>
   )
 }
