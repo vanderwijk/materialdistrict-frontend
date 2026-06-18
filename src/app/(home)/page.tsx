@@ -57,13 +57,15 @@ import {
   type MaterialCategoryLink,
 } from './_components/MaterialCategoryStrip'
 import { FeaturedPartners } from './_components/FeaturedPartners'
+import { SidebarBooks } from './_components/SidebarBooks'
 import {
   FeaturedChannel,
   toChannelPlainText,
   type FeaturedChannelVM,
 } from './_components/FeaturedChannel'
 import { BookCard } from '@/app/book/_components/BookCard'
-import { listFeaturedBooks } from '@/lib/api/books'
+import { listBooks, listFeaturedBooks } from '@/lib/api/books'
+import type { BrandListItem } from '@/types/brand'
 
 const pagePath = canonicalPath('/')
 
@@ -137,6 +139,7 @@ export default async function HomePage() {
     brandRes,
     channelsIndex,
     bookRes,
+    latestBookRes,
   ] = await Promise.all([
       listMaterials({ perPage: MATERIALS_FETCH }),
       listArticles({ perPage: ARTICLES_FETCH }),
@@ -160,6 +163,8 @@ export default async function HomePage() {
       // Featured boek (native WC featured-vlag, Store API featured=true) voor
       // het tegeltje naast de featured event. Geen featured boek → leeg.
       listFeaturedBooks().catch(() => ({ items: [], total: 0, totalPages: 0 })),
+      // Nieuwste boeken voor het sidebar-blokje (rechterkolom). Geen → leeg.
+      listBooks({ perPage: 4 }).catch(() => ({ items: [], total: 0, totalPages: 0 })),
     ])
 
   // --- Material-categorieën: snelmenu-strip (deeplinkt naar het filter) ---
@@ -184,7 +189,17 @@ export default async function HomePage() {
   const topupBrands = brandRes.items.filter(
     (b) => !b.partner && b.materialCount >= 3,
   )
-  const featuredPartners = [...partnerBrands, ...topupBrands].slice(0, 6)
+  // Vul aan tot zes: Partner-tier eerst, dan ≥3-materialen, dan eventueel de
+  // resterende brands — gededupliceerd, zodat het blok altijd zes toont
+  // (mits er zes brands zijn).
+  const seenBrandIds = new Set<number>()
+  const featuredPartners: BrandListItem[] = []
+  for (const b of [...partnerBrands, ...topupBrands, ...brandRes.items]) {
+    if (seenBrandIds.has(b.id)) continue
+    seenBrandIds.add(b.id)
+    featuredPartners.push(b)
+    if (featuredPartners.length === 6) break
+  }
 
   // --- Featured channel: het featured-first kanaal + zijn recente materialen.
   // `getChannelsIndex` levert het kanaal (label/description/thumb, featured
@@ -213,6 +228,10 @@ export default async function HomePage() {
 
   // --- Books: het featured boek voor het tegeltje naast de featured event --
   const featuredBook = bookRes.items[0] ?? null
+  // Nieuwste boeken voor het sidebar-blokje (rechterkolom).
+  const latestBooks = latestBookRes.items.slice(0, 4)
+  // Boek voor de Events/Books-rij: het featured boek, anders het nieuwste.
+  const eventsRowBook = featuredBook ?? latestBooks[0] ?? null
 
   // --- Materials: één fetch, meerdere afgeleiden -------------------------
   const materialCount =
@@ -223,10 +242,10 @@ export default async function HomePage() {
   // (Placeholder-publication = isOnline:true, blijft dus staan.)
   const onlineMaterials = matRes.items.filter((m) => m.publication.isOnline)
   const latestMaterials = onlineMaterials.slice(0, 3)
-  const featuredPool = onlineMaterials.filter((m) => m.featured)
-  const featuredMaterials = (
-    featuredPool.length > 0 ? featuredPool : onlineMaterials
-  ).slice(0, 3)
+  // Featured-materialen = uitsluitend materialen met de WP `featured`-vlag.
+  // GEEN terugval op de nieuwste: anders toont het blok dezelfde tegels als
+  // "Latest materials". Leeg → het blok wordt verborgen (zie render).
+  const featuredMaterials = onlineMaterials.filter((m) => m.featured).slice(0, 3)
 
   // --- Articles ----------------------------------------------------------
   const latestStories = artRes.items.slice(0, 3)
@@ -246,10 +265,6 @@ export default async function HomePage() {
   const orderedEvents = sortEventsByDate(eventRes.items)
   const upcoming = orderedEvents.filter((e) => !e.isPast)
   const featuredEvent = upcoming.find((e) => e.featured) ?? upcoming[0] ?? null
-  // Rij = [featured event | featured boek]. Geen featured boek? Dan valt de
-  // tweede cel terug op het eerstvolgende event (rij blijft gevuld).
-  const secondEvent =
-    upcoming.find((e) => e.id !== featuredEvent?.id) ?? null
 
   // --- Featured talk (homepage band) -------------------------------------
   // Featured-eerst (WP talk-CPT checkbox via meta.featured); valt terug op de
@@ -382,29 +397,31 @@ export default async function HomePage() {
             {/* Featured talk (grote beeld-band) */}
             <FeaturedTalkBand talk={featuredTalk} />
 
-            {/* Featured materials */}
-            <section className="hp-section">
-              <div className="section-hd">
-                <h2 className="section-title">Featured materials</h2>
-                <Link href="/material" className="section-link">
-                  All materials →
-                </Link>
-              </div>
-              <div className="grid-3">
-                {featuredMaterials.map((m) => (
-                  <ContentCard
-                    key={m.id}
-                    href={`/material/${m.slug}`}
-                    contentType="material"
-                    showTypeBadge={false}
-                    thumbSrc={m.hero?.sourceUrl}
-                    thumbAlt={m.hero?.alt ?? m.title}
-                    eyebrow={m.brandName ?? undefined}
-                    title={m.title}
-                  />
-                ))}
-              </div>
-            </section>
+            {/* Featured materials — alleen tonen als er echt featured zijn */}
+            {featuredMaterials.length > 0 && (
+              <section className="hp-section">
+                <div className="section-hd">
+                  <h2 className="section-title">Featured materials</h2>
+                  <Link href="/material" className="section-link">
+                    All materials →
+                  </Link>
+                </div>
+                <div className="grid-3">
+                  {featuredMaterials.map((m) => (
+                    <ContentCard
+                      key={m.id}
+                      href={`/material/${m.slug}`}
+                      contentType="material"
+                      showTypeBadge={false}
+                      thumbSrc={m.hero?.sourceUrl}
+                      thumbAlt={m.hero?.alt ?? m.title}
+                      eyebrow={m.brandName ?? undefined}
+                      title={m.title}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Featured channel — uitgelicht kanaal + recente materialen */}
             <FeaturedChannel
@@ -412,30 +429,36 @@ export default async function HomePage() {
               materials={featuredChannelMaterials}
             />
 
-            {/* Events */}
+            {/* Events + Books — twee gelabelde helften */}
             <section className="hp-section">
-              <div className="section-hd">
-                <h2 className="section-title">Events</h2>
-                <Link href="/event" className="section-link">
-                  All events →
-                </Link>
-              </div>
-              {featuredEvent || featuredBook ? (
-                <div className="grid-2">
-                  {featuredEvent && (
-                    <EventCard key={featuredEvent.id} event={featuredEvent} />
-                  )}
-                  {featuredBook ? (
-                    <BookCard key={featuredBook.id} book={featuredBook} variant="home" />
+              <div className="hp-events-books">
+                <div className="hp-eb-col">
+                  <div className="section-hd">
+                    <h2 className="section-title">Events</h2>
+                    <Link href="/event" className="section-link">
+                      All events →
+                    </Link>
+                  </div>
+                  {featuredEvent ? (
+                    <EventCard event={featuredEvent} />
                   ) : (
-                    secondEvent && (
-                      <EventCard key={secondEvent.id} event={secondEvent} />
-                    )
+                    <p className="hp-empty">No upcoming events at this time.</p>
                   )}
                 </div>
-              ) : (
-                <p className="hp-empty">No upcoming events at this time.</p>
-              )}
+                <div className="hp-eb-col">
+                  <div className="section-hd">
+                    <h2 className="section-title">Books</h2>
+                    <Link href="/book" className="section-link">
+                      All books →
+                    </Link>
+                  </div>
+                  {eventsRowBook ? (
+                    <BookCard book={eventsRowBook} variant="home" />
+                  ) : (
+                    <p className="hp-empty">No new books at this time.</p>
+                  )}
+                </div>
+              </div>
             </section>
 
             {/* Insider-CTA (verborgen voor actieve Insiders) */}
@@ -496,7 +519,8 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {/* Books (sidebar-widget + homepage-blok) geparkeerd voor deze release. */}
+            {/* Nieuwste boeken — vult de rechterkolom (zoals in de demo). */}
+            <SidebarBooks books={latestBooks} />
           </aside>
         </div>
 

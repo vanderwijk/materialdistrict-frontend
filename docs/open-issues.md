@@ -664,3 +664,7 @@ afronding = deploy-checks Johan; insider-material-gate (H11) blijft geparkeerd (
 Offline-materiaal: de homepage filtert op `meta.publication.isOnline`, maar de material-
 REST-respons levert dat veld nog niet → frontend valt terug op placeholder `isOnline:true`
 en toont offline materialen toch. Backend moet `meta.publication.isOnline` blootleggen.
+
+## §S10.2 ronde-3 — open punten (18-06-2026)
+- Featured materials: blok is bewust verborgen tot er materialen met de WP `featured`-vlag zijn. Content-actie: een paar materialen aanvinken.
+- Offline materiaal: homepage filtert op `meta.publication.isOnline`, maar dat veld komt nog niet mee in de material-respons → backend moet het blootleggen.

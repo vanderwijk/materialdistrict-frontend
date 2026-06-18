@@ -3040,3 +3040,16 @@ Eén levering, 3-way gerebased op de nieuwste main. Johan had ondertussen gedepl
 
 Geverifieerd: esbuild alle merged/gewijzigde TSX OK; globals additief + brace-balans OK.
 **Backend (Johan):** OAuth-endpoints google|linkedin; account_type opslaan; register accepteert nu optioneel profession+organisation; request-new → direct aanmaken+koppelen; SES-welkomstmails (2 varianten). §DASH-REVIEW-3M mag weg (vervangen door v9).
+
+## Homepage S10.2 ronde-3 (18-06-2026)
+Feedbackronde op de live homepage, gemerged op de actuele main.
+- Categorie-pillen: de winnende `.hp-cats`-regel gefixt (een látere regel overschreef de eerdere) → één rij (horizontaal scrollen), lijn eronder weg, linker-inspring kleiner, channelbar-maat.
+- Featured-materialen: terugval op "nieuwste" verwijderd; blok toont alleen WP-`featured` materialen en verbergt zichzelf als die er niet zijn (geen dubbele rij meer). Vullen = materialen in WP als featured aanvinken.
+- "In the spotlight" → "Featured channel".
+- Events/Books gesplitst in twee gelabelde helften (elk eigen kop + "All …"-link). Boek = featured boek, anders het nieuwste; tegel houdt `variant="home"`.
+- Featured brands: aangevuld tot zes (dedupe; partner-eerst, dan ≥3 materialen, dan rest).
+- Featured channel-thumbnails: nu ín de hero-foto onderin, kleiner, met wit kadertje + hover-tooltip; hero als kolom + gradient versterkt.
+- Nieuw `SidebarBooks.tsx`: nieuwste-boeken-blok in de rechterkolom (gebruikt `listBooks`).
+- Gewijzigd: `page.tsx`, `FeaturedChannel.tsx`, nieuw `SidebarBooks.tsx`, `globals.css` (additief op de actuele main; Johan's books.ts/book.ts/Header/hub-ViewLogger ongemoeid).
+- Geverifieerd tegen de actuele main: round-2 was al gemerged; `books.ts`/`book.ts` zijn door Johan uitgebreid (channels/disciplines/tags/format/catalog/ISBN) en NIET meegeleverd; mijn code is compatibel (BookListItem behoudt id/slug/title/cover.url/price/priceExVat).
+- **Open (Johan/content):** (1) materialen als featured aanvinken om het Featured-materials-blok te vullen; (2) `meta.publication.isOnline` blootleggen zodat offline materiaal verdwijnt.

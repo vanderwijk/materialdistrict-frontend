@@ -12144,9 +12144,9 @@ mark.search-mark {
 .btn-on-ink:hover:not(:disabled){opacity:.9}
 
 /* ---- categorie-strip ---- */
-.hp-cats{max-width:1280px; margin:0 auto; padding:26px 32px 0}
-.hp-cats-inner{display:flex; gap:8px; flex-wrap:wrap; overflow:visible; border-bottom:1px solid var(--border); padding-bottom:22px}
-.hp-cat-link{font-size:14px; font-weight:600; color:var(--text-muted); border:1px solid var(--border); background:var(--surface); border-radius:100px; padding:7px 15px}
+.hp-cats{max-width:1280px; margin:0 auto; padding:14px 32px}
+.hp-cats-inner{display:flex; gap:8px; flex-wrap:nowrap; align-items:center; overflow-x:auto; scrollbar-width:none}
+.hp-cat-link{font-size:13px; font-weight:600; color:var(--text-muted); border:1px solid var(--border); background:var(--surface); border-radius:100px; padding:6px 13px}
 .hp-cat-link:hover{border-color:var(--text-hint); color:var(--text)}
 
 /* ---- main grid ---- */
@@ -14938,7 +14938,9 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .hp-channel-hero {
   position: relative;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 18px;
   min-height: 360px;
   padding: 28px;
   border-radius: 14px;
@@ -14956,8 +14958,8 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   z-index: 0;
   background: linear-gradient(
     180deg,
-    rgba(13, 31, 45, 0) 30%,
-    rgba(13, 31, 45, 0.82) 100%
+    rgba(13, 31, 45, 0) 8%,
+    rgba(13, 31, 45, 0.88) 100%
   );
 }
 .hp-channel-hero-inner {
@@ -15053,23 +15055,34 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 
 /* (4) Spotlight: rij vierkante thumbnails + hover-tooltip ------------- */
+.hp-channel-title-link {
+  color: inherit;
+  text-decoration: none;
+}
+.hp-channel-title-link:hover {
+  text-decoration: underline;
+}
 .hp-channel-thumbs {
+  position: relative;
+  z-index: 1;
   list-style: none;
-  margin: 16px 0 0;
+  margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 .hp-channel-thumb {
   position: relative;
   display: block;
-  aspect-ratio: 1 / 1;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  border-radius: 7px;
+  border: 2px solid #fff;
   background-color: var(--surface2);
   background-size: cover;
   background-position: center;
-  overflow: visible;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
 }
 .hp-channel-thumb-tip {
   position: absolute;
@@ -15085,7 +15098,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   border-radius: 8px;
   background: var(--ink);
   color: #fff;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.32);
   opacity: 0;
   visibility: hidden;
   transition: opacity 120ms ease;
@@ -15109,11 +15122,8 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   font-weight: 600;
   line-height: 1.25;
 }
-@media (max-width: 900px) {
-  .hp-channel-thumbs { grid-template-columns: repeat(5, 1fr); }
-}
 @media (max-width: 520px) {
-  .hp-channel-thumbs { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .hp-channel-thumb { width: 44px; height: 44px; }
 }
 
 /* (5) Featured brands: logo-only grid -------------------------------- */
@@ -16501,3 +16511,107 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .auth-accounttype { grid-template-columns: 1fr; }
 }
 /* ============================ einde §AUTH-SOCIAL-ACCOUNTTYPE ============================ */
+
+/* ============================================================
+   § S10.2 ronde-3 — Events/Books-split + sidebar nieuwe-boeken-blok
+   ------------------------------------------------------------
+   Events en Books als twee gelabelde helften (elk eigen kop + "All …"-link),
+   en een compact nieuwste-boeken-blok in de rechterkolom (zoals de demo).
+   ============================================================ */
+
+/* Events + Books — twee gelabelde helften ---------------------------- */
+.hp-events-books {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.hp-eb-col {
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  .hp-events-books { grid-template-columns: 1fr; }
+}
+
+/* Sidebar — nieuwste boeken ------------------------------------------ */
+.hp-sidebar-books {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 16px;
+}
+.hp-sidebar-books-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.hp-sidebar-books-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--text);
+}
+.hp-sidebar-books-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--link);
+  white-space: nowrap;
+}
+.hp-sidebar-books-link:hover {
+  color: var(--link-hover);
+}
+.hp-sidebar-books-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hp-sidebar-book {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.hp-sidebar-book-cover {
+  flex-shrink: 0;
+  width: 44px;
+  height: 60px;
+  border-radius: 4px;
+  background-color: var(--surface2);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+.hp-sidebar-book-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.hp-sidebar-book-title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hp-sidebar-book:hover .hp-sidebar-book-title {
+  color: var(--navy);
+}
+.hp-sidebar-book-price {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.hp-sidebar-book-vat {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-hint);
+}
