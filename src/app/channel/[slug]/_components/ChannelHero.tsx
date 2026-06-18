@@ -11,6 +11,7 @@
 import type { CSSProperties } from 'react'
 import type { ChannelTerm } from '@/lib/api'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
+import { FollowToggle } from '@/components/ui/FollowToggle'
 
 function toPlainText(html: string): string {
   return decodeHtmlEntities(html.replace(/<[^>]*>/g, ' '))
@@ -33,6 +34,13 @@ export function ChannelHero({ channel }: { channel: ChannelTerm }) {
         <p className="channel-hero-eyebrow">Channel</p>
         <h1 className="channel-hero-title">{channel.label}</h1>
         {teaser && <p className="channel-hero-desc">{teaser}</p>}
+        <div className="channel-hero-follow">
+          <FollowToggle
+            entityType="channel"
+            entityId={channel.id}
+            entityName={channel.label}
+          />
+        </div>
       </div>
     </header>
   )

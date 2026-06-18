@@ -66,6 +66,7 @@ import { BrandInfoCard } from './_components/BrandInfoCard'
 import { MoreFromBrand } from './_components/MoreFromBrand'
 import { MaterialBody } from './_components/MaterialBody'
 import { RecentlyViewedWriter } from '@/lib/hooks/useRecentlyViewedMaterials'
+import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
 interface MaterialDetailPageProps {
   params: Promise<{ slug: string }>
@@ -438,6 +439,8 @@ export default async function MaterialDetailPage({
               productUrl={material.productUrl}
             />
           </aside>
+                  <PreferredSourceEndBlock placement="material" />
+
                   <div className="detail-prevnext-row">
             <PrevNextNavigation currentSlug={material.slug} />
           </div>

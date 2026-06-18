@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils/cn'
-import { ClientNewsletterForm } from './ClientNewsletterForm'
+import { FollowDigestBlock } from './FollowDigestBlock'
+import { PreferredSourceButton } from '@/components/ui/PreferredSourceButton'
+import { getChannelsIndex } from '@/lib/api/channels'
 
 interface FooterLink {
   label: string
@@ -10,11 +12,6 @@ interface FooterLink {
 }
 
 interface FooterProps {
-  /**
-   * Optional callback voor newsletter-submit. Wanneer afwezig, gebruikt de form
-   * een server action (komt in sessie 4). Voor nu kan de parent een handler meegeven.
-   */
-  onNewsletterSubmit?: (email: string) => void
   className?: string
 }
 
@@ -73,7 +70,11 @@ const SOCIAL_LINKS: FooterLink[] = [
  * callback die door een client-wrapper kan worden aangeleverd. Zonder callback
  * is de form niet-werkend; in sessie 4 wordt dit vervangen door een Server Action.
  */
-export function Footer({ onNewsletterSubmit, className }: FooterProps) {
+export async function Footer({ className }: FooterProps) {
+  const channels = await getChannelsIndex().catch(() => [])
+  const digestChannels = channels
+    .slice(0, 6)
+    .map((c) => ({ id: c.id, slug: c.slug, label: c.label }))
   return (
     <footer className={cn('site-footer', className)}>
       <div className="footer-inner">
@@ -84,7 +85,7 @@ export function Footer({ onNewsletterSubmit, className }: FooterProps) {
             The leading platform for innovative and sustainable materials —
             for architects, designers and manufacturers.
           </div>
-          <NewsletterForm onSubmit={onNewsletterSubmit} />
+          <FollowDigestBlock channels={digestChannels} />
         </div>
 
         {/* Discover */}
@@ -130,7 +131,14 @@ export function Footer({ onNewsletterSubmit, className }: FooterProps) {
       </div>
 
       <div className="footer-bottom">
-        <span>© {new Date().getFullYear()} MaterialDistrict</span>
+        <div className="footer-bottom-left">
+          <span>© {new Date().getFullYear()} MaterialDistrict</span>
+          <PreferredSourceButton
+            variant="compact"
+            placement="footer"
+            label="Add MaterialDistrict to Google"
+          />
+        </div>
         <div className="footer-legal-links">
           {LEGAL_LINKS.map((l) =>
             l.external ? (
@@ -168,33 +176,5 @@ function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) 
         </Link>
       ))}
     </div>
-  )
-}
-
-function NewsletterForm({ onSubmit }: { onSubmit?: (email: string) => void }) {
-  if (onSubmit) {
-    return <ClientNewsletterForm onSubmit={onSubmit} />
-  }
-  return (
-    <>
-      <div className="footer-eyebrow">Newsletter — 2× per week</div>
-      <form
-        className="footer-newsletter"
-        action="/api/newsletter"
-        method="post"
-      >
-        <input
-          type="email"
-          name="email"
-          placeholder="Your email address"
-          required
-          aria-label="Email address"
-        />
-        <button type="submit">Subscribe</button>
-      </form>
-      <div className="footer-newsletter-note">
-        New materials, articles and events. No spam.
-      </div>
-    </>
   )
 }

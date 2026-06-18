@@ -39,6 +39,7 @@ import { VideoEmbed } from '@/components/ui'
 import { sortEventsByDate } from '../_lib/events-order'
 import { EventDetailActions } from './_components/EventDetailActions'
 import { EventPrevNext, type EventPrevNextNeighbour } from './_components/EventPrevNext'
+import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
 const NEIGHBOUR_SCAN = 100
 const OTHER_EVENTS = 3
@@ -313,6 +314,8 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               </div>
             )}
           </aside>
+                  <PreferredSourceEndBlock placement="event" />
+
                   <div className="detail-prevnext-row">
             <EventPrevNext prev={prev} next={next} />
           </div>

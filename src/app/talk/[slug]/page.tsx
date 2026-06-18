@@ -40,6 +40,7 @@ import {
   TalkPrevNext,
   type TalkPrevNextNeighbour,
 } from './_components/TalkPrevNext'
+import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
 const NEIGHBOUR_SCAN = 100
 const MORE_TALKS = 3
@@ -251,6 +252,8 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
               </section>
             )}
           </div>
+                  <PreferredSourceEndBlock placement="talk" />
+
                   <div className="detail-prevnext-row">
             <TalkPrevNext prev={prev} next={next} />
           </div>

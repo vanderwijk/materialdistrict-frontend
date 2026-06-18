@@ -12,8 +12,8 @@
 ---
 
 ## Laatste update
-Datum: 11-06-2026 — §F2.12b brand-facet frontend (?brand= slug ↔ FacetWP).
-Deployed via Git.
+Datum: 17-06-2026 — §PREFERRED-SOURCE: Google Preferred Sources-knop
+(footer-bottom live, component + click-logging + additief CSS-blok).
 
 ---
 
@@ -2933,6 +2933,7 @@ Geverifieerd via esbuild-transpile (alle gewijzigde bestanden) + globals brace-c
 - Filter-**categorieën** (design-disciplines) als WC-taxonomie + aan boeken koppelen → de Category-sectie vult zich dan vanzelf (zelfde structuur als materials).
 - Extra label-facetten (New releases / Last items / Popular) vereisen publicatiedatum / voorraadaantal / verkoopdata in de Store-API-respons.
 - Prijs-range-facet vereist een range-UI (losse follow-up); nu Format/Publisher/On sale.
+
 ## §PREFERRED-SOURCE — Google Preferred Sources knop · 17-06-2026
 Los, klein item op het verkeers-/Google-spoor. Staat los van de follow-laag en
 de datalaag; kan apart live.
@@ -2983,3 +2984,70 @@ ManufacturerTier: betaald = volgbaar). AVG en mailtool als open knopen geflagd.
 Mail aan Johan herzien: korte cover-note die naar deze spec verwijst.
 
 _Addendum 17-06: concrete suggesties toegevoegd aan de spec (engine = MySQL-start, system-cron, migratie-scriptvorm, AVG-startpunt, mailtool = Sendy-op-SES als lead). Migratie-bron blijft "aansluiten op Johans teller-bron"._
+
+## §PREFERRED-SOURCE-ARTICLE + §CHANNEL-HERO-CONTRAST · 17-06-2026
+Einde-artikel Google-voorkeursbron-knop ingewired op de detailpagina (na de
+author-footer, vóór prev/next), variant default, placement="article", via de
+bestaande PreferredSourceButton. Plus contrast-fix op de channel-hero: de titel
+was al wit (erft van .channel-hero) — subtiele text-shadow op titel + eyebrow,
+alleen op de image-variant (niet is-plain), zodat-ie op lichte foto's niet
+wegvalt. Beide additieve §-blokken; esbuild groen.
+
+Footer-knop stond al live; homepage-plek bewust overgeslagen (footer + einde-
+artikel samen genoeg, digest is de sterkere derde plek). Volledige
+Preferred-Source-frontend nu in één zip (footer + artikel + component + helper +
+css + doc), supersedet de losse levering van eerder vandaag.
+
+## §FOLLOW — follow-core (events-rail + follow-plumbing + toggle) · 17-06-2026
+Doorgebouwd op verzoek. Geleverd:
+
+**Events-rail (werkt nu, ook anoniem):**
+- src/lib/api/events.ts — generieke logEvent + ensureAnonymousId (md_aid first-party cookie).
+- src/app/api/events/route.ts — anoniem-vriendelijke proxy → POST /md/v2/events
+  (Bearer als ingelogd, anders anonymous_id uit cookie; best-effort 202 bij WP-fout
+  of nog-niet-bestaand endpoint).
+- preferredSource.ts loopt nu via logEvent (DRY) → de Preferred-Source-knop logt
+  vanaf nu echt i.p.v. naar een 404 te schieten.
+
+**Follow-plumbing (contract-geïsoleerd):**
+- src/lib/api/follows.ts — client (followEntity/unfollowEntity/getFollows).
+- src/app/api/follows/route.ts — proxy GET/POST/DELETE → /md/v2/follows (login vereist).
+- src/lib/hooks/useFollow.tsx — optimistische follow-state per entiteit + follow-event.
+
+**Toggle (goedgekeurde interactie):**
+- src/components/ui/FollowToggle.tsx — schuifje + popover (2-koloms checklist met
+  defaults aan: material/story/talk; uit: book/event/brand) + globale frequentie-
+  pull-down + auto-close-balk + klik-buiten + account-catch (ink-knop) voor uitgelogd.
+- globals.css §FOLLOW (additief).
+
+esbuild transform groen op alle bestanden. Volledige tsc draait in Johans deploy-pipeline.
+
+**Nog te doen (volgende pass, klein):** placement van de FollowToggle in een channel-pill
+op channel- én detailpagina's (visuele check daar), het digest-blok dat de oude
+nieuwsbrief-box vervangt, en het "wat ik volg"-accountoverzicht. De data-bedrading
+landt zodra Johans /md/v2/events + /md/v2/follows + followable-veld live zijn —
+contracten bevestigen jullie morgen, daarna is het één tik om scherp te zetten.
+
+_Addendum 17-06: FollowToggle geplaatst op de channelpagina (in ChannelHero, entityType=channel, entityId=channel.id) + §FOLLOW-PLACEMENT. Detailpagina-pill (article/material/brand/talk/event/book) nog te doen._
+
+## §FOLLOW-DIGEST + detailpagina-knoppen + brand-toggle · 17-06-2026
+Alles wat zonder Johan kon, gebouwd en gevalideerd (esbuild groen):
+- **Google Preferred Source-knop op ALLE detailpagina's** (article/material/brand/
+  talk/event/book) via een herbruikbare PreferredSourceEndBlock (onderaan, vóór
+  prev/next). Article-pagina herbruikt nu ook deze component.
+- **Brand-detail: FollowToggle** ("follow this brand"), entityType=brand, gated op
+  followable — toont tenzij expliciet false, tot Johans veld op de brand-response staat.
+- **Footer: e-mailbox vervangen door FollowDigestBlock** — channel-chips, GEEN
+  e-mailveld, globale frequentie-pull-down, "Start following", account-catch voor
+  uitgelogd, bevestigingsregel voor ingelogd. Footer is nu async en haalt curated
+  channels via getChannelsIndex (featured eerst, max 6). NewsletterForm +
+  ClientNewsletterForm-import uit Footer verwijderd (ClientNewsletterForm.tsx blijft
+  als ongebruikt bestand staan).
+- Channelpagina-toggle stond al (vorige stap).
+
+CSS: §FOLLOW-DIGEST + .brand-follow-row (additief).
+
+Nog te doen: de follow-toggle ook op niet-brand detailpagina's via een channel-pill
+(per contenttype), het "wat ik volg"-accountoverzicht, en een visuele controle op
+de preview. De data-functie (echt opslaan, followable-gate, dashboards) wacht op
+Johans /md/v2/events + /md/v2/follows + followable-veld.

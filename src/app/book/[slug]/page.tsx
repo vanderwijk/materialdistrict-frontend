@@ -37,6 +37,7 @@ import { BookBuyCard } from './_components/BookBuyCard'
 import { BookDetailActions } from './_components/BookDetailActions'
 import { BookCard } from '../_components/BookCard'
 import type { BookListItem } from '@/types/book'
+import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
 interface BookDetailPageProps {
   params: Promise<{ slug: string }>
@@ -80,7 +81,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   // Eén rij: vier boeken (zie .book-morebooks in globals.css).
   const moreBooks = items.filter((b) => b.slug !== book.slug).slice(0, 4)
 
-  // Categorie-pills boven de titel: de échte design-discipline-categorieën
+  // Design-discipline categorieën boven de titel
   // (deep-link → /book?category=<slug>, hetzelfde filter als de Category-sectie
   // in de sidebar). Boeken zónder discipline (handmatig nog te categoriseren in
   // WooCommerce) vallen terug op product-tags (→ /book?tag=<slug>), zodat de kop
@@ -298,6 +299,8 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
               </Link>
             )}
           </aside>
+
+          <PreferredSourceEndBlock placement="book" />
 
           <div className="detail-prevnext-row">
             <BookPrevNext prev={prev} next={next} />

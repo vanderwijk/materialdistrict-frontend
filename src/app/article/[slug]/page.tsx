@@ -63,6 +63,7 @@ import {
   type ArticlePrevNextNeighbour,
 } from './_components/ArticlePrevNext'
 import { ArticleRelated } from './_components/ArticleRelated'
+import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
 const SIDEBAR_MATERIALS = 3
 const NEIGHBOUR_SCAN = 100
@@ -306,6 +307,13 @@ export default async function ArticleDetailPage({
                 </span>
               </div>
             </footer>
+
+            {/* Einde-tekst: Google Preferred Source CTA */}
+            <PreferredSourceEndBlock
+              placement="article"
+              heading="Enjoyed this story?"
+              sub="Make MaterialDistrict a preferred source — see our stories first in Google."
+            />
 
           </div>
           </div>

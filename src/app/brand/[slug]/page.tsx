@@ -40,6 +40,8 @@ import { BrandDetailContactCard } from './_components/BrandDetailContactCard'
 import { BrandDetailInfoCard } from './_components/BrandDetailInfoCard'
 import { BrandMaterialsGrid } from './_components/BrandMaterialsGrid'
 import { BrandPrevNext, type BrandPrevNextNeighbour } from './_components/BrandPrevNext'
+import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
+import { FollowToggle } from '@/components/ui/FollowToggle'
 
 const MATERIALS_PER_BRAND = 4
 
@@ -162,6 +164,13 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
 
           {/* Main column */}
           <div>
+            {/* Follow this brand — alleen bij membership (followable). Tot het
+                veld op de brand-response staat: tonen tenzij expliciet false. */}
+            {((brand as { followable?: boolean }).followable ?? true) && (
+              <div className="brand-follow-row">
+                <FollowToggle entityType="brand" entityId={brand.id} entityName={brand.name} />
+              </div>
+            )}
             {hasGallery && (
               <MaterialGallery gallery={brand.gallery} title={brand.name} />
             )}
@@ -216,6 +225,8 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
               />
             </div>
           </aside>
+                  <PreferredSourceEndBlock placement="brand" />
+
                   <div className="detail-prevnext-row">
             <BrandPrevNext prev={neighbours.prev} next={neighbours.next} />
           </div>
