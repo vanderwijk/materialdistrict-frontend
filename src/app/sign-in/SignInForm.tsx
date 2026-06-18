@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/form'
 import { useAuth } from '@/components/providers/AuthContext'
 import { parseAuthErrorResponse, focusFieldForCode } from '@/app/_auth-components/auth-errors'
+import { SocialAuthButtons } from '@/app/_auth-components/SocialAuthButtons'
 
 interface SignInFormProps {
   /** Sanitised target path for the post-login redirect. */
@@ -108,6 +109,7 @@ export function SignInForm({ next }: SignInFormProps) {
 
   return (
     <FormStateProvider>
+      <SocialAuthButtons next={next} verb="Log in" />
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
         {state.kind === 'error' ? (
           <div
@@ -157,7 +159,7 @@ export function SignInForm({ next }: SignInFormProps) {
           disabled={state.kind === 'submitting'}
           className="auth-form-submit"
         >
-          {state.kind === 'submitting' ? 'Signing in…' : 'Sign in'}
+          {state.kind === 'submitting' ? 'Logging in…' : 'Login'}
         </SubmitButton>
       </form>
     </FormStateProvider>

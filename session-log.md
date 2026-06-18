@@ -3020,3 +3020,23 @@ Geverifieerd via esbuild-transpile (alle gewijzigde bestanden) + globals brace-c
 - **Fix:** zes blokken additief achter de huidige globals.css geplakt: §PREFERRED-SOURCE, §PREFERRED-SOURCE-ARTICLE, §CHANNEL-HERO-CONTRAST, §FOLLOW, §FOLLOW-PLACEMENT, §FOLLOW-DIGEST. 15776 → 16025 regels; accolades 2815/2815; §DASH-REVIEW intact.
 - **Actie:** globals.css vervangen + redeploy.
 - **Open (vervolg-batch):** SVG-verharding Google-G (width/height-attrs op de SVG; PreferredSourceButton.tsx is identiek aan main → veilig), client-side dubbele follow-events verwijderen, frequency-PATCH koppelen.
+
+## 18-06-2026 — Inlog/onboarding-finetuning + become-a-partner (GEREBASED op nieuwste main)
+
+Eén levering, 3-way gerebased op de nieuwste main. Johan had ondertussen gedeployd: dashboard-consolidatie (§DASH-REVIEW-3..3M), een `isLoggedIn`-guard rond de InsiderGate-sign-in-link, én onafhankelijk deels dezelfde become-a-partner-aanpassing. Alles netjes samengevoegd.
+
+**1. /become-a-partner — need-led herzien (v9, Jeroen-akkoord).** Hero = pure belofte (kop "Get your materials specified."); hero-CTA weg (`<PartnerCta/>` verwijderd). Free = pay-per-material; brand page/directory/requests als voorwaarde "With a material" in de tabel (`Cond()`+`FREE_CONDITIONAL`) + voetregel. "publish"→"list". Groen op Plus (border `--green` + badge `--green-mid`); tier-knoppen outline + groene hover. "Choose Partner" (self-serve €3.000); alle tier-knoppen → `/register?next=/become-a-partner`. Tailored-regel → `/contact`. "Discount on add-ons (banners, fairs & more)". Yearly rate vet. "no subscription" weg.
+  → MERGE: Johan had onafhankelijk óók free-conditional + "Choose Partner" gebouwd, maar als ✓* + voetnoot (§DASH-REVIEW-3M) op de oude product-led pagina. Mijn v9 vervangt die pagina en houdt "With a material" aan. §DASH-REVIEW-3M is daarmee grotendeels redundant; mijn §BECOME-A-PARTNER-REFINE wint qua specificiteit, dus geen breuk als Johans blok blijft staan (mag opgeruimd).
+
+**2. Login-label** uniform "Login"/"Log in" (sign-in, register, gates, checkout). URL blijft `/sign-in`.
+**3. Register uitgekleed:** account-type-keuze bovenaan; alleen e-mail+wachtwoord verplicht; voornaam/achternaam/profession/organisatie optioneel; confirm-password weg; min 10.
+**4. Social login (forward-built):** SocialAuthButtons (Google+LinkedIn) op /sign-in en /register → `/api/auth/oauth/{provider}`.
+**5. Routing-gat gedicht:** footer + PromoHero "List your materials" → `/become-a-partner`.
+
+**InsiderGate (3-way):** Johans nieuwe versie met `isLoggedIn`-guard behouden + mijn "Log in"-label erop.
+**globals.css:** twee additieve §-blokken (§BECOME-A-PARTNER-REFINE + §AUTH-SOCIAL-ACCOUNTTYPE) ná Johans §DASH-REVIEW-3M. 0 eerdere regels geraakt; braces 2891/2891; → 16532.
+**Onaangeraakt door Johan (edits passen schoon):** register/sign-in/Footer/PromoHero/DownloadsCard/CheckoutSignInPanel + membership.ts.
+**Verwijderd:** become-a-partner/_components/PartnerCta.tsx.
+
+Geverifieerd: esbuild alle merged/gewijzigde TSX OK; globals additief + brace-balans OK.
+**Backend (Johan):** OAuth-endpoints google|linkedin; account_type opslaan; register accepteert nu optioneel profession+organisation; request-new → direct aanmaken+koppelen; SES-welkomstmails (2 varianten). §DASH-REVIEW-3M mag weg (vervangen door v9).

@@ -16433,30 +16433,71 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 
 /* ============================================================
-   §DASH-REVIEW-3M — become-a-partner parity-tweaks (#15/#17)
-   ------------------------------------------------------------
-   Tarief-rij vet (afgesproken nadruk), conditionele Free-markering (✓*) gelijk
-   aan het dashboard (#12.5), en de bijbehorende voetnoot. Data zelf komt al uit
-   membership.ts (één bron van waarheid).
+   §BECOME-A-PARTNER-REFINE — finetuning become-a-partner
+   (uitlijning vinkjes · conditie-tekst Free-kolom · vette bedragen ·
+   groene hover op outline tier-knoppen). Additief; raakt geen eerdere blokken.
    ============================================================ */
-.compare-table .cmp-rate-row td {
-  font-weight: 700;
+
+/* Vinkjes in de vergelijktabel centreren — de globale svg{display:block}
+   zette ze links terwijl de streepjes (spans) wel centreren. */
+.compare-table .cmp-yes { display: inline-block; }
+
+/* Conditionele cel-tekst ("With a material") in de Free-kolom. */
+.compare-table .cmp-cond { display: inline-block; font-size: 12px; line-height: 1.3; color: var(--text-hint); }
+
+/* Bedragen in de "Yearly rate"-rij vet (markup gebruikt <strong>). */
+.compare-table tbody strong { font-weight: 700; }
+
+/* Outline tier-knoppen vullen op hover met merkgroen (een-groen-regel:
+   transient interactiestaat, telkens maar een knop tegelijk). */
+.tier-grid .btn-outline:hover { background: var(--green-mid); border-color: var(--green-mid); color: #fff; }
+/* ============================ einde §BECOME-A-PARTNER-REFINE ============================ */
+
+/* ============================================================
+   §AUTH-SOCIAL-ACCOUNTTYPE — social-login-knoppen + account-type-keuze
+   op /sign-in en /register (sessie 18-06). Additief; raakt geen eerdere blokken.
+   ============================================================ */
+
+/* Social login (Google / LinkedIn) — forward-built. */
+.auth-social { display: flex; flex-direction: column; gap: 10px; margin-bottom: var(--space-5, 20px); }
+.auth-social-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; min-height: 44px; padding: 0 16px;
+  border: 1px solid var(--border); border-radius: var(--radius-md, 10px);
+  background: var(--surface); color: var(--text);
+  font-weight: 600; font-size: 0.95rem; text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
-.cmp-cond {
-  display: inline-flex;
-  align-items: center;
+.auth-social-btn:hover { background: var(--surface2); border-color: var(--text-hint); }
+.auth-social-icon { flex: 0 0 auto; }
+.auth-social-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 4px; color: var(--text-hint); font-size: 0.85rem;
 }
-.cmp-cond sup {
-  font-size: 0.7em;
-  margin-left: 1px;
-  color: var(--ct-member);
-  font-weight: 700;
+.auth-social-divider::before,
+.auth-social-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+/* Account-type-keuze (Discover / List). */
+.auth-accounttype {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  border: 0; padding: 0; margin: 0 0 var(--space-5, 20px);
 }
-.mkt-footnote {
-  max-width: 760px;
-  margin: 14px auto 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-muted);
-  text-align: center;
+.auth-at-card {
+  display: flex; flex-direction: column; gap: 2px;
+  text-align: left; cursor: pointer; padding: 12px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-md, 10px);
+  background: var(--surface); color: var(--text);
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
+.auth-at-card:hover { border-color: var(--text-hint); }
+.auth-at-card.is-selected {
+  border-color: var(--navy);
+  background: color-mix(in srgb, var(--navy) 6%, var(--surface));
+}
+.auth-at-title { font-weight: 700; font-size: 0.95rem; }
+.auth-at-sub { font-size: 0.8rem; color: var(--text-hint); }
+
+@media (max-width: 480px) {
+  .auth-accounttype { grid-template-columns: 1fr; }
+}
+/* ============================ einde §AUTH-SOCIAL-ACCOUNTTYPE ============================ */

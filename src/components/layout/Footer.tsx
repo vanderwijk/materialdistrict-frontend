@@ -35,10 +35,10 @@ const SPECIFIER_LINKS: FooterLink[] = [
 ]
 
 const MANUFACTURER_LINKS: FooterLink[] = [
-  { label: 'List your materials', href: '/register?type=show' },
+  { label: 'List your materials', href: '/become-a-partner' },
   { label: 'Brand profile', href: '/brand' },
-  { label: 'Reach 80,000+ specifiers', href: '/register?type=show' },
-  { label: 'Sample requests', href: '/register?type=show' },
+  { label: 'Reach 80,000+ specifiers', href: '/become-a-partner' },
+  { label: 'Sample requests', href: '/become-a-partner' },
 ]
 
 const LEGAL_LINKS: FooterLink[] = [

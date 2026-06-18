@@ -349,7 +349,7 @@ export function InsiderGate(props: InsiderGateProps & LegacyModeAlias) {
         </Link>
         {!isLoggedIn && (
           <a href={signInHref} className="insider-gate-signin-link">
-            Already an Insider? Sign in →
+            Already an Insider? Log in →
           </a>
         )}
       </div>
@@ -426,7 +426,7 @@ function GateBody({
       </Link>
       {!isLoggedIn && (
         <a href={signInHref} className="insider-gate-signin-link">
-          Already an Insider? Sign in →
+          Already an Insider? Log in →
         </a>
       )}
       {onDismiss && (

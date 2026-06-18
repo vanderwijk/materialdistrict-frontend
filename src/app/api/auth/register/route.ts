@@ -1,7 +1,7 @@
 /**
  * POST /api/auth/register
  *
- * Body: { email, password, firstName, lastName, accountType? }
+ * Body: { email, password, firstName?, lastName?, accountType?, profession?, organisation? }
  *
  * On success:
  *   - sets the HttpOnly auth cookie (persistent — a freshly created
@@ -31,6 +31,8 @@ interface RegisterBody {
   firstName: string
   lastName: string
   accountType: 'specifier' | 'manufacturer'
+  profession?: string
+  organisation?: string
 }
 
 function parseRegisterBody(raw: unknown): RegisterBody | null {
@@ -38,16 +40,16 @@ function parseRegisterBody(raw: unknown): RegisterBody | null {
   const b = raw as Record<string, unknown>
   if (typeof b.email !== 'string' || b.email.length === 0) return null
   if (typeof b.password !== 'string' || b.password.length === 0) return null
-  if (typeof b.firstName !== 'string' || b.firstName.length === 0) return null
-  if (typeof b.lastName !== 'string' || b.lastName.length === 0) return null
   const accountType =
     b.accountType === 'manufacturer' ? 'manufacturer' : 'specifier'
   return {
     email: b.email,
     password: b.password,
-    firstName: b.firstName,
-    lastName: b.lastName,
+    firstName: typeof b.firstName === 'string' ? b.firstName : '',
+    lastName: typeof b.lastName === 'string' ? b.lastName : '',
     accountType,
+    profession: typeof b.profession === 'string' ? b.profession : undefined,
+    organisation: typeof b.organisation === 'string' ? b.organisation : undefined,
   }
 }
 

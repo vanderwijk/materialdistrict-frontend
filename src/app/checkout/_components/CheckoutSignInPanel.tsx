@@ -117,7 +117,7 @@ export function CheckoutSignInPanel({ email, onSignedIn }: CheckoutSignInPanelPr
         />
         {error && <p className="checkout-error">{error}</p>}
         <button type="submit" className="checkout-secondary-btn" disabled={submitting}>
-          {submitting ? 'Signing in…' : 'Sign in'}
+          {submitting ? 'Logging in…' : 'Login'}
         </button>
       </form>
     </div>

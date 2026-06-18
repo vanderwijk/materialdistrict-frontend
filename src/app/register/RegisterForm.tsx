@@ -3,19 +3,17 @@
 /**
  * RegisterForm — client-side form for /register.
  *
- * Submits to /api/auth/register. On success that route has already set
- * the auth cookie and returns `{ user }` — same shape as login. We then
- * `signIn(user)` and navigate to `next` (default /materials), exactly
- * like /sign-in.
+ * Lage-drempel reframe (sessie 18-06):
+ *  - Account-type-keuze (Discover / List) bovenaan en verplicht — bepaalt het
+ *    account-type (specifier vs. manufacturer; manufacturer → connect-brand
+ *    vervolgstap). Init uit de query-param, maar door de gebruiker te wijzigen.
+ *  - Alleen e-mail + wachtwoord verplicht. Voornaam/achternaam/profession/
+ *    organisatie zijn optioneel (uitvragen mag, hoeft niet) — de rest wordt
+ *    just-in-time uitgevraagd bij contact/sample.
+ *  - Confirm-password is verwijderd (lagere drempel; de server is autoritatief).
+ *  - Social login (Google/LinkedIn) als snelle route bovenaan.
  *
- * Password rules (frontend mirror of server-side rule, see
- * `wordpress-instructions-auth.md` §5.2 / `wordpress-instructions-register.md`):
- *  - Minimum 10 characters.
- *  - No upper/lower/digit/symbol requirements (NIST-aligned).
- *  - The server is authoritative — frontend rule is for UX only.
- *
- * The "confirm password" field validates client-side only; the server
- * never sees it.
+ * Password: minimaal 10 tekens (frontend-mirror; server is autoritatief).
  */
 
 import { useRef, useState, type FormEvent } from 'react'
@@ -28,10 +26,13 @@ import {
 } from '@/components/ui/form'
 import { useAuth } from '@/components/providers/AuthContext'
 import { parseAuthErrorResponse, focusFieldForCode } from '@/app/_auth-components/auth-errors'
+import { SocialAuthButtons } from '@/app/_auth-components/SocialAuthButtons'
+
+type AccountType = 'specifier' | 'manufacturer'
 
 interface RegisterFormProps {
   next: string
-  accountType: 'specifier' | 'manufacturer'
+  accountType: AccountType
 }
 
 type SubmitState =
@@ -41,17 +42,21 @@ type SubmitState =
 
 const MIN_PASSWORD_LENGTH = 10
 
+const ACCOUNT_TYPES: ReadonlyArray<{
+  value: AccountType
+  title: string
+  sub: string
+}> = [
+  { value: 'specifier', title: 'Discover materials', sub: 'Architect, designer or specifier' },
+  { value: 'manufacturer', title: 'List your materials', sub: 'Manufacturer or brand' },
+]
+
 export function RegisterForm({ next, accountType }: RegisterFormProps) {
   const router = useRouter()
   const { signIn } = useAuth()
   const [state, setState] = useState<SubmitState>({ kind: 'idle' })
+  const [selectedType, setSelectedType] = useState<AccountType>(accountType)
 
-  // Keep the latest password value in a ref so the confirm-password
-  // field's validator can compare against it without re-rendering.
-  const passwordValueRef = useRef<string>('')
-
-  const firstNameRef = useRef<HTMLInputElement>(null)
-  const lastNameRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 
@@ -62,21 +67,12 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
     const lastName = String(formData.get('lastName') ?? '').trim()
     const email = String(formData.get('email') ?? '').trim()
     const password = String(formData.get('password') ?? '')
-    const passwordConfirm = String(formData.get('passwordConfirm') ?? '')
+    const profession = String(formData.get('profession') ?? '').trim()
+    const organisation = String(formData.get('organisation') ?? '').trim()
     const acceptedTerms = formData.get('acceptTerms') === 'on'
 
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !password ||
-      !passwordConfirm ||
-      !acceptedTerms
-    ) {
-      // FormStateProvider drives the visual cues; defensive return.
-      return
-    }
-    if (password !== passwordConfirm) return
+    // Alleen e-mail + wachtwoord + voorwaarden zijn verplicht.
+    if (!email || !password || !acceptedTerms) return
     if (password.length < MIN_PASSWORD_LENGTH) return
 
     setState({ kind: 'submitting' })
@@ -85,7 +81,15 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password, accountType }),
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+          profession,
+          organisation,
+          accountType: selectedType,
+        }),
       })
 
       if (!res.ok) {
@@ -118,37 +122,36 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
 
   return (
     <FormStateProvider>
+      <SocialAuthButtons next={next} verb="Continue" />
+
+      <fieldset className="auth-accounttype" aria-label="What brings you here?">
+        {ACCOUNT_TYPES.map((opt) => {
+          const isSelected = selectedType === opt.value
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              className={`auth-at-card${isSelected ? ' is-selected' : ''}`}
+              aria-pressed={isSelected}
+              onClick={() => setSelectedType(opt.value)}
+            >
+              <span className="auth-at-title">{opt.title}</span>
+              <span className="auth-at-sub">{opt.sub}</span>
+            </button>
+          )
+        })}
+      </fieldset>
+
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
         {state.kind === 'error' ? (
-          <div
-            className="form-banner is-error"
-            role="alert"
-            aria-live="assertive"
-          >
+          <div className="form-banner is-error" role="alert" aria-live="assertive">
             {state.message}
           </div>
         ) : null}
 
         <div className="auth-form-grid-2">
-          <Input
-            ref={firstNameRef}
-            name="firstName"
-            type="text"
-            label="First name"
-            autoComplete="given-name"
-            required
-            showFilledState
-            autoFocus
-          />
-          <Input
-            ref={lastNameRef}
-            name="lastName"
-            type="text"
-            label="Last name"
-            autoComplete="family-name"
-            required
-            showFilledState
-          />
+          <Input name="firstName" type="text" label="First name" autoComplete="given-name" optional showFilledState />
+          <Input name="lastName" type="text" label="Last name" autoComplete="family-name" optional showFilledState />
         </div>
 
         <Input
@@ -177,26 +180,10 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
             }
             return true
           }}
-          onChange={(e) => {
-            passwordValueRef.current = e.target.value
-          }}
         />
 
-        <Input
-          name="passwordConfirm"
-          type="password"
-          label="Confirm password"
-          autoComplete="new-password"
-          required
-          showFilledState
-          validate={(value) => {
-            if (value.length === 0) return undefined
-            if (value !== passwordValueRef.current) {
-              return 'Passwords do not match.'
-            }
-            return true
-          }}
-        />
+        <Input name="profession" type="text" label="Profession" autoComplete="organization-title" optional showFilledState />
+        <Input name="organisation" type="text" label="Organisation" autoComplete="organization" optional showFilledState />
 
         <Checkbox
           name="acceptTerms"
@@ -204,14 +191,9 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
           label={
             <>
               I agree to the{' '}
-              <a className="auth-form-link" href="#">
-                Terms of Service
-              </a>{' '}
+              <a className="auth-form-link" href="#">Terms of Service</a>{' '}
               and{' '}
-              <a className="auth-form-link" href="#">
-                Privacy Policy
-              </a>
-              .
+              <a className="auth-form-link" href="#">Privacy Policy</a>.
             </>
           }
         />

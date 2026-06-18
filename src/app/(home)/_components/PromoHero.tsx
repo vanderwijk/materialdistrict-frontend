@@ -67,7 +67,7 @@ export function PromoHero({ materialCount }: PromoHeroProps) {
             designers.
           </p>
           <div className="hero-actions">
-            <Link href="/register" className="btn btn-lg btn-on-ink">
+            <Link href="/become-a-partner" className="btn btn-lg btn-on-ink">
               List your materials →
             </Link>
           </div>

@@ -1650,19 +1650,25 @@ export async function resetPassword(
 export async function registerUser(args: {
   email: string
   password: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   accountType?: 'specifier' | 'manufacturer'
+  profession?: string
+  organisation?: string
 }): Promise<AuthMeResponse> {
+  const body: Record<string, string> = {
+    email: args.email,
+    password: args.password,
+    first_name: args.firstName ?? '',
+    last_name: args.lastName ?? '',
+    account_type: args.accountType ?? 'specifier',
+  }
+  if (args.profession) body.profession = args.profession
+  if (args.organisation) body.organisation = args.organisation
+
   const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/register', {
     method: 'POST',
-    body: {
-      email: args.email,
-      password: args.password,
-      first_name: args.firstName,
-      last_name: args.lastName,
-      account_type: args.accountType ?? 'specifier',
-    },
+    body,
   })
   return mapAuthMeResponse(raw)
 }

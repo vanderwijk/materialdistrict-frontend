@@ -193,7 +193,7 @@ export function DownloadsCard({
                 className="mat-downloads-card-cta"
                 onClick={(e) => handleClick(entry, e)}
               >
-                {isLoggedIn ? (entry.external ? 'Open' : 'PDF') : 'Sign in'}
+                {isLoggedIn ? (entry.external ? 'Open' : 'PDF') : 'Login'}
               </a>
             )}
           </li>

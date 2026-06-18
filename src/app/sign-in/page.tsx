@@ -58,7 +58,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   return (
     <AuthPageLayout
       heading="Login"
-      subheading="Welcome back. Sign in to continue."
+      subheading="Welcome back. Log in to continue."
       footer={
         <>
           <span className="auth-card-footer-text">Don&apos;t have an account?</span>{' '}

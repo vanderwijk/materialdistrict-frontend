@@ -53,7 +53,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             className="auth-card-footer-link"
             href={`/sign-in${next ? `?next=${encodeURIComponent(safeNext)}` : ''}`}
           >
-            Sign in
+            Log in
           </a>
         </>
       }

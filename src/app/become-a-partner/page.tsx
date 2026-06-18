@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { canonicalPath } from '@/lib/seo/urls'
-import { PartnerCta } from './_components/PartnerCta'
 import {
   MANUFACTURER_PRICING,
   MANUFACTURER_TIER_COLORS,
@@ -14,16 +13,20 @@ import {
 /**
  * /become-a-partner — publieke manufacturer-pagina.
  * ----------------------------------------------------------------------
- * Marketing-variant van het brand-dashboard membership-paneel: dezelfde
- * tier-data, maar publiek en met "Become a partner"-CTA's i.p.v. de
- * "Select tier"-knoppen (die in het dashboard horen, Fase 2).
- *
- * Server-component; auth-logica zit alleen in <PartnerCta /> (client).
+ * Need-led marketing-variant van het brand-dashboard membership-paneel:
+ * dezelfde tier-data, maar publiek. Volledig server-component; geen
+ * client-eilanden (de hero-CTA is bewust verwijderd — een knop die enkel
+ * dupliceert wat de tier-knoppen al doen heeft geen eigen functie; de actie
+ * zit nu bij de plannen).
  *
  * Prijzen/tiers/feature-gates komen volledig uit
- * `src/lib/config/membership.ts` — de mockup-tabel bevatte verouderde
- * tarieven en is hier bewust NIET de bron. Marketing-copy (kop/omschrijving/
- * card-highlights) staat hardcoded zodat Jeroen 'm los kan herschrijven.
+ * `src/lib/config/membership.ts`. Marketing-copy (kop/lede/card-highlights)
+ * staat hardcoded zodat ze los herschreven kan worden.
+ *
+ * Free is pay-per-material: een gratis merk zonder gelist materiaal is
+ * onzichtbaar. Brand page + directory + requests gaan pas live met het eerste
+ * materiaal (€250/jaar) — daarom tonen we die rijen in de Free-kolom als
+ * voorwaarde ("With a material") i.p.v. een kale ✓.
  *
  * Let op: deze route vervangt de oude WP-`advertise`-contentpagina. Daarom is
  * `become-a-partner` uit `PAGE_SLUG_MAP` (static-pages.ts) verwijderd — een
@@ -33,8 +36,8 @@ import {
 export const metadata: Metadata = {
   title: 'Become a partner',
   description:
-    'List your brand and materials on MaterialDistrict. Reach specifiers ' +
-    'with a free brand page, or publish materials with a Basis, Plus or ' +
+    'List your materials on MaterialDistrict and get found by architects, ' +
+    'designers and specifiers. Pay per material, or choose a Basis, Plus or ' +
     'Partner membership.',
   alternates: { canonical: canonicalPath('/become-a-partner') },
 }
@@ -51,9 +54,13 @@ const FEATURED_TIER: ManufacturerTier = 'plus'
 
 /** Card-highlights per tier (marketing-copy, los aanpasbaar). */
 const TIER_HIGHLIGHTS: Record<ManufacturerTier, readonly string[]> = {
-  free: ['Listed in the brand directory', 'Your own brand page', 'Publish materials at €250 / material / year'],
-  basis: ['5 materials included', 'Receive sample & info requests', 'Basic statistics'],
-  plus: ['15 materials included', 'Full statistics & geo-based lead routing', 'Brochures, videos & keywords'],
+  free: [
+    'List materials at €250 each / year',
+    'Your brand page goes live with your first material',
+    'Listed in the brand directory',
+  ],
+  basis: ['List up to 5 materials', 'Receive sample & info requests', 'Basic performance stats'],
+  plus: ['List up to 15 materials', 'Full statistics & geo-based lead routing', 'Brochures, videos & keywords'],
   partner: ['Unlimited materials', 'Self-service featured placement', 'Exclusive networking events'],
 }
 
@@ -71,12 +78,8 @@ const COMPARE_FEATURES: readonly ManufacturerFeature[] = [
   'Exclusive Networking Events',
 ]
 
-/**
- * Free-model parity met het dashboard (review 12.5): voor Free zijn dit
- * conditionele features — pas zichtbaar zodra de brand minstens één materiaal
- * publiceert. In de tabel tonen we ze met een "* met publicatie"-markering.
- */
-const FREE_CONDITIONAL = new Set<ManufacturerFeature>([
+/** Free-features die pas gelden zódra er een materiaal gelist is. */
+const FREE_CONDITIONAL: ReadonlySet<ManufacturerFeature> = new Set([
   'Listed in Brand Directory',
   'Individual Brand Page',
   'Receive Sample & Info Requests',
@@ -104,40 +107,31 @@ function No() {
   return <span className="cmp-no" aria-label="Not included">—</span>
 }
 function Cond() {
-  return (
-    <span className="cmp-cond" aria-label="Included once you publish at least one material">
-      <svg className="cmp-yes" width="16" height="16" viewBox="0 0 24 24" fill="none" role="img" aria-hidden="true">
-        <polyline points="20 6 9 17 4 12" stroke="currentColor" strokeWidth="2.5" fill="none" />
-      </svg>
-      <sup>*</sup>
-    </span>
-  )
+  return <span className="cmp-cond">With a material</span>
 }
 
 export default function BecomeAPartnerPage() {
   return (
     <main className="ov-wrap-single">
       <section className="mkt-hero">
-        <p className="mkt-eyebrow">For manufacturers</p>
-        <h1 className="page-title">Become a MaterialDistrict partner</h1>
+        <p className="mkt-eyebrow">For material manufacturers</p>
+        <h1 className="page-title">Get your materials specified.</h1>
         <p className="mkt-lede">
-          Put your materials in front of architects, designers and specifiers.
-          Start with a free brand page, or publish your materials with a
-          membership that fits your range.
+          Reach 80,000+ architects, designers and specifiers searching for
+          materials right now. List your materials from €250, get found in the
+          brand directory, and turn that visibility into sample requests and
+          qualified leads — with full insight into who&rsquo;s looking.
         </p>
-        <PartnerCta />
       </section>
 
-      <h2 className="mkt-section-title">Choose your membership</h2>
+      <h2 className="mkt-section-title">Choose the plan that fits your range</h2>
       <div className="tier-grid">
         {TIER_ORDER.map((tier) => {
           const isFree = tier === 'free'
-          const priceMain = isFree ? eur(0) : eur(MANUFACTURER_PRICING[tier].annual)
           const isFeatured = tier === FEATURED_TIER
-          const accent = MANUFACTURER_TIER_COLORS[tier]
-          const href = tier === 'partner' ? '/contact' : '/register?next=/become-a-partner'
-          const ctaLabel =
-            tier === 'partner' ? 'Choose Partner' : isFree ? 'Start free' : `Choose ${TIER_LABELS[tier]}`
+          const priceMain = isFree ? eur(0) : eur(MANUFACTURER_PRICING[tier].annual)
+          const accent = isFeatured ? 'var(--green)' : MANUFACTURER_TIER_COLORS[tier]
+          const ctaLabel = isFree ? 'Start free' : `Choose ${TIER_LABELS[tier]}`
 
           return (
             <div
@@ -146,14 +140,14 @@ export default function BecomeAPartnerPage() {
               style={{ borderTopColor: accent }}
             >
               {isFeatured && (
-                <div className="tier-badge" style={{ background: accent }}>Most popular</div>
+                <div className="tier-badge" style={{ background: 'var(--green-mid)' }}>Most popular</div>
               )}
               <div className="tier-name">{TIER_LABELS[tier]}</div>
               <div className="tier-price">
                 {priceMain}
                 {!isFree && <span className="tier-price-per"> / yr</span>}
               </div>
-              <div className="tier-meta">{materialsLabel(tier)}</div>
+              <div className="tier-meta">{isFree ? 'Pay per material' : materialsLabel(tier)}</div>
 
               <ul className="tier-features">
                 {TIER_HIGHLIGHTS[tier].map((h) => (
@@ -166,7 +160,7 @@ export default function BecomeAPartnerPage() {
                 ))}
               </ul>
 
-              <a href={href} className={`btn ${isFeatured ? 'btn-primary' : 'btn-outline'}`}>
+              <a href="/register?next=/become-a-partner" className="btn btn-outline">
                 {ctaLabel}
               </a>
             </div>
@@ -196,30 +190,29 @@ export default function BecomeAPartnerPage() {
               <tr key={feature}>
                 <td>{feature}</td>
                 {TIER_ORDER.map((tier) => {
-                  const included = canManufacturerAccess(tier, feature)
-                  const conditional =
-                    tier === 'free' && included && FREE_CONDITIONAL.has(feature)
+                  const allowed = canManufacturerAccess(tier, feature)
+                  const conditional = tier === 'free' && allowed && FREE_CONDITIONAL.has(feature)
                   return (
                     <td key={tier} className="col-val">
-                      {conditional ? <Cond /> : included ? <Yes /> : <No />}
+                      {conditional ? <Cond /> : allowed ? <Yes /> : <No />}
                     </td>
                   )
                 })}
               </tr>
             ))}
             <tr>
-              <td>Fair discount on stand space</td>
+              <td>Discount on add-ons (banners, fairs &amp; more)</td>
               {TIER_ORDER.map((tier) => (
                 <td key={tier} className="col-val">
                   {FAIR_DISCOUNT[tier] > 0 ? `${Math.round(FAIR_DISCOUNT[tier] * 100)}%` : <No />}
                 </td>
               ))}
             </tr>
-            <tr className="cmp-rate-row">
+            <tr>
               <td>Yearly rate</td>
               {TIER_ORDER.map((tier) => (
                 <td key={tier} className="col-val">
-                  {tier === 'free' ? eur(0) : eur(MANUFACTURER_PRICING[tier].annual)}
+                  <strong>{tier === 'free' ? eur(0) : eur(MANUFACTURER_PRICING[tier].annual)}</strong>
                 </td>
               ))}
             </tr>
@@ -227,16 +220,14 @@ export default function BecomeAPartnerPage() {
         </table>
       </div>
 
-      <p className="mkt-footnote">
-        <sup>*</sup> Free brand visibility — brand directory listing, brand page
-        and sample &amp; info requests — activates once you publish at least one
-        material.
-      </p>
-
       <p className="mkt-lede" style={{ textAlign: 'center', marginTop: '20px' }}>
-        All prices excl. VAT · annual commitment. Need a tailored Partner
-        package?{' '}
-        <a href="/contact" className="text-link">Contact us for custom pricing</a>.
+        All prices excl. VAT · memberships billed annually. Free is
+        pay-per-material (€250 / material / year) — your brand page, directory
+        listing and requests go live with your first listed material.
+      </p>
+      <p className="mkt-lede" style={{ textAlign: 'center', marginTop: '8px' }}>
+        Bigger range or specific goals? We&rsquo;ll tailor a plan that fits.{' '}
+        <a href="/contact" className="text-link">Talk to us</a>.
       </p>
     </main>
   )
