@@ -44,6 +44,7 @@ import { getChannelCatalog } from '@/lib/api'
 import { MaterialGallery } from '@/components/materials'
 import { getMaterial, getMaterialDetail } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath } from '@/lib/seo'
+import { ViewLogger } from '@/components/ui/ViewLogger'
 import { materialFilterHref } from '@/lib/api/facetwp'
 import {
   getActiveSustainabilityFacets,
@@ -466,6 +467,7 @@ export default async function MaterialDetailPage({
         }}
       />
 
+      <ViewLogger objectType="material" objectId={material.id} />
       <JsonLd
         data={[
           buildBreadcrumbList([

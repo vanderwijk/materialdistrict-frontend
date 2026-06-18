@@ -51,6 +51,7 @@ import {
   listMaterials,
 } from '@/lib/api'
 import { JsonLd, buildArticle, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { ViewLogger } from '@/components/ui/ViewLogger'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { ArticleBodyGate } from './_components/ArticleBodyGate'
 import { ArticleDetailActions } from './_components/ArticleDetailActions'
@@ -335,6 +336,7 @@ export default async function ArticleDetailPage({
         </div>
       </article>
 
+      <ViewLogger objectType="story" objectId={article.id} />
       <JsonLd
         data={[
           buildArticle({

@@ -21,6 +21,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/utils/cn'
+import { logEvent } from '@/lib/api/events'
 import { InsiderIcon } from '@/components/ui/icons/InsiderIcon'
 import { IconLogout } from '@/components/ui/icons'
 import { Logo } from './Logo'
@@ -164,6 +165,14 @@ export function Header({
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault()
+    const query = searchValue.trim()
+    if (query) {
+      void logEvent({
+        eventType: 'search_performed',
+        objectType: 'search',
+        attributes: { query },
+      })
+    }
     onSearch?.(searchValue)
     setSearchOpen(false)
   }

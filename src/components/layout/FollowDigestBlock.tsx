@@ -15,9 +15,8 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
-import { followEntity, type MailFrequency } from '@/lib/api/follows'
+import { followEntity, setMailFrequency, type MailFrequency } from '@/lib/api/follows'
 import { DEFAULT_FOLLOW_TYPES } from '@/lib/hooks/useFollow'
-import { logEvent } from '@/lib/api/events'
 
 const FREQUENCIES: MailFrequency[] = ['daily', 'weekly', 'monthly']
 const FREQ_LABEL: Record<MailFrequency, string> = {
@@ -72,15 +71,7 @@ export function FollowDigestBlock({
           followEntity({ entityType: 'channel', entityId: id, types: DEFAULT_FOLLOW_TYPES }),
         ),
       )
-      ids.forEach((id) =>
-        logEvent({
-          eventType: 'channel_followed',
-          objectType: 'channel',
-          objectId: id,
-          source: 'footer-digest',
-          attributes: { types: DEFAULT_FOLLOW_TYPES },
-        }),
-      )
+      void setMailFrequency(frequency)
       setStatus('done')
     } catch {
       setStatus('idle')

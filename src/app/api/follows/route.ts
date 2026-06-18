@@ -1,5 +1,5 @@
 /**
- * /api/follows  (GET | POST | DELETE)
+ * /api/follows  (GET | POST | DELETE | PATCH)
  *
  * Proxy voor de follow-relaties → WordPress `/md/v2/follows`. Mirror van de
  * interactions-proxy: leest de HttpOnly-auth-cookie, stuurt 'm door als Bearer,
@@ -18,6 +18,7 @@ import { getAuthCookie } from '@/lib/auth/cookies'
 export const dynamic = 'force-dynamic'
 
 const VALID_ENTITY = new Set(['channel', 'brand'])
+const VALID_FREQ = new Set(['daily', 'weekly', 'monthly'])
 
 type WpFollowRecord = {
   entity_type?: string
@@ -127,6 +128,33 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       method: 'DELETE',
       bearer: token,
       body: { entity_type: body.entityType, entity_id: body.entityId },
+    })
+    return NextResponse.json(result)
+  } catch (err) {
+    return fail(err)
+  }
+}
+
+export async function PATCH(request: NextRequest): Promise<NextResponse> {
+  const token = await getAuthCookie()
+  if (!token) return unauthorized()
+
+  let raw: unknown
+  try {
+    raw = await request.json()
+  } catch {
+    return NextResponse.json({ code: 'md_invalid_request', message: 'Invalid JSON body.' }, { status: 400 })
+  }
+  const body = raw as Record<string, unknown>
+  if (!body || typeof body.mailFrequency !== 'string' || !VALID_FREQ.has(body.mailFrequency)) {
+    return NextResponse.json({ code: 'md_invalid_request', message: 'Invalid mail frequency.' }, { status: 400 })
+  }
+
+  try {
+    const result = await wpDashboardFetch('/md/v2/follows/mail-frequency', {
+      method: 'PATCH',
+      bearer: token,
+      body: { mail_frequency: body.mailFrequency },
     })
     return NextResponse.json(result)
   } catch (err) {

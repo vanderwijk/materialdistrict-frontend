@@ -68,3 +68,17 @@ export async function getFollows(): Promise<FollowsResponse> {
   if (!res.ok) throw new Error('Could not load follows')
   return res.json()
 }
+
+/**
+ * Zet de globale mail-frequentie (één per gebruiker).
+ *   PATCH /api/follows  { mailFrequency }  → WordPress PATCH /md/v2/follows/mail-frequency
+ */
+export async function setMailFrequency(frequency: MailFrequency): Promise<void> {
+  const res = await fetch('/api/follows', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    body: JSON.stringify({ mailFrequency: frequency }),
+  })
+  if (!res.ok) throw new Error('Could not update mail frequency')
+}

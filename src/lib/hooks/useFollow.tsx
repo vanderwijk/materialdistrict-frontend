@@ -4,8 +4,8 @@
  * useFollow — follow-state voor één entiteit (channel of brand).
  * ----------------------------------------------------------------------
  * Optimistisch: de UI schakelt direct, de call gaat op de achtergrond; mislukt
- * die, dan rollen we de state terug. Schrijft bij een follow ook een event weg
- * (channel_followed / brand_followed) via de gedeelde eventlaag.
+ * die, dan rollen we de state terug. Follow-events worden server-side gelogd
+ * (bij POST/DELETE /follows), niet vanuit de client — geen dubbele events.
  *
  * Login-check via `useAuth`. Niet ingelogd? Dan doet `follow()` niets en geeft
  * `false` terug — de UI toont in dat geval de account-catch (zie FollowToggle).
@@ -19,7 +19,6 @@ import {
   type FollowContentType,
   type FollowEntityType,
 } from '@/lib/api/follows'
-import { logEvent } from '@/lib/api/events'
 
 /** Defaults bij een nieuwe follow: Materials, Stories, Talks aan. */
 export const DEFAULT_FOLLOW_TYPES: FollowContentType[] = ['material', 'story', 'talk']
@@ -53,12 +52,6 @@ export function useFollow({
       try {
         await followEntity({ entityType, entityId, types: nextTypes })
         setTypes(nextTypes)
-        void logEvent({
-          eventType: entityType === 'brand' ? 'brand_followed' : 'channel_followed',
-          objectType: entityType,
-          objectId: entityId,
-          attributes: { types: nextTypes },
-        })
         return true
       } catch {
         setFollowing(false) // rollback

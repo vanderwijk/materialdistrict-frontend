@@ -24,6 +24,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { BrandTile, ContentCard } from '@/components/ui'
 import { getChannelCatalog, getChannelHub, getChannelTerm } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
+import { ViewLogger } from '@/components/ui/ViewLogger'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import type { EventListItem } from '@/types/event'
 import { ChannelHero } from './_components/ChannelHero'
@@ -117,6 +118,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
 
   return (
     <>
+      <ViewLogger objectType="channel" objectId={channel.id} />
       <JsonLd
         data={[
           buildBreadcrumbList([

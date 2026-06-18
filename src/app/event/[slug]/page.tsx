@@ -31,6 +31,7 @@ import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
 import { JsonLd, buildEvent, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { ViewLogger } from '@/components/ui/ViewLogger'
 import { eventTypeLabel } from '@/lib/config/event-types'
 import type { Event } from '@/types/event'
 import type { MediaImage } from '@/types/media'
@@ -323,6 +324,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
         </div>
       </article>
 
+      <ViewLogger objectType="event" objectId={event.id} />
       <JsonLd
         data={[
           buildEvent({

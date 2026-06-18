@@ -24,10 +24,11 @@ import {
   useFollow,
   DEFAULT_FOLLOW_TYPES,
 } from '@/lib/hooks/useFollow'
-import type {
-  FollowContentType,
-  FollowEntityType,
-  MailFrequency,
+import {
+  setMailFrequency,
+  type FollowContentType,
+  type FollowEntityType,
+  type MailFrequency,
 } from '@/lib/api/follows'
 
 const AUTO_CLOSE_MS = 6000
@@ -86,6 +87,7 @@ export function FollowToggle({
   const [selected, setSelected] = useState<FollowContentType[]>(
     initialTypes ?? DEFAULT_FOLLOW_TYPES,
   )
+  const [freq, setFreq] = useState<MailFrequency>(mailFrequency)
   const rootRef = useRef<HTMLDivElement>(null)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -140,6 +142,15 @@ export function FollowToggle({
     [updateTypes],
   )
 
+  const onFreqChange = useCallback(
+    (next: MailFrequency) => {
+      setFreq(next)
+      void setMailFrequency(next)
+      onMailFrequencyChange?.(next)
+    },
+    [onMailFrequencyChange],
+  )
+
   return (
     <div className={cn('follow-toggle', className)} ref={rootRef}>
       <button
@@ -179,8 +190,8 @@ export function FollowToggle({
             <span>Updates:</span>
             <select
               className="follow-pop-freq-select"
-              value={mailFrequency}
-              onChange={(e) => onMailFrequencyChange?.(e.target.value as MailFrequency)}
+              value={freq}
+              onChange={(e) => onFreqChange(e.target.value as MailFrequency)}
               aria-label="Update frequency"
             >
               {FREQUENCIES.map((f) => (

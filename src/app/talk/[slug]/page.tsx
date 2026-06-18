@@ -31,6 +31,7 @@ import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildVideoObject, canonicalPath } from '@/lib/seo'
+import { ViewLogger } from '@/components/ui/ViewLogger'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { formatDuration } from '@/lib/utils/format-duration'
 import { TalkVideoGate } from './_components/TalkVideoGate'
@@ -261,6 +262,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
         </div>
       </article>
 
+      <ViewLogger objectType="talk" objectId={talk.id} />
       <JsonLd
         data={[
           buildVideoObject({

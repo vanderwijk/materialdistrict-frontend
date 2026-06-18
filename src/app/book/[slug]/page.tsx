@@ -33,6 +33,7 @@ import { getBook, listBooks } from '@/lib/api/books'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { ViewLogger } from '@/components/ui/ViewLogger'
 import { BookBuyCard } from './_components/BookBuyCard'
 import { BookDetailActions } from './_components/BookDetailActions'
 import { BookCard } from '../_components/BookCard'
@@ -332,6 +333,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
         </section>
       )}
 
+      <ViewLogger objectType="book" objectId={book.id} />
       <JsonLd
         data={[
           buildBreadcrumbList([
