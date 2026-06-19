@@ -143,8 +143,10 @@ Beantwoord (Johan, 19-06): de aparte `/md/v2/interactions/events`-route (`websit
 post_meta (`_brand_website_clicks`), `brochure_download` → attachment-meta (`_brochure_downloads`)
 + lead-CPT (status Download) voor het manufacturer-dashboard. Plan = **dual write**: de counts/trends
 ook naar RDS (alle statistiek op één plek), de leads + manufacturer-opvolging + mail in WP (= CRM,
-hoort niet in RDS). Open punt: wie splitst (backend forwardt één signaal vs. frontend twee calls) en
-welke bron telt, om dubbeltelling te vermijden — uit te werken, idealiter met de plugin-code erbij.
+hoort niet in RDS). Uitgewerkt (19-06, plugin-analyse): de **backend** splitst — de interactions-route
+forwardt de count naar RDS via de al bestaande `md_analytics_submit_event()` (website_click/brochure_download
++ brand/material staan al in de toegestane types), de frontend verandert niets; **RDS wordt de telbron**,
+het manufacturer-dashboard leest via `md_analytics_api_get_total_count()`. Patch ligt klaar voor Johan.
 Afhankelijk van: Johan-spec · Eigenaar: beide
 
 ### Follow-systeem  ·  **[deels]**
