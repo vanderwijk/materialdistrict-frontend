@@ -11,8 +11,91 @@
 
 ## 1. Inbox — ongesorteerd
 
-*Leeg. Net geconsolideerd op 18-06-2026 (drie pitches ingesorteerd: upload agent,
-het Atlas-cluster, account-by-default). Hier komt je volgende idee.*
+### Terug naar de pagina na inloggen  ·  **[deels]**  ·  quick win
+Uitgelogd iets willen volgen (bv. een channel op een materiaalpagina) → eerst inloggen →
+daarna terug naar diezelfde pagina, met de follow idealiter meteen voltooid. De redirect-
+infra bestaat al: `/sign-in?next=/pad` (veilig genormaliseerd, open-redirect-bescherming)
+stuurt na login naar `next`. Gat: de follow-knop geeft uitgelogd de huidige pagina nog niet
+als `next` mee (kale `/sign-in`-link), dus je belandt op `/materials` i.p.v. terug. Dichten
+voor follow én breder voor elke "moet inloggen"-actie; follow-intentie onthouden zodat 'ie
+na login doorgaat. Vooral frontend.
+
+### Preferred-source-knop verbergen na dismiss  ·  **[open]**  ·  quick win
+De Google "preferred source"-knop (nu overal) verbergen voor wie 'm al gebruikte. Google
+geeft géén signaal of iemand MD echt heeft toegevoegd — dus werk met een dismiss: onthoud
+"geklikt / niet meer tonen" en verberg 'm daarna. Ingelogd → opslaan in profiel (overleeft
+cookie-wissen, werkt cross-device); uitgelogd → cookie/localStorage als fallback. Cookie
+weg → knop terug is acceptabel, want de echte status ken je toch niet. Functionele voorkeur,
+geen tracking — botst niet met de cookie-consent-tool. Vooral frontend.
+
+### Artikel beluisteren i.p.v. lezen  ·  **[open]**
+Knop op de detailpagina die het artikel voorleest (audio-versie). Toegankelijkheidswin
+(sluit aan op de WCAG-lijn) + engagement: luisteren onderweg. Kwaliteit zit in de stem —
+browser-eigen TTS is gratis maar robotachtig; een echte TTS-stem (vooraf gegenereerd +
+gecachet per artikel) klinkt natuurlijk maar kost per teken. Levert meteen een nieuw event
+op ("article_listened") voor de data-moat. Vooral frontend + een TTS-bron.
+Kosten: verwaarloosbaar via Amazon Polly (zit al in de AWS/SES-stack). Audio één keer
+genereren + cachen (herafspelen gratis) → ~$3/mnd standaard, ~$9 neural, ~$18 generative
+voor alle nieuwe artikelen. Archief on-demand genereren i.p.v. vooraf alles.
+Mogelijke Insider-perk: hang de hoogwaardige gecachete stem achter de bestaande
+`insiderOnly`-poort; een basale (browser-)voorleesoptie blijft gratis voor toegankelijkheid.
+On-demand genereren bij lid-klik koppelt de kost aan inkomsten i.p.v. aan al het verkeer.
+Eigenaar: beide
+
+### Wekelijkse audio-digest van je channels  ·  **[open]**  ·  Insider-perk
+Convergentie van drie bestaande items: follow (welke channels) + segmented digest (wekelijks
+samenstellen + mailen) + TTS-audio. Een persoonlijke audio-briefing van het nieuwe nieuws in
+je gevolgde channels, per mail. Twee smaken: (a) nieuwe artikelen achter elkaar voorgelezen —
+hergebruikt de per-artikel gecachte audio, vrijwel gratis extra; (b) AI-samengevatte briefing
+(podcast-gevoel, maar per-gebruiker uniek → iets meer werk + kost). Kroon op fase 1: kan pas
+als follow + digest + audio staan.
+Positionering: "Weekly Material Briefing" — een persoonlijke mini-podcast op maat. Mailflow:
+trigger ("7 nieuwe updates deze week — luister je 6-min briefing") → CTA's play / view all /
+save / follow. Drie lagen: mail = trigger, audio = gemak (onderweg bijblijven), platform =
+verdieping (doorklikken). Sterke Insider-bundel: weekly briefing + AI-samenvattingen + save &
+listen later + custom frequentie.
+Kosten-nuance: de gepersonaliseerde briefing maakt één unieke audiofile per Insider per week →
+kost schaalt met het ledenaantal (~paar honderd $/jr bij ~100 Insiders, richting paar duizend
+bij 500-1.000, + kleine AI-samenvattingskost). Niet "verwaarloosbaar" zoals de gedeelde-cache-
+variant, maar prima — betaalde tier, kost schaalt mee met inkomsten.
+Fasering: v1 = audio in de digest (artikelen voorgelezen, gedeelde cache, bijna gratis, nu
+haalbaar) is de richting. v2 = gepersonaliseerde AI-podcast — **nu niet aan de orde** (kost
+schaalt per gebruiker); later heroverwegen als de Insider-basis dat draagt.
+Eigenaar: beide
+
+### Sample-/info-aanvraag wordt een lead  ·  **[open]**
+Vanaf een materiaal-/brandpagina of opgeslagen materialen een knop "vraag samples/info aan"
+→ landt als lead bij de brand én in de datapool/Atlas. Hergebruikt de bestaande lead-routing
+uit het dashboard. Tastbare ROI voor brands; verbindt publieke engagement met de sales-data.
+Eigenaar: beide
+
+### Misgelopen zoekopdrachten benutten  ·  **[open]**
+`search_materials` wordt al gelogd; vang de zoekacties zónder resultaat apart op. Dubbel
+signaal: ontbrekende content (redactie) + binnen te halen brands (Atlas-prospects). Bijna
+gratis — het event bestaat al.
+Eigenaar: beide
+
+### Interesse-onboarding bij aanmelding  ·  **[open]**
+Bij registratie meteen een paar channels/interesses uitvragen → automatisch follows → digest
+en data-moat gevuld vanaf dag één. Hergebruikt follow-systeem + registratiescherm.
+Eigenaar: vooral frontend
+
+### Datasheet-/moodboard-PDF van een board  ·  **[open]**  ·  mogelijke Insider-perk
+Eén klik exporteert opgeslagen materialen als nette PDF (specs of moodboard) voor in een
+projectvoorstel. Concrete werkwaarde; materiaaldata + PDF-generatie zijn standaard.
+Eigenaar: beide
+
+### EPD / duurzaamheidsdata als filter & vergelijking  ·  **[open]**  ·  na upload agent
+Zodra de upload agent EPD-/milieuvelden vult: filteren en vergelijken op duurzaamheid
+("laagste CO₂ eerst"). Sluit aan op de biobased/sustainability-hoek.
+Afhankelijk van: upload agent · Eigenaar: beide
+
+### Add-to-calendar bij events  ·  **[open]**  ·  laag / nice-to-have
+"Toevoegen aan agenda" (Google + Outlook + universele .ics) bij event-knoppen en in mails. Geen
+account-detectie nodig — gewoon links uit de bestaande event-data; e-mail kan een account sowieso
+niet herkennen. Marginaal qua prioriteit; vooral interessant voor de maatwerk event-promotiemails
+(eerder met Sjoerd besproken), niet voor nu.
+Eigenaar: vooral frontend
 
 ---
 
@@ -24,9 +107,22 @@ backfillbaar. Loggen, relateren, volgen. Dit is geen analytics, het is bedrijfsw
 **Fase 2/3 — intelligentie bovenop.** Aanbevelingen, AI-agent, slimme dashboards —
 waardevol, maar waardeloos zonder opgebouwde historie. Bouwt op de data die er dan ligt.
 
+**Planning-venster (juni–aug 2026):** Johan inzetbaar t/m ma 22-06, daarna vakantie tot 08-07
+(mails worden uitgesteld tot terugkomst). Launch-streven ~1 aug. Tussentijd: Jeroen + team doen
+content (channels/thema's); Claude bouwt frontend-items van de ideeënlijst die zonder nieuwe
+backend kunnen. Backend-afhankelijke items vóór 22-06 met Johan scopen, anders schuift het naar
+na 08-07 (~3,5 week richting 1 aug).
+
 **Volgorde-advies:** quick wins los → fundament verbreden (events, follow, datamodel) →
 hefbomen die erop leunen (digest, alerts, SEO-landingspagina's) → parallel: social login →
 later & groot: bilingual + eigen admin → fase 2/3: intelligentie (incl. het Atlas-cluster).
+
+**Quick wins (nu, vooral frontend — snel te leveren):**
+- Terug naar de pagina na inloggen — `?next=`-infra bestaat al, alleen benutten. Voedt follow-conversie.
+- Structured-data-dekking aanvullen waar pagina's nog schema missen — SEO-winst.
+- Preferred-source-knop verbergen na dismiss (client-side; cross-device later met Johan).
+- Eventlaag verbreden — DB draait al live (view + search lopen); resteert `saved/shared/followed`
+  toevoegen, na korte afstemming met Johan of de DB die accepteert.
 
 ---
 
@@ -36,6 +132,19 @@ later & groot: bilingual + eigen admin → fase 2/3: intelligentie (incl. het At
 Live: `website_click`, `brochure_download`, `search_materials`, `preferred_source_click`
 via `/api/interactions/events`. Open: `material_view / saved / shared / channel_followed`
 toevoegen. Niet-backfillbaar — daarom prioriteit. Analytics in aparte DB (besloten).
+Status (Johan, 18-06): de analytics-DB draait LIVE — AWS-keten WP `/md/v2/events` → API Gateway
+→ Lambda → SQS → Lambda → RDS. Events stromen al binnen; view-events + zoekopdrachten worden
+gelogd, 7.018 legacy views gemigreerd. Open bij Johan (niet blokkerend): dagelijkse rollup/prune-
+cron + `last_seen` (wacht op kleine frontend-drop). Verbreding die nog rest: `material_saved /
+shared / channel_followed` toevoegen — vergt afstemming of de DB die event-types accepteert.
+Frontend (verse zip) stuurt al: view-events (ViewLogger) + search via `/md/v2/events` (→ RDS).
+Beantwoord (Johan, 19-06): de aparte `/md/v2/interactions/events`-route (`website_click` +
+`brochure_download`) gaat nu **niet** naar RDS — die schrijft in WP: `website_click` → brand
+post_meta (`_brand_website_clicks`), `brochure_download` → attachment-meta (`_brochure_downloads`)
++ lead-CPT (status Download) voor het manufacturer-dashboard. Plan = **dual write**: de counts/trends
+ook naar RDS (alle statistiek op één plek), de leads + manufacturer-opvolging + mail in WP (= CRM,
+hoort niet in RDS). Open punt: wie splitst (backend forwardt één signaal vs. frontend twee calls) en
+welke bron telt, om dubbeltelling te vermijden — uit te werken, idealiter met de plugin-code erbij.
 Afhankelijk van: Johan-spec · Eigenaar: beide
 
 ### Follow-systeem  ·  **[deels]**
@@ -118,12 +227,48 @@ Eigenaar: beide
 
 ---
 
-## 5. Smart dashboard / "Atlas" — datapool → CRM → sales  ·  NIEUW (18-06)
+## 5. Dashboards — twee producten  ·  bijgewerkt 19-06
 
-De sales-bovenkant van dezelfde data-moat. Werknaam "Atlas" komt uit de v4-mockup
-(`crm-v4.html`, bronstuk). Eén systeem, gated bovenop MD.com (geen los systeem, want de
-data overlapt). Al ver **ontworpen** (vier werkende tabs, data-model), **niet gebouwd**.
-Leunt op het fundament + verweven met het commerciële spoor → fase 2.
+Wat begon als "één dashboard voor Sigrid" blijkt twee aparte producten met een verschillend
+karakter — niet "schrijven vs lezen" (beide schrijven), maar **wát ze beheren**: het redactie-
+dashboard beheert je publieke content, het business-dashboard je commerciële relatie- en sales-data
+(het ís een CRM: projecten, klantnotities, kwalificaties). Beide gated bovenop MD.com, beide
+hergebruiken bestaande bouwstenen.
+**Open ontwerpvraag (geparkeerd):** twee aparte dashboards, of één dashboard met twee ingangen?
+**Volgorde: redactie eerst** (bouwt op bestaand werk, directe dagelijkse winst), **business
+daarna** (gated op de analytics-laag — die draait nu live).
+
+**Twee agents, tegengesteld gericht.** Beide dashboards krijgen een eigen agent: de redactie-agent
+**máákt** content (inbound, 5c), de business-agent **háált** commerciële signalen op (outbound, in 5b).
+Gemene deler van álle agents (incl. de upload agent): niet de AI-tekstverwerking, maar dat ze de
+MaterialDistrict-graph kennen — dáár zit de meerwaarde, en daarom is het datafundament bepalend.
+
+### 5a. Redactie-dashboard (Sigrid / contentteam)  ·  **[open]**  ·  launch-kandidaat ~1 aug
+*Schrijven/beheren — WP-admin vervangen voor het dagelijkse content-werk.*
+- **Scope** = alleen het dagelijkse: entiteiten (stories, events, brands, talks, books) +
+  gebruikersbeheer, nieuwsbrieven, handmatige mailings. Incidentele "vastzetten"-taken (channels,
+  verzendklassen, facetten, voorwaarden/privacy) blijven in WP — zelden aangeraakt, hoeft niet mooi.
+- **Recycling** = de edit-pagina's (brand, material, user, profiel) zijn exact dezelfde componenten
+  die er al staan — een edit is een edit, of de eigenaar of een redacteur 'm opent. Vrijwel 1-op-1
+  herbruikbaar; zelfde bouw als het bestaande ledendashboard.
+- **Het nieuwe zit eromheen:** (a) rechten — na plugin-analyse (19-06) gesplitst: **brands + materials**
+  zijn met één capability-bypass in `md_dashboard_require_managed_brand` (`edit_others_posts`, al elders
+  in de plugin gebruikt) in één keer admin-breed te openen — klein, patch ligt klaar voor Johan;
+  **stories/events/talks/books/users** hebben nog géén dashboard-endpoints → dat is nieuwbouw. (b)
+  overzicht — zoek/lijst-laag om content te vinden (deels recyclebaar van listings).
+- **Planning:** frontend-recycling kan in Johans vakantie voorbereid worden; admin-breed schrijven
+  is het kritieke pad dat Johan-tijd vraagt → nú scopen (vóór 22-06).
+- Bevat de **nacht-agent** (zie 5c).
+
+### 5b. Business-dashboard (sales + business owner) — "Atlas"  ·  **[open]**
+*Lezen — engagement- en leaddata omzetten in iets waar sales mee werkt (wie kijkt naar welke
+materialen → lead → project).* De sales-bovenkant van dezelfde data-moat; een datapool waarop je
+projecten aanmaakt. Werknaam "Atlas" uit de v4-mockup (`crm-v4.html`, bronstuk; vier tabs ontworpen,
+niet gebouwd). Gated op de analytics-DB — **die draait sinds 18-06 live**, dus het fundament ligt er
+al (het verslag-punt "spec moet nog naar Johan" is achterhaald).
+**Backend-onderscheid t.o.v. 5a:** waar het redactie-dashboard vooral bestáánde endpoints admin-breed
+opent, vraagt dit een heel nieuw datamodel (projecten, notities, prospect-lists, companies/contacts-
+datapool met dedupe-import). Substantieel groter Johan-traject → eigen ontwerpronde, beter ná 08-07.
 
 **Kerngedachte — account als ruggengraat (account-by-default).** Elk waardevol
 contactmoment maakt automatisch een identiteit aan op het platform: boek besteld, ticket
@@ -144,12 +289,60 @@ met de sales-datapool onder één identiteit. (Johans eerdere "nee" gold een acc
   accountmanagers met doelstellingen, weighted pipeline.
 - **Dashboard** — overzicht voor sales-persoon én manager.
 
-**Brand-scan / monitoring-agent** — draait periodiek (maandelijks) over de CRM-brands:
-nog actief? iets nieuws gelanceerd? Signaal werkt twee kanten op: sales (tijd om te bellen)
-én content (nieuwe launch = nieuw materiaal om te listen). Familie van de upload agent.
+**Brand-monitoring-agent (de business-/outbound-agent)** — draait periodiek over de hele DB met
+focus op de **brands** (daar zit het geld: memberships + beursdeelname). Checkt of de brand-info nog
+klopt en of er iets nieuws is (bijv. een productlancering). Zulke veranderingen zijn verkoop-haakjes:
+weet je dat een merk net iets lanceerde, dan mail je gericht. "Iets nieuws" detecteren vraagt een
+opgeslagen **baseline per merk** — de agent draait feitelijk een periodieke **diff** t.o.v. wat we al
+wisten; vandaar dat 'ie op de datapool leunt. Frequentie: voorlopig maandelijks (past bij de
+membership-/beurs-cyclus); dagelijks alleen als je als eerste op lanceringen wilt reageren. Familie
+van de upload agent.
+
+**Inbound-signaal → prospect (centrale use-case, "de natte droom").** De inbound-spiegel van de
+monitoring-agent: jíj voert een signaal in dat je opvalt (mailing, LinkedIn-post, vaktijdschrift-
+noviteit, beurscatalogus van een concurrent) → het dashboard doorloopt de trechter. Staat dit
+merk/product al op MD? **Nee = opening** (potentiële member/listing). → Is er eerder contact geweest
+met dit bedrijf, en zo ja met wie en door wie? → Zo ja: de relatie-eigenaar wordt vanuit het dashboard
+aan het werk gezet (opportunity toegewezen mét context, daarna gevolgd — dit is de brug naar het CRM-
+hart). → Zo nee: externe verrijking (juiste contactpersoon, functie nog actueel?) + maatwerk-outreach
+met mens-in-de-loop, nooit een invaladres.
+
+**Contact-check zonder de mailbox open te leggen (AVG-bewust).** Niet de mailinhoud, maar een metadata-
+index: wie van het team correspondeerde met welk extern bedrijfsdomein, en wanneer — puur "Vince ↔
+formatwood.com ↔ maart". Détectie volledig geautomatiseerd op de achtergrond (geen verstoring van het
+dagelijkse werk, schaalt grootschalig); de mens komt pas gericht in beeld bij een match (één seintje
+naar de relatie-eigenaar). Proportioneel houden: alleen externe bedrijfsdomeinen (geen privémail/
+contacten), vastgelegd in beleid + vooraf met het team gedeeld. Hele-mailbox-toegang gaat te ver (AVG:
+privacyverwachting werknemer + derden-data) — deze metadata-route levert hetzelfde met een fractie van
+het risico. Jurist/DPO laten meekijken op het derden-stuk.
+- **Databron op zichzelf:** die contact-index is een herbruikbare relatie-kaart ("wie van ons kent
+  wie") — ook waardevol voor beursvoorbereiding en prospect-lists, niet alleen deze ene check.
+- **Taaiste stuk:** de LinkedIn-/contactcheck laat zich niet zomaar automatiseren (tegen LinkedIn-ToS,
+  actief geblokkeerd) → in de praktijk een betaalde externe enrichment-dienst, data niet altijd compleet.
+- **Fasering:** trede 1 (signaal in → staat 't al op MD? + metadata-contactcheck) is haalbaar en al
+  waardevol; gerichte notificatie + auto-research + auto-outreach zijn de zwaardere staart.
 
 **Open beslissing:** houdt Atlas zijn eigen brutalist-identiteit (intern tool) of trekt
 'ie de MD.com-huisstijl aan? Lean: als intern tool eigen + strak houden.
+
+### 5c. Nacht-agent (feature van het redactie-dashboard)  ·  **[open]**
+Automatiseert wat nu handmatig gebeurt: Feedly scant bronnen → Sigrid cureert → screenshot →
+ChatGPT met redacteur-prompt → origineel artikel. 's Nachts ~20 concepten in een draft-wachtrij;
+'s ochtends triageert Sigrid: bekijken, verrijken, publiceren of weggooien.
+- **Geautomatiseerd:** screenshot verdwijnt (agent leest brontekst direct, voegt bronnen samen);
+  de bestaande prompt wordt de versioneerbare system-prompt.
+- **Echte meerwaarde = verrijking, niet tekstkwaliteit.** De agent zoekt actief extra externe bronnen
+  bij, raadpleegt onze eigen database en koppelt entiteiten: ziet 'ie een merk, ontwerper of materiaal
+  dat wij al in huis hebben, dan haalt 'ie die context erbij en linkt intern door. Dát is de sprong
+  t.o.v. nu — redactioneel rijker, plus interne links + topical authority voor Google News/Discover.
+  Familie van de upload agent (AI + content + Sigrid-review).
+- **Guardrails:** origineel schrijven, nooit copy-paste; linken naar verifieerbare bronnen + eigen
+  pagina's tegen verzonnen research; Sigrids review blijft de poort.
+- **Bouwen:** incrementeel — eerst draft-wachtrij, dan agent simpel (huidige flow automatiseren),
+  daarna intelligentie eroverheen.
+
+**Namen (geparkeerd):** redactie → Desk / Newsroom; business → Signal / Pulse / Lens.
+Voorlopig: "redactiedashboard" en "businessdashboard".
 
 ---
 
@@ -163,10 +356,6 @@ Afhankelijk van: Johans haalbaarheid + contentlaag · Eigenaar: beide
 ### AI-ondersteunde vertaling  ·  **[open]**  ·  fase 2/3
 Bezoeker-toggle voor onvertaalde content; gecached, als unreviewed draft teruggeschreven,
 gebadged, buiten geïndexeerde HTML tot review. Onderdeel van bilingual.
-
-### Eigen admin-dashboard  ·  **[open]**  ·  fase 2/3, grote visie
-Standaard WP-admin vervangen voor het dagelijkse content-werk (eigen formulier-UI, per-veld
-taalvlaggen). Diepe config blijft in WP Admin. Bouwt voort op het member-dashboard.
 
 ---
 
@@ -206,5 +395,5 @@ Bevestigd in de moedermap-scan (18-06-2026):
 - **VAT in checkout**: validatie + `vat-status`-endpoint.
 - **Google Preferred Sources-knop** (SEO/Google News-lijn).
 - **Overzichtsfilters**: events Costs, brands Application area, stories Insider-only.
-- **WCAG-audit**: P1-fixes klaar (wachten op `globals.css`).
+- **WCAG**: P1-contrast-fixes + P2 focus-traps gemerged (a11y-sessie A11Y-1, 18-06).
 - **Strategie-docs**: traffic/SEO, e-mailsysteem-blueprint, mailautomation-plan.
