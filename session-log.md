@@ -12,6 +12,13 @@
 ---
 
 ## Laatste update
+Datum: 19-06-2026 — Sessie A11Y-1: WCAG AA contrast-fixes + focus-trap modals,
+gebouwd tegen de verse main (na Johans deploy). Zie sectie "Sessie A11Y-1"
+onderaan. Deployed via git.
+
+----
+
+## Laatste update (vorige)
 Datum: 18-06-2026 — Dashboard review-ronde 2 (los te mergen bovenop de visuele
 ronde). Herijkt op de actuele main (4c5465e): Johan had de dashboard-bestanden
 niet aangeraakt en zijn nieuwe globals-blokken (§VISUAL-ROUND-18-06,
@@ -3118,3 +3125,60 @@ Feedbackronde op de live homepage, gemerged op de actuele main.
 - Gewijzigd: `page.tsx`, `FeaturedChannel.tsx`, nieuw `SidebarBooks.tsx`, `globals.css` (additief op de actuele main; Johan's books.ts/book.ts/Header/hub-ViewLogger ongemoeid).
 - Geverifieerd tegen de actuele main: round-2 was al gemerged; `books.ts`/`book.ts` zijn door Johan uitgebreid (channels/disciplines/tags/format/catalog/ISBN) en NIET meegeleverd; mijn code is compatibel (BookListItem behoudt id/slug/title/cover.url/price/priceExVat).
 - **Open (Johan/content):** (1) materialen als featured aanvinken om het Featured-materials-blok te vullen; (2) `meta.publication.isOnline` blootleggen zodat offline materiaal verdwijnt.
+## Sessie A11Y-1 — WCAG AA-audit + fixes (18-06-2026)
+
+Toegankelijkheidscontrole van de publieke frontend tegen WCAG 2.1 AA,
+gebouwd tegen de VERSE main (na Johans deploy — 16.930-regel globals.css,
+brace 2970, incl. follow-UI en §VISUAL-ROUND/§CHANNEL-PILL-FOLLOW). Mijn
+contrastblok is sectie 38, helemaal onderaan; override-only, geen bestaande
+regels gewijzigd. Brace na append: 2975/2975.
+
+### Foundation was al sterk (niets gewijzigd)
+lang, skip-link, main-landmark, focus-rings, alt-fallbacks, aria op
+toggles/switches, prefers-reduced-motion, AAA target-size, en modals met
+role/aria-modal/ESC/scroll-lock/focus-on-open/focus-restore. Dark-mode
+secundaire tekst was al getuned (Sessie 3B).
+
+### P1 — Kleurcontrast (gemeten < AA 4.5) — OPGELOST
+Sectie 38 in globals.css.
+
+- **Groene knoppen** (wit-op-merkgroen = 3.5/4.27, faalt). Merkbeslissing met
+  Jeroen: merkgroen --green/--green-mid blijft ONGEMOEID op alle accenten
+  (vinkjes, badges, randen, progress, follow-switch/chip, hero). Alleen
+  witte-tekst-KNOPPEN krijgen het donkerdere POP-UP-huisstijlgroen:
+  nieuw `--green-action #007437` (5.9:1), hover `--green-action-hover #005E2B`
+  (8.0:1). Toegepast op: btn-green, dashboard btn-primary (3×), get-in-touch,
+  brand-contact, book-buy (2×), cart/checkout (2×), event-register .btn-blue,
+  follow-digest-start, tier-grid .btn-outline:hover. #007437/#005E2B zijn
+  gesampled uit de huisstijl-PDF (POP-UP-rij) — exacte hex bij Jeroen te
+  bevestigen.
+- **--text-hint** (light) #9aabb8 (2.36) → #63707A (wit 5.09 / paper 4.88 /
+  surface2 4.74). Neutraal grijs, geen merkkleur. Dark-mode hint ongemoeid.
+- **.lr-restrict-warn** amber-tekst (2.98) → #A8480A (5.84).
+- **Dark-mode .ct-tag.ct-material** wit-op-olijf (2.75): witte tekst behouden,
+  vulling verdiept naar #5C7100 (5.50) i.p.v. donkere tekst.
+
+### P2 — Focus-trap in modals (WCAG 2.4.3) — OPGELOST
+Nieuwe gedeelde hook `src/lib/hooks/useFocusTrap.ts` (DRY, geen library).
+Bedraad in ImageLightbox, InsiderGate (ModalShell, op bestaande overlayRef),
+BoardPickerModal, GetInTouchModal. Bestaand focus-gedrag ongewijzigd.
+
+### Bewust NIET aangepast / borderline
+- follow-switch/-chip "is-on" (witte tekst op --green = 4.27, marginaal onder
+  AA): bewust merkgroen gehouden — accent/toggle-state, geen primaire actie,
+  conform de merkafspraak. Te herzien als Jeroen het wil.
+- Light-mode content-type tags (pale-fill + dark-text) voldeden al.
+- Hardcoded greens die al AA-getuned waren (bv. .form-banner #1a5a1d) ongemoeid.
+
+### Validatie
+esbuild transform (tsx) groen op alle 5 bestanden. globals.css brace-balans
+gelijk (2975/2975).
+
+### Geleverde bestanden
+- session-log.md (root)
+- src/styles/globals.css (compleet, sectie 38 onderaan)
+- src/lib/hooks/useFocusTrap.ts (nieuw)
+- src/components/ui/ImageLightbox.tsx
+- src/components/ui/InsiderGate.tsx
+- src/components/ui/BoardPickerModal.tsx
+- src/app/material/[slug]/_components/GetInTouchModal.tsx

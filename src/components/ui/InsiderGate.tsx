@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
 import { usePreviewMode } from '@/lib/hooks/usePreviewMode'
+import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import { useAuth } from '@/components/providers/AuthContext'
 import { InsiderMark } from './InsiderMark'
 
@@ -464,6 +465,9 @@ interface ModalShellProps {
 function ModalShell({ open, onClose, children, className }: ModalShellProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  // Tab-focus binnen de modal houden (WCAG 2.4.3, Focus Order).
+  useFocusTrap(open, overlayRef)
 
   useEffect(() => {
     if (!open) return

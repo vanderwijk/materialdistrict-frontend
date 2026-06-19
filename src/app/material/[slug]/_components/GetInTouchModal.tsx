@@ -19,6 +19,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import { useAuth } from '@/components/providers/AuthContext'
 
 // --------------------------------------------------------------------
@@ -165,6 +166,10 @@ export function GetInTouchModal({
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const firstFocusRef = useRef<HTMLButtonElement | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Tab-focus binnen de modal houden (WCAG 2.4.3, Focus Order).
+  useFocusTrap(open, containerRef)
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
 
   const userCountry = user?.country ?? ''
@@ -272,6 +277,7 @@ export function GetInTouchModal({
 
   return (
     <div
+      ref={containerRef}
       className="git-backdrop"
       role="dialog"
       aria-modal="true"

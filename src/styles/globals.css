@@ -16928,3 +16928,68 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   margin-bottom: 24px;
 }
 /* ============================ einde §DASH-REVIEW-4 ============================ */
+
+/* ============================================================
+   38. WCAG AA contrast-fixes — Sessie A11Y-1 (18-06-2026)
+   ------------------------------------------------------------
+   Additief override-blok n.a.v. de contrast-audit. Override-only:
+   GEEN bestaande regels gewijzigd. Staat als laatste sectie, dus
+   wint vanzelf op gelijke specificiteit / latere :root.
+
+   Merkgroen (--green / --green-mid) blijft ONGEMOEID: accenten,
+   vinkjes, badges, randen, progress-bars, follow-switches en
+   -chips houden exact het huidige groen. Alleen knoppen MET witte
+   tekst krijgen het donkerdere POP-UP-huisstijlgroen, zodat het
+   label boven AA komt.
+   ============================================================ */
+:root {
+  /* Officieel POP-UP-donkergroen uit de huisstijlmatrix. Wit-op = 5.9:1.
+     Hover = POP-UP bosgroen, wit-op = 8.0:1. Alleen voor witte-tekst-knoppen. */
+  --green-action: #007437;
+  --green-action-hover: #005E2B;
+
+  /* Lichtste informatieve tekst-tier (neutraal grijs, GEEN merkkleur):
+     was #9aabb8 (2.36:1, faalt AA). Nieuw haalt 4.5 op wit/paper/surface2
+     en blijft een tint lichter dan --text-muted, dus 3-traps hiërarchie
+     blijft. Dark-mode --text-hint (#8093a8) is al getuned (Sessie 3B) en
+     blijft staan via de hogere-specificiteit [data-theme="dark"]-regel. */
+  --text-hint: #63707A;
+}
+
+/* --- Witte-tekst groene knoppen → action-green --------------- */
+.btn-green,
+.mat-getintouch-primary,
+.git-submit,
+.brand-contact-primary,
+.dash-content .btn-primary,
+.dash-sidebar-wrap .btn-primary,
+.sticky-footer .btn-primary,
+.book-buy-btn-link,
+.book-buy-btn,
+.cart-checkout-btn,
+.checkout-place-btn,
+.event-register-card .btn-blue,
+.follow-digest-start,
+.tier-grid .btn-outline:hover { background: var(--green-action); }
+
+.btn-green:hover:not(:disabled),
+.mat-getintouch-primary:hover,
+.git-submit:hover:not(:disabled),
+.brand-contact-primary:hover,
+.dash-content .btn-primary:hover:not(:disabled),
+.dash-sidebar-wrap .btn-primary:hover:not(:disabled),
+.sticky-footer .btn-primary:hover:not(:disabled),
+.book-buy-btn-link:hover,
+.book-buy-btn:hover:not(:disabled),
+.checkout-place-btn:hover:not(:disabled),
+.event-register-card .btn-blue:hover,
+.follow-digest-start:hover { background: var(--green-action-hover); }
+
+/* --- Overige losse contrast-faalpunten ---------------------- */
+/* Lead-routing land-waarschuwing: amber-als-tekst = 2.98:1, faalt AA. */
+.lr-restrict-warn { color: #A8480A; } /* 5.84:1 */
+
+/* Dark-mode material content-type tag: witte tekst op de olijf-fill
+   = 2.75:1, faalt. Witte tekst behouden, vulling verdiept (donkerder
+   olijf) i.p.v. donkere tekst. */
+[data-theme="dark"] .ct-tag.ct-material { background: #5C7100; color: #ffffff; } /* 5.50:1 */

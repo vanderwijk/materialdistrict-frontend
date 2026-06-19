@@ -25,6 +25,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import { IconBoard, IconBoardAdd, IconClose, IconLoading } from '@/components/ui/icons'
 import type { Board, BookmarkType } from '@/types/dashboard'
 
@@ -55,6 +56,10 @@ export function BoardPickerModal({ open, onClose, type, itemId, title }: BoardPi
   const [error, setError] = useState<string | null>(null)
   const [savedTo, setSavedTo] = useState<string | null>(null) // board-naam na succes
   const firstRowRef = useRef<HTMLButtonElement | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Tab-focus binnen de modal houden (WCAG 2.4.3, Focus Order).
+  useFocusTrap(open, containerRef)
 
   // Reset + laad boards bij openen
   useEffect(() => {
@@ -167,6 +172,7 @@ export function BoardPickerModal({ open, onClose, type, itemId, title }: BoardPi
 
   return (
     <div
+      ref={containerRef}
       className="git-backdrop"
       role="dialog"
       aria-modal="true"

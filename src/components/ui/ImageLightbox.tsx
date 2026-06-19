@@ -24,6 +24,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 
 // --------------------------------------------------------------------
 // Props
@@ -58,6 +59,7 @@ export function ImageLightbox({
   initialIndex = 0,
 }: ImageLightboxProps) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(initialIndex)
 
   // Reset naar initialIndex elke keer dat de lightbox opent
@@ -112,6 +114,9 @@ export function ImageLightbox({
     }
   }, [open])
 
+  // Tab-focus binnen de viewer houden (WCAG 2.4.3, Focus Order).
+  useFocusTrap(open, containerRef)
+
   // Backdrop click sluit
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -129,6 +134,7 @@ export function ImageLightbox({
 
   return (
     <div
+      ref={containerRef}
       className="lightbox-backdrop"
       role="dialog"
       aria-modal="true"
