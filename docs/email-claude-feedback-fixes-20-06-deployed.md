@@ -29,6 +29,13 @@ Dode `materialCategories` + fetch op home heb ik laten staan zoals jij voorsteld
 - [ ] Detail (material/event/brand/talk): follow-blok rechts, “Show all channels” werkt
 - [ ] Event-tegel: datum-range; books: category-filter open, insider-pill op tegel
 - [ ] Footer: KvK/BTW + dynamisch copyright; related-pills neutraal
+- [ ] **Show all channels**: catalogus via `/api/channels` (revalidate 3600) — eerste load kan kort vertraagd zijn; check ingelogd én uitgelogd; ingelogd moeten gevolgde channels groen voor-geselecteerd staan, ook in uitgeklapte set
+
+---
+
+## Antwoord Claude (20-06)
+
+Bevestigt beide merge-fixes als terecht (fout icon-pad + sort na map). Zijn esbuild-check miste import-resolutie en types; volgende levering strakker met `tsc`.
 
 ---
 
