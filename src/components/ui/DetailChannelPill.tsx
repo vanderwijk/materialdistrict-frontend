@@ -27,6 +27,7 @@ import {
   type FollowContentType,
   type MailFrequency,
 } from '@/lib/api/follows'
+import { ConfirmDialog } from './ConfirmDialog'
 
 const AUTO_CLOSE_MS = 6000
 
@@ -67,6 +68,7 @@ export function DetailChannelPill({
   })
 
   const [pop, setPop] = useState<null | 'follow' | 'catch'>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const [selected, setSelected] = useState<FollowContentType[]>(DEFAULT_FOLLOW_TYPES)
   const hydratedFreq = useMailFrequency('weekly')
   const [freq, setFreq] = useState<MailFrequency>('weekly')
@@ -115,19 +117,24 @@ export function DetailChannelPill({
     setCaretX(tgl.left - root.left + tgl.width / 2 - 6)
   }, [pop])
 
-  const onFollowClick = useCallback(async () => {
+  const onFollowClick = useCallback(() => {
     if (!isLoggedIn) {
       setPop('catch')
       return
     }
     if (following) {
-      await unfollow()
-      closePop()
+      setConfirmOpen(true)
       return
     }
     setPop('follow')
     void follow(selected)
-  }, [isLoggedIn, following, follow, unfollow, selected, closePop])
+  }, [isLoggedIn, following, follow, selected])
+
+  const confirmUnfollow = useCallback(async () => {
+    await unfollow()
+    setConfirmOpen(false)
+    closePop()
+  }, [unfollow, closePop])
 
   const toggleType = useCallback(
     (key: FollowContentType) => {
@@ -196,6 +203,7 @@ export function DetailChannelPill({
         >
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          {!following && <line x1="3" y1="3" x2="21" y2="21" />}
         </svg>
         <span className="follow-switch-track" aria-hidden="true">
           <span className="follow-switch-knob" />
@@ -205,6 +213,14 @@ export function DetailChannelPill({
       {pop === 'follow' && (
         <div className="follow-pop" role="dialog" aria-label="What do you want to follow?">
           <span className="follow-pop-caret" style={caretStyle} aria-hidden="true" />
+          <button
+            type="button"
+            className="follow-pop-close"
+            aria-label="Close"
+            onClick={closePop}
+          >
+            ×
+          </button>
           <span className="follow-pop-bar" aria-hidden="true" />
           <p className="follow-pop-title">What do you want to follow?</p>
           <div className="follow-pop-list">
@@ -252,6 +268,18 @@ export function DetailChannelPill({
           </a>
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={`Unfollow ${label}?`}
+        description="You'll stop getting updates from this channel."
+        confirmLabel="Unfollow"
+        cancelLabel="Keep following"
+        tone="default"
+        busy={busy}
+        onConfirm={confirmUnfollow}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </span>
   )
 }

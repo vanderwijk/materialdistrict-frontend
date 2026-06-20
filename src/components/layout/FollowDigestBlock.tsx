@@ -73,10 +73,37 @@ export function FollowDigestBlock({
   const hydratedFrequency = useMailFrequency('weekly')
   const [frequency, setFrequency] = useState<MailFrequency>('weekly')
   const [status, setStatus] = useState<'idle' | 'catch' | 'busy' | 'done'>('idle')
+  const [allChannels, setAllChannels] = useState<DigestChannel[]>([])
+  const [expanded, setExpanded] = useState(false)
 
   useEffect(() => {
     setFrequency(hydratedFrequency)
   }, [hydratedFrequency])
+
+  // F4a: haal de volledige channel-catalogus op zodat "Show all" alle channels
+  // toont. De doorgegeven `channels` blijven vooraan staan als de relevante set.
+  useEffect(() => {
+    let active = true
+    fetch('/api/channels')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (active && data && Array.isArray(data.channels)) {
+          setAllChannels(data.channels as DigestChannel[])
+        }
+      })
+      .catch(() => {})
+    return () => {
+      active = false
+    }
+  }, [])
+
+  // F4a: relevante channels eerst, daarna de rest van de catalogus (deduped).
+  const extraChannels = allChannels.filter(
+    (c) => !channels.some((p) => p.id === c.id),
+  )
+  const mergedChannels = [...channels, ...extraChannels]
+  const hasMore = extraChannels.length > 0
+  const visibleChannels = expanded ? mergedChannels : channels
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -92,7 +119,7 @@ export function FollowDigestBlock({
           .filter((row) => row.entityType === 'channel')
           .map((row) => Number(row.entityId)),
       )
-      const preselected = channels.filter((channel) => followedIds.has(channel.id))
+      const preselected = mergedChannels.filter((channel) => followedIds.has(channel.id))
       if (preselected.length > 0) {
         setSelected(new Set(preselected.map((channel) => channel.id)))
       }
@@ -100,7 +127,7 @@ export function FollowDigestBlock({
 
     void loadFollows().then(apply).catch(() => {})
     return subscribeFollows(apply)
-  }, [isLoggedIn, channels])
+  }, [isLoggedIn, channels, allChannels])
 
   const toggle = (id: number) =>
     setSelected((prev) => {
@@ -111,7 +138,7 @@ export function FollowDigestBlock({
     })
 
   const count = selected.size
-  const selectedLabels = channels.filter((c) => selected.has(c.id)).map((c) => c.label)
+  const selectedLabels = mergedChannels.filter((c) => selected.has(c.id)).map((c) => c.label)
 
   const start = async () => {
     if (!isLoggedIn) {
@@ -139,10 +166,9 @@ export function FollowDigestBlock({
   if (status === 'done') {
     return (
       <div className={rootClass}>
-        <p className="follow-digest-eyebrow">Your digest</p>
         <p className="follow-digest-done">
           You&apos;re following {count} channel{count === 1 ? '' : 's'}. Your{' '}
-          {FREQ_LABEL[frequency].toLowerCase()} digest is on its way.
+          {FREQ_LABEL[frequency].toLowerCase()} email updates start now.
         </p>
       </div>
     )
@@ -150,15 +176,15 @@ export function FollowDigestBlock({
 
   return (
     <div className={rootClass}>
-      <p className="follow-digest-eyebrow">Your digest</p>
-      <p className="follow-digest-title">Follow what you&apos;re into</p>
+      <p className="follow-digest-title">Follow the Transition</p>
       <p className="follow-digest-hint">
-        Pick a few to start — you can follow more as you browse the site.
+        Choose your topics and stay updated on the innovations shaping a
+        sustainable built environment.
       </p>
 
-      {channels.length > 0 && (
+      {visibleChannels.length > 0 && (
         <div className="follow-digest-chips">
-          {channels.map((c) => (
+          {visibleChannels.map((c) => (
             <button
               key={c.id}
               type="button"
@@ -170,6 +196,17 @@ export function FollowDigestBlock({
             </button>
           ))}
         </div>
+      )}
+
+      {hasMore && (
+        <button
+          type="button"
+          className="follow-digest-more"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          {expanded ? 'Show fewer' : `Show all ${mergedChannels.length} channels`}
+        </button>
       )}
 
       {status === 'catch' ? (
@@ -196,7 +233,7 @@ export function FollowDigestBlock({
 
           <div className="follow-digest-meta">
             <span className="follow-digest-freq">
-              Frequency:{' '}
+              Email updates:{' '}
               <select
                 className="follow-pop-freq-select"
                 value={frequency}
@@ -212,8 +249,8 @@ export function FollowDigestBlock({
             </span>
             {count > 0 && (
               <span className="follow-digest-summary">
-                {' · '}You&apos;ll get a {FREQ_LABEL[frequency].toLowerCase()} digest on{' '}
-                {joinLabels(selectedLabels)}.
+                {' · '}You&apos;ll get {FREQ_LABEL[frequency].toLowerCase()} email
+                updates on {joinLabels(selectedLabels)}.
               </span>
             )}
           </div>

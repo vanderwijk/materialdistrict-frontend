@@ -12,6 +12,13 @@
 ---
 
 ## Laatste update
+Datum: 20-06-2026 — Feedback-fixes batch (§FEEDBACK-20-06): homepage channel-bar,
+follow-blok, detailpagina's, books/events/footer/related. Zie sectie
+"feedback-fixes 20-06-2026" onderaan. Deployed via git.
+
+----
+
+## Laatste update (vorige)
 Datum: 19-06-2026 — Sessie A11Y-1: WCAG AA contrast-fixes + focus-trap modals,
 gebouwd tegen de verse main (na Johans deploy). Zie sectie "Sessie A11Y-1"
 onderaan. Deployed via git.
@@ -3182,3 +3189,135 @@ gelijk (2975/2975).
 - src/components/ui/InsiderGate.tsx
 - src/components/ui/BoardPickerModal.tsx
 - src/app/material/[slug]/_components/GetInTouchModal.tsx
+---
+
+## Sessie — feedback-fixes 20-06-2026 (zaterdag)
+
+Bron: feedback-inventarisatie zaterdagochtend (30+ punten, los geconsolideerd in
+`consolidatie-feedback-20-06.md`). Deze deellevering bevat alleen de zekere,
+geverifieerde frontend-delta tegen de actuele main; de rest is gepland richting de launch.
+
+**Gewijzigd:**
+- `src/components/layout/FollowDigestBlock.tsx` — F4b + F2b:
+  kop "Follow what you're into" → **"Follow the Transition"**, subtekst → "Choose your
+  topics and stay updated on the innovations shaping a sustainable built environment.",
+  kicker "Your digest" verwijderd, "Frequency:" → **"Email updates:"**, en het woord
+  "digest" overal vervangen door "email updates" (summary + done-state).
+- `src/components/layout/Footer.tsx` — Footer-3 + Footer-4:
+  KvK + BTW onder het adres (IBAN bewust niet), copyright "© 1999–{jaar}".
+- `src/styles/globals.css` — append-only blok §FEEDBACK-20-06:
+  Footer-2 (meer lucht voor de bedrijfsnaam), Footer-3 (registratie-regel styling),
+  MD-1 (Related-kop blauw → neutrale tekstkleur), MD-2 (Related-pills uniform
+  neutraal-zwart i.p.v. per-type blauw, met dark-mode-variant).
+
+**Bevindingen tegen de actuele main (zip liep voor op de live-screenshots):**
+- Homepage-4 ("For manufacturers"/PromoHero) had de `/become-a-partner`-link + "List your
+  materials" al — geen delta meer.
+- Footer-1 (e-mail/telefoon op aparte regels) was al `display:block` — geen delta.
+- Footer-4: jaar was al dynamisch (`new Date().getFullYear()`); alleen "1999–" toegevoegd.
+
+**Checks (uit de code):**
+- Geen `/compare`-route → Compare-404 (S3b) is een ontbrekende pagina, niet een route-fix.
+- Geen `/contact`-route → Footer-5 vereist eerst een contactpagina.
+- Geen onboarding-/connect-brand-/insider-upsell-stappen → Login-3 nog te bouwen.
+
+### Vervolg dezelfde sessie — verdere frontend-batch (vervangt de "deellevering"-scope hierboven)
+
+Jeroen besloot dóór te bouwen tot de hele veilige frontend-batch staat; mail naar
+Johan pas aan het eind. Bovenop de eerste vijf punten nu ook gebouwd:
+
+- **Homepage-2/3 hover + interactie** (`globals.css §FEEDBACK-20-06 vervolg`,
+  `FeaturedChannel.tsx`): hover-lift op featured brands, channel-thumbnails,
+  channel-hero en de Talks-band; de hele channel-hero klikbaar via een overlay-link;
+  de thumbnail-pop-up wit met caret naar beneden.
+- **E1 event-datumrange** (`mappers.ts`, `types/event.ts`, `EventCard.tsx`):
+  `endDate` additief doorgegeven in `mapEventListItem` (crash-fix-invariant intact),
+  badge toont nu "10–12 MAR" / "30–2 MAR–APR", geen jaartal.
+- **F1 channel-follow-pill** (`DetailChannelPill.tsx`, `globals.css`): confirm-dialog
+  bij ontvolgen (hergebruikt `ConfirmDialog`), bel-met-streep wanneer niet gevolgd,
+  alleen het schuifje groen (pil/icoon/bel neutraal), bel dichter bij de toggle.
+- **F2a popover-kruisje** (`DetailChannelPill.tsx`, `FollowToggle.tsx`, `globals.css`):
+  sluitkruisje rechtsboven op beide follow-popovers.
+- **S3c compare-knop** (`globals.css`): Compare-knop in de vergelijk-balk groen
+  (WCAG-action-green).
+- **Homepage-1 channel-nav-balk** (`HomeChannelBar.tsx` NIEUW, `page.tsx`, `globals.css`):
+  de material_category-pillen vervangen door dezelfde channel-bar als op de
+  overzichtspagina's, maar als navigatie naar `/channel/<slug>` (zonder zoek/view-toggle),
+  niet-sticky via `.channel-bar.is-nav`. NB: `materialCategories` + de `material_category`-
+  fetch in `page.tsx` zijn nu dood — kunnen later opgeruimd worden.
+- **Books-2** (`book/page.tsx`): Category-filtergroep `defaultOpen: true`.
+
+Nog open in de batch (volgende ronde): Books-7a (tegelhoogte events/books-split),
+S1 (preferred-source consistent), S2 (add-to-board button-states), F3 (follow-blok op
+álle detailpagina's), Homepage-5 (bookmark op tegels; compare-deel blijft backend),
+F4a (follow-blok met álle channels — vraagt backend-data).
+
+### Vervolg 2 — Homepage-5, Books-7a, S2-bevinding
+
+- **Homepage-5** (`page.tsx`): bookmark op de materials- en stories-tegels via
+  `actions={<CardBookmarkButton .../>}` op de ContentCards (Latest materials,
+  Featured materials → `type="materials"`; Latest stories → `type="articles"`).
+  Het compare-deel op materials-tegels blijft open (hangt aan de ontbrekende
+  `/compare`-pagina — backend).
+- **Books-7a** (`globals.css`): events- en books-tegel in de homepage-split even
+  hoog; de kolom rekt al gelijk (grid stretch), de tegel vult nu de kolom.
+- **S2** (geen wijziging): de Save- en Compare-knoppen op de detailpagina's hebben
+  de gevulde active-state (`isActive` → `.action-btn.is-active`, groen-pale) al in de
+  actuele main — net als Homepage-4/Footer-1 liep de main hier voor op de live-site.
+  "Add to board" opent een board-picker (geen toggle), dus geen active-state.
+
+**Resterend (eigen, zorgvuldige pass):**
+- **S1** — preferred-source-blok staat al op álle 6 detailpagina's met dezelfde
+  `.pref-source-endblock`-styling; alleen de PLAATSING verschilt (op talks zit 't door
+  rommelige nesting buiten de content-kolom). Vraagt per-pagina layout-werk.
+- **F3** — follow-blok in de rechterkolom op álle detailpagina's; staat nu alleen op
+  article. Material heeft een geschikte `.mat-sidebar` + `materialChannels`; de andere
+  pagina's vragen per-pagina channel-data + sidebar-wiring.
+- **F4a** — follow-blok met álle channels + show-more: vraagt de volledige channel-
+  catalogus als prop op de detailpagina's (nu krijgen ze alleen de eigen channels) —
+  deels backend/data.
+
+### Vervolg 3 — S1 + F3 gebouwd
+
+- **S1** (`talk/[slug]/page.tsx`): preferred-source-blok van de rommelige grid-positie
+  (ná de related-row) naar direct ná de sidebar verplaatst — consistent met
+  material/event/brand/book. Article houdt zijn eigen plek (binnen de hoofdkolom).
+- **F3** — follow-blok in de rechterkolom toegevoegd op material (`.mat-sidebar`),
+  event (`event-aside`), brand (`aside`) en talk (via `TalkDetailSidebar`, nieuwe
+  `channels`-prop). Elk toont de eigen channels van het item (zelfde patroon als article),
+  alleen wanneer er channels zijn. **Book overgeslagen**: boeken zijn nog niet aan channels
+  gekoppeld (launch-taak) → geen follow-blok tot dat er is.
+
+**Resterend (F4a):** het follow-blok álle channels laten tonen i.p.v. alleen de eigen
+channels, met show-more + groene selectie. Vraagt de volledige channel-catalogus als data
+op de detailpagina's (nu krijgen ze alleen hun eigen channels) en een show-more in
+`FollowDigestBlock` — grotere wijziging, raakt ook de follow-databron-vraag bij Johan.
+
+### Vervolg 4 — Books-3/4 + F4a gebouwd (batch afgerond)
+
+- **Books-3/4** (`book/_components/BookCard.tsx` + `globals.css`): de insider-prijs op de
+  boektegel was kale kleine tekst ("Insider €X"). Nu een opvallende teal pill
+  ("Insider price €X", `book-tile-insider-pill`, in de insider-huisstijlkleuren
+  `--ct-insider-pale` / `--ct-insider-dark`). Daarnaast een vaste prijsblok-hoogte
+  (`.book-tile-foot { min-height: 48px }`) zodat tegels mét en zónder de insider-regel
+  uitlijnen in de grid. De BookBuyCard (detail) toonde de insider-prijs al goed
+  (member: insider-regel + doorgehaalde reguliere prijs; non-member: "Insiders pay €X —
+  save €Y. Become an Insider"-upsell) en is niet aangeraakt.
+- **F4a** (`app/api/channels/route.ts` nieuw + `components/layout/FollowDigestBlock.tsx` +
+  `globals.css`): het follow-blok toont nu álle channels via een "Show all N channels"-knop.
+  Aanpak zonder per-pagina bedrading: een publieke `/api/channels`-proxy levert de volledige
+  catalogus (op aantal aflopend), het blok haalt 'm client-side op en toont de doorgegeven
+  (relevante) channels vooraan — footer = top-6, detailpagina's = de eigen channels van F3 —
+  met "Show all" die de rest van de catalogus eronder onthult (deduped). Gevolgde channels
+  staan groen voor-geselecteerd, ook in de uitgeklapte set. Footer en detailpagina's hoefden
+  hierdoor níét aangepast.
+
+**Correctie t.o.v. Vervolg 2/3:** F4a was daar als "deels backend/data" genoteerd. Dat klopte
+niet — de catalogus is server-side gecachet en via een dunne publieke proxy frontend-zijdig
+beschikbaar. De enige backend-raakvlak is de groene voor-selectie (volg-relaties), en die liep
+al via de bestaande follows-cache. F4a is volledig frontend afgerond.
+
+**Batch compleet.** Alle veilige frontend-feedbackpunten van 20-06 zijn gebouwd. Open items
+blijven backend/launch: compare-flow (`/compare` ontbreekt), `/contact`-pagina, onboarding
+(Login-3), boek↔channel-koppeling (waardoor het follow-blok op de boekdetailpagina nog niet
+staat), en de saved-search-alert-engine.

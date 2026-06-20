@@ -67,6 +67,7 @@ import { MoreFromBrand } from './_components/MoreFromBrand'
 import { MaterialBody } from './_components/MaterialBody'
 import { RecentlyViewedWriter } from '@/lib/hooks/useRecentlyViewedMaterials'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
+import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
 
 interface MaterialDetailPageProps {
   params: Promise<{ slug: string }>
@@ -434,6 +435,17 @@ export default async function MaterialDetailPage({
               epdUrl={material.epdUrl}
               productUrl={material.productUrl}
             />
+
+            {materialChannels.length > 0 && (
+              <FollowDigestBlock
+                channels={materialChannels.map((c) => ({
+                  id: c.id,
+                  slug: c.slug,
+                  label: c.label,
+                }))}
+                compact
+              />
+            )}
           </aside>
                   <PreferredSourceEndBlock placement="material" />
 

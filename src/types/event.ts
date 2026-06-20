@@ -68,6 +68,7 @@ export interface EventListItem {
   endsAt: string | null
   /** Originele datum/tijd voor weergave zonder timezone-conversie. */
   startDate: string | null
+  endDate: string | null
   startTime: string | null
   /** MD-georganiseerd (true) vs extern (false) — stuurt de card-/CTA-variant. */
   isMdEvent: boolean

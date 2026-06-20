@@ -201,6 +201,14 @@ export function FollowToggle({
       {pop === 'follow' && (
         <div className="follow-pop" role="dialog" aria-label="What do you want to follow?">
           <span className="follow-pop-caret" style={caretStyle} aria-hidden="true" />
+          <button
+            type="button"
+            className="follow-pop-close"
+            aria-label="Close"
+            onClick={closePop}
+          >
+            ×
+          </button>
           <span className="follow-pop-bar" aria-hidden="true" />
           <p className="follow-pop-title">What do you want to follow?</p>
           <div className="follow-pop-list">

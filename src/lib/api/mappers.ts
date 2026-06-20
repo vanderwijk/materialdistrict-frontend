@@ -606,6 +606,7 @@ export function mapEventListItem(
     startsAt: combineDateTime(startDate, startTime),
     endsAt: combineDateTime(endDate, endTime),
     startDate,
+    endDate,
     startTime,
     isMdEvent: Boolean(m.is_md_event),
     venue: mapEventVenue(m.venue),

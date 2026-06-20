@@ -41,6 +41,7 @@ import { sortEventsByDate } from '../_lib/events-order'
 import { EventDetailActions } from './_components/EventDetailActions'
 import { EventPrevNext, type EventPrevNextNeighbour } from './_components/EventPrevNext'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
+import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
 
 const NEIGHBOUR_SCAN = 100
 const OTHER_EVENTS = 3
@@ -313,6 +314,17 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
                   </a>
                 ))}
               </div>
+            )}
+
+            {event.channels.length > 0 && (
+              <FollowDigestBlock
+                channels={event.channels.map((c) => ({
+                  id: c.id,
+                  slug: c.slug,
+                  label: c.label,
+                }))}
+                compact
+              />
             )}
           </aside>
                   <PreferredSourceEndBlock placement="event" />

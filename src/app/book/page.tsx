@@ -138,7 +138,7 @@ export default async function BooksPage({ searchParams }: BooksPageProps) {
   // Sidebar-secties (Publisher bewust ZONDER zoekbox).
   const sections: FilterSection[] = []
   if (categoryOptions.length > 0)
-    sections.push({ key: 'category', title: 'Category', options: categoryOptions })
+    sections.push({ key: 'category', title: 'Category', options: categoryOptions, defaultOpen: true })
   if (formatOptions.length > 0)
     sections.push({ key: 'format', title: 'Format', options: formatOptions })
   if (publisherOptions.length > 0)

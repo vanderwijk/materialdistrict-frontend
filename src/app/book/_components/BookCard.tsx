@@ -100,7 +100,9 @@ export function BookCard({
                 <span className="book-tile-vat">ex. VAT</span>
                 {hasDiscount && (
                   <span className="book-tile-insider">
-                    Insider {formatEur(exInsider)}
+                    <span className="book-tile-insider-pill">
+                      Insider price {formatEur(exInsider)}
+                    </span>
                   </span>
                 )}
               </>

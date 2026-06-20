@@ -114,6 +114,10 @@ export async function Footer({ className }: FooterProps) {
               NL-1411 AX Naarden<br />
               The Netherlands
             </address>
+            <div className="footer-registration">
+              KvK 60837802<br />
+              VAT NL854081732B01
+            </div>
           </div>
           <div className="footer-socials">
             {SOCIAL_LINKS.map((s) => (
@@ -133,7 +137,7 @@ export async function Footer({ className }: FooterProps) {
 
       <div className="footer-bottom">
         <div className="footer-bottom-left">
-          <span>© {new Date().getFullYear()} MaterialDistrict</span>
+          <span>© 1999–{new Date().getFullYear()} MaterialDistrict</span>
           <PreferredSourceButton
             variant="compact"
             placement="footer"

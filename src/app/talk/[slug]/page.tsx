@@ -229,7 +229,14 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
             companyName={talk.companyName}
             dateLabel={publishedLabel}
             durationLabel={durationLabel}
+            channels={talk.channels.map((c) => ({
+              id: c.id,
+              slug: c.slug,
+              label: c.label,
+            }))}
           />
+
+          <PreferredSourceEndBlock placement="talk" />
 
           <div className="detail-related-row">
             {more.length > 0 && (
@@ -253,7 +260,6 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
               </section>
             )}
           </div>
-                  <PreferredSourceEndBlock placement="talk" />
 
                   <div className="detail-prevnext-row">
             <TalkPrevNext prev={prev} next={next} />

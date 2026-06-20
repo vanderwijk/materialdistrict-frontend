@@ -27,14 +27,42 @@ const MONTHS_SHORT = [
  * Dag + maand uit een YYYY-MM-DD-string, timezone-vrij (handmatig geparsed —
  * `new Date('2027-03-10')` zou als UTC-middernacht de dag kunnen verschuiven).
  */
-function dateBadge(startDate: string | null): { day: string; month: string } | null {
-  if (!startDate) return null
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(startDate)
+/** YYYY-MM-DD → {y, mo (0-idx), d}, timezone-vrij geparsed. */
+function parseYmd(value: string | null): { y: number; mo: number; d: number } | null {
+  if (!value) return null
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
   if (!m) return null
-  const monthIdx = Number.parseInt(m[2], 10) - 1
-  const day = String(Number.parseInt(m[3], 10))
-  const month = MONTHS_SHORT[monthIdx] ?? ''
-  return { day, month }
+  return {
+    y: Number.parseInt(m[1], 10),
+    mo: Number.parseInt(m[2], 10) - 1,
+    d: Number.parseInt(m[3], 10),
+  }
+}
+
+/**
+ * Datum-badge: één dag, of een range bij een afwijkende einddatum.
+ *   - zelfde dag    "10 / MAR"
+ *   - zelfde maand  "10-12 / MAR"
+ *   - andere maand  "30-2 / MAR-APR"
+ * Bewust geen jaartal op de badge.
+ */
+function dateBadge(
+  startDate: string | null,
+  endDate: string | null,
+): { day: string; month: string } | null {
+  const s = parseYmd(startDate)
+  if (!s) return null
+  const e = parseYmd(endDate)
+  if (!e || (e.y === s.y && e.mo === s.mo && e.d === s.d)) {
+    return { day: String(s.d), month: MONTHS_SHORT[s.mo] ?? '' }
+  }
+  const sameMonth = e.y === s.y && e.mo === s.mo
+  return {
+    day: `${s.d}\u2013${e.d}`,
+    month: sameMonth
+      ? MONTHS_SHORT[s.mo] ?? ''
+      : `${MONTHS_SHORT[s.mo] ?? ''}\u2013${MONTHS_SHORT[e.mo] ?? ''}`,
+  }
 }
 
 /** Locatie-regel: "Utrecht, Netherlands" / "Utrecht" / "Online". */
@@ -49,7 +77,7 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
-  const badge = dateBadge(event.startDate)
+  const badge = dateBadge(event.startDate, event.endDate)
   const location = locationLabel(event)
 
   return (

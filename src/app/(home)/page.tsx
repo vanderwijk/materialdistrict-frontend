@@ -21,7 +21,7 @@
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ContentCard } from '@/components/ui'
+import { ContentCard, CardBookmarkButton } from '@/components/ui'
 import {
   listMaterials,
   listArticles,
@@ -52,10 +52,8 @@ import {
   FeaturedTalkBand,
   type FeaturedTalkVM,
 } from './_components/FeaturedTalkBand'
-import {
-  MaterialCategoryStrip,
-  type MaterialCategoryLink,
-} from './_components/MaterialCategoryStrip'
+import { type MaterialCategoryLink } from './_components/MaterialCategoryStrip'
+import { HomeChannelBar } from './_components/HomeChannelBar'
 import { FeaturedPartners } from './_components/FeaturedPartners'
 import { SidebarBooks } from './_components/SidebarBooks'
 import {
@@ -178,7 +176,13 @@ export default async function HomePage() {
       slug: t.slug,
       count: t.count,
     }))
+
+  // --- Channels: navigatie-strip naar /channel/<slug> (Homepage-1, vervangt
+  //     de oude material_category-pillen). channelsIndex is featured-first
+  //     gesorteerd; labels zijn al gedecodeerd bij de bron. ---
+  const channelNav = [...channelsIndex]
     .sort((a, b) => b.count - a.count)
+    .map((c) => ({ slug: c.slug, label: c.label }))
 
   // --- Featured brands: Partner-tier eerst, aangevuld met brands met ≥3
   // materialen. Binnen Partner-tier: handmatige `featured`-vlag vooraan
@@ -321,10 +325,10 @@ export default async function HomePage() {
 
         <PromoHero materialCount={materialCount} />
 
-        {/* Categorie-snelmenu — material_category-termen, deeplinkt naar het
-            gefilterde overzicht. Degradeert tot "All materials" als de
-            taxonomie (nog) niet bereikbaar is. */}
-        <MaterialCategoryStrip categories={materialCategories} />
+        {/* Channel-navigatie — vervangt het oude material_category-snelmenu.
+            Dezelfde balk-styling als de overzichtspagina's, maar als navigatie
+            naar /channel/<slug> (zonder zoek/view-toggle). */}
+        <HomeChannelBar channels={channelNav} />
 
         <div className="hp-main">
           <div className="hp-content">
@@ -350,6 +354,7 @@ export default async function HomePage() {
                     thumbAlt={m.hero?.alt ?? m.title}
                     eyebrow={m.brandName ?? undefined}
                     title={m.title}
+                    actions={<CardBookmarkButton type="materials" itemId={m.id} />}
                   />
                 ))}
               </div>
@@ -389,6 +394,7 @@ export default async function HomePage() {
                     }}
                     channelTags={a.channels.map((c) => c.label)}
                     isInsiderOnly={a.insiderOnly}
+                    actions={<CardBookmarkButton type="articles" itemId={a.id} />}
                   />
                 ))}
               </div>
@@ -417,6 +423,7 @@ export default async function HomePage() {
                       thumbAlt={m.hero?.alt ?? m.title}
                       eyebrow={m.brandName ?? undefined}
                       title={m.title}
+                      actions={<CardBookmarkButton type="materials" itemId={m.id} />}
                     />
                   ))}
                 </div>

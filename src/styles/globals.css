@@ -16993,3 +16993,190 @@ a.mat-detail-tag:hover::after { opacity: 1; }
    = 2.75:1, faalt. Witte tekst behouden, vulling verdiept (donkerder
    olijf) i.p.v. donkere tekst. */
 [data-theme="dark"] .ct-tag.ct-material { background: #5C7100; color: #ffffff; } /* 5.50:1 */
+/* ============================================================
+   §FEEDBACK-20-06 — losse fixes uit de feedbacksessie 20-06-2026
+   Append-only, aan het true einde. Bevat:
+     - Footer-2  meer lucht tussen telefoon en bedrijfsnaam
+     - Footer-3  styling van de KvK en BTW-regel
+     - MD-1      "Related"-kop van blauw naar neutrale tekstkleur
+     - MD-2      Related-pills uniform neutraal-zwart i.p.v. per-type blauw
+   ============================================================ */
+
+/* Footer-2 — meer scheiding voor de bedrijfsnaam, was margin-top 8px. */
+.footer-address { margin-top: 18px; }
+
+/* Footer-3 — KvK en BTW onder het adres, klein en gedempt. */
+.footer-registration {
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* MD-1 — "Related"-kop was var(--navy), wordt de neutrale tekstkleur. */
+.article-related-head { color: var(--text); }
+
+/* MD-2 — Related-pills uniform neutraal-zwart, ongeacht content-type.
+   Gelijke specificiteit als de per-type regels (regel 10026 e.v.),
+   maar later in de cascade, dus deze winnen. */
+.article-related-pill,
+.article-related-pill[data-content-type='article'],
+.article-related-pill[data-content-type='material'],
+.article-related-pill[data-content-type='talk'] {
+  background: #16202B;
+  color: #ffffff;
+}
+[data-theme="dark"] .article-related-pill,
+[data-theme="dark"] .article-related-pill[data-content-type='article'],
+[data-theme="dark"] .article-related-pill[data-content-type='material'],
+[data-theme="dark"] .article-related-pill[data-content-type='talk'] {
+  background: rgba(255, 255, 255, 0.16);
+  color: #f0f6fc;
+}
+
+/* --- §FEEDBACK-20-06 vervolg: Homepage-2/3 hover-lift, klikbare
+       channel-hero en witte thumbnail-pop-up ---------------------- */
+
+/* Homepage-3 — Featured brands: omhoog + schaduw op hover
+   (was alleen border-color en een lichte schaduw). */
+.hp-brand-logo { transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+.hp-brand-logo:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+/* Homepage-2 — channel-thumbnails: omhoog op hover. */
+.hp-channel-thumb { transition: transform 0.15s, box-shadow 0.15s; }
+.hp-channel-thumb:hover { transform: translateY(-3px); box-shadow: 0 7px 18px rgba(0, 0, 0, 0.4); }
+
+/* Homepage-2 — channel-hero-blok en Talks-band: lichte lift + schaduw. */
+.hp-channel-hero { transition: box-shadow 0.18s, transform 0.18s; }
+.hp-channel-hero:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.feature-band { transition: box-shadow 0.18s, transform 0.18s; }
+.feature-band:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+/* Homepage-2 — hele channel-hero klikbaar: overlay-link onder de
+   interactieve elementen (titel-link, knop en thumbnails blijven boven). */
+.hp-channel-hero-link { position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+.hp-channel-hero .hp-channel-hero-inner,
+.hp-channel-hero .hp-channel-thumbs { z-index: 2; }
+
+/* Homepage-2 — thumbnail-pop-up: wit met caret naar beneden
+   (was donkere vulling zonder caret). De brand- en titelregel
+   waren wit-op-donker, nu donker-op-wit. */
+.hp-channel-thumb-tip {
+  background: #ffffff;
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(13, 31, 45, 0.22);
+}
+.hp-channel-thumb-tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #ffffff;
+}
+.hp-channel-thumb-tip .hp-channel-thumb-brand { color: var(--text-muted); }
+.hp-channel-thumb-tip .hp-channel-thumb-title { color: var(--text); }
+
+/* --- §FEEDBACK-20-06 vervolg: F1 channel-follow-pill --------------- */
+
+/* F1 — alleen het schuifje is groen wanneer je volgt; de pil, het
+   naam-icoon en de bel blijven neutraal. Overschrijft de groene tint
+   uit §CHANNEL-PILL-FOLLOW; de groene track/knop zelf blijven staan
+   via de bestaande .is-following .follow-switch-track-regel. */
+.detail-channel-pill.is-following {
+  background: var(--surface2);
+  border-color: var(--border);
+  color: var(--text);
+}
+.detail-channel-pill.is-following .detail-channel-pill-link svg { color: var(--text-muted); }
+.detail-channel-pill.is-following .detail-channel-pill-follow { color: var(--text-hint); }
+
+/* F1 — bel iets dichter bij het schuifje (was 6px). */
+.detail-channel-pill-follow { gap: 4px; }
+
+/* --- §FEEDBACK-20-06 vervolg: F2a popover-kruisje + S3c compare-knop --- */
+
+/* F2a — sluitkruisje rechtsboven in de follow-popover. */
+.follow-pop-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 18px;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.follow-pop-close:hover { background: var(--surface2); color: var(--text); }
+
+/* S3c — Compare-knop in de vergelijk-balk groen (enige primaire actie daar),
+   met de WCAG-toegankelijke action-green i.p.v. het blauwe primary. */
+.compare-bar-cta {
+  background: var(--green-action);
+  border-color: var(--green-action);
+  color: #fff;
+}
+.compare-bar-cta:hover:not(:disabled) {
+  background: var(--green-action-hover);
+  border-color: var(--green-action-hover);
+}
+
+/* --- §FEEDBACK-20-06 vervolg: Homepage-1 channel-nav-balk ---------- */
+/* De channel-bar is op overzichtspagina's sticky onder de header; op de
+   homepage is 'ie navigatie en mag 'ie gewoon meescrollen (zoals de oude
+   categorie-strip deed). */
+.channel-bar.is-nav {
+  position: static;
+  z-index: auto;
+}
+
+/* --- §FEEDBACK-20-06 vervolg: Books-7a gelijke tegelhoogte --------- */
+/* Events- en books-tegel in de homepage-split even hoog: de kolom rekt al
+   gelijk (grid stretch); de tegel zelf vult nu de kolom zodat de onderkanten
+   uitlijnen i.p.v. een gat onder de kortste tegel. */
+.hp-events-books .hp-eb-col { display: flex; flex-direction: column; }
+.hp-events-books .hp-eb-col > :last-child { flex: 1 1 auto; }
+
+/* --- §FEEDBACK-20-06 vervolg: Books-3/4 insider-prijs + prijsblok-hoogte --- */
+/* Vaste hoogte voor het prijsblok op de tegel, zodat tegels met en zonder de
+   insider-regel uitlijnen in de grid. */
+.book-tile-foot { min-height: 48px; align-content: flex-start; }
+/* Insider-prijs als opvallende teal pill i.p.v. kale tekst. De buitenste span
+   houdt de eigen regel (flex-basis 100%); de pill zelf is fit-content. */
+.book-tile-insider { flex-basis: 100%; }
+.book-tile-insider-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--ct-insider-pale);
+  color: var(--ct-insider-dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* --- §FEEDBACK-20-06 vervolg: F4a "Show all channels"-knop in het follow-blok --- */
+.follow-digest-more {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 0;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.follow-digest-more:hover { color: var(--text); }

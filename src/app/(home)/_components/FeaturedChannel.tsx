@@ -55,6 +55,11 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
             : undefined
         }
       >
+        <Link
+          href={channelHref}
+          className="hp-channel-hero-link"
+          aria-label={`Explore ${channel.label}`}
+        />
         <div className="hp-channel-hero-inner">
           <p className="hp-channel-eyebrow">Channel</p>
           <h3 className="hp-channel-title">

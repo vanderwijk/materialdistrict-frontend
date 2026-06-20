@@ -42,6 +42,7 @@ import { BrandDetailInfoCard } from './_components/BrandDetailInfoCard'
 import { BrandMaterialsGrid } from './_components/BrandMaterialsGrid'
 import { BrandPrevNext, type BrandPrevNextNeighbour } from './_components/BrandPrevNext'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
+import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
 import { FollowToggle } from '@/components/ui/FollowToggle'
 
 const MATERIALS_PER_BRAND = 4
@@ -223,6 +224,17 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
                 materialCount={brand.materialCount || materialsResult.total}
               />
             </div>
+
+            {brand.channels.length > 0 && (
+              <FollowDigestBlock
+                channels={brand.channels.map((c) => ({
+                  id: c.id,
+                  slug: c.slug,
+                  label: c.label,
+                }))}
+                compact
+              />
+            )}
           </aside>
                   <PreferredSourceEndBlock placement="brand" />
 
