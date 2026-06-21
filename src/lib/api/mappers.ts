@@ -51,7 +51,7 @@ import {
   type MaterialFacetName,
 } from '@/types/facetwp'
 
-import { parseMaterialProperties } from '@/lib/utils/material-properties'
+import { parseMaterialProperties, mergeMaterialProperties } from '@/lib/utils/material-properties'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { toStoryType } from '@/lib/config/story-types'
 import { toEventType } from '@/lib/config/event-types'
@@ -214,7 +214,10 @@ export function mapMaterialListItem(
     title: decodeHtmlEntities(raw.title.rendered),
     excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: featuredImage ?? null,
-    properties: parseMaterialProperties(raw.class_list),
+    properties: mergeMaterialProperties(
+      raw.class_list,
+      raw.meta?.properties as Partial<Record<string, string>> | undefined,
+    ),
     brandName: brandName ? decodeHtmlEntities(brandName) : null,
     brandId: raw.meta?.brand_id ?? null,
     brandSlug: stringOrNull(raw.meta?.brand_slug),
@@ -268,7 +271,10 @@ export function mapMaterial(
     excerptHtml: wpRenderedHtml(raw.excerpt),
 
     gallery,
-    properties: parseMaterialProperties(raw.class_list),
+    properties: mergeMaterialProperties(
+      raw.class_list,
+      raw.meta?.properties as Partial<Record<string, string>> | undefined,
+    ),
 
     taxonomies: {
       tags: raw.tags ?? [],

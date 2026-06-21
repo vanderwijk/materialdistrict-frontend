@@ -129,6 +129,28 @@ export function parseMaterialProperties(
   return result
 }
 
+/**
+ * Merge `meta.properties` (canonical slugs from WP) over parsed `class_list`.
+ * Non-empty meta values win — covers environmental/content facets and legacy
+ * content-composition slug normalization from the plugin REST mapper.
+ */
+export function mergeMaterialProperties(
+  classList: string[] | undefined,
+  metaProperties: Partial<Record<MaterialPropertyKey, string>> | undefined,
+): MaterialProperties {
+  const merged = parseMaterialProperties(classList)
+  if (!metaProperties) return merged
+
+  for (const facet of FACETS) {
+    const value = metaProperties[facet]
+    if (typeof value === 'string' && value.length > 0) {
+      merged[facet] = value
+    }
+  }
+
+  return merged
+}
+
 // --------------------------------------------------------------------
 // Humanizers
 // --------------------------------------------------------------------

@@ -10,9 +10,9 @@ Zie `MANIFEST-feedback-fixes-21-06.md`.
 
 ## Jouw kant — drie open punten
 
-1. **Get tickets** — `external_website` op event-LIST-endpoint exposen (plugin). Pak ik op.
-2. **Follow-scope** — frontend stuurt `types: ['material','story','talk']`; follow-record moet dat bewaren/honoreren (plugin).
-3. **Compare-velden** — environmental + content composition uit WP; UI wacht op data.
+1. **Get tickets** — ✅ `meta.external_website` staat al op `GET /wp/v2/event` (list + detail via `rest_prepare_event`). Rooktest prod: featured event levert URL. Get tickets-knop zou moeten werken na Vercel-deploy + cache.
+2. **Follow-scope** — ✅ plugin `master`: types worden opgeslagen; POST default `material/story/talk` als `types` ontbreekt; GET normaliseert lege legacy-records; digest-helpers (`md_follows_includes_post_type` e.d.) filteren book/event/brand tenzij expliciet gekozen.
+3. **Compare-velden** — ✅ plugin exposeert `meta.properties` (24 facets) + genormaliseerde `class_list` (legacy content-slugs → `1-25-percent` e.d.). Frontend merge via `mergeMaterialProperties`. Vulgraad = editorial: environmental/content tonen zodra taxonomie-termen gezet zijn in dashboard/WP-admin.
 
 ---
 

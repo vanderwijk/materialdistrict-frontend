@@ -545,6 +545,8 @@ export interface WPMaterialRawResponse {
     brand_accepted_countries?: string[]
     /** Downloads-entiteit van het material (meerdere per material). */
     downloads?: Array<{ id?: string | number; title?: string; url?: string; type?: string }>
+    /** 24 compare/filter facets as canonical value slugs (empty string = unset). */
+    properties?: Partial<Record<string, string>>
     /** Raw underscore-velden (alleen rollout-fallback). */
     _material_brand?: string | null
     _material_code?: string | null
