@@ -12,6 +12,13 @@
 ---
 
 ## Laatste update
+Datum: 21-06-2026 — Feedback-fixes batch 21-06 (compare-pagina, account-menu,
+generiek follow-blok, channel-hero, homepage/events/books). Zie sectie
+"feedback-fixes 21-06-2026" onderaan. Deployed via git.
+
+----
+
+## Laatste update (vorige)
 Datum: 20-06-2026 — Feedback-fixes batch (§FEEDBACK-20-06): homepage channel-bar,
 follow-blok, detailpagina's, books/events/footer/related. Zie sectie
 "feedback-fixes 20-06-2026" onderaan. Deployed via git.
@@ -3321,3 +3328,19 @@ al via de bestaande follows-cache. F4a is volledig frontend afgerond.
 blijven backend/launch: compare-flow (`/compare` ontbreekt), `/contact`-pagina, onboarding
 (Login-3), boek↔channel-koppeling (waardoor het follow-blok op de boekdetailpagina nog niet
 staat), en de saved-search-alert-engine.
+
+---
+
+## Sessie — feedback-fixes 21-06-2026
+
+Eén batch op de laatste main (`da82d5c`). Alle punten uit de feedback-review in
+één keer verwerkt: complete-bestand-vervangingen, `globals.css` append-only.
+Syntax gevalideerd met esbuild (geen tsc beschikbaar in deze omgeving).
+
+Zie `MANIFEST-feedback-fixes-21-06.md` voor per-bestand mapping.
+
+**Afhankelijkheden bij Johan (zie MANIFEST + mail)**
+1. `external_website` op het event-LIST-endpoint exposen (Get tickets-link).
+2. Follow-scope materials/stories/talks in het follow-record honoreren.
+3. Compare environmental(10)/content(3)-velden — UI toont "Not specified"
+   tot WP ze levert.

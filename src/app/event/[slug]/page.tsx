@@ -236,6 +236,9 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               </>
             )}
 
+            {/* Google Preferred Source CTA — binnen het witte content-vel. */}
+            <PreferredSourceEndBlock placement="event" />
+
           </div>
           </div>
 
@@ -316,20 +319,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               </div>
             )}
 
-            {event.channels.length > 0 && (
-              <FollowDigestBlock
-                channels={event.channels.map((c) => ({
-                  id: c.id,
-                  slug: c.slug,
-                  label: c.label,
-                }))}
-                compact
-              />
-            )}
+            <FollowDigestBlock compact />
           </aside>
-                  <PreferredSourceEndBlock placement="event" />
 
-                  <div className="detail-prevnext-row">
+          <div className="detail-prevnext-row">
             <EventPrevNext prev={prev} next={next} />
           </div>
 

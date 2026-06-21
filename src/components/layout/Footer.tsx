@@ -74,7 +74,7 @@ export async function Footer({ className }: FooterProps) {
   const channels = await getChannelCatalog().catch(() => [])
   const digestChannels = [...channels]
     .sort((a, b) => b.count - a.count)
-    .slice(0, 6)
+    .slice(0, 8)
     .map((c) => ({ id: c.id, slug: c.slug, label: c.label }))
   return (
     <footer className={cn('site-footer', className)}>
@@ -115,8 +115,8 @@ export async function Footer({ className }: FooterProps) {
               The Netherlands
             </address>
             <div className="footer-registration">
-              KvK 60837802<br />
-              VAT NL854081732B01
+              Company Number 60837802<br />
+              VAT Number NL854081732B01
             </div>
           </div>
           <div className="footer-socials">
@@ -137,7 +137,7 @@ export async function Footer({ className }: FooterProps) {
 
       <div className="footer-bottom">
         <div className="footer-bottom-left">
-          <span>© 1999–{new Date().getFullYear()} MaterialDistrict</span>
+          <span>© 1999 – {new Date().getFullYear()} MaterialDistrict</span>
           <PreferredSourceButton
             variant="compact"
             placement="footer"

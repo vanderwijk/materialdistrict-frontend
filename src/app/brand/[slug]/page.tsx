@@ -197,6 +197,9 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
               maxVisible={3}
             />
 
+            {/* Google Preferred Source CTA — binnen het witte content-vel. */}
+            <PreferredSourceEndBlock placement="brand" />
+
           </div>
           </div>
 
@@ -225,20 +228,10 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
               />
             </div>
 
-            {brand.channels.length > 0 && (
-              <FollowDigestBlock
-                channels={brand.channels.map((c) => ({
-                  id: c.id,
-                  slug: c.slug,
-                  label: c.label,
-                }))}
-                compact
-              />
-            )}
+            <FollowDigestBlock compact />
           </aside>
-                  <PreferredSourceEndBlock placement="brand" />
 
-                  <div className="detail-prevnext-row">
+          <div className="detail-prevnext-row">
             <BrandPrevNext prev={neighbours.prev} next={neighbours.next} />
           </div>
 

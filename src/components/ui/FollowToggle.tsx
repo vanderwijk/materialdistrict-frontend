@@ -89,7 +89,7 @@ export function FollowToggle({
     initialTypes,
   })
 
-  const [pop, setPop] = useState<null | 'follow' | 'catch'>(null)
+  const [pop, setPop] = useState<null | 'follow' | 'catch' | 'confirm'>(null)
   const [selected, setSelected] = useState<FollowContentType[]>(
     initialTypes ?? DEFAULT_FOLLOW_TYPES,
   )
@@ -148,14 +148,20 @@ export function FollowToggle({
       return
     }
     if (following) {
-      await unfollow()
-      closePop()
+      // F1: bevestig vóór ontvolgen, zodat je niet per ongeluk ontvolgt
+      // (de hele save/digest hangt eraan).
+      setPop('confirm')
       return
     }
     // §VISUAL-ROUND punt 4: popover meteen open, follow vuurt op de achtergrond.
     setPop('follow')
     void follow(selected)
-  }, [isLoggedIn, following, follow, unfollow, selected, closePop])
+  }, [isLoggedIn, following, follow, selected])
+
+  const confirmUnfollow = useCallback(async () => {
+    await unfollow()
+    closePop()
+  }, [unfollow, closePop])
 
   const toggleType = useCallback(
     (key: FollowContentType) => {
@@ -240,6 +246,35 @@ export function FollowToggle({
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+      )}
+
+      {pop === 'confirm' && (
+        <div className="follow-pop follow-confirm" role="dialog" aria-label="Unfollow?">
+          <span className="follow-pop-caret" style={caretStyle} aria-hidden="true" />
+          <p className="follow-confirm-title">
+            Unfollow {entityName ?? 'this channel'}?
+          </p>
+          <p className="follow-confirm-sub">
+            You&apos;ll stop getting updates from it.
+          </p>
+          <div className="follow-confirm-actions">
+            <button
+              type="button"
+              className="follow-confirm-cancel"
+              onClick={closePop}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="follow-confirm-unfollow"
+              onClick={confirmUnfollow}
+              disabled={busy}
+            >
+              Unfollow
+            </button>
           </div>
         </div>
       )}

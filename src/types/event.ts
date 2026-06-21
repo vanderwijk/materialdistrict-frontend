@@ -72,6 +72,10 @@ export interface EventListItem {
   startTime: string | null
   /** MD-georganiseerd (true) vs extern (false) — stuurt de card-/CTA-variant. */
   isMdEvent: boolean
+  /** Registratie-/ticket-URL (zelfde veld als op de detailpagina). Null als
+   *  het event geen externe registratielink heeft. Voedt o.a. de
+   *  "Get tickets"-knop op de homepage-tegel. */
+  externalWebsite: string | null
   /** Gedenormaliseerde venue voor de card-locatie. Null bij online events. */
   venue: EventVenue | null
   /** Channel-tags voor de ChannelBar-filter en (optioneel) card-pills. */

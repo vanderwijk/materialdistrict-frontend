@@ -400,6 +400,10 @@ export default async function MaterialDetailPage({
 
             <KeywordsSection keywords={keywords} />
 
+            {/* Google Preferred Source CTA — binnen het witte content-vel,
+                als laatste blok onder de content (net als op Stories). */}
+            <PreferredSourceEndBlock placement="material" />
+
           </div>
           </div>
 
@@ -436,20 +440,10 @@ export default async function MaterialDetailPage({
               productUrl={material.productUrl}
             />
 
-            {materialChannels.length > 0 && (
-              <FollowDigestBlock
-                channels={materialChannels.map((c) => ({
-                  id: c.id,
-                  slug: c.slug,
-                  label: c.label,
-                }))}
-                compact
-              />
-            )}
+            <FollowDigestBlock compact />
           </aside>
-                  <PreferredSourceEndBlock placement="material" />
 
-                  <div className="detail-prevnext-row">
+          <div className="detail-prevnext-row">
             <PrevNextNavigation currentSlug={material.slug} />
           </div>
 

@@ -609,6 +609,7 @@ export function mapEventListItem(
     endDate,
     startTime,
     isMdEvent: Boolean(m.is_md_event),
+    externalWebsite: stringOrNull(m.external_website),
     venue: mapEventVenue(m.venue),
     channels: mapChannels(m.channels),
     featured: Boolean(m.featured),

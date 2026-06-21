@@ -40,21 +40,25 @@ function parseYmd(value: string | null): { y: number; mo: number; d: number } | 
 }
 
 /**
- * Datum-badge: één dag, of een range bij een afwijkende einddatum.
- *   - zelfde dag    "10 / MAR"
- *   - zelfde maand  "10-12 / MAR"
- *   - andere maand  "30-2 / MAR-APR"
- * Bewust geen jaartal op de badge.
+ * Datum-badge: een dag/range met maand en jaartal als derde regel.
+ *   - zelfde dag    "10 / MAR / 2027"
+ *   - zelfde maand  "10-12 / MAR / 2027"
+ *   - andere maand  "30-2 / MAR-APR / 2027"
+ *   - over jaargrens "30-2 / DEC-JAN / 2027-2028"
  */
 function dateBadge(
   startDate: string | null,
   endDate: string | null,
-): { day: string; month: string } | null {
+): { day: string; month: string; year: string } | null {
   const s = parseYmd(startDate)
   if (!s) return null
   const e = parseYmd(endDate)
   if (!e || (e.y === s.y && e.mo === s.mo && e.d === s.d)) {
-    return { day: String(s.d), month: MONTHS_SHORT[s.mo] ?? '' }
+    return {
+      day: String(s.d),
+      month: MONTHS_SHORT[s.mo] ?? '',
+      year: String(s.y),
+    }
   }
   const sameMonth = e.y === s.y && e.mo === s.mo
   return {
@@ -62,6 +66,7 @@ function dateBadge(
     month: sameMonth
       ? MONTHS_SHORT[s.mo] ?? ''
       : `${MONTHS_SHORT[s.mo] ?? ''}\u2013${MONTHS_SHORT[e.mo] ?? ''}`,
+    year: e.y === s.y ? String(s.y) : `${s.y}\u2013${e.y}`,
   }
 }
 
@@ -106,6 +111,7 @@ export function EventCard({ event }: EventCardProps) {
           <span className="event-card-date" aria-hidden="true">
             <span className="event-card-date-day">{badge.day}</span>
             <span className="event-card-date-month">{badge.month}</span>
+            <span className="event-card-date-year">{badge.year}</span>
           </span>
         )}
       </div>

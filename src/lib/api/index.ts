@@ -24,6 +24,7 @@ export {
   getEvent,
   getMaterial,
   getMaterialDetail,
+  getMaterialsForCompare,
   getPage,
   getRelatedContent,
   getTalk,

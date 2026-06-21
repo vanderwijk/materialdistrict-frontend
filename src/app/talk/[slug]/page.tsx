@@ -220,6 +220,9 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
               </>
             )}
 
+            {/* Google Preferred Source CTA — binnen het witte content-vel. */}
+            <PreferredSourceEndBlock placement="talk" />
+
           </div>
           </div>
 
@@ -229,14 +232,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
             companyName={talk.companyName}
             dateLabel={publishedLabel}
             durationLabel={durationLabel}
-            channels={talk.channels.map((c) => ({
-              id: c.id,
-              slug: c.slug,
-              label: c.label,
-            }))}
           />
-
-          <PreferredSourceEndBlock placement="talk" />
 
           <div className="detail-related-row">
             {more.length > 0 && (

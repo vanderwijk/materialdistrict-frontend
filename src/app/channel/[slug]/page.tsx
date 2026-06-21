@@ -147,13 +147,6 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
           items={[{ label: 'Channels' }, { label: channel.label }]}
         />
 
-        {channel.description && (
-          <div
-            className="channel-intro t-body"
-            dangerouslySetInnerHTML={{ __html: channel.description }}
-          />
-        )}
-
         {materials.items.length > 0 && (
           <ChannelStrip
             title="Materials"

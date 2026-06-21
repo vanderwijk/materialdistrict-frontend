@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils/cn'
 import { logEvent } from '@/lib/api/events'
 import { InsiderIcon } from '@/components/ui/icons/InsiderIcon'
 import { IconLogout } from '@/components/ui/icons'
+import { AccountMenu } from './AccountMenu'
 import { Logo } from './Logo'
 
 // ============================================================
@@ -44,8 +45,12 @@ interface HeaderProps {
   currentSection?: HeaderSection
   /** Of de gebruiker is ingelogd. Bepaalt Login/Dashboard knop. */
   isLoggedIn?: boolean
-  /** Of de gebruiker een Insider member is. Toont de Insider-knop. */
+  /** Of de gebruiker een Insider member is. Stuurt het account-menu + ring. */
   isMember?: boolean
+  /** Voornaam voor de avatar-knop in de header (ingelogd). */
+  userFirstName?: string
+  /** Avatar-URL; valt terug op initialen wanneer leeg. */
+  userAvatarUrl?: string | null
   /** Aantal items in de cart. Toont badge als > 0. */
   cartCount?: number
   /** Callback bij klik op login (als !isLoggedIn). */
@@ -54,8 +59,11 @@ interface HeaderProps {
   onDashboardClick?: () => void
   /** Callback bij klik op sign-out (als isLoggedIn). */
   onSignOut?: () => void
-  /** Callback bij klik op Insider-knop (als isMember). */
-  onInsiderClick?: () => void
+  /** Account-menu callbacks (ingelogd). */
+  onAccountClick?: () => void
+  onMembershipClick?: () => void
+  onInsiderInsightsClick?: () => void
+  onBecomeInsiderClick?: () => void
   /** Callback bij submit van header-search. */
   onSearch?: (query: string) => void
   /** Callback bij dark mode toggle. */
@@ -104,11 +112,16 @@ export function Header({
   currentSection,
   isLoggedIn = false,
   isMember = false,
+  userFirstName = 'Account',
+  userAvatarUrl,
   cartCount = 0,
   onLoginClick,
   onDashboardClick,
   onSignOut,
-  onInsiderClick,
+  onAccountClick,
+  onMembershipClick,
+  onInsiderInsightsClick,
+  onBecomeInsiderClick,
   onSearch,
   onThemeToggle,
   theme = 'light',
@@ -276,17 +289,9 @@ export function Header({
             )}
           </Link>
 
-          {/* Login of Dashboard knop */}
+          {/* Login of (Dashboard + account-menu) */}
           {isLoggedIn ? (
             <>
-              <button
-                type="button"
-                className="icon-btn hide-mobile"
-                onClick={onSignOut}
-                aria-label="Sign out"
-              >
-                <IconLogout size={16} />
-              </button>
               <button
                 type="button"
                 className="btn btn-primary btn-sm hide-mobile"
@@ -294,6 +299,17 @@ export function Header({
               >
                 Dashboard
               </button>
+              <AccountMenu
+                className="hide-mobile"
+                firstName={userFirstName}
+                isMember={isMember}
+                avatarUrl={userAvatarUrl}
+                onAccount={() => onAccountClick?.()}
+                onMembership={() => onMembershipClick?.()}
+                onInsiderInsights={() => onInsiderInsightsClick?.()}
+                onBecomeInsider={() => onBecomeInsiderClick?.()}
+                onLogout={() => onSignOut?.()}
+              />
             </>
           ) : (
             <button
@@ -302,19 +318,6 @@ export function Header({
               onClick={onLoginClick}
             >
               Login
-            </button>
-          )}
-
-          {/* Insider knop — alleen voor members */}
-          {isMember && (
-            <button
-              type="button"
-              className="btn btn-member btn-sm hide-mobile"
-              onClick={onInsiderClick}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}
-            >
-              <InsiderIcon size={16} />
-              Insider
             </button>
           )}
 
@@ -499,7 +502,7 @@ export function Header({
                       className="btn btn-member"
                       onClick={() => {
                         setMobileOpen(false)
-                        onInsiderClick?.()
+                        onMembershipClick?.()
                       }}
                       style={{
                         width: '100%',
@@ -510,7 +513,7 @@ export function Header({
                       }}
                     >
                       <InsiderIcon size={16} />
-                      Insider
+                      Membership &amp; billing
                     </button>
                   )}
                   <button

@@ -17180,3 +17180,593 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   text-underline-offset: 3px;
 }
 .follow-digest-more:hover { color: var(--text); }
+/* ════════════════════════════════════════════════════════════════════
+   § SESSIE — FEEDBACK-FIXES 21-06-2026
+   Append-only. Alle overrides en nieuwe styling voor deze feedbackbatch.
+   Per feedbackpunt gegroepeerd. Niets hierboven gewijzigd.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* § Footer-1 — telefoon en e-mail elk op een eigen regel.
+   De override op regel 4585 zet .site-footer .footer-link op display:inline
+   (zodat ze naast elkaar plakken). Deze regel heeft hogere specificiteit
+   (.site-footer .footer-contact > .footer-link) en wint, zonder de regel
+   hierboven aan te raken. */
+.site-footer .footer-contact > .footer-link {
+  display: block;
+}
+
+/* § Footer-3 — registratieregels (Company Number en VAT Number) waren wit
+   met 0.6 alpha; de footer heeft een licht thema, dus onzichtbaar. Naar de
+   gedempte tekstkleur-token zodat ze leesbaar zijn op het lichte vlak. */
+.footer-registration {
+  color: var(--text-muted);
+}
+
+/* § E1 — jaartal als derde regel op de event-datumbadge. Iets kleiner en
+   gedempter dan de maand, met een dunne scheiding erboven. */
+.event-card-date-year {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 3px;
+  padding-top: 3px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  width: 100%;
+  text-align: center;
+}
+
+/* § S2 — "Add to board" en "Compare" stonden standaard gevuld teal voor
+   members (.is-insider-unlocked) en outline-teal voor non-members. Dat
+   trekt te veel aandacht in rust. Ze worden nu neutraal-outline in rust,
+   net als Save en Share, en vullen pas in de active-state (in board /
+   in de compare-lijst) met dezelfde groene toggle-stijl als Save.
+   De kleine Insider-mark voor non-members blijft ongemoeid.
+   Tokens --surface, --surface2, --text(-muted) adapteren zelf naar dark. */
+.action-btn.is-insider,
+.action-btn.is-insider.is-insider-unlocked {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+.action-btn.is-insider:hover,
+.action-btn.is-insider.is-insider-unlocked:hover {
+  background: var(--surface2);
+  border-color: var(--border);
+  color: var(--text);
+}
+.action-btn.is-insider.is-active,
+.action-btn.is-insider.is-insider-unlocked.is-active {
+  border-color: var(--green-mid);
+  background: var(--green-pale);
+  color: var(--ct-material-dark);
+}
+[data-theme="dark"] .action-btn.is-insider.is-active,
+[data-theme="dark"] .action-btn.is-insider.is-insider-unlocked.is-active {
+  background: rgba(46, 140, 50, 0.15);
+  border-color: var(--green-mid);
+  color: #6ee7b7;
+}
+
+/* § Homepage-1 — channel-bar Variant A. De §F2.2-pillstijl (hover grijs,
+   active zwart) geldt voor de overzichtspagina's. Op de homepage (.is-nav)
+   willen we expliciete outline-knoppen die zwart vullen op hover, plus een
+   witregel boven de bar voor lucht. Alleen .is-nav, dus overzichten blijven
+   ongemoeid. */
+.channel-bar.is-nav { margin-top: 20px; }
+.channel-bar.is-nav .channel-tab {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+}
+.channel-bar.is-nav .channel-tab:hover:not(.active) {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+.channel-bar.is-nav .channel-tab.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+/* § Homepage-2 — channel-thumbnail-tooltip werd afgeknipt door overflow:hidden
+   op .hp-channel-hero. Dat overflow stond er alleen om de gradient-overlay
+   (::before) binnen de afgeronde hoeken te houden; het achtergrondbeeld wordt
+   sowieso door border-radius geclipt. We geven de ::before zijn eigen
+   border-radius en zetten de hero op overflow:visible, zodat de tooltip naar
+   buiten mag zonder afgeknipt te worden. Hoeken blijven netjes afgerond. */
+.hp-channel-hero { overflow: visible; }
+.hp-channel-hero::before { border-radius: inherit; }
+
+/* § Channel-hero herontwerp (feedback 21-06) — lager en compacter, in lijn
+   met de homepage-hero. Titel en follow-control op één regel; de description
+   staat nu wit ín de hero (de losse .channel-intro eronder is verwijderd).
+   Overrulet de eerdere ruime padding (64px) en grotere eyebrow. */
+.channel-hero-inner {
+  padding-top: 34px;
+  padding-bottom: 34px;
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.channel-hero-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+/* Titel links, bel + toggle rechts — op één regel, wrapt op smal. */
+.channel-hero-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+.channel-hero-follow {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.channel-hero-bell {
+  color: rgba(255, 255, 255, 0.8);
+  flex-shrink: 0;
+}
+.channel-hero.is-plain .channel-hero-bell {
+  color: var(--text-muted);
+}
+/* Beschrijving wit in de hero, maximaal 3 regels. */
+.channel-hero-desc {
+  margin-top: 12px;
+  -webkit-line-clamp: 3;
+  max-width: 70ch;
+  opacity: 0.92;
+}
+
+/* § F1 — bevestiging vóór ontvolgen (channel-hero follow-toggle). Hangt op de
+   bestaande .follow-pop-shell (positie, caret, achtergrond); alleen de inhoud
+   verschilt. De Unfollow-knop is zwart (--ink), conform de actie-kleur. */
+.follow-confirm-title {
+  margin: 2px 0 4px;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+.follow-confirm-sub {
+  margin: 0 0 12px;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.follow-confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.follow-confirm-cancel,
+.follow-confirm-unfollow {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+.follow-confirm-cancel {
+  background: var(--surface);
+  color: var(--text);
+}
+.follow-confirm-cancel:hover {
+  background: var(--surface2);
+}
+.follow-confirm-unfollow {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+.follow-confirm-unfollow:hover:not(:disabled) {
+  opacity: 0.88;
+}
+.follow-confirm-unfollow:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* § Books-7a vervolg (feedback 21-06) — Events/Books-tegels op de homepage.
+   1) Gelijke afbeeldingshoogte: de event-band (16:9) en de book-thumb (120px)
+      verschilden. In de homepage-split krijgen beide dezelfde vaste hoogte.
+   2) De kaart (niet de losse CTA) rekt mee zodat de kolommen even hoog zijn;
+      de "Get tickets"-knop onder de EventCard blijft op natuurlijke hoogte.
+   Alleen binnen .hp-events-books — het /book-overzicht blijft ongemoeid. */
+.hp-events-books .event-card-band,
+.hp-events-books .card-thumb.book-thumb--home {
+  height: 200px;
+  aspect-ratio: auto;
+}
+.hp-events-books .hp-eb-col > .event-card,
+.hp-events-books .hp-eb-col > .card {
+  flex: 1 1 auto;
+}
+.hp-events-books .hp-eb-col > .hp-eb-cta {
+  flex: 0 0 auto;
+  margin-top: 10px;
+}
+
+/* "Get tickets" — zwarte CTA onder de event-tegel (externe registratielink).
+   Vult de kolombreedte (de kolom is een flex-column met stretch). */
+.hp-eb-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  text-decoration: none;
+}
+.hp-eb-cta:hover {
+  opacity: 0.88;
+}
+
+/* "View book" — visuele CTA op de home-book-tegel. De hele kaart is al de
+   link; deze span is een outline-affordance die zwart vult zodra je de kaart
+   hovert. Balanceert qua hoogte met "Get tickets" ernaast. */
+.book-tile-view {
+  display: block;
+  margin-top: 10px;
+  height: 40px;
+  line-height: 38px;
+  text-align: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+.card:hover .book-tile-view {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+/* Insider-prijs inline achter de prijs op de home-book-tegel (i.p.v. een
+   aparte pill-regel — scheelt hoogte). Teal, conform de Insider-huisstijl. */
+.book-tile-insider-inline {
+  color: var(--ct-insider);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+
+/* § Topmenu — avatar + account-menu (feedback 21-06). Vervangt de losse
+   "Insider"-knop die naar de upsell linkte. De avatar krijgt een teal
+   Insider-ring voor members; het dropdown-menu past zich aan op de status
+   (Insider → Membership & Insider insights · gratis → Become an Insider).
+   Log out blijft het power-icoon in de balk, niet in dit menu. Desktop-only
+   via .hide-mobile op de wrapper. */
+.account-menu { position: relative; }
+.account-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 10px 0 5px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  transition: background var(--transition-base);
+}
+.account-menu-trigger:hover { background: var(--surface); }
+.account-avatar {
+  width: 27px;
+  height: 27px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.account-avatar.is-insider {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ct-insider);
+}
+.account-name { font-size: 13px; font-weight: 600; }
+.account-chev { color: var(--text-muted); flex-shrink: 0; }
+
+.account-pop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 250px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 60;
+  padding: 6px;
+}
+.account-pop-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 12px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 6px;
+}
+.account-pop-head .account-avatar { width: 34px; height: 34px; font-size: 12px; }
+.account-pop-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.account-pop-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ct-insider-dark);
+  background: var(--ct-insider-pale);
+  padding: 1px 7px;
+  border-radius: 8px;
+  margin-top: 3px;
+}
+.account-pop-badge.is-free { color: var(--text-muted); background: var(--surface2); }
+.account-pop-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+.account-pop-item:hover { background: var(--surface2); }
+.account-pop-item svg { color: var(--text-muted); flex-shrink: 0; }
+.account-pop-item.is-upsell { color: var(--ct-insider-dark); font-weight: 600; }
+.account-pop-item.is-upsell svg { color: var(--ct-insider); }
+
+/* § COMPARE — vergelijk-pagina (/compare). Grid met een vaste label-kolom
+   links en één kolom per material. Pill-kleuren volgen het design system
+   (groen = positief, subtiel voor de rest); de mockup leidt de functionele
+   opbouw, het design system de styling. Append-only. */
+.compare-wrap { padding-top: 28px; padding-bottom: 64px; }
+
+.compare-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.compare-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.compare-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.compare-action {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.compare-action:hover { background: var(--surface2); }
+.compare-action.is-danger { color: var(--text-muted); }
+.compare-action.is-danger:hover { color: var(--text); }
+
+/* --- Grid ------------------------------------------------------------- */
+.compare-grid {
+  display: grid;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+/* Header-rij */
+.compare-corner { background: var(--surface2); }
+.compare-mat-head {
+  position: relative;
+  padding: 16px 14px 14px;
+  background: var(--surface2);
+  border-left: 1px solid var(--border);
+  text-align: center;
+}
+.compare-mat-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+.compare-mat-remove:hover { background: var(--ink); color: var(--on-ink); }
+.compare-mat-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  margin-bottom: 10px;
+}
+.compare-mat-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.compare-mat-thumb-empty {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--surface2), var(--border));
+}
+.compare-mat-name {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  line-height: 1.25;
+  color: var(--text);
+}
+.compare-mat-brand { font-size: var(--text-xs); color: var(--text-muted); margin-top: 2px; }
+.compare-mat-code { font-size: var(--text-xs); color: var(--text-muted); }
+.compare-mat-view {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--link);
+}
+.compare-mat-view:hover { color: var(--link-hover); }
+
+/* Section-band (volle breedte) */
+.compare-section {
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  padding: 8px 14px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+/* Rijen */
+.compare-row-label {
+  padding: 11px 14px;
+  border-top: 1px solid var(--border);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  background: var(--surface);
+}
+.compare-cell {
+  padding: 11px 14px;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+/* Value-pills — semantic volgt getPillSemantic() */
+.compare-val {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.compare-val.is-positive { background: var(--green-pale); color: var(--green); }
+.compare-val.is-neutral { background: var(--surface2); color: var(--text); }
+.compare-val.is-negative { background: var(--surface2); color: var(--text-muted); }
+.compare-val.is-unknown,
+.compare-val.is-default { background: transparent; color: var(--text-muted); padding-left: 0; }
+
+/* Get-in-touch-rij */
+.compare-row-label--cta { color: var(--text); font-weight: 600; }
+.compare-cell--cta { padding: 12px 14px; }
+.compare-getintouch {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.compare-getintouch:hover { opacity: 0.88; }
+
+/* --- Guard + lege staat ---------------------------------------------- */
+.compare-guard,
+.compare-empty {
+  max-width: 520px;
+  margin: 48px auto;
+  text-align: center;
+}
+.compare-guard-title,
+.compare-empty-title {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+}
+.compare-guard-text,
+.compare-empty-text {
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0 0 22px;
+}
+.compare-guard-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.compare-guard-cta,
+.compare-empty-cta {
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 20px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.compare-guard-cta:hover,
+.compare-empty-cta:hover { opacity: 0.88; }
+.compare-guard-link { font-weight: 600; color: var(--link); }
+.compare-guard-link:hover { color: var(--link-hover); }
+
+@media (max-width: 640px) {
+  .compare-mat-view { font-size: 11px; }
+  .compare-row-label,
+  .compare-cell { padding: 9px 10px; }
+}
+
+/* § Topmenu — log-out in het account-menu (rood), met een divider erboven.
+   Vervangt het power-icoon in de balk (feedback 21-06). */
+.account-pop-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 4px;
+}
+.account-pop-item.is-logout { color: var(--red); }
+.account-pop-item.is-logout svg { color: var(--red); }
+.account-pop-item.is-logout:hover {
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+}

@@ -415,6 +415,47 @@ export async function listMaterialsWithFacets(
 }
 
 /**
+ * Haal een set materials op voor de compare-pagina (`/compare?ids=`).
+ * Hergebruikt exact het fetch-/resolve-/map-patroon van
+ * `listMaterialsWithFacets`: batch WP-include → reorder op de gevraagde
+ * volgorde → hero- en brand-naam-resolve → `mapMaterialListItem`. Het
+ * resultaat bevat `properties` (voor de vergelijk-tabel), hero, brandName
+ * en materialCode. Onbekende/offline IDs vallen simpelweg weg.
+ */
+export async function getMaterialsForCompare(
+  ids: number[],
+): Promise<MaterialListItem[]> {
+  if (ids.length === 0) return []
+
+  const rawUnordered = await fetchMaterialsByIds(ids)
+  const ordered = reorderByIds(rawUnordered, ids)
+
+  const heroIds = unique(
+    ordered.map((r) => r.featured_media).filter((id) => id > 0),
+  )
+  const brandIds = unique(
+    ordered
+      .map((r) => r.meta?.brand_id)
+      .filter((id): id is number => typeof id === 'number' && id > 0),
+  )
+
+  const [mediaMap, brandNameMap] = await Promise.all([
+    fetchMediaMap(heroIds),
+    fetchBrandNameMap(brandIds),
+  ])
+
+  return ordered.map((raw) =>
+    mapMaterialListItem(
+      raw,
+      raw.featured_media > 0 ? mediaMap.get(raw.featured_media) ?? null : null,
+      typeof raw.meta?.brand_id === 'number' && raw.meta.brand_id > 0
+        ? brandNameMap.get(raw.meta.brand_id) ?? null
+        : null,
+    ),
+  )
+}
+
+/**
  * Helper: haal meerdere materials in één call via `?include=`.
  *
  * WP REST `per_page` heeft een maximum van 100 — als FacetWP ooit meer

@@ -447,7 +447,19 @@ export default async function HomePage() {
                     </Link>
                   </div>
                   {featuredEvent ? (
-                    <EventCard event={featuredEvent} />
+                    <>
+                      <EventCard event={featuredEvent} />
+                      {featuredEvent.externalWebsite && (
+                        <a
+                          href={featuredEvent.externalWebsite}
+                          className="hp-eb-cta"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Get tickets →
+                        </a>
+                      )}
+                    </>
                   ) : (
                     <p className="hp-empty">No upcoming events at this time.</p>
                   )}
@@ -518,11 +530,11 @@ export default async function HomePage() {
                 Show your material to architects &amp; specifiers
               </p>
               <p className="sidebar-cta-desc">
-                Add your materials to the platform and become visible in a
+                List your materials on the platform and become visible in a
                 curated guide for sustainable architecture.
               </p>
-              <Link href="/register" className="btn btn-green">
-                Add your materials →
+              <Link href="/become-a-partner" className="btn btn-green">
+                List your materials →
               </Link>
             </div>
 

@@ -17,9 +17,11 @@
  *    slot-emoji.
  * `compact` = sidebar-variant (punt 8): vult de kolombreedte.
  *
- * Channels komen als prop binnen (curated, in de footer opgehaald; in de
- * sidebar de channels van het artikel). Breder volgen gebeurt via de toggle
- * die overal op de site staat.
+ * Channels zijn generiek: het blok haalt de volledige catalogus op (op aantal
+ * gesorteerd) en toont de top-8, met "Show all" voor de rest. Overal hetzelfde
+ * — footer én detailpagina's. Een optionele `channels`-seed voorkomt alleen
+ * flikkering vóór de fetch; item-channels worden bewust niet meer doorgegeven.
+ * Breder volgen gebeurt via de toggle die overal op de site staat.
  */
 
 import { useEffect, useState } from 'react'
@@ -55,7 +57,13 @@ export interface DigestChannel {
 }
 
 export interface FollowDigestBlockProps {
-  channels: DigestChannel[]
+  /**
+   * F4a: optionele SSR-seed met de generieke top-channels (op aantal
+   * gesorteerd). Puur om flikkering te voorkomen vóór de client-fetch; het
+   * blok toont sowieso de top-8 uit de volledige catalogus. NOOIT de
+   * item-channels van een detailpagina doorgeven — dit blok is generiek.
+   */
+  channels?: DigestChannel[]
   /** Sidebar-variant: vult de kolombreedte (punt 8). */
   compact?: boolean
   createAccountHref?: string
@@ -63,7 +71,7 @@ export interface FollowDigestBlockProps {
 }
 
 export function FollowDigestBlock({
-  channels,
+  channels = [],
   compact = false,
   createAccountHref = '/register',
   signInHref = '/sign-in',
@@ -97,13 +105,14 @@ export function FollowDigestBlock({
     }
   }, [])
 
-  // F4a: relevante channels eerst, daarna de rest van de catalogus (deduped).
-  const extraChannels = allChannels.filter(
-    (c) => !channels.some((p) => p.id === c.id),
-  )
-  const mergedChannels = [...channels, ...extraChannels]
-  const hasMore = extraChannels.length > 0
-  const visibleChannels = expanded ? mergedChannels : channels
+  // F4a: het blok is generiek. Bron = de volledige catalogus (op aantal
+  // gesorteerd door /api/channels), met de optionele SSR-seed als fallback
+  // zolang de fetch nog loopt. Default tonen we de top-8; "Show all" toont
+  // de rest. Item-channels spelen hier bewust geen rol meer.
+  const source = allChannels.length > 0 ? allChannels : channels
+  const TOP_N = 8
+  const hasMore = source.length > TOP_N
+  const visibleChannels = expanded ? source : source.slice(0, TOP_N)
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -119,7 +128,7 @@ export function FollowDigestBlock({
           .filter((row) => row.entityType === 'channel')
           .map((row) => Number(row.entityId)),
       )
-      const preselected = mergedChannels.filter((channel) => followedIds.has(channel.id))
+      const preselected = source.filter((channel) => followedIds.has(channel.id))
       if (preselected.length > 0) {
         setSelected(new Set(preselected.map((channel) => channel.id)))
       }
@@ -138,7 +147,7 @@ export function FollowDigestBlock({
     })
 
   const count = selected.size
-  const selectedLabels = mergedChannels.filter((c) => selected.has(c.id)).map((c) => c.label)
+  const selectedLabels = source.filter((c) => selected.has(c.id)).map((c) => c.label)
 
   const start = async () => {
     if (!isLoggedIn) {
@@ -205,7 +214,7 @@ export function FollowDigestBlock({
           aria-expanded={expanded}
           onClick={() => setExpanded((v) => !v)}
         >
-          {expanded ? 'Show fewer' : `Show all ${mergedChannels.length} channels`}
+          {expanded ? 'Show fewer' : `Show all ${source.length} channels`}
         </button>
       )}
 

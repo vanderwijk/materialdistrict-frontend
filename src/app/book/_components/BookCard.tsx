@@ -98,35 +98,43 @@ export function BookCard({
               <>
                 <span className="book-tile-price">{formatEur(exReg)}</span>
                 <span className="book-tile-vat">ex. VAT</span>
-                {hasDiscount && (
-                  <span className="book-tile-insider">
-                    <span className="book-tile-insider-pill">
-                      Insider price {formatEur(exInsider)}
+                {hasDiscount &&
+                  (isHome ? (
+                    <span className="book-tile-insider-inline">
+                      · Insider {formatEur(exInsider)}
                     </span>
-                  </span>
-                )}
+                  ) : (
+                    <span className="book-tile-insider">
+                      <span className="book-tile-insider-pill">
+                        Insider price {formatEur(exInsider)}
+                      </span>
+                    </span>
+                  ))}
               </>
             )}
           </div>
         )}
 
-        {book.inStock ? (
-          !isHome && (
-            <button
-              type="button"
-              className="book-tile-add"
-              onClick={onAdd}
-              disabled={adding}
-              aria-label={`Add ${book.title} to cart`}
-            >
-              {added ? 'Added ✓' : adding ? 'Adding…' : 'Add to cart'}
-            </button>
-          )
-        ) : !isHome ? (
+        {isHome ? (
+          /* Home-tegel: de hele kaart is al een link naar het boek; deze CTA is
+             puur een visuele affordance (span, geen geneste link) en balanceert
+             qua hoogte met de "Get tickets"-knop op de event-tegel ernaast. */
+          <span className="book-tile-view">View book →</span>
+        ) : book.inStock ? (
+          <button
+            type="button"
+            className="book-tile-add"
+            onClick={onAdd}
+            disabled={adding}
+            aria-label={`Add ${book.title} to cart`}
+          >
+            {added ? 'Added ✓' : adding ? 'Adding…' : 'Add to cart'}
+          </button>
+        ) : (
           <span className="book-tile-add is-disabled" aria-disabled="true">
             Sold out
           </span>
-        ) : null}
+        )}
       </Card.Body>
     </Card>
   )

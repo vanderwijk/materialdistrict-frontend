@@ -45,7 +45,7 @@ export function HeaderShell() {
   const router = useRouter()
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
-  const { isLoggedIn, isMember, signOut } = useAuth()
+  const { isLoggedIn, isMember, user, signOut } = useAuth()
   const { itemCount } = useCart()
 
   function handleLoginClick() {
@@ -69,13 +69,18 @@ export function HeaderShell() {
       currentSection={getCurrentSection(pathname)}
       isLoggedIn={isLoggedIn}
       isMember={isMember}
+      userFirstName={user?.firstName || user?.displayName || 'Account'}
+      userAvatarUrl={user?.avatarUrl}
       cartCount={itemCount}
       theme={theme}
       onThemeToggle={toggleTheme}
       onLoginClick={handleLoginClick}
       onDashboardClick={() => router.push('/dashboard')}
       onSignOut={handleSignOut}
-      onInsiderClick={() => router.push('/membership')}
+      onAccountClick={() => router.push('/dashboard/profile')}
+      onMembershipClick={() => router.push('/dashboard/membership')}
+      onInsiderInsightsClick={() => router.push('/dashboard/insider-insights')}
+      onBecomeInsiderClick={() => router.push('/membership')}
       onSearch={(q) => {
         if (q.trim()) {
           router.push(`/search?q=${encodeURIComponent(q.trim())}`)

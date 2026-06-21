@@ -273,6 +273,9 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
                 </div>
               </section>
             )}
+
+            {/* Google Preferred Source CTA — binnen het witte content-vel. */}
+            <PreferredSourceEndBlock placement="book" />
           </div>
 
           {/* Sidebar: koop-card (donker) + uitgever-kaartje. */}
@@ -300,8 +303,6 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
               </Link>
             )}
           </aside>
-
-          <PreferredSourceEndBlock placement="book" />
 
           <div className="detail-prevnext-row">
             <BookPrevNext prev={prev} next={next} />

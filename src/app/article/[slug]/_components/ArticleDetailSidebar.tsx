@@ -26,10 +26,7 @@
 
 import { useAuth } from '@/components/providers/AuthContext'
 import { Button } from '@/components/ui'
-import {
-  FollowDigestBlock,
-  type DigestChannel,
-} from '@/components/layout/FollowDigestBlock'
+import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
 
 export interface ArticleSidebarMaterial {
   id: number
@@ -41,13 +38,10 @@ export interface ArticleSidebarMaterial {
 
 export interface ArticleDetailSidebarProps {
   latestMaterials: ArticleSidebarMaterial[]
-  /** §VISUAL-ROUND-18-06 punt 8: channels van het artikel, voor het digest-blok. */
-  channels: DigestChannel[]
 }
 
 export function ArticleDetailSidebar({
   latestMaterials,
-  channels,
 }: ArticleDetailSidebarProps) {
   const { isMember } = useAuth()
 
@@ -92,7 +86,7 @@ export function ArticleDetailSidebar({
       )}
 
       {/* §VISUAL-ROUND-18-06 punt 8: digest-blok i.p.v. het oude e-mailveld. */}
-      <FollowDigestBlock channels={channels} compact />
+      <FollowDigestBlock compact />
 
       {/* Insider upsell — alleen voor niet-members */}
       {!isMember && (
