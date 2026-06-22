@@ -9,7 +9,7 @@
  * preview, custom user-endpoints, en write-actions in Fase 2.
  *
  * Architectuur-regels:
- * - Geen eigen filterlogica — alles via FacetWP voor materials
+ * - Materials filtering via `/md/v2/materials/facet-query` (geen FacetWP)
  * - ISR via `next: { revalidate }` op fetch-options
  * - Strict types op alle endpoints
  *

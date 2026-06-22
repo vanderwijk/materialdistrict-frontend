@@ -1,8 +1,8 @@
 /**
- * FacetWP REST client
+ * Materials filter client
  * ----------------------------------------------------------------------
- * Communiceert met `POST /wp-json/facetwp/v1/fetch` voor de
- * materials-overzichtspagina.
+ * Communiceert met `POST /md/v2/materials/facet-query` voor de
+ * materials-overzichtspagina (native WP queries — geen FacetWP).
  *
  * Bevestigd contract (Johan, sessie 4, 12-05-2026):
  *  - Body wordt ingepakt in `{ data: { facets, query_args } }`
@@ -23,9 +23,8 @@
  *  - Altijd via FacetWP, nooit eigen filterlogica
  *  - Geen client-side filtering
  *
- * Productie-vereiste (open issue W12):
- *  - `/facetwp/v1/fetch` moet aan WP-zijde geactiveerd zijn via het
- *    `facetwp_api_can_access`-filter. Door Johan inmiddels open gezet.
+ * Productie-vereiste:
+ *  - `POST /md/v2/materials/facet-query` op de MaterialDistrict-plugin.
  */
 
 import {
@@ -43,7 +42,7 @@ import { WP_API_URL, isCacheDisabled } from './wordpress'
 // Endpoint + constants
 // --------------------------------------------------------------------
 
-const FACETWP_FETCH_ENDPOINT = `${WP_API_URL}/facetwp/v1/fetch`
+const FACETWP_FETCH_ENDPOINT = `${WP_API_URL}/md/v2/materials/facet-query`
 
 /** Default per-page voor de materials-grid. Aansluit op mockup (3 kolommen × 4 rijen). */
 const DEFAULT_PER_PAGE = 12
@@ -99,7 +98,7 @@ function buildFacetsPayload(
 // --------------------------------------------------------------------
 
 /**
- * Low-level POST naar `/facetwp/v1/fetch`. Geeft de ruwe response terug.
+ * Low-level POST naar `/md/v2/materials/facet-query`. Geeft de ruwe response terug.
  *
  * Gebruik bij voorkeur `fetchMaterialsFiltered` of
  * `fetchMaterialFacetsBaseline` — die zorgen voor het 18-keys-formaat
@@ -141,7 +140,7 @@ export async function facetwpFetch(
       // body niet parsbaar — laat undefined
     }
     throw new FacetWPError(
-      `FacetWP fetch failed (${res.status} ${res.statusText})`,
+      `Material facet query failed (${res.status} ${res.statusText})`,
       res.status,
       payload,
     )
