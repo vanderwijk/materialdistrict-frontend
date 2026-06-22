@@ -13452,6 +13452,12 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   align-items: start;
 }
 
+.cart-main {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
 .cart-items {
   display: flex;
   flex-direction: column;
@@ -14637,7 +14643,6 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   border: 1px solid var(--green-light);
   border-radius: var(--radius);
   padding: 10px 14px;
-  margin-bottom: 16px;
   font-size: 14px;
   font-weight: 500;
 }

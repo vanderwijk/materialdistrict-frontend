@@ -123,7 +123,7 @@ export function CartView() {
 
   return (
     <div className="cart-layout">
-      <div className="cart-items">
+      <div className="cart-main">
         {freeShipRemaining > 0 && (
           <div className="cart-freeship" role="status">
             Spend <strong>{formatEur(freeShipRemaining)}</strong> more for free
@@ -131,63 +131,65 @@ export function CartView() {
           </div>
         )}
 
-        {cart.items.map((item) => {
-          const img = item.images?.[0]
-          const slug = slugFromPermalink(item.permalink)
-          const lineUnit = item.prices.currency_minor_unit ?? minor
-          // Regelprijs ex btw (line_subtotal), zodat de regel klopt met het
-          // ex-btw subtotaal + de aparte BTW-regel (punt 1).
-          const lineEx = moneyN(item.totals.line_subtotal, lineUnit)
-          const isLast = item.quantity <= 1
-          return (
-            <div key={item.key} className="cart-item">
-              <div className="cart-item-thumb">
-                {img ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={img.thumbnail ?? img.src}
-                    alt={img.alt || item.name}
-                  />
-                ) : null}
-              </div>
+        <div className="cart-items">
+          {cart.items.map((item) => {
+            const img = item.images?.[0]
+            const slug = slugFromPermalink(item.permalink)
+            const lineUnit = item.prices.currency_minor_unit ?? minor
+            // Regelprijs ex btw (line_subtotal), zodat de regel klopt met het
+            // ex-btw subtotaal + de aparte BTW-regel (punt 1).
+            const lineEx = moneyN(item.totals.line_subtotal, lineUnit)
+            const isLast = item.quantity <= 1
+            return (
+              <div key={item.key} className="cart-item">
+                <div className="cart-item-thumb">
+                  {img ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={img.thumbnail ?? img.src}
+                      alt={img.alt || item.name}
+                    />
+                  ) : null}
+                </div>
 
-              <div className="cart-item-main">
-                <a className="cart-item-title" href={`/book/${slug}`}>
-                  {item.name}
-                </a>
+                <div className="cart-item-main">
+                  <a className="cart-item-title" href={`/book/${slug}`}>
+                    {item.name}
+                  </a>
 
-                <div className="cart-item-controls">
-                  <div className="cart-qty">
-                    <button
-                      type="button"
-                      className={isLast ? 'cart-qty-trash' : undefined}
-                      onClick={() =>
-                        isLast
-                          ? removeItem(item.key)
-                          : updateItem(item.key, item.quantity - 1)
-                      }
-                      disabled={loading}
-                      aria-label={isLast ? 'Remove item' : 'Decrease quantity'}
-                    >
-                      {isLast ? <TrashIcon /> : '−'}
-                    </button>
-                    <span className="cart-qty-value">{item.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateItem(item.key, item.quantity + 1)}
-                      disabled={loading}
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
+                  <div className="cart-item-controls">
+                    <div className="cart-qty">
+                      <button
+                        type="button"
+                        className={isLast ? 'cart-qty-trash' : undefined}
+                        onClick={() =>
+                          isLast
+                            ? removeItem(item.key)
+                            : updateItem(item.key, item.quantity - 1)
+                        }
+                        disabled={loading}
+                        aria-label={isLast ? 'Remove item' : 'Decrease quantity'}
+                      >
+                        {isLast ? <TrashIcon /> : '−'}
+                      </button>
+                      <span className="cart-qty-value">{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => updateItem(item.key, item.quantity + 1)}
+                        disabled={loading}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="cart-item-linetotal">{formatEur(lineEx)}</div>
-            </div>
-          )
-        })}
+                <div className="cart-item-linetotal">{formatEur(lineEx)}</div>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       <aside className="cart-summary">
