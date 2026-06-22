@@ -14,6 +14,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 
 export type RecentlyViewedEntity = 'articles' | 'brands' | 'events' | 'talks'
 
@@ -49,6 +50,10 @@ function readList(entity: RecentlyViewedEntity): RecentlyViewedEntry[] {
           typeof (x as RecentlyViewedEntry).title === 'string' &&
           typeof (x as RecentlyViewedEntry).href === 'string',
       )
+      .map((entry) => ({
+        ...entry,
+        thumbnailUrl: normalizeMediaUrl(entry.thumbnailUrl),
+      }))
       .slice(0, MAX_ITEMS)
   } catch {
     return []
@@ -71,7 +76,7 @@ export function addRecentlyViewed(
   const current = readList(entry.type)
   const without = current.filter((x) => x.slug !== entry.slug)
   const next: RecentlyViewedEntry[] = [
-    { ...entry, viewedAt: Date.now() },
+    { ...entry, thumbnailUrl: normalizeMediaUrl(entry.thumbnailUrl), viewedAt: Date.now() },
     ...without,
   ].slice(0, MAX_ITEMS)
   writeList(entry.type, next)

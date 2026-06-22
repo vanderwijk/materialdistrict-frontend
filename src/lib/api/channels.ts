@@ -15,6 +15,7 @@
 import { cache } from 'react'
 import { wpFetch, getTerms, getTerm } from './wordpress'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 
 export interface Channel {
   id: number
@@ -194,6 +195,6 @@ export const getChannelTerm = cache(async function getChannelTerm(
     slug: term.slug,
     label: decodeHtmlEntities(term.name),
     description: typeof term.description === 'string' ? term.description : '',
-    thumbnailUrl: term.theme_thumbnail?.url ?? null,
+    thumbnailUrl: normalizeMediaUrl(term.theme_thumbnail?.url ?? null),
   }
 })

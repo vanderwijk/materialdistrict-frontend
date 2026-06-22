@@ -17,6 +17,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 
 // --------------------------------------------------------------------
 // Constants
@@ -57,6 +58,10 @@ function readList(): RecentlyViewedMaterial[] {
           typeof (x as RecentlyViewedMaterial).slug === 'string' &&
           typeof (x as RecentlyViewedMaterial).title === 'string',
       )
+      .map((entry) => ({
+        ...entry,
+        thumbnailUrl: normalizeMediaUrl(entry.thumbnailUrl),
+      }))
       .slice(0, MAX_ITEMS)
   } catch {
     return []
@@ -80,7 +85,7 @@ export function addToRecentlyViewed(item: Omit<RecentlyViewedMaterial, 'viewedAt
   const current = readList()
   const without = current.filter((x) => x.slug !== item.slug)
   const next: RecentlyViewedMaterial[] = [
-    { ...item, viewedAt: Date.now() },
+    { ...item, thumbnailUrl: normalizeMediaUrl(item.thumbnailUrl), viewedAt: Date.now() },
     ...without,
   ].slice(0, MAX_ITEMS)
   writeList(next)

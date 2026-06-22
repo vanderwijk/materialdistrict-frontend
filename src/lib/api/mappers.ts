@@ -53,6 +53,7 @@ import {
 
 import { parseMaterialProperties, mergeMaterialProperties } from '@/lib/utils/material-properties'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import { toStoryType } from '@/lib/config/story-types'
 import { toEventType } from '@/lib/config/event-types'
 
@@ -93,7 +94,7 @@ export function mapMedia(raw: WPMediaResponse): MediaImage {
   if (raw.media_details.sizes) {
     for (const [key, size] of Object.entries(raw.media_details.sizes)) {
       sizes[key as ImageSizeKey] = {
-        url: size.source_url,
+        url: normalizeMediaUrl(size.source_url) ?? size.source_url,
         width: size.width,
         height: size.height,
         filesize: size.filesize,
@@ -106,7 +107,7 @@ export function mapMedia(raw: WPMediaResponse): MediaImage {
   // in de sizes-array maar gebruiken alleen `source_url` op het top-level.
   if (!sizes.full) {
     sizes.full = {
-      url: raw.source_url,
+      url: normalizeMediaUrl(raw.source_url) ?? raw.source_url,
       width: raw.media_details.width,
       height: raw.media_details.height,
       mimeType: raw.mime_type,
@@ -119,7 +120,7 @@ export function mapMedia(raw: WPMediaResponse): MediaImage {
     caption: raw.caption?.rendered ?? '',
     description: raw.description?.rendered ?? '',
     mimeType: raw.mime_type,
-    sourceUrl: raw.source_url,
+    sourceUrl: normalizeMediaUrl(raw.source_url) ?? raw.source_url,
     width: raw.media_details.width,
     height: raw.media_details.height,
     sizes,
