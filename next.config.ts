@@ -50,7 +50,7 @@ const ContentSecurityPolicy = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com",
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://secure.gravatar.com`,
+  `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://media.materialdistrict.com https://secure.gravatar.com`,
   "font-src 'self' data:",
   `connect-src ${connectSrc.join(' ')}`,
   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com",
@@ -101,6 +101,13 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cms.materialdistrict.com',
         pathname: '/wp-content/**',
+      },
+      {
+        // CDN-host voor media: de S3-offload mu-plugin herschrijft alle
+        // upload-URL's naar dit domein (zie mu-plugins/md-s3-media-offload.php).
+        protocol: 'https',
+        hostname: 'media.materialdistrict.com',
+        pathname: '/wp-content/uploads/**',
       },
       {
         protocol: 'https',
