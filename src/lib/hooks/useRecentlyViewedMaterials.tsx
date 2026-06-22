@@ -50,19 +50,28 @@ function readList(): RecentlyViewedMaterial[] {
     if (!raw) return []
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter(
-        (x): x is RecentlyViewedMaterial =>
-          x &&
-          typeof x === 'object' &&
-          typeof (x as RecentlyViewedMaterial).slug === 'string' &&
-          typeof (x as RecentlyViewedMaterial).title === 'string',
-      )
+    const filtered = parsed.filter(
+      (x): x is RecentlyViewedMaterial =>
+        x &&
+        typeof x === 'object' &&
+        typeof (x as RecentlyViewedMaterial).slug === 'string' &&
+        typeof (x as RecentlyViewedMaterial).title === 'string',
+    )
+    const normalized = filtered
       .map((entry) => ({
         ...entry,
         thumbnailUrl: normalizeMediaUrl(entry.thumbnailUrl),
       }))
       .slice(0, MAX_ITEMS)
+
+    const migrated = filtered.some(
+      (entry, index) => entry.thumbnailUrl !== normalized[index]?.thumbnailUrl,
+    )
+    if (migrated) {
+      writeList(normalized)
+    }
+
+    return normalized
   } catch {
     return []
   }

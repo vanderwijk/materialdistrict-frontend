@@ -41,20 +41,29 @@ function readList(entity: RecentlyViewedEntity): RecentlyViewedEntry[] {
     if (!raw) return []
     const parsed = JSON.parse(raw) as unknown
     if (!Array.isArray(parsed)) return []
-    return parsed
-      .filter(
-        (x): x is RecentlyViewedEntry =>
-          x &&
-          typeof x === 'object' &&
-          typeof (x as RecentlyViewedEntry).slug === 'string' &&
-          typeof (x as RecentlyViewedEntry).title === 'string' &&
-          typeof (x as RecentlyViewedEntry).href === 'string',
-      )
+    const filtered = parsed.filter(
+      (x): x is RecentlyViewedEntry =>
+        x &&
+        typeof x === 'object' &&
+        typeof (x as RecentlyViewedEntry).slug === 'string' &&
+        typeof (x as RecentlyViewedEntry).title === 'string' &&
+        typeof (x as RecentlyViewedEntry).href === 'string',
+    )
+    const normalized = filtered
       .map((entry) => ({
         ...entry,
         thumbnailUrl: normalizeMediaUrl(entry.thumbnailUrl),
       }))
       .slice(0, MAX_ITEMS)
+
+    const migrated = filtered.some(
+      (entry, index) => entry.thumbnailUrl !== normalized[index]?.thumbnailUrl,
+    )
+    if (migrated) {
+      writeList(entity, normalized)
+    }
+
+    return normalized
   } catch {
     return []
   }

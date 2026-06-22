@@ -28,6 +28,7 @@
 
 import Link from 'next/link'
 import { useRecentlyViewedMaterials } from '@/lib/hooks/useRecentlyViewedMaterials'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import { IconDelete } from '@/components/ui/icons'
 
 export interface RecentlyViewedSectionProps {
@@ -63,7 +64,7 @@ export function RecentlyViewedSection({
               <span className="recently-viewed-thumb">
                 {item.thumbnailUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.thumbnailUrl} alt="" />
+                  <img src={normalizeMediaUrl(item.thumbnailUrl) ?? item.thumbnailUrl} alt="" />
                 ) : (
                   <span
                     className="recently-viewed-thumb-placeholder"

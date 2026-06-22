@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { ReactNode, MouseEventHandler, KeyboardEvent } from 'react'
 import { cn } from '@/lib/utils/cn'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import { HoverPrefetchLink } from './HoverPrefetchLink'
 
 // ============================================================
@@ -170,14 +171,16 @@ function CardThumb({
   children,
   className,
 }: CardThumbProps) {
+  const normalizedSrc = src ? normalizeMediaUrl(src) ?? src : undefined
+
   return (
     <div
       className={cn('card-thumb', className)}
       style={background ? { background } : undefined}
     >
-      {src && (
+      {normalizedSrc && (
         <Image
-          src={src}
+          src={normalizedSrc}
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
