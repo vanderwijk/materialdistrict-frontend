@@ -73,15 +73,15 @@ import {
   type ListTalksParams,
   type WPMaterialRawResponse,
   type WPTermResponse,
-  getArticleBySlug as fetchArticleBySlugRaw,
+  getArticleBySlug as _fetchArticleBySlugRaw,
   getArticleRelated as fetchArticleRelatedRaw,
   RELATED_DEFAULT_LIMIT,
   getAttachmentsForPost,
-  getBrandBySlug as fetchBrandBySlugRaw,
-  getEventBySlug as fetchEventBySlugRaw,
-  getMaterialBySlug as fetchMaterialBySlugRaw,
+  getBrandBySlug as _fetchBrandBySlugRaw,
+  getEventBySlug as _fetchEventBySlugRaw,
+  getMaterialBySlug as _fetchMaterialBySlugRaw,
   getMedia,
-  getTalkBySlug as fetchTalkBySlugRaw,
+  getTalkBySlug as _fetchTalkBySlugRaw,
   getPageBySlug as fetchPageBySlugRaw,
   getTerms,
   listArticles as listArticlesRaw,
@@ -91,6 +91,13 @@ import {
   listTalks as listTalksRaw,
   wpFetch,
 } from './wordpress'
+
+/** Per-request dedupe for slug lookups shared by metadata + page renders. */
+const fetchMaterialBySlugRaw = cache(_fetchMaterialBySlugRaw)
+const fetchArticleBySlugRaw = cache(_fetchArticleBySlugRaw)
+const fetchBrandBySlugRaw = cache(_fetchBrandBySlugRaw)
+const fetchEventBySlugRaw = cache(_fetchEventBySlugRaw)
+const fetchTalkBySlugRaw = cache(_fetchTalkBySlugRaw)
 
 // --------------------------------------------------------------------
 // Material
@@ -115,7 +122,7 @@ export interface GetMaterialOptions {
  *
  * Resolves draaien parallel waar mogelijk (Promise.all).
  */
-export async function getMaterial(
+export const getMaterial = cache(async function getMaterial(
   slug: string,
   options: GetMaterialOptions = {},
 ): Promise<Material | null> {
@@ -135,7 +142,7 @@ export async function getMaterial(
 
   const gallery = splitGallery(attachments, raw.featured_media)
   return mapMaterial(raw, gallery)
-}
+})
 
 // --------------------------------------------------------------------
 // Material + keywords (detail-page orchestrator) — sessie 6 performance
@@ -186,7 +193,7 @@ export interface MaterialDetailResult {
  * Keywords, brand-naam en channel-pills komen uit embedded `meta` op het
  * material-object (geen extra REST-roundtrips).
  */
-export async function getMaterialDetail(
+export const getMaterialDetail = cache(async function getMaterialDetail(
   slug: string,
 ): Promise<MaterialDetailResult | null> {
   const raw = await fetchMaterialBySlugRaw(slug)
@@ -229,7 +236,7 @@ export async function getMaterialDetail(
     materialCategoryTerms,
     channels: mapMaterialChannelsFromRaw(raw),
   }
-}
+})
 
 export interface ListMaterialsResult {
   items: MaterialListItem[]
@@ -311,6 +318,10 @@ export interface ListMaterialsWithFacetsParams {
   sort?: MaterialSortValue
   /** Vrije zoekterm. */
   search?: string
+  /** Sla baseline-fetch over wanneer filter-secties niet nodig zijn (prev/next). */
+  skipBaseline?: boolean
+  /** Brand-naam batch-resolve. Default true. */
+  resolveBrandName?: boolean
 }
 
 export interface ListMaterialsWithFacetsResult {
@@ -350,7 +361,9 @@ export interface ListMaterialsWithFacetsResult {
 export async function listMaterialsWithFacets(
   params: ListMaterialsWithFacetsParams = {},
 ): Promise<ListMaterialsWithFacetsResult> {
-  // 1 + 2: parallel — filtered query én ongefilterde baseline
+  const resolveBrandName = params.resolveBrandName ?? true
+
+  // 1 + 2: parallel — filtered query én ongefilterde baseline (optioneel)
   const [filteredResponse, baselineResponse] = await Promise.all([
     fetchMaterialsFiltered({
       facets: params.selection,
@@ -359,7 +372,7 @@ export async function listMaterialsWithFacets(
       sort: params.sort,
       search: params.search,
     }),
-    fetchMaterialFacetsBaseline(),
+    params.skipBaseline ? Promise.resolve(null) : fetchMaterialFacetsBaseline(),
   ])
 
   // 3: WP REST batch-fetch — alleen als er results zijn
@@ -375,11 +388,13 @@ export async function listMaterialsWithFacets(
   const heroIds = unique(
     orderedRawItems.map((r) => r.featured_media).filter((id) => id > 0),
   )
-  const brandIds = unique(
-    orderedRawItems
-      .map((r) => r.meta?.brand_id)
-      .filter((id): id is number => typeof id === 'number' && id > 0),
-  )
+  const brandIds = resolveBrandName
+    ? unique(
+        orderedRawItems
+          .map((r) => r.meta?.brand_id)
+          .filter((id): id is number => typeof id === 'number' && id > 0),
+      )
+    : []
 
   const [mediaMap, brandNameMap] = await Promise.all([
     fetchMediaMap(heroIds),
@@ -390,17 +405,19 @@ export async function listMaterialsWithFacets(
     mapMaterialListItem(
       raw,
       raw.featured_media > 0 ? mediaMap.get(raw.featured_media) ?? null : null,
-      typeof raw.meta?.brand_id === 'number' && raw.meta.brand_id > 0
+      resolveBrandName &&
+        typeof raw.meta?.brand_id === 'number' &&
+        raw.meta.brand_id > 0
         ? brandNameMap.get(raw.meta.brand_id) ?? null
         : null,
     ),
   )
 
   // FilterSections: baseline = volledige set, filtered = counts + selected
-  const filterSections = mapFacetWPToFilterSections(
-    baselineResponse,
-    filteredResponse,
-  )
+  const filterSections =
+    baselineResponse !== null
+      ? mapFacetWPToFilterSections(baselineResponse, filteredResponse)
+      : []
 
   return {
     items,
@@ -615,7 +632,7 @@ export async function listMaterialsForBrandArchive(
 // Brand
 // --------------------------------------------------------------------
 
-export async function getBrand(
+export const getBrand = cache(async function getBrand(
   slug: string,
   options: { resolve?: { gallery?: boolean } } = {},
 ): Promise<Brand | null> {
@@ -640,7 +657,7 @@ export async function getBrand(
   const gallery = splitGallery(photos, undefined)
 
   return mapBrand(raw, gallery, logo)
-}
+})
 
 export async function listBrands(
   params: ListBrandsParams & { resolveLogo?: boolean } = {},
@@ -739,7 +756,9 @@ export async function getBrandCountryOptions(
     .sort((a, b) => a.label.localeCompare(b.label))
 }
 
-export async function getArticle(slug: string): Promise<Article | null> {
+export const getArticle = cache(async function getArticle(
+  slug: string,
+): Promise<Article | null> {
   const raw = await fetchArticleBySlugRaw(slug)
   if (!raw) return null
   // §F2.8 punt 4: gallery uit de aan-de-post-gehangen media (zelfde
@@ -754,7 +773,7 @@ export async function getArticle(slug: string): Promise<Article | null> {
     (raw.featured_media > 0 ? await getMediaImage(raw.featured_media) : null)
   // Author-naam-resolve: TODO sessie 2-vervolg via /wp/v2/users/<id>
   return mapArticle(raw, hero, null, gallery)
-}
+})
 
 // --------------------------------------------------------------------
 // Page (statische contentpagina's) — sessie 11
@@ -803,9 +822,8 @@ export interface StoryTypeOption {
  * Bouwt de story-type-filteropties voor het `/article` overzicht.
  *
  * Sinds sessie 6b is `story_type` een echte WP-taxonomy. De sidebar-
- * tellingen komen uit `getStoryTypeCounts()`: per type een lichte
- * `listArticles`-call (`per_page=1`) zodat de count overeenkomt met de
- * plugin-filter (news telt ook ongetypeerde artikelen mee).
+ * tellingen komen uit `getStoryTypeCounts()`: één `/md/v2/story-types`-call
+ * plus een lichte news-filter-call (news telt ook ongetypeerde artikelen mee).
  *
  * Belangrijke regel — géén fallback-naar-`'news'` voor onbekende slugs in
  * de optie-set. De mapper-default `'news'` in `toStoryType()` gaat over de
@@ -873,7 +891,9 @@ export async function getRelatedContent(
   }
 }
 
-export async function getEvent(slug: string): Promise<Event | null> {
+export const getEvent = cache(async function getEvent(
+  slug: string,
+): Promise<Event | null> {
   const raw = await fetchEventBySlugRaw(slug)
   if (!raw) return null
 
@@ -893,7 +913,7 @@ export async function getEvent(slug: string): Promise<Event | null> {
   const gallery = splitGallery(galleryImages, heroId ?? undefined)
 
   return mapEvent(raw, hero, gallery)
-}
+})
 
 export async function listEvents(
   params: ListEventsParams & { resolveHero?: boolean } = {},
@@ -917,13 +937,15 @@ export async function listEvents(
 // Talk
 // --------------------------------------------------------------------
 
-export async function getTalk(slug: string): Promise<Talk | null> {
+export const getTalk = cache(async function getTalk(
+  slug: string,
+): Promise<Talk | null> {
   const raw = await fetchTalkBySlugRaw(slug)
   if (!raw) return null
   const hero =
     raw.featured_media > 0 ? await getMediaImage(raw.featured_media) : null
   return mapTalk(raw, hero)
-}
+})
 
 export async function listTalks(
   params: ListTalksParams & { resolveHero?: boolean } = {},

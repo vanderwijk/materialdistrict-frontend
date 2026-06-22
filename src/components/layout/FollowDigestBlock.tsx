@@ -70,6 +70,8 @@ export interface FollowDigestBlockProps {
   signInHref?: string
 }
 
+const TOP_N = 8
+
 export function FollowDigestBlock({
   channels = [],
   compact = false,
@@ -89,8 +91,13 @@ export function FollowDigestBlock({
   }, [hydratedFrequency])
 
   // F4a: haal de volledige channel-catalogus op zodat "Show all" alle channels
-  // toont. De doorgegeven `channels` blijven vooraan staan als de relevante set.
+  // toont. SSR-seed met meer dan TOP_N items is al compleet — geen extra fetch.
   useEffect(() => {
+    if (channels.length > TOP_N) {
+      setAllChannels(channels)
+      return
+    }
+
     let active = true
     fetch('/api/channels')
       .then((r) => (r.ok ? r.json() : null))
@@ -103,14 +110,13 @@ export function FollowDigestBlock({
     return () => {
       active = false
     }
-  }, [])
+  }, [channels])
 
   // F4a: het blok is generiek. Bron = de volledige catalogus (op aantal
   // gesorteerd door /api/channels), met de optionele SSR-seed als fallback
   // zolang de fetch nog loopt. Default tonen we de top-8; "Show all" toont
   // de rest. Item-channels spelen hier bewust geen rol meer.
   const source = allChannels.length > 0 ? allChannels : channels
-  const TOP_N = 8
   const hasMore = source.length > TOP_N
   const visibleChannels = expanded ? source : source.slice(0, TOP_N)
 

@@ -4,9 +4,8 @@
  * Matcht de bestaande WP-URL `/tag/[slug]` zodat Google de geïndexeerde
  * tag-pagina's en hun linkwaarde direct herkent — geen redirects nodig.
  *
- * Tags in MaterialDistrict zijn gekoppeld aan materials. De pagina toont
- * een gefilterd grid via `listMaterialsWithFacets` met `search`-param op
- * de tag-slug (WP behandelt tags als zoektermen in FacetWP-context).
+ * Tags in MaterialDistrict zijn gekoppeld aan materials. De pagina filtert
+ * via de native `post_tag`-taxonomy (`/wp/v2/material?tags=<term-id>`).
  *
  * Ondersteunt paginering via `?page=` searchParam.
  *
@@ -18,7 +17,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ContentCard, EmptyState } from '@/components/ui'
-import { getTerm, listMaterialsWithFacets } from '@/lib/api'
+import { getTerm, listMaterials } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
@@ -70,22 +69,16 @@ export default async function TagPage({ params, searchParams }: Props) {
   const sp = await searchParams
   const page = Number(sp.page ?? 1)
 
-  // Tags worden in WP opgeslagen met de slug als zoekterm.
-  // We gebruiken de `search`-param van listMaterialsWithFacets om te filteren.
-  const [term, result] = await Promise.all([
-    getTerm('tags', slug),
-    listMaterialsWithFacets({
-      search: slug,
-      page,
-      perPage: PER_PAGE,
-    }),
-  ])
-
+  const term = await getTerm('tags', slug)
   if (!term) notFound()
 
+  const { items, total: totalRows, totalPages } = await listMaterials({
+    tags: [term.id],
+    page,
+    perPage: PER_PAGE,
+  })
+
   const name = decodeHtmlEntities(term.name)
-  const { items, pager } = result
-  const { totalRows, totalPages } = pager
 
   // Soft 404: tag bestaat maar heeft geen materialen op pagina 1.
   if (items.length === 0 && page === 1) notFound()

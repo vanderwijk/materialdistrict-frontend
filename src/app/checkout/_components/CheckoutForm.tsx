@@ -277,10 +277,12 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     if (!cart?.needs_shipping || !shipComplete) return
     if (shipKey === lastShipKeyRef.current) return
     const handle = window.setTimeout(() => {
-      lastShipKeyRef.current = shipKey
       setError(null)
       setCustomer(withNormalizedPostcode(shipAddr), withNormalizedPostcode(billing))
-        .then(() => setRatesLoaded(true))
+        .then(() => {
+          lastShipKeyRef.current = shipKey
+          setRatesLoaded(true)
+        })
         .catch((err) =>
           setError(err instanceof Error ? err.message : 'Could not calculate shipping.'),
         )
@@ -484,13 +486,20 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
           return
         }
 
-        setPlaced(true)
-        clearCart()
-
-        const finalUrl = await resolveStripeCheckoutRedirect(stripe, redirectUrl, {
-          fallbackReturnUrl: `${window.location.origin}${confirmationUrl}`,
-        })
-        window.location.href = finalUrl
+        try {
+          const finalUrl = await resolveStripeCheckoutRedirect(stripe, redirectUrl, {
+            fallbackReturnUrl: `${window.location.origin}${confirmationUrl}`,
+          })
+          setPlaced(true)
+          clearCart()
+          window.location.href = finalUrl
+        } catch (err) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : 'Payment confirmation failed. Your order was created — check your email for next steps.',
+          )
+        }
         return
       }
       if (status === 'success' || status === 'pending') {

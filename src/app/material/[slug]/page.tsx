@@ -19,9 +19,8 @@
  * Data (performance):
  *  - `getMaterialDetail(slug)` — gallery + material_category-terms; keywords,
  *    brand en channels uit embedded `meta` op het material-object.
- *  - `getMaterial(slug, { resolve: { gallery: false } })` in
- *    `generateMetadata` — lichtgewicht variant. WP-fetches worden door
- *    Next.js fetch-cache gededupliceerd met de pagina-render waar mogelijk.
+ *    Ook gebruikt in `generateMetadata` — `React.cache()` dedupliceert
+ *    metadata + page binnen één request.
  *
  * Geparkeerd tot Johan brand-data levert:
  *  - Brand-info-card in sidebar
@@ -41,7 +40,7 @@ import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { MaterialGallery } from '@/components/materials'
-import { getMaterial, getMaterialDetail } from '@/lib/api'
+import { getMaterialDetail } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { materialFilterHref } from '@/lib/api/facetwp'
@@ -81,17 +80,16 @@ export async function generateMetadata({
   params,
 }: MaterialDetailPageProps): Promise<Metadata> {
   const { slug } = await params
-  // gallery: true zodat hero beschikbaar is voor OG-image. De onderliggende
-  // WP REST-fetches worden door Next.js gededupliceerd met de pagina-render.
-  const material = await getMaterial(slug, { resolve: { gallery: true } })
+  const detail = await getMaterialDetail(slug)
 
-  if (!material) {
+  if (!detail) {
     return {
       title: 'Material not found',
       robots: { index: false, follow: false },
     }
   }
 
+  const material = detail.material
   const description =
     material.shortDescription ?? stripHtml(material.excerptHtml)
   const path = canonicalPath(`/material/${material.slug}`)

@@ -29,7 +29,7 @@ import { parseFacetSelectionFromSearchParams } from '@/lib/api'
 import { PREV_NEXT_MAX_ITEMS } from '@/lib/hooks/useMaterialsContext'
 import type { MaterialSortValue } from '@/types/facetwp'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 600
 
 interface LightMaterial {
   id: number
@@ -72,6 +72,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       perPage: PREV_NEXT_MAX_ITEMS,
       sort,
       search,
+      skipBaseline: true,
+      resolveBrandName: false,
     })
 
     const items: LightMaterial[] = result.items.map((m) => ({

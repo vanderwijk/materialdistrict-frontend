@@ -23,6 +23,7 @@ import { useState } from 'react'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber } from '@/lib/api/cart'
 import { formatEur } from '@/lib/utils/format-price'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import { freeShippingRemaining } from '@/lib/config/shipping-thresholds'
 import { Button, EmptyState } from '@/components/ui'
 
@@ -146,7 +147,11 @@ export function CartView() {
                   {img ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={img.thumbnail ?? img.src}
+                      src={
+                        normalizeMediaUrl(img.thumbnail ?? img.src) ??
+                        img.thumbnail ??
+                        img.src
+                      }
                       alt={img.alt || item.name}
                     />
                   ) : null}

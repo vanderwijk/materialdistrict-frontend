@@ -23,6 +23,7 @@
  */
 
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import type {
   Book,
   BookCover,
@@ -188,8 +189,10 @@ function mapCover(images: WCStoreImage[] | undefined): BookCover | null {
   const img = images?.[0]
   if (!img?.src) return null
   return {
-    url: img.src,
-    thumbnailUrl: img.thumbnail || null,
+    url: normalizeMediaUrl(img.src) ?? img.src,
+    thumbnailUrl: img.thumbnail
+      ? normalizeMediaUrl(img.thumbnail) ?? img.thumbnail
+      : null,
     alt: img.alt || img.name || '',
   }
 }
@@ -201,8 +204,10 @@ function mapGallery(images: WCStoreImage[] | undefined): BookCover[] {
     .slice(1)
     .filter((img) => img.src)
     .map((img) => ({
-      url: img.src,
-      thumbnailUrl: img.thumbnail || null,
+      url: normalizeMediaUrl(img.src) ?? img.src,
+      thumbnailUrl: img.thumbnail
+        ? normalizeMediaUrl(img.thumbnail) ?? img.thumbnail
+        : null,
       alt: img.alt || img.name || '',
     }))
 }

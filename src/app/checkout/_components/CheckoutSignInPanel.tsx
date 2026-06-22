@@ -58,7 +58,9 @@ export function CheckoutSignInPanel({ email, onSignedIn }: CheckoutSignInPanelPr
         try {
           await mergeCheckoutCart(cartToken)
         } catch {
-          /* merge is best-effort; cart refresh still applies Insider pricing */
+          setError(
+            'Signed in, but your cart could not be merged. Refresh the page or add items again.',
+          )
         }
       }
 

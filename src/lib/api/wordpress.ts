@@ -1048,30 +1048,39 @@ export async function getPageBySlug(slug: string): Promise<WPPageRaw | null> {
 /**
  * Story-type-tellingen die overeenkomen met de article-collectiefilter.
  *
- * Het WP-term-endpoint (`/wp/v2/story_type`) telt alleen artikelen met een
- * expliciete term. De plugin-filter op `?story_type=news` matcht óók
- * artikelen zonder `story_type`-term (default = news). Daardoor wijkt de
- * native term-`count` af — News toonde bv. 20 terwijl de filter ~3200
- * artikelen teruggeeft.
- *
- * We halen daarom per type `X-WP-Total` op via `listArticles` (`per_page=1`)
- * — zelfde bron als de filter in de sidebar.
+ * Primair: GET `/md/v2/story-types` (één gecachte catalog-call). Voor `news`
+ * overschrijven we met `listArticles({ storyType: 'news' })` — de plugin-filter
+ * telt ook ongetypeerde artikelen mee, de term-catalog niet.
  */
 export async function getStoryTypeCounts(): Promise<Record<string, number>> {
   const { STORY_TYPES } = await import('@/lib/config/story-types')
 
-  const pairs = await Promise.all(
-    STORY_TYPES.map(async (slug) => {
-      const { total } = await listArticles({
-        storyType: slug,
-        perPage: 1,
-        page: 1,
-      })
-      return [slug, total] as const
+  const [catalogRes, newsResult] = await Promise.all([
+    wpFetch<{ story_types?: Array<{ slug: string; count: number }> }>(
+      '/md/v2/story-types',
+      { revalidate: 21600 },
+    ),
+    listArticles({
+      storyType: 'news',
+      perPage: 1,
+      page: 1,
     }),
-  )
+  ])
 
-  return Object.fromEntries(pairs) as Record<string, number>
+  const counts = Object.fromEntries(
+    (catalogRes.story_types ?? []).map((row) => [row.slug, row.count]),
+  ) as Record<string, number>
+
+  // Plugin-filter telt ongetypeerde artikelen als news; term-catalog niet.
+  counts.news = newsResult.total
+
+  for (const slug of STORY_TYPES) {
+    if (typeof counts[slug] !== 'number') {
+      counts[slug] = 0
+    }
+  }
+
+  return counts
 }
 
 /**

@@ -24,6 +24,14 @@ async function proxyStoreCart(
   request: NextRequest,
   pathSegments: string[],
 ): Promise<NextResponse> {
+  const base = (process.env.WP_API_URL ?? '').replace(/\/+$/, '')
+  if (!base) {
+    return NextResponse.json(
+      { code: 'md_config_error', message: 'WP_API_URL is not configured' },
+      { status: 503 },
+    )
+  }
+
   const headers: Record<string, string> = {}
 
   for (const name of FORWARD_REQUEST_HEADERS) {

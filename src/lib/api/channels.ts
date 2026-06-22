@@ -79,7 +79,7 @@ function toChannel(raw: unknown): Channel | null {
  * GET /md/v2/material-channels — de canonieke channels met term-id, slug en
  * label. Robuust voor afwijkende response-vormen; lege lijst bij fout.
  */
-export async function getChannelCatalog(): Promise<Channel[]> {
+export const getChannelCatalog = cache(async function getChannelCatalog(): Promise<Channel[]> {
   try {
     const res = await wpFetch<unknown>('/md/v2/material-channels', {
       revalidate: 3600,
@@ -90,7 +90,7 @@ export async function getChannelCatalog(): Promise<Channel[]> {
   } catch {
     return []
   }
-}
+})
 
 /**
  * Resolve een channel-slug naar het WP `theme` term-id. `null` betekent

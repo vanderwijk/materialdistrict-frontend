@@ -87,7 +87,7 @@ export const revalidate = 600
 /** Brede enkele fetch — voedt latest + featured + count in één call. */
 const MATERIALS_FETCH = 24
 const ARTICLES_FETCH = 12
-const EVENTS_FETCH = 100
+const EVENTS_FETCH = 24
 const TALKS_FETCH = 12
 /** Terugval voor de hero-telling als de count onverwacht 0/onbekend is. */
 const MATERIALS_COUNT_FALLBACK = 3200
