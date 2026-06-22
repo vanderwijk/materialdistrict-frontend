@@ -12,6 +12,7 @@
  * naar een lege lijst zodat een hapering de pagina niet breekt.
  */
 
+import { cache } from 'react'
 import { wpFetch, getTerms, getTerm } from './wordpress'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
@@ -182,7 +183,7 @@ export interface ChannelTerm {
  * description + `theme_thumbnail`). Accepteert een term-id of slug. `null` bij
  * een onbekende term — de pagina kan dan 404'en (keuze 6).
  */
-export async function getChannelTerm(
+export const getChannelTerm = cache(async function getChannelTerm(
   idOrSlug: number | string,
 ): Promise<ChannelTerm | null> {
   const term = await getTerm('theme', idOrSlug).catch(() => null)
@@ -195,4 +196,4 @@ export async function getChannelTerm(
     description: typeof term.description === 'string' ? term.description : '',
     thumbnailUrl: term.theme_thumbnail?.url ?? null,
   }
-}
+})

@@ -103,7 +103,12 @@ export default function RootLayout({
             hydration and footer channel-catalog (Vercel cold-start guidance).
             Fallback renders logged-out chrome — no flash for anonymous users.
           */}
-          <Suspense fallback={<AppChrome initialUser={null}>{children}</AppChrome>}>
+          {/*
+            Fallback mag géén {children} bevatten — anders streamt Next.js de
+            pagina-inhoud dubbel (fallback-shell + opgeloste shell) en zie je
+            op o.a. /channel/[slug] hero + strips twee keer in de HTML.
+          */}
+          <Suspense fallback={<AppChrome initialUser={null} />}>
             <AuthenticatedAppShell>{children}</AuthenticatedAppShell>
           </Suspense>
         </ThemeProvider>

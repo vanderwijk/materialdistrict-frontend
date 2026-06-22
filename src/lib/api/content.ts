@@ -19,6 +19,7 @@
  */
 
 import type { Article, ArticleListItem, RelatedItem } from '@/types/article'
+import { cache } from 'react'
 import type { Brand, BrandListItem } from '@/types/brand'
 import type { Event, EventListItem } from '@/types/event'
 import type { Material, MaterialListItem } from '@/types/material'
@@ -39,7 +40,6 @@ import {
 } from './facetwp'
 
 import {
-  getChannelCatalog,
   getChannelTerm,
   type ChannelTerm,
 } from './channels'
@@ -977,59 +977,75 @@ export interface ChannelHub {
  * `theme` term-id via de catalogus; een onbekende slug → `null` (404).
  *
  * Alle data-bronnen draaien parallel (`Promise.all`):
- *  - hero-term via `/wp/v2/theme/{id}`
- *  - materials via `?theme=<id>` op de material-collectie (geen FacetWP)
- *  - stories/brands/events/talks via `?theme=<id>` op hun collectie
+ *  - hero-term via `/wp/v2/theme` (slug-resolutie, geen catalogus-fetch)
+ *  - materials/stories/brands/events/talks via `?theme=<id>` op hun collectie
+ *  - één gedeelde media-batch voor alle strip-thumbnails (i.p.v. 5× apart)
+ *
+ * `React.cache()` dedupliceert metadata + page binnen één request.
  *
  * Per strip de eerste `perStrip` items (default 8, keuze 1) + het totaal voor
  * de "bekijk alle … in {channel}"-deeplink. Lege strips laat de pagina weg.
  */
-export async function getChannelHub(
+export const getChannelHub = cache(async function getChannelHub(
   slug: string,
   perStrip = 8,
 ): Promise<ChannelHub | null> {
-  const catalog = await getChannelCatalog()
-  const entry = catalog.find((c) => c.slug === slug)
-  if (!entry) return null
-  const id = entry.id
+  const term = await getChannelTerm(slug)
+  if (!term) return null
+  const id = term.id
 
-  const [term, materials, stories, brands, events, talks] = await Promise.all([
-    getChannelTerm(id),
-    listMaterials({ theme: [id], perPage: perStrip }),
-    listArticles({ theme: id, perPage: perStrip }),
-    listBrands({ theme: id, perPage: perStrip }),
-    listEvents({ theme: id, perPage: perStrip }),
-    listTalks({ theme: id, perPage: perStrip }),
-  ])
+  const [materialsResult, storiesResult, brandsResult, eventsResult, talksResult] =
+    await Promise.all([
+      listMaterialsRaw({ theme: [id], perPage: perStrip }),
+      listArticlesRaw({ theme: id, perPage: perStrip }),
+      listBrandsRaw({ theme: id, perPage: perStrip }),
+      listEventsRaw({ theme: id, perPage: perStrip }),
+      listTalksRaw({ theme: id, perPage: perStrip }),
+    ])
 
-  const channel: ChannelTerm =
-    term ?? {
-      id: entry.id,
-      slug: entry.slug,
-      label: entry.label,
-      description: '',
-      thumbnailUrl: null,
-    }
+  const mediaIds = unique(
+    [
+      ...materialsResult.items.map((r) => r.featured_media),
+      ...storiesResult.items.map((r) => r.featured_media),
+      ...brandsResult.items.map((r) => r.featured_media),
+      ...eventsResult.items.map((r) => r.featured_media),
+      ...talksResult.items.map((r) => r.featured_media),
+    ].filter((mediaId) => mediaId > 0),
+  )
+  const mediaMap = await fetchMediaMap(mediaIds)
+
+  const heroFor = (featuredMedia: number) =>
+    featuredMedia > 0 ? mediaMap.get(featuredMedia) ?? null : null
 
   const materialsStrip: ChannelHubStrip<MaterialListItem> = {
-    items: materials.items,
-    total: materials.total > 0 ? materials.total : entry.count,
+    items: materialsResult.items.map((raw) =>
+      mapMaterialListItem(raw, heroFor(raw.featured_media), null),
+    ),
+    total: materialsResult.total,
   }
   const storiesStrip: ChannelHubStrip<ArticleListItem> = {
-    items: stories.items,
-    total: stories.total,
+    items: storiesResult.items.map((raw) =>
+      mapArticleListItem(raw, heroFor(raw.featured_media)),
+    ),
+    total: storiesResult.total,
   }
   const brandsStrip: ChannelHubStrip<BrandListItem> = {
-    items: brands.items,
-    total: brands.total,
+    items: brandsResult.items.map((raw) =>
+      mapBrandListItem(raw, heroFor(raw.featured_media)),
+    ),
+    total: brandsResult.total,
   }
   const eventsStrip: ChannelHubStrip<EventListItem> = {
-    items: events.items,
-    total: events.total,
+    items: eventsResult.items.map((raw) =>
+      mapEventListItem(raw, heroFor(raw.featured_media)),
+    ),
+    total: eventsResult.total,
   }
   const talksStrip: ChannelHubStrip<TalkListItem> = {
-    items: talks.items,
-    total: talks.total,
+    items: talksResult.items.map((raw) =>
+      mapTalkListItem(raw, heroFor(raw.featured_media)),
+    ),
+    total: talksResult.total,
   }
 
   const isEmpty =
@@ -1040,7 +1056,7 @@ export async function getChannelHub(
     talksStrip.items.length === 0
 
   return {
-    channel,
+    channel: term,
     materials: materialsStrip,
     stories: storiesStrip,
     brands: brandsStrip,
@@ -1048,7 +1064,7 @@ export async function getChannelHub(
     talks: talksStrip,
     isEmpty,
   }
-}
+})
 
 // --------------------------------------------------------------------
 // Internal resolvers

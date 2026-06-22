@@ -18,10 +18,10 @@ import { ScrollToTop } from '@/components/layout/ScrollToTop'
  */
 export function AppChrome({
   initialUser,
-  children,
+  children = null,
 }: {
   initialUser: User | null
-  children: React.ReactNode
+  children?: React.ReactNode
 }) {
   return (
     <AuthProvider initialUser={initialUser}>
