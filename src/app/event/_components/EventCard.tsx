@@ -79,48 +79,90 @@ function locationLabel(event: EventListItem): string {
 
 interface EventCardProps {
   event: EventListItem & { isPast: boolean }
+  /**
+   * `'home'` = homepage-split-variant: een "Get tickets"-knop staat ÍN de
+   * tegel (parallel aan "View book" in de book-tegel). De kaart is dan geen
+   * losse Link maar een container: beeld + tekst linken naar de detailpagina,
+   * de externe ticket-link is een aparte link binnen dezelfde tegel (zo
+   * ontstaat er geen verboden geneste `<a>`).
+   */
+  variant?: 'default' | 'home'
+  /** Externe ticket-/event-URL (alleen home-variant; toont "Get tickets"). */
+  ticketUrl?: string | null
 }
 
-export function EventCard({ event }: EventCardProps) {
+export function EventCard({
+  event,
+  variant = 'default',
+  ticketUrl,
+}: EventCardProps) {
   const badge = dateBadge(event.startDate, event.endDate)
   const location = locationLabel(event)
+  const detailHref = `/event/${event.slug}`
+  const cardLabel = `${event.title} — ${eventTypeLabel(event.type)}, ${location}`
 
+  const band = (
+    <div className="event-card-band">
+      {event.hero ? (
+        <img
+          src={event.hero.sourceUrl}
+          alt={event.hero.alt || ''}
+          className="event-card-img"
+          loading="lazy"
+        />
+      ) : (
+        <span className="event-card-band-fallback" aria-hidden="true" />
+      )}
+
+      {event.isPast && <span className="event-card-past">Past</span>}
+
+      <CardBookmarkButton type="events" itemId={event.id} withOverlay />
+
+      {badge && (
+        <span className="event-card-date" aria-hidden="true">
+          <span className="event-card-date-day">{badge.day}</span>
+          <span className="event-card-date-month">{badge.month}</span>
+          <span className="event-card-date-year">{badge.year}</span>
+        </span>
+      )}
+    </div>
+  )
+
+  const body = (
+    <div className="event-card-body">
+      <span className="event-card-type">{eventTypeLabel(event.type)}</span>
+      <span className="event-card-title">{event.title}</span>
+      <span className="event-card-location">{location}</span>
+    </div>
+  )
+
+  // Home-variant: container met aparte detail-link + ticket-link (geen nesting).
+  if (variant === 'home') {
+    return (
+      <div className="event-card event-card--home">
+        <Link href={detailHref} className="event-card-link" aria-label={cardLabel}>
+          {band}
+          {body}
+        </Link>
+        {ticketUrl && (
+          <a
+            href={ticketUrl}
+            className="event-card-cta"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Get tickets →
+          </a>
+        )}
+      </div>
+    )
+  }
+
+  // Default-variant: de hele kaart is één link naar de detailpagina.
   return (
-    <Link
-      href={`/event/${event.slug}`}
-      className="event-card"
-      aria-label={`${event.title} — ${eventTypeLabel(event.type)}, ${location}`}
-    >
-      <div className="event-card-band">
-        {event.hero ? (
-          <img
-            src={event.hero.sourceUrl}
-            alt={event.hero.alt || ''}
-            className="event-card-img"
-            loading="lazy"
-          />
-        ) : (
-          <span className="event-card-band-fallback" aria-hidden="true" />
-        )}
-
-        {event.isPast && <span className="event-card-past">Past</span>}
-
-        <CardBookmarkButton type="events" itemId={event.id} withOverlay />
-
-        {badge && (
-          <span className="event-card-date" aria-hidden="true">
-            <span className="event-card-date-day">{badge.day}</span>
-            <span className="event-card-date-month">{badge.month}</span>
-            <span className="event-card-date-year">{badge.year}</span>
-          </span>
-        )}
-      </div>
-
-      <div className="event-card-body">
-        <span className="event-card-type">{eventTypeLabel(event.type)}</span>
-        <span className="event-card-title">{event.title}</span>
-        <span className="event-card-location">{location}</span>
-      </div>
+    <Link href={detailHref} className="event-card" aria-label={cardLabel}>
+      {band}
+      {body}
     </Link>
   )
 }

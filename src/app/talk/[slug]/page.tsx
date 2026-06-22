@@ -37,6 +37,7 @@ import { formatDuration } from '@/lib/utils/format-duration'
 import { TalkVideoGate } from './_components/TalkVideoGate'
 import { TalkDetailActions } from './_components/TalkDetailActions'
 import { TalkDetailSidebar } from './_components/TalkDetailSidebar'
+import { getDigestChannels } from '@/lib/api/digest-channels'
 import {
   TalkPrevNext,
   type TalkPrevNextNeighbour,
@@ -145,6 +146,7 @@ async function getTalkContext(currentSlug: string): Promise<{
 }
 
 export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
+  const digestChannels = await getDigestChannels()
   const { slug } = await params
 
   const talk = await getTalk(slug)
@@ -232,6 +234,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
             companyName={talk.companyName}
             dateLabel={publishedLabel}
             durationLabel={durationLabel}
+            channels={digestChannels}
           />
 
           <div className="detail-related-row">

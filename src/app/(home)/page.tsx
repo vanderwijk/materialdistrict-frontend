@@ -21,7 +21,7 @@
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ContentCard, CardBookmarkButton } from '@/components/ui'
+import { ContentCard, CardBookmarkButton, CardCompareButton } from '@/components/ui'
 import {
   listMaterials,
   listArticles,
@@ -354,7 +354,7 @@ export default async function HomePage() {
                     thumbAlt={m.hero?.alt ?? m.title}
                     eyebrow={m.brandName ?? undefined}
                     title={m.title}
-                    actions={<CardBookmarkButton type="materials" itemId={m.id} />}
+                    actions={<><CardBookmarkButton type="materials" itemId={m.id} /><CardCompareButton material={m} /></>}
                   />
                 ))}
               </div>
@@ -423,7 +423,7 @@ export default async function HomePage() {
                       thumbAlt={m.hero?.alt ?? m.title}
                       eyebrow={m.brandName ?? undefined}
                       title={m.title}
-                      actions={<CardBookmarkButton type="materials" itemId={m.id} />}
+                      actions={<><CardBookmarkButton type="materials" itemId={m.id} /><CardCompareButton material={m} /></>}
                     />
                   ))}
                 </div>
@@ -447,19 +447,11 @@ export default async function HomePage() {
                     </Link>
                   </div>
                   {featuredEvent ? (
-                    <>
-                      <EventCard event={featuredEvent} />
-                      {featuredEvent.externalWebsite && (
-                        <a
-                          href={featuredEvent.externalWebsite}
-                          className="hp-eb-cta"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Get tickets →
-                        </a>
-                      )}
-                    </>
+                    <EventCard
+                      event={featuredEvent}
+                      variant="home"
+                      ticketUrl={featuredEvent.externalWebsite}
+                    />
                   ) : (
                     <p className="hp-empty">No upcoming events at this time.</p>
                   )}

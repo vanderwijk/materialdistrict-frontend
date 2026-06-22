@@ -51,6 +51,8 @@ export type { ContentCardThumbRatio } from './ContentCard'
 // --- §F2.7: gedeelde bookmark-knop + gating-melding ---
 export { CardBookmarkButton } from './CardBookmarkButton'
 export type { CardBookmarkButtonProps } from './CardBookmarkButton'
+export { CardCompareButton } from './CardCompareButton'
+export type { CardCompareButtonProps } from './CardCompareButton'
 export { GateNoticeProvider, useGateNotice } from './GateNotice'
 export { RecentlyViewedRail } from './RecentlyViewedRail'
 export type { RecentlyViewedRailProps } from './RecentlyViewedRail'

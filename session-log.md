@@ -3344,3 +3344,11 @@ Zie `MANIFEST-feedback-fixes-21-06.md` voor per-bestand mapping.
 2. Follow-scope materials/stories/talks in het follow-record honoreren.
 3. Compare environmental(10)/content(3)-velden — UI toont "Not specified"
    tot WP ze levert.
+
+---
+
+## Sessie — live-feedbackronde (22-06-2026)
+
+Negen punten uit Jeroens review van de gedeployde site, in één set: (1) channel-bar-label uitgelijnd; (2) Compare-knop op homepage-material-tegels (+ `(home)`-CompareProvider/Bar, nieuw `CardCompareButton`); (3) "Get tickets" ín de event-tegel (EventCard `home`-variant); (4) **F5** — footer-knop + full-width slide-up paneel (`FollowTransitionPanel`); (5) volgblok-card-achtergrond (`--surface2`) + "+N"-bolletje i.p.v. blauwe link; (6) volgblok consistent op álle detailpagina's via server-side channels (`getDigestChannels`); (7) Add to board + Compare in Insider-kleur (outline standaard, gevuld+wit actief); (8) renewable-pil kringloop-icoon i.p.v. vinkje; (9) channeloverzicht → follow-hub (`ChannelsHub`: hero + sort + you-follow + rijke kaarten met follow-toggle). `globals.css` append-only (§FEEDBACK-22-06 / -B / -C / -D); mappers-fix ongemoeid.
+
+Zie `MANIFEST-feedback-22-06.md`.

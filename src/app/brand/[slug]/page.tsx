@@ -43,6 +43,7 @@ import { BrandMaterialsGrid } from './_components/BrandMaterialsGrid'
 import { BrandPrevNext, type BrandPrevNextNeighbour } from './_components/BrandPrevNext'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
+import { getDigestChannels } from '@/lib/api/digest-channels'
 import { FollowToggle } from '@/components/ui/FollowToggle'
 
 const MATERIALS_PER_BRAND = 4
@@ -110,6 +111,7 @@ async function getBrandNeighbours(
 }
 
 export default async function BrandDetailPage({ params }: BrandDetailPageProps) {
+  const digestChannels = await getDigestChannels()
   const { slug } = await params
 
   const brand = await getBrand(slug)
@@ -228,7 +230,7 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
               />
             </div>
 
-            <FollowDigestBlock compact />
+            <FollowDigestBlock channels={digestChannels} compact />
           </aside>
 
           <div className="detail-prevnext-row">

@@ -59,6 +59,7 @@ import {
   ArticleDetailSidebar,
   type ArticleSidebarMaterial,
 } from './_components/ArticleDetailSidebar'
+import { getDigestChannels } from '@/lib/api/digest-channels'
 import {
   ArticlePrevNext,
   type ArticlePrevNextNeighbour,
@@ -203,10 +204,11 @@ export default async function ArticleDetailPage({
   const article = await getArticle(slug)
   if (!article) notFound()
 
-  const [{ prev, next }, related, sidebarMaterials] = await Promise.all([
+  const [{ prev, next }, related, sidebarMaterials, digestChannels] = await Promise.all([
     getNeighbours(slug),
     getRelatedContent(slug),
     getSidebarMaterials(),
+    getDigestChannels(),
   ])
 
   const typeMeta = STORY_TYPE_META[article.type]
@@ -322,6 +324,7 @@ export default async function ArticleDetailPage({
           {/* Sidebar */}
           <ArticleDetailSidebar
             latestMaterials={sidebarMaterials}
+            channels={digestChannels}
           />
 
           {/* §F2.12 P2: prev/next BOVEN related (was eronder), met thumbnails. */}

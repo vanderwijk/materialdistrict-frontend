@@ -204,18 +204,22 @@ export function FollowDigestBlock({
               {c.label}
             </button>
           ))}
+          {hasMore && (
+            <button
+              type="button"
+              className="follow-digest-chip-more"
+              aria-expanded={expanded}
+              aria-label={
+                expanded
+                  ? 'Show fewer channels'
+                  : `Show ${source.length - TOP_N} more channels`
+              }
+              onClick={() => setExpanded((v) => !v)}
+            >
+              {expanded ? '\u2013' : `+${source.length - TOP_N}`}
+            </button>
+          )}
         </div>
-      )}
-
-      {hasMore && (
-        <button
-          type="button"
-          className="follow-digest-more"
-          aria-expanded={expanded}
-          onClick={() => setExpanded((v) => !v)}
-        >
-          {expanded ? 'Show fewer' : `Show all ${source.length} channels`}
-        </button>
       )}
 
       {status === 'catch' ? (

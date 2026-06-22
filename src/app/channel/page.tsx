@@ -18,7 +18,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { EmptyState } from '@/components/ui'
 import { getChannelsIndex } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
-import { ChannelIndexCard } from './_components/ChannelIndexCard'
+import { ChannelsHub } from './_components/ChannelsHub'
 
 const PAGE_DESCRIPTION =
   'Explore MaterialDistrict by channel — topic hubs that bring together materials, stories, brands, events and talks around themes like biobased, circular and acoustic.'
@@ -73,11 +73,7 @@ export default async function ChannelsIndexPage() {
             description="Channels are being set up. Please check back soon."
           />
         ) : (
-          <div className="ov-grid-3">
-            {channels.map((channel) => (
-              <ChannelIndexCard key={channel.id} channel={channel} />
-            ))}
-          </div>
+          <ChannelsHub channels={channels} />
         )}
       </div>
     </>

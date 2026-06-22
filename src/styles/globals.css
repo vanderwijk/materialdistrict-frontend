@@ -17770,3 +17770,351 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .account-pop-item.is-logout:hover {
   background: color-mix(in srgb, var(--red) 10%, transparent);
 }
+/* ===================================================================
+   §FEEDBACK-22-06 — live-feedbackronde (4 punten)
+   =================================================================== */
+
+/* --- Punt 1: channel-bar-label verticaal uitlijnen (homepage / .is-nav) ---
+   Het "CHANNEL"-label stond te hoog t.o.v. de tabs: de inner gebruikte
+   align-items stretch en het label had een vaste line-height van 38px, die
+   niet meer matchte met de pill-tabs van Variant A. Op .is-nav centreren we
+   alle kolommen (label, pager, tabs) verticaal en zetten we de label-line-
+   height op 1, zodat het label op gelijke hoogte met de tabs staat. Alleen
+   .is-nav, dus de overzichtspagina's blijven ongemoeid. */
+.channel-bar.is-nav .channel-bar-inner { align-items: center; }
+.channel-bar.is-nav .channel-label { line-height: 1; }
+
+/* --- Punt 3: "Get tickets" ÍN de event-tegel (homepage-split) -------------
+   Parallel aan "View book" in de book-tegel. De home-variant van de EventCard
+   is geen losse Link meer maar een container: beeld + tekst linken naar de
+   detailpagina (.event-card-link), de externe ticket-link is een aparte knop
+   binnen dezelfde tegel (.event-card-cta) — zo ontstaat er geen geneste link.
+   De tegel vult de kolomhoogte zodat de CTA onderaan uitlijnt met "View book"
+   in de book-kolom. */
+.event-card--home {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.event-card--home .event-card-link {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  color: inherit;
+  text-decoration: none;
+}
+.event-card-cta {
+  display: block;
+  text-align: center;
+  padding: 12px 16px;
+  background: var(--ink);
+  color: var(--on-ink);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background var(--transition-base);
+}
+.event-card-cta:hover { background: var(--text); }
+
+/* --- Punt 4 (F5): "Follow the Transition" = knop + full-width slide-up paneel
+   In de footer staat niet langer het hele volgmenu uitgeklapt. Eén knop opent
+   een paneel dat van onderen omhoog schuift met het volledige volgblok erin
+   (chips, frequentie, Start following). De knop staat in de donkere footer-
+   kolom; het paneel zelf is een licht vel op surface-niveau. */
+.follow-transition { margin-top: 4px; }
+.follow-transition-lead {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 12px;
+}
+.follow-transition-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: var(--green);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter var(--transition-base);
+}
+.follow-transition-trigger:hover { filter: brightness(0.93); }
+.follow-transition-arrow { font-size: 15px; line-height: 1; }
+
+.follow-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: follow-panel-fade 0.2s ease;
+}
+.follow-panel {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px var(--content-padding-desktop) 36px;
+  animation: follow-panel-slide-up 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.follow-panel-body {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.follow-panel-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.follow-panel-close:hover { background: var(--surface2); color: var(--text); }
+
+@keyframes follow-panel-slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes follow-panel-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===================================================================
+   §FEEDBACK-22-06-B — volgblok: card-achtergrond + "+N"-bolletje
+   =================================================================== */
+/* De crème-kaart kreeg background var(--bg) — gelijk aan de paginakleur, dus
+   de card had geen zichtbare achtergrond. Op surface2 zetten zodat 'ie zich
+   als kaart afzet; het witte geneste catch-kaartje blijft contrasteren. */
+.follow-digest { background: var(--surface2); }
+
+/* De blauwe "Show all N channels"-tekstlink is vervangen door een "+N"-
+   bolletje in de chip-rij: zelfde stijl als de chips, ink-gevuld. Klik klapt
+   de rest open en wordt dan een "-". De oude .follow-digest-more wordt niet
+   meer gerenderd. */
+.follow-digest-chip-more {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--on-ink);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1.4;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: filter .15s ease;
+}
+.follow-digest-chip-more:hover { filter: brightness(1.3); }
+
+/* ===================================================================
+   §FEEDBACK-22-06-C — Insider-acties (Add to board, Compare) in Insider-kleur
+   =================================================================== */
+/* Eerder kregen leden (is-insider-unlocked) de knop standaard al gevuld, en
+   niet-leden een vrijwel neutrale outline. Gewenst: ongeacht inlog/lidstatus
+   STANDAARD een Insider-kleur outline + Insider-kleur tekst, en GEVULD + wit
+   alleen wanneer de knop actief is (aangeklikt). Dit overschrijft de eerdere
+   unlocked-is-altijd-gevuld-regel. Raakt alleen de Insider-actieknoppen
+   (Add to board, Compare); Save/Share en de tegel-knoppen blijven ongemoeid. */
+.action-btn.is-insider,
+.action-btn.is-insider.is-insider-unlocked {
+  background: var(--surface);
+  border-color: var(--ct-insider);
+  color: var(--ct-insider);
+}
+.action-btn.is-insider:hover,
+.action-btn.is-insider.is-insider-unlocked:hover {
+  background: var(--ct-insider-pale);
+  border-color: var(--ct-insider-mid);
+  color: var(--ct-insider-dark);
+}
+.action-btn.is-insider.is-active,
+.action-btn.is-insider.is-insider-unlocked.is-active {
+  background: var(--ct-insider);
+  border-color: var(--ct-insider);
+  color: #ffffff;
+}
+.action-btn.is-insider.is-active:hover,
+.action-btn.is-insider.is-insider-unlocked.is-active:hover {
+  background: var(--ct-insider-dark);
+  border-color: var(--ct-insider-dark);
+  color: #ffffff;
+}
+
+/* ===================================================================
+   §FEEDBACK-22-06-D — channeloverzicht als follow-hub (P9)
+   =================================================================== */
+.ch-hub { display: flex; flex-direction: column; }
+
+/* Featured-hero */
+.ch-hub-featured {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 300px;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  background: var(--surface2);
+}
+.ch-hub-featured-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ch-hub-featured-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 20, 25, 0.1), rgba(15, 20, 25, 0.78));
+}
+.ch-hub-featured-content {
+  position: relative;
+  padding: 32px;
+  color: #ffffff;
+  max-width: 640px;
+}
+.ch-hub-eyebrow {
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+.ch-hub-featured-title {
+  font-size: 30px;
+  margin: 8px 0 10px;
+  color: #ffffff;
+}
+.ch-hub-featured-desc {
+  margin: 0 0 18px;
+  opacity: 0.92;
+  line-height: 1.5;
+}
+.ch-hub-featured-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ch-hub-featured-cta {
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 11px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background var(--transition-base);
+}
+.ch-hub-featured-cta:hover { background: rgba(255, 255, 255, 0.85); }
+
+/* Sorteerbalk */
+.ch-hub-sort { display: flex; gap: 8px; margin-bottom: 28px; }
+.ch-hub-sort button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
+}
+.ch-hub-sort button:hover { color: var(--text); }
+.ch-hub-sort button.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--on-ink);
+}
+
+/* Secties */
+.ch-hub-section { margin-bottom: 40px; }
+.ch-hub-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.ch-hub-section-title { font-size: 18px; margin: 0; color: var(--text); }
+.ch-hub-section-meta { font-size: 13px; color: var(--text-muted); }
+
+/* Grid + rijke kaart */
+.ch-hub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 900px) { .ch-hub-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .ch-hub-grid { grid-template-columns: 1fr; } }
+
+.ch-hub-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.ch-hub-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.ch-hub-card-media { display: block; height: 150px; }
+.ch-hub-card-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ch-hub-card-img--empty { background: var(--surface2); }
+.ch-hub-card-body { display: flex; flex-direction: column; flex: 1; padding: 16px; }
+.ch-hub-card-eyebrow {
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.ch-hub-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  margin-bottom: 6px;
+}
+.ch-hub-card-title:hover { color: var(--green); }
+.ch-hub-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0 0 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ch-hub-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+}
+.ch-hub-card-count { font-size: var(--text-sm); color: var(--text-muted); }

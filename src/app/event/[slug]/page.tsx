@@ -42,6 +42,7 @@ import { EventDetailActions } from './_components/EventDetailActions'
 import { EventPrevNext, type EventPrevNextNeighbour } from './_components/EventPrevNext'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
+import { getDigestChannels } from '@/lib/api/digest-channels'
 
 const NEIGHBOUR_SCAN = 100
 const OTHER_EVENTS = 3
@@ -142,6 +143,7 @@ async function getRelatedEvents(currentSlug: string): Promise<{
 }
 
 export default async function EventDetailPage({ params }: EventDetailPageProps) {
+  const digestChannels = await getDigestChannels()
   const { slug } = await params
 
   const event = await getEvent(slug)
@@ -319,7 +321,7 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
               </div>
             )}
 
-            <FollowDigestBlock compact />
+            <FollowDigestBlock channels={digestChannels} compact />
           </aside>
 
           <div className="detail-prevnext-row">

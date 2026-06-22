@@ -17,13 +17,14 @@
 
 import { useAuth } from '@/components/providers/AuthContext'
 import { Button } from '@/components/ui'
-import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
+import { FollowDigestBlock, type DigestChannel } from '@/components/layout/FollowDigestBlock'
 
 export interface TalkDetailSidebarProps {
   speakerNames: string[]
   companyName: string | null
   dateLabel: string
   durationLabel: string | null
+  channels: DigestChannel[]
 }
 
 export function TalkDetailSidebar({
@@ -31,6 +32,7 @@ export function TalkDetailSidebar({
   companyName,
   dateLabel,
   durationLabel,
+  channels,
 }: TalkDetailSidebarProps) {
   const { isMember } = useAuth()
 
@@ -90,7 +92,7 @@ export function TalkDetailSidebar({
         </div>
       )}
 
-      <FollowDigestBlock compact />
+      <FollowDigestBlock channels={channels} compact />
     </aside>
   )
 }

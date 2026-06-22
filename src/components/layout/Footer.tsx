@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils/cn'
-import { FollowDigestBlock } from './FollowDigestBlock'
+import { FollowTransitionPanel } from './FollowTransitionPanel'
 import { PreferredSourceButton } from '@/components/ui/PreferredSourceButton'
 import { getChannelCatalog } from '@/lib/api/channels'
 
@@ -86,7 +86,7 @@ export async function Footer({ className }: FooterProps) {
             The leading platform for innovative and sustainable materials —
             for architects, designers and manufacturers.
           </div>
-          <FollowDigestBlock channels={digestChannels} />
+          <FollowTransitionPanel channels={digestChannels} />
         </div>
 
         {/* Discover */}
