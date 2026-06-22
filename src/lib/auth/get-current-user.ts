@@ -13,7 +13,7 @@
 
 import { cache } from 'react'
 import { getCurrentUser, WordPressAuthError } from '@/lib/api/wordpress'
-import { clearAuthCookie, getAuthCookie } from '@/lib/auth/cookies'
+import { getAuthCookie } from '@/lib/auth/cookies'
 import type { User } from '@/types/shared'
 
 export const getInitialUser = cache(async (): Promise<User | null> => {
@@ -25,7 +25,12 @@ export const getInitialUser = cache(async (): Promise<User | null> => {
     return auth.user
   } catch (err) {
     if (err instanceof WordPressAuthError) {
-      await clearAuthCookie()
+      // Invalid/expired token. We deliberately do NOT clear the cookie here:
+      // getInitialUser runs during render (root/dashboard layout hydration),
+      // and Next.js forbids cookie mutation outside a Server Action or Route
+      // Handler. Treat the visitor as logged-out instead — the stale cookie is
+      // re-validated on every request and is overwritten on the next login or
+      // cleared explicitly via the logout / /api/auth/me route handlers.
       return null
     }
     console.error('[auth] hydration failed', err)
