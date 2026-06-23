@@ -19,7 +19,7 @@ Afspraak is nu live:
 Live gecontroleerd op:
 
 ```bash
-curl -s 'https://materialdistrict.com/wp-json/wp/v2/material/136960?_fields=id,slug,meta.channels'
+curl -s 'https://cms.materialdistrict.com/wp-json/wp/v2/material/136960?_fields=id,slug,meta.channels'
 ```
 
 Response-vorm:
@@ -69,7 +69,7 @@ Regels in backend:
 Live route-bestaan gecontroleerd op:
 
 ```bash
-curl -s 'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/1/featured-slots'
+curl -s 'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/1/featured-slots'
 ```
 
 Response:
@@ -137,7 +137,7 @@ Op material staat nu ook live:
 Live gecontroleerd op:
 
 ```bash
-curl -s 'https://materialdistrict.com/wp-json/wp/v2/material/136960?_fields=id,slug,meta.brand_id,meta.channels,meta.is_featured_now,meta.featured_week_start'
+curl -s 'https://cms.materialdistrict.com/wp-json/wp/v2/material/136960?_fields=id,slug,meta.brand_id,meta.channels,meta.is_featured_now,meta.featured_week_start'
 ```
 
 Response:
@@ -176,7 +176,7 @@ Via de membership-payload zijn nu beschikbaar:
 Publiek gecontroleerd op de brand uit bovenstaand material:
 
 ```bash
-curl -s 'https://materialdistrict.com/wp-json/wp/v2/brand/133964?_fields=id,slug,meta.membership'
+curl -s 'https://cms.materialdistrict.com/wp-json/wp/v2/brand/133964?_fields=id,slug,meta.membership'
 ```
 
 Response:

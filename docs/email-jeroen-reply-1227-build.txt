@@ -13,7 +13,7 @@ Je twee vragen uit vanochtend staan al klaar op de WP-kant:
    Bearer JWT. Alleen leaf terms, shape { id, l1, l2, l3 }.
    Spec: docs/wordpress-instructions-material-categories.md
 
-   De categorie-picker in 1227 zou hiermee direct moeten werken op test (frontend praat tegen materialdistrict.com/wp-json). Geen "nog niet beschikbaar" meer verwacht.
+   De categorie-picker in 1227 zou hiermee direct moeten werken op test (frontend praat tegen cms.materialdistrict.com/wp-json). Geen "nog niet beschikbaar" meer verwacht.
 
 2. E2E-testaccounts — staan al klaar (zie mijn eerdere mail van vanmiddag). Geen actie nodig aan jouw kant.
 

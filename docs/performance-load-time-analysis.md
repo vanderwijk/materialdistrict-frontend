@@ -27,7 +27,7 @@ Elke pagina doet vaak **meerdere HTTP-calls** naar WordPress. In de codebase sta
 ### Statische/detail routes (bijv. `/materials/[slug]`)
 
 1. Vercel start Server Component render.
-2. Next.js haalt data op via `fetch()` naar `materialdistrict.com/wp-json/...`.
+2. Next.js haalt data op via `fetch()` naar `cms.materialdistrict.com/wp-json/...`.
 3. Vaak **meerdere calls na elkaar of parallel**:
    - material op slug
    - attachments/gallery
@@ -95,7 +95,7 @@ Als dit per ongeluk aan staat, voelt de hele site “altijd traag” terwijl de 
 **Meten (Johan):**
 
 1. Query Monitor of WP Engine performance tools op **staging/production**.
-2. `curl -w "%{time_total}\n" -o /dev/null -s "https://materialdistrict.com/wp-json/wp/v2/material?per_page=1"` — baseline REST.
+2. `curl -w "%{time_total}\n" -o /dev/null -s "https://cms.materialdistrict.com/wp-json/wp/v2/material?per_page=1"` — baseline REST.
 3. Vergelijk FacetWP POST vs simpele REST GET.
 
 ---

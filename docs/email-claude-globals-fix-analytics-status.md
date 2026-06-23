@@ -27,7 +27,7 @@ WP POST /md/v2/events → API Gateway → ingest Lambda → SQS → db Lambda �
 Productie-smoke:
 
 ```bash
-curl -X POST 'https://materialdistrict.com/wp-json/md/v2/events' \
+curl -X POST 'https://cms.materialdistrict.com/wp-json/md/v2/events' \
   -d '{"event_type":"preferred_source_click","object_type":"site","anonymous_id":"prod-smoke-1","source":"ops"}'
 # → {"ok":true,"queued":true}
 ```

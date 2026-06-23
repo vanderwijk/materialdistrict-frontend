@@ -76,7 +76,8 @@ type FacetWpMaterialsResponse = {
   }
 }
 
-const facetWpFetchEndpoint = 'https://materialdistrict.com/wp-json/facetwp/v1/fetch'
+const facetWpFetchEndpoint =
+  'https://cms.materialdistrict.com/wp-json/md/v2/materials/facet-query'
 
 const facetWpMaterialsRequestExample: FacetWpMaterialsRequest = {
   data: {
@@ -417,7 +418,7 @@ export default function MockPage() {
 
             <section className={styles.contractSection}>
               <h2 className={styles.contractTitle}>
-                FacetWP materials contract
+                FacetWP / facet-query materials contract
               </h2>
               <div className={styles.contractCard}>
                 <div className={styles.contractEndpointRow}>
@@ -426,7 +427,7 @@ export default function MockPage() {
                 </div>
 
                 <p className={styles.contractIntro}>
-                  Deze mock laat precies zien hoe de frontend de Materials FacetWP endpoint kan aanroepen.
+                  Deze mock laat precies zien hoe de frontend de materials facet-query endpoint aanroept.
                   De request body moet altijd een top-level <code>data</code> object bevatten.
                 </p>
 

@@ -163,19 +163,19 @@ Proxy routes nodig: DELETE brand, POST claim, POST request-new.
 TOKEN="…"
 
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brand-candidates?q=materia'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brand-candidates?q=materia'
 
 curl -s -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"brand_id":3576}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/claim'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/claim'
 
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/invoices'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/invoices'
 
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/featured'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/featured'
 # verwacht 403 op free/basic/plus tier
 ```
 

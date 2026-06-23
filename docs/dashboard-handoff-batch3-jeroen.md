@@ -25,7 +25,7 @@ Eerdere handoffs: [batch 1](./dashboard-handoff-batch1-jeroen.md) · [batch 2](.
 
 ## Batch 3 — nieuwe endpoints
 
-Basis: `https://materialdistrict.com/wp-json`  
+Basis: `https://cms.materialdistrict.com/wp-json`  
 Auth: `Authorization: Bearer <JWT>`  
 Responses: **snake_case** (mapper → camelCase in frontend)
 
@@ -323,57 +323,57 @@ TOKEN="…"
 
 # Bookmarks (leeg tot usermeta gevuld)
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/bookmarks'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/bookmarks'
 
 # Boards (Insider vereist)
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/boards'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/boards'
 
 curl -s -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"name":"Test board"}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/boards'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/boards'
 
 # Saved searches
 curl -s -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"name":"Test","query":"s=wood","alerts_enabled":false}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/saved-searches'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/saved-searches'
 
 # Insider insights
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/insider-insights'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/insider-insights'
 
 # Invoices
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/invoices?scope=user'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/invoices?scope=user'
 
 # Material form GET (brand 3576, material 133915)
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
 
 # Material form PATCH (naam wijzigen)
 curl -s -X PATCH \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"name":"Updated name"}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
 
 # Status toggle (batch 1 — ongewijzigd gedrag)
 curl -s -X PATCH \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"status":"offline"}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
 
 # Material create
 curl -s -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"name":"Draft material"}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials'
 ```
 
 ---

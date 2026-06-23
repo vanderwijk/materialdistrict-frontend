@@ -36,7 +36,7 @@ Voordat je **iets** wijzigt of nieuwe plannen maakt:
    | Frontend | `e0bde42` | Checkout prefill uit profiel |
    | Frontend | `2ea5e17` | Header cart badge via CartContext |
 
-3. **Plugin-stand (alleen ter info — niet in jouw repo):** Johan deployt plugin apart. Onderstaande commits staan **live op production**; jij test ertegen via `https://materialdistrict.com/wp-json`:
+3. **Plugin-stand (alleen ter info — niet in jouw repo):** Johan deployt plugin apart. Onderstaande commits staan **live op production**; jij test ertegen via `https://cms.materialdistrict.com/wp-json`:
 
    | Plugin (Johan) | Commit | Onderwerp |
    |----------------|--------|-----------|
@@ -47,7 +47,7 @@ Voordat je **iets** wijzigt of nieuwe plannen maakt:
 
 4. **Deploy:** Johan pusht frontend → `main` → Vercel. Plugin → `master` → WP Engine. Claude doet **geen** deploy.
 
-5. **Geen mock-aannames:** test tegen productie-API (`WP_API_URL` → `https://materialdistrict.com/wp-json`). Vercel preview gebruikt dezelfde backend.
+5. **Geen mock-aannames:** test tegen productie-API (`WP_API_URL` → `https://cms.materialdistrict.com/wp-json`). Vercel preview gebruikt dezelfde backend.
 
 ---
 

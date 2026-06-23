@@ -25,7 +25,7 @@
 
 /**
  * WooCommerce REST API base. Doorgaans:
- *   https://materialdistrict.com/wp-json/wc/v3
+ *   https://cms.materialdistrict.com/wp-json/wc/v3
  */
 export const WC_API_URL = (() => {
   // Stand-alone configurable, OF afgeleid van WP_API_URL
@@ -38,7 +38,7 @@ export const WC_API_URL = (() => {
   if (process.env.NODE_ENV === 'production') {
     throw new Error('Missing required env var: WC_API_URL or WP_API_URL')
   }
-  return 'https://materialdistrict.com/wp-json/wc/v3'
+  return 'https://cms.materialdistrict.com/wp-json/wc/v3'
 })()
 
 const WC_CONSUMER_KEY = process.env.WC_CONSUMER_KEY

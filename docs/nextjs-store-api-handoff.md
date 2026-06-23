@@ -77,7 +77,7 @@ Verify from your machine:
 curl -s -o /dev/null -D - -X OPTIONS \
   -H "Origin: http://localhost:3000" \
   -H "Access-Control-Request-Method: GET" \
-  https://materialdistrict.com/wp-json/wc/store/v1/products | grep -i access-control
+  https://cms.materialdistrict.com/wp-json/wc/store/v1/products | grep -i access-control
 ```
 
 If you need an extra origin allowlisted, ask Johan (it's a one-line filter in

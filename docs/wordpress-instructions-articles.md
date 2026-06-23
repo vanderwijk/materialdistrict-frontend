@@ -175,7 +175,7 @@ Controleer dat de velden echt in de REST-output staan. Pak een bestaande
 article-ID of -slug:
 
 ```bash
-curl -s "https://materialdistrict.com/wp-json/wp/v2/article?per_page=1&_fields=id,meta" \
+curl -s "https://cms.materialdistrict.com/wp-json/wp/v2/article?per_page=1&_fields=id,meta" \
   | python3 -m json.tool | grep -E "_story_type|_insider_only"
 ```
 
@@ -185,12 +185,12 @@ slug (`news`/`people`/…) en een boolean.
 Filter-check (story-type), zodra de collectie-filtering werkt:
 
 ```bash
-curl -s "https://materialdistrict.com/wp-json/wp/v2/article?story_type=people&per_page=5&_fields=id,slug,meta._story_type" \
+curl -s "https://cms.materialdistrict.com/wp-json/wp/v2/article?story_type=people&per_page=5&_fields=id,slug,meta._story_type" \
   | python3 -m json.tool
 ```
 
 ```bash
-curl -sI "https://materialdistrict.com/wp-json/wp/v2/article?story_type=news" | grep X-WP-Total
+curl -sI "https://cms.materialdistrict.com/wp-json/wp/v2/article?story_type=news" | grep X-WP-Total
 ```
 
 Verwacht: alleen articles van type `people`.

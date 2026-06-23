@@ -11,7 +11,7 @@ import type { NextConfig } from 'next'
 
 const WP_HOST = process.env.WP_API_URL
   ? new URL(process.env.WP_API_URL).hostname
-  : 'materialdistrict.com'
+  : 'cms.materialdistrict.com'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 

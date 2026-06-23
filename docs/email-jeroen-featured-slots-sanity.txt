@@ -28,26 +28,26 @@ Let op is_featured_now op publiek materiaal-REST:
 --- Curl cheat sheet (vervang TOKEN en IDs) ---
 
 # 1) Token
-curl -sS -X POST 'https://materialdistrict.com/wp-json/md/v2/auth/login' \
+curl -sS -X POST 'https://cms.materialdistrict.com/wp-json/md/v2/auth/login' \
   -H 'Content-Type: application/json' \
   -d '{"email":"e2e-dashboard-partner@materialdistrict.com","password":"E2eDashboard2026!"}'
 
 # 2) Membership-velden
-curl -sS 'https://materialdistrict.com/wp-json/md/v2/auth/me' \
+curl -sS 'https://cms.materialdistrict.com/wp-json/md/v2/auth/me' \
   -H 'Authorization: Bearer TOKEN' \
   | jq '.user.connected_brands[] | {id, slug, tier, featured_slots_total, featured_slots_used, featured_slots_reset_date}'
 
 # 3) Slots lezen
-curl -sS 'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/137159/featured-slots' \
+curl -sS 'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/137159/featured-slots' \
   -H 'Authorization: Bearer TOKEN' | jq
 
 # 4) Boeken (week_start = ISO-maandag, ≥ vandaag+7 dagen, vóór reset-datum)
-curl -sS -X POST 'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/137159/featured-slots' \
+curl -sS -X POST 'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/137159/featured-slots' \
   -H 'Authorization: Bearer TOKEN' -H 'Content-Type: application/json' \
   -d '{"material_id":MATERIAL_ID,"week_start":"2026-06-15"}' | jq
 
 # 5) Annuleren
-curl -sS -X DELETE 'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/137159/featured-slots/SLOT_ID' \
+curl -sS -X DELETE 'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/137159/featured-slots/SLOT_ID' \
   -H 'Authorization: Bearer TOKEN' | jq
 
 Groet,

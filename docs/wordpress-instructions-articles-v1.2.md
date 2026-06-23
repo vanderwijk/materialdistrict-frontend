@@ -122,10 +122,10 @@ bestaande talks gebackfilld. Wordt opgepakt in sessie 7 (Talks).
 ## 7. Verificatie (al gedraaid)
 
 ```bash
-curl -s "https://materialdistrict.com/wp-json/wp/v2/article?slug=<SLUG>" | python3 -m json.tool
+curl -s "https://cms.materialdistrict.com/wp-json/wp/v2/article?slug=<SLUG>" | python3 -m json.tool
 # meta.story_type / meta._story_type / meta.insider_only / meta.channels aanwezig
-curl -s "https://materialdistrict.com/wp-json/wp/v2/article?story_type=people" | python3 -m json.tool | grep '"slug"'
-curl -s "https://materialdistrict.com/wp-json/md/v2/articles/<SLUG>/related?limit=6" | python3 -m json.tool
+curl -s "https://cms.materialdistrict.com/wp-json/wp/v2/article?story_type=people" | python3 -m json.tool | grep '"slug"'
+curl -s "https://cms.materialdistrict.com/wp-json/md/v2/articles/<SLUG>/related?limit=6" | python3 -m json.tool
 ```
 
 ---

@@ -43,7 +43,7 @@ Client form / toggle
 
 ## Batch 1 — live endpoints
 
-Basis-URL: `https://materialdistrict.com/wp-json`
+Basis-URL: `https://cms.materialdistrict.com/wp-json`
 
 Auth op alle calls: `Authorization: Bearer <JWT>`
 
@@ -262,22 +262,22 @@ TOKEN="…"  # via POST /md/v2/auth/login
 
 # Profile ✅
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/profile'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/profile'
 
 # Brand profile ✅ (id 3576, slug materia)
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/profile'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/profile'
 
 # Materials list ✅
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials'
 
 # Status toggle ✅ — PATCH verplicht, juiste material id
 curl -s -X PATCH \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"status":"online"}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/materials/133915'
 ```
 
 ---

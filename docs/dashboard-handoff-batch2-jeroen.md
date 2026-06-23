@@ -24,7 +24,7 @@ Batch 1 handoff: [`dashboard-handoff-batch1-jeroen.md`](./dashboard-handoff-batc
 
 ## Batch 2 — nieuwe endpoints
 
-Basis: `https://materialdistrict.com/wp-json`  
+Basis: `https://cms.materialdistrict.com/wp-json`  
 Auth: `Authorization: Bearer <JWT>`
 
 ### Overzicht
@@ -268,30 +268,30 @@ TOKEN="…"
 
 # Billing portal (Insider + stripe_customer_id vereist)
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/membership/portal'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/membership/portal'
 
 # Mijn requests
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/requests'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/requests'
 
 # Brand interactions
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/interactions'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/interactions'
 
 # Statistics — verwacht 403 op free tier brand 3576
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/statistics'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/statistics'
 
 # Lead routing — verwacht 403 op free tier brand 3576
 curl -s -H "Authorization: Bearer $TOKEN" \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/lead-routing'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/lead-routing'
 
 # Interaction status (PATCH + bestaand lead id)
 curl -s -X PATCH \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"status":"Answered"}' \
-  'https://materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/interactions/LEAD_ID'
+  'https://cms.materialdistrict.com/wp-json/md/v2/dashboard/brands/3576/interactions/LEAD_ID'
 ```
 
 ---

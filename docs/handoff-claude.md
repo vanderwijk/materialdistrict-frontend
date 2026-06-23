@@ -25,9 +25,9 @@ Bron van waarheid voor **gedrag/API** blijft code + onderstaande docs; dit besta
 
 ## Infra
 
-- **Vercel test** (`materialdistrict-frontend.vercel.app`): `WP_API_URL` → `https://materialdistrict.com/wp-json` (preview + production env).
-- **Plugin**: push `master` in `materialdistrict-plugin` → auto-deploy WP Engine (productie).
-- Claude bouwt UI tegen **productie-API**; Vercel is alleen deploy van de Next-app.
+- **Vercel** (`materialdistrict-frontend.vercel.app` + `materialdistrict.com`): `WP_API_URL` → `https://cms.materialdistrict.com/wp-json` (preview + production env).
+- **Plugin**: push `master` in `materialdistrict-plugin` → deploy op `cms.materialdistrict.com`.
+- Claude bouwt UI tegen de **CMS-API**; Vercel serveert alleen de Next-app. Publieke canonicals blijven op `materialdistrict.com`.
 
 ## Channels
 
