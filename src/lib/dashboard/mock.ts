@@ -230,13 +230,31 @@ export const MOCK_BRAND_STATS: Record<string, BrandStatistics> = {
       { materialId: 103, name: 'Circular facade panel', views: 1340, requests: 11 },
       { materialId: 104, name: 'Recycled composite tile', views: 980, requests: 7 },
     ],
-    brochures: [
-      { title: 'Company brochure', downloads: 31 },
-      { title: 'Facade systems overview', downloads: 44 },
-      { title: 'Acoustic materials guide', downloads: 22 },
-    ],
+    brochures: {
+      brand: [
+        { attachmentId: 12001, title: 'Company brochure', downloads: 31 },
+        { attachmentId: 12002, title: 'Facade systems overview', downloads: 44 },
+        { attachmentId: 12003, title: 'Acoustic materials guide', downloads: 22 },
+      ],
+      material: [
+        {
+          attachmentId: 13055,
+          title: 'Technical datasheet',
+          materialId: 101,
+          materialName: 'Acoustic wood panel',
+          downloads: 18,
+        },
+        {
+          attachmentId: 13056,
+          title: 'EPD',
+          materialId: 103,
+          materialName: 'Circular facade panel',
+          downloads: 9,
+        },
+      ],
+    },
   },
-  'second-brand': { metrics: [], materials: [], brochures: [] },
+  'second-brand': { metrics: [], materials: [], brochures: { brand: [], material: [] } },
 }
 
 export const MOCK_LEAD_ROUTING: Record<string, LeadRoutingConfig> = {

@@ -352,7 +352,7 @@ export async function getInteractions(slug: string): Promise<Interaction[]> {
 
 /** GET /md/v2/dashboard/brands/{brandId}/statistics (batch 2 — live; 403 free tier) */
 export async function getBrandStatistics(slug: string): Promise<BrandStatistics> {
-  const empty: BrandStatistics = { metrics: [], materials: [], brochures: [] }
+  const empty: BrandStatistics = { metrics: [], materials: [], brochures: { brand: [], material: [] } }
   const brandId = await resolveBrandId(slug)
   if (brandId === null) return empty
   try {

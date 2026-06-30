@@ -40,6 +40,8 @@ import type {
   StatMetric,
   MaterialStatRow,
   BrochureStatRow,
+  MaterialBrochureStatRow,
+  BrandBrochureStatistics,
   BrandStatistics,
   LeadRoute,
   LeadRoutingConfig,
@@ -755,14 +757,25 @@ interface RawMaterialStatRow {
 }
 
 interface RawBrochureStatRow {
+  attachment_id?: number
   title?: string
   downloads?: number
+}
+
+interface RawMaterialBrochureStatRow extends RawBrochureStatRow {
+  material_id?: number
+  material_name?: string
+}
+
+interface RawBrandBrochureStatistics {
+  brand?: RawBrochureStatRow[]
+  material?: RawMaterialBrochureStatRow[]
 }
 
 interface RawBrandStatistics {
   metrics?: RawStatMetric[]
   materials?: RawMaterialStatRow[]
-  brochures?: RawBrochureStatRow[]
+  brochures?: RawBrandBrochureStatistics | RawBrochureStatRow[]
 }
 
 function mapStatMetric(raw: RawStatMetric): StatMetric {
@@ -779,14 +792,39 @@ function mapMaterialStatRow(raw: RawMaterialStatRow): MaterialStatRow {
 }
 
 function mapBrochureStatRow(raw: RawBrochureStatRow): BrochureStatRow {
-  return { title: raw.title ?? '', downloads: raw.downloads ?? 0 }
+  return {
+    attachmentId: raw.attachment_id ?? 0,
+    title: raw.title ?? '',
+    downloads: raw.downloads ?? 0,
+  }
+}
+
+function mapMaterialBrochureStatRow(raw: RawMaterialBrochureStatRow): MaterialBrochureStatRow {
+  return {
+    ...mapBrochureStatRow(raw),
+    materialId: raw.material_id ?? 0,
+    materialName: raw.material_name ?? '',
+  }
+}
+
+function mapBrandBrochureStatistics(
+  raw: RawBrandBrochureStatistics | RawBrochureStatRow[] | undefined,
+): BrandBrochureStatistics {
+  if (Array.isArray(raw)) {
+    return { brand: raw.map(mapBrochureStatRow), material: [] }
+  }
+
+  return {
+    brand: (raw?.brand ?? []).map(mapBrochureStatRow),
+    material: (raw?.material ?? []).map(mapMaterialBrochureStatRow),
+  }
 }
 
 export function mapBrandStatistics(raw: RawBrandStatistics): BrandStatistics {
   return {
     metrics: (raw.metrics ?? []).map(mapStatMetric),
     materials: (raw.materials ?? []).map(mapMaterialStatRow),
-    brochures: (raw.brochures ?? []).map(mapBrochureStatRow),
+    brochures: mapBrandBrochureStatistics(raw.brochures),
   }
 }
 

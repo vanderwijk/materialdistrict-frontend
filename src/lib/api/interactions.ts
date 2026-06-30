@@ -9,9 +9,8 @@
  * Twee event-typen (Johan-handoff interactions):
  *  - `website_click`     — aggregaat-only; verhoogt de brand-website-clicks-
  *                          metric. Geen lead, geen interactions-lijst-entry.
- *  - `brochure_download` — verhoogt de download-teller op de attachment en
- *                          maakt een lead (status Download) → interactions +
- *                          brochures-stat.
+ *  - `brochure_download` — RDS counts per attachment (+ material aggregate) en
+ *                          lead (status Download) → interactions + brochures-stat.
  *
  * Best-effort: deze helper mag NOOIT de UI blokkeren of een fout naar de
  * gebruiker tonen. Een mislukte log (offline, 4xx, navigatie) wordt stil

@@ -506,10 +506,23 @@ export interface MaterialStatRow {
   requests: number
 }
 
-/** Per-brochure download row (the Brochures tab in the statistics panel). */
+/** Per-brochure download row (brand or material scope). */
 export interface BrochureStatRow {
+  attachmentId: number
   title: string
   downloads: number
+}
+
+/** Material-scoped brochure row (includes parent material). */
+export interface MaterialBrochureStatRow extends BrochureStatRow {
+  materialId: number
+  materialName: string
+}
+
+/** Per-scope brochure download breakdown for the statistics panel. */
+export interface BrandBrochureStatistics {
+  brand: BrochureStatRow[]
+  material: MaterialBrochureStatRow[]
 }
 
 /**
@@ -522,10 +535,9 @@ export interface BrandStatistics {
   metrics: StatMetric[]
   materials: MaterialStatRow[]
   /**
-   * Per-brochure download counts (the Brochures tab). Empty until WordPress
-   * delivers the aggregate; the panel renders an empty state in that case.
+   * Per-brochure download counts split by brand profile vs material downloads.
    */
-  brochures: BrochureStatRow[]
+  brochures: BrandBrochureStatistics
 }
 
 // ============================================================

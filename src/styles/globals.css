@@ -11563,6 +11563,9 @@ mark.search-mark {
 
 /* --- Statistics: Brochures-tab table column template --- */
 .t-brochures .t-head,.t-brochures .t-row{grid-template-columns:2fr 140px}
+.t-brochures-material .t-head,.t-brochures-material .t-row{grid-template-columns:1.4fr 1.6fr 140px}
+.stats-brochures-stack{display:flex;flex-direction:column;gap:24px}
+.stats-brochures-heading{margin:0 0 12px;font-size:14px;font-weight:600}
 
 /* --- Switch (universal on/off toggle) --- */
 .switch-field{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);transition:border-color 0.2s,background 0.2s}
