@@ -442,6 +442,9 @@ export function mapBrand(
     featured: truthyFlag(m.featured, m._featured),
     followable: m.followable === true,
 
+    downloads: mapMaterialDownloads(m.downloads),
+    downloadsInsidersOnly: Boolean(m.downloads_insiders_only),
+
     date: raw.date,
     modified: raw.modified,
   }

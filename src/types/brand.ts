@@ -27,6 +27,7 @@
 
 import type { Gallery, MediaImage } from './media'
 import type { TaxonomyTerm } from './article'
+import type { MaterialDownload } from './material'
 
 /**
  * Land-detail-object zoals de plugin het levert: ISO-code + leesbare
@@ -179,6 +180,12 @@ export interface Brand {
 
   /** Betaalde brand-membership — volgbaar via follow-toggle. */
   followable: boolean
+
+  /** Brand-level downloads (company brochures, catalogues, etc.). */
+  downloads: MaterialDownload[]
+
+  /** Insider gate for all downloads on this brand. */
+  downloadsInsidersOnly: boolean
 
   date: string
   modified: string

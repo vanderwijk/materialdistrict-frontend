@@ -24,7 +24,7 @@ export interface LogInteractionEventInput {
   type: InteractionEventType
   /** Brand-context. Mag weg als `materialId` is gezet (WP leidt brand af). */
   brandId?: number
-  /** Material-context (verplicht voor brochure_download). */
+  /** Material-context (materiaalpagina). Weglaten op brandpagina → scope `brand`. */
   materialId?: number
   /** Attachment-id van de gedownloade brochure (alleen brochure_download). */
   downloadId?: number

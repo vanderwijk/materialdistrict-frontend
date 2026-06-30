@@ -19,7 +19,6 @@
  *
  * Geparkeerd (Johan-vragen, zie open-issues sessie 5):
  *  - Company-film: brand-videoveld nog niet beschikbaar.
- *  - Downloads: brand-downloadveld nog niet beschikbaar.
  *  - Channels (ChannelBar / brand-tags): geen brand-channel-taxonomie.
  *
  * JSON-LD: Organization (brand) + BreadcrumbList.
@@ -45,6 +44,7 @@ import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock
 import { FollowDigestBlock } from '@/components/layout/FollowDigestBlock'
 import { getDigestChannels } from '@/lib/api/digest-channels'
 import { FollowToggle } from '@/components/ui/FollowToggle'
+import { DownloadsCard } from '@/app/material/[slug]/_components/DownloadsCard'
 
 const MATERIALS_PER_BRAND = 4
 
@@ -227,6 +227,13 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
                 founded={brand.founded}
                 employees={brand.employees}
                 materialCount={brand.materialCount || materialsResult.total}
+              />
+
+              <DownloadsCard
+                signInNextPath={`/brand/${brand.slug}`}
+                brandId={brand.id}
+                downloads={brand.downloads}
+                downloadsInsidersOnly={brand.downloadsInsidersOnly}
               />
             </div>
 

@@ -38,18 +38,20 @@ import { logInteractionEvent } from '@/lib/api/interactions'
 import type { MaterialDownload } from '@/types/material'
 
 export interface DownloadsCardProps {
-  materialSlug: string
-  /** Material-id voor brochure_download-logging. */
-  materialId: number
-  /** Brand-id (optioneel) voor brochure_download-logging. */
-  brandId: number | null
-  /** Echte downloads-entiteit. Wanneer leeg → fallback op de losse url-velden. */
+  /** Path for sign-in redirect (`/brand/slug` or `/material/slug`). */
+  signInNextPath: string
+  /** Brand-id voor brochure_download-logging. */
+  brandId: number
+  /** Material-id (alleen materiaalpagina; bepaalt download_scope server-side). */
+  materialId?: number
+  /** Echte downloads-entiteit. */
   downloads: MaterialDownload[]
   /** Brand-brede Insider-gate op downloads. */
   downloadsInsidersOnly: boolean
-  datasheetUrl: string | null
-  epdUrl: string | null
-  productUrl: string | null
+  /** Legacy url-fallback — alleen materiaalpagina. */
+  datasheetUrl?: string | null
+  epdUrl?: string | null
+  productUrl?: string | null
 }
 
 interface DownloadEntry {
@@ -64,14 +66,14 @@ interface DownloadEntry {
 }
 
 export function DownloadsCard({
-  materialSlug,
-  materialId,
+  signInNextPath,
   brandId,
+  materialId,
   downloads,
   downloadsInsidersOnly,
-  datasheetUrl,
-  epdUrl,
-  productUrl,
+  datasheetUrl = null,
+  epdUrl = null,
+  productUrl = null,
 }: DownloadsCardProps) {
   const router = useRouter()
   const { isLoggedIn, isMember } = useAuth()
@@ -110,7 +112,7 @@ export function DownloadsCard({
 
   if (entries.length === 0) return null
 
-  const signInHref = `/sign-in?next=${encodeURIComponent(`/material/${materialSlug}`)}`
+  const signInHref = `/sign-in?next=${encodeURIComponent(signInNextPath)}`
   // Logged-in non-Insiders hit the gate; logged-out users see "Sign in" first.
   const insiderLocked = downloadsInsidersOnly && isLoggedIn && !isMember
 
@@ -122,11 +124,11 @@ export function DownloadsCard({
     }
     // Logged-in download → best-effort brochure_download log. Alleen voor
     // echte downloads (met attachment-id); de legacy url-fallback heeft er geen.
-    if (entry.downloadId != null) {
+    if (entry.downloadId != null && brandId > 0) {
       void logInteractionEvent({
         type: 'brochure_download',
-        materialId,
-        ...(brandId != null ? { brandId } : {}),
+        brandId,
+        ...(materialId != null ? { materialId } : {}),
         downloadId: entry.downloadId,
       })
     }

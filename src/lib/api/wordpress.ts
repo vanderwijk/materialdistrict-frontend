@@ -745,6 +745,8 @@ export interface WPBrandRawResponse {
     membership?: unknown
     /** Theme taxonomy as channel pills (WF-3). */
     channels?: WPMetaTermRaw[]
+    downloads?: Array<{ id?: string | number; title?: string; url?: string; type?: string }>
+    downloads_insiders_only?: boolean
     // Raw underscore (fallback)
     _partner?: boolean | string | null
     _featured?: boolean | string | null

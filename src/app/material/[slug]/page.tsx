@@ -434,9 +434,9 @@ export default async function MaterialDetailPage({
             )}
 
             <DownloadsCard
-              materialSlug={material.slug}
+              signInNextPath={`/material/${material.slug}`}
+              brandId={material.brandId ?? 0}
               materialId={material.id}
-              brandId={material.brandId}
               downloads={material.downloads}
               downloadsInsidersOnly={material.downloadsInsidersOnly}
               datasheetUrl={material.datasheetUrl}
