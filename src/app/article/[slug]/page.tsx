@@ -46,8 +46,8 @@ import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { MaterialGallery } from '@/components/materials'
 import {
   getArticle,
+  getArticleNeighbours,
   getRelatedContent,
-  listArticles,
   listMaterials,
 } from '@/lib/api'
 import { JsonLd, buildArticle, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
@@ -60,10 +60,7 @@ import {
   type ArticleSidebarMaterial,
 } from './_components/ArticleDetailSidebar'
 import { getDigestChannels } from '@/lib/api/digest-channels'
-import {
-  ArticlePrevNext,
-  type ArticlePrevNextNeighbour,
-} from './_components/ArticlePrevNext'
+import { ArticlePrevNext } from './_components/ArticlePrevNext'
 import { ArticleRelated } from './_components/ArticleRelated'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
@@ -124,59 +121,6 @@ export async function generateMetadata({
   }
 }
 
-/**
- * Prev/next-buren, berekend uit één datum-gesorteerde article-lijst.
- * Faalbestendig: bij een fout geen buren (de component rendert dan niets).
- *
- * §F2.12 P2: de buren krijgen nu een thumbnail (zoals material-detail).
- * `listArticles` resolvet de hero default ON (één batched media-fetch),
- * dus de hero is hier al beschikbaar — we geven 'm door als `thumbnailUrl`.
- *
- * Sessie 6b (D5): related zit NIET langer hier — dat komt nu via het
- * SearchWP-endpoint (`getRelatedContent`), parallel opgehaald in de page.
- */
-async function getNeighbours(currentSlug: string): Promise<{
-  prev: ArticlePrevNextNeighbour | null
-  next: ArticlePrevNextNeighbour | null
-}> {
-  try {
-    const { items } = await listArticles({
-      perPage: NEIGHBOUR_SCAN,
-      orderby: 'date',
-      order: 'desc',
-    })
-
-    const idx = items.findIndex((a) => a.slug === currentSlug)
-    const prevItem = idx > 0 ? items[idx - 1] : null
-    const nextItem = idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
-
-    return {
-      prev: prevItem
-        ? {
-            slug: prevItem.slug,
-            title: prevItem.title,
-            thumbnailUrl:
-              prevItem.hero?.sizes?.medium?.url ??
-              prevItem.hero?.sourceUrl ??
-              null,
-          }
-        : null,
-      next: nextItem
-        ? {
-            slug: nextItem.slug,
-            title: nextItem.title,
-            thumbnailUrl:
-              nextItem.hero?.sizes?.medium?.url ??
-              nextItem.hero?.sourceUrl ??
-              null,
-          }
-        : null,
-    }
-  } catch {
-    return { prev: null, next: null }
-  }
-}
-
 /** Latest materials voor de sidebar. Faalbestendig → lege lijst. */
 async function getSidebarMaterials(): Promise<ArticleSidebarMaterial[]> {
   try {
@@ -201,15 +145,20 @@ export default async function ArticleDetailPage({
 }: ArticleDetailPageProps) {
   const { slug } = await params
 
-  const article = await getArticle(slug)
-  if (!article) notFound()
+  // Performance-fix 02-07-2026: getArticle draait MEE in de parallelle
+  // batch i.p.v. ervoor (scheelde ~1.3s serieel bij koude cache). Buren,
+  // related, sidebar en channels hangen alleen van de slug af — niet van
+  // het article-object — dus er is geen echte dependency.
+  const [article, { prev, next }, related, sidebarMaterials, digestChannels] =
+    await Promise.all([
+      getArticle(slug),
+      getArticleNeighbours(slug, NEIGHBOUR_SCAN),
+      getRelatedContent(slug),
+      getSidebarMaterials(),
+      getDigestChannels(),
+    ])
 
-  const [{ prev, next }, related, sidebarMaterials, digestChannels] = await Promise.all([
-    getNeighbours(slug),
-    getRelatedContent(slug),
-    getSidebarMaterials(),
-    getDigestChannels(),
-  ])
+  if (!article) notFound()
 
   const typeMeta = STORY_TYPE_META[article.type]
   const publishedLabel = formatDate(article.date)

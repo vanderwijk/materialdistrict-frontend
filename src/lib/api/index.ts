@@ -16,6 +16,7 @@
 // Domain API (gebruikelijk)
 export {
   getArticle,
+  getArticleNeighbours,
   getArticleStoryTypeOptions,
   getArticleTotalCount,
   getBrand,
@@ -38,6 +39,7 @@ export {
   listTalks,
 } from './content'
 export type {
+  ArticleNeighbour,
   BrandCountryOption,
   ChannelHub,
   ChannelHubStrip,

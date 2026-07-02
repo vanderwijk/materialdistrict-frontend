@@ -26,6 +26,7 @@ import type { Material, MaterialListItem } from '@/types/material'
 import type { Talk, TalkListItem } from '@/types/talk'
 import type { Page } from '@/types/page'
 import type { FacetSelection, MaterialSortValue } from '@/types/facetwp'
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 import {
   STORY_TYPES,
@@ -71,6 +72,7 @@ import {
   type ListEventsParams,
   type ListMaterialsParams,
   type ListTalksParams,
+  type WPArticleRawResponse,
   type WPMaterialRawResponse,
   type WPTermResponse,
   getArticleBySlug as _fetchArticleBySlugRaw,
@@ -807,6 +809,80 @@ export async function listArticles(
     ),
   )
   return { items, total, totalPages }
+}
+
+// --------------------------------------------------------------------
+// Article neighbours (prev/next) — performance-fix 02-07-2026
+// --------------------------------------------------------------------
+
+/** Prev/next-buur voor de article-detailpagina (ArticlePrevNext). */
+export interface ArticleNeighbour {
+  slug: string
+  title: string
+  thumbnailUrl: string | null
+}
+
+/**
+ * Velden die we nodig hebben om buren te bepalen + te renderen. De
+ * `_fields`-projectie is de kern van de fix: de oude implementatie haalde
+ * 100 VOLLEDIGE articles op (1.6MB, ~2.8s aan PHP-rendertijd op de cms-
+ * droplet) plus media-metadata voor álle 100 heroes (1.5MB, ~3.4s) — om
+ * er twee thumbnails uit te gebruiken.
+ */
+const NEIGHBOUR_FIELDS = ['id', 'slug', 'title', 'featured_media']
+
+/**
+ * Prev/next-buren voor een article, berekend uit één datum-gesorteerde,
+ * veld-geprojecteerde lijst. Media wordt alleen geresolved voor de
+ * (maximaal) twee buren — niet voor de hele scan-window.
+ *
+ * Faalbestendig: bij een fout geen buren (`ArticlePrevNext` rendert dan
+ * niets), zelfde contract als de oude page-lokale helper.
+ */
+export async function getArticleNeighbours(
+  slug: string,
+  scan = 100,
+): Promise<{ prev: ArticleNeighbour | null; next: ArticleNeighbour | null }> {
+  try {
+    const { items } = await listArticlesRaw({
+      perPage: scan,
+      orderby: 'date',
+      order: 'desc',
+      fields: NEIGHBOUR_FIELDS,
+    })
+
+    const idx = items.findIndex((a) => a.slug === slug)
+    const prevRaw = idx > 0 ? items[idx - 1] : null
+    const nextRaw =
+      idx >= 0 && idx < items.length - 1 ? items[idx + 1] : null
+
+    const mediaIds = unique(
+      [prevRaw, nextRaw]
+        .filter((r): r is WPArticleRawResponse => r !== null)
+        .map((r) => r.featured_media)
+        .filter((id) => id > 0),
+    )
+    const mediaMap = await fetchMediaMap(mediaIds)
+
+    const toNeighbour = (
+      raw: WPArticleRawResponse | null,
+    ): ArticleNeighbour | null => {
+      if (!raw) return null
+      const hero =
+        raw.featured_media > 0
+          ? mediaMap.get(raw.featured_media) ?? null
+          : null
+      return {
+        slug: raw.slug,
+        title: decodeHtmlEntities(raw.title.rendered),
+        thumbnailUrl: hero?.sizes?.medium?.url ?? hero?.sourceUrl ?? null,
+      }
+    }
+
+    return { prev: toNeighbour(prevRaw), next: toNeighbour(nextRaw) }
+  } catch {
+    return { prev: null, next: null }
+  }
 }
 
 /**

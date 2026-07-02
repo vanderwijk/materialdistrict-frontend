@@ -949,6 +949,15 @@ export interface ListArticlesParams {
   orderby?: 'date' | 'modified' | 'title' | 'id'
   order?: 'asc' | 'desc'
   noCache?: boolean
+  /**
+   * Optionele WP `_fields`-projectie (performance, 02-07-2026). Beperkt de
+   * response tot de opgegeven top-level velden — een full article-object is
+   * ~16KB (rendered body + yoast_head); met projectie is een 100-items-lijst
+   * ~50KB i.p.v. 1.6MB en seconden sneller op de WP-server. LET OP: alleen
+   * gebruiken bij callers die de raw items zelf lezen — `mapArticleListItem`
+   * verwacht o.a. `excerpt` en `meta` en mag geen geprojecteerde items krijgen.
+   */
+  fields?: string[]
 }
 
 export async function listArticles(
@@ -971,6 +980,8 @@ export async function listArticles(
       theme: params.theme,
       orderby: params.orderby ?? 'date',
       order: params.order ?? 'desc',
+      // Veld-projectie — zie ListArticlesParams.fields.
+      _fields: params.fields,
     },
   })
 }
