@@ -6,10 +6,25 @@
 > **Status gekalibreerd tegen de code (moedermap-scan 18-06-2026).** Labels:
 > **[live]** = staat in de codebase · **[deels]** = deel af, rest open ·
 > **[open]** = nog niet gebouwd.
+>
+> **Bijgewerkt 21-06-2026** met de feedback-fix-build (o.a. de nieuwe compare-pagina
+> en het herontworpen topmenu) en Johans backend-afronding van de drie feedback-punten:
+> Get tickets-link op het event-list-endpoint, follow-scope-defaults, en `meta.properties`
+> voor de compare-velden. Zie §3, §9.
 
 ---
 
 ## 1. Inbox — ongesorteerd
+
+### Material visualizer — materiaal in context zien  ·  **[open]**  ·  groot/later  ·  NIEUW (25-06)
+Een visualizer die een materiaal in een echte ruimte/context toont ("hoe ziet dit hout eruit op
+een wand/vloer") i.p.v. alleen een swatch. Echte pijn voor architecten/designers; verhoogt
+engagement + levert nieuwe events (data-moat). Nuance: groot AI-traject (rendering-engine, kost
+per render) → fase-2-3-achtig, niet nu; en spanning met de contentfilosofie ("materiaalfoto, geen
+toepassing") + het discovery-model (geen e-commerce-conversiemachine). Aangedragen via een cold-
+pitch (Devnex, "Onton-style"); de rest van die pitch (smart filtering, AI-search, checkout, premium
+design) is al gedekt of geparkeerd, en direct-to-cart materials + externe Insightly-CRM passen niet
+bij het MD-model. Eigenaar: beide.
 
 ### Terug naar de pagina na inloggen  ·  **[deels]**  ·  quick win
 Uitgelogd iets willen volgen (bv. een channel op een materiaalpagina) → eerst inloggen →
@@ -146,14 +161,24 @@ ook naar RDS (alle statistiek op één plek), de leads + manufacturer-opvolging 
 hoort niet in RDS). Uitgewerkt (19-06, plugin-analyse): de **backend** splitst — de interactions-route
 forwardt de count naar RDS via de al bestaande `md_analytics_submit_event()` (website_click/brochure_download
 + brand/material staan al in de toegestane types), de frontend verandert niets; **RDS wordt de telbron**,
-het manufacturer-dashboard leest via `md_analytics_api_get_total_count()`. Patch ligt klaar voor Johan.
-Afhankelijk van: Johan-spec · Eigenaar: beide
+het manufacturer-dashboard leest via `md_analytics_api_get_total_count()`. **LIVE (Johan, 30-06):**
+dual write doorgevoerd via de interactions-route → RDS; geen WP-meta-tellers meer (alleen RDS telt),
+leads blijven in WP. Verfijning (Jeroen-punt): brochure-downloads tellen **per losse PDF**, niet alleen
+als totaal per materiaal — `download_scope` (brand|material), teller per attachment. Statistics-API
+levert `brochures.brand[]` + `brochures.material[]`; dashboard-Brochures-tab toont twee tabellen.
+Historische per-PDF data was er vrijwel niet (frontend nog niet live) → telling klopt vanaf nu forward.
+Afhankelijk van: — · Eigenaar: beide
 
 ### Follow-systeem  ·  **[deels]**
-Live (frontend): `FollowToggle`, `FollowDigestBlock` (nieuwsbrief-voordeur), `useFollow`,
-`/api/follows`-proxy, `followable`-flag op brands. Open: de backend-relaties/endpoints
-volledig afmaken + elke follow als event wegschrijven.
-Eigenaar: vooral backend nog
+Live (frontend): `FollowToggle` (met confirm-bij-ontvolgen), `FollowDigestBlock`
+(generiek: top-8 channels uit de catalogus + "Show all"), `useFollow`,
+`/api/follows`-proxy, `followable`-flag op brands.
+Backend (Johan, 21-06, plugin `8e5ecff`): follow-scope afgerond — `POST /md/v2/follows`
+vereist `types`, defaults op `material/story/talk`, legacy/lege records genormaliseerd,
+de response geeft de opgeslagen `types` terug. Volgen via het generieke blok pakt dus
+alleen materials/stories/talks, niet books/events/brands.
+Open: elke follow óók als event wegschrijven (`channel_followed` — hangt aan de eventlaag).
+Eigenaar: backend (events) + frontend
 
 ### Datamodel-haakjes  ·  **[deels]**
 Live: `insiderOnly`-vlag wordt al gelezen op materials/articles/reports; related content
@@ -166,6 +191,10 @@ digest-engine zelf — drie blokken (persoonlijke content / commerciële slots /
 trigger), "nieuw sinds vorige cyclus", marketing-consent, en de **mailtool-keuze**
 (Sendy-op-SES vs MailPoet vs managed). Voorwaarde: materiaal goedgekeurd vóór opname
 (+ write-once eerste-goedkeurdatum). Begin segment-gericht, niet per individu.
+Fundament (Johan, 21-06, `8e5ecff`): de digest-filter-helpers staan klaar —
+`md_follows_includes_post_type()` / `md_follows_includes_content_type()` + post-type-
+mapping (`story`→`article`, `book`→`insider_report`, …), zodat de digest straks op de
+follow-scope kan filteren. De engine + mailtool-keuze zelf blijven open.
 Afhankelijk van: tooltkeuze + backend · Eigenaar: beide
 
 ### "New in your channels"-pagina  ·  **[open]**
@@ -236,7 +265,13 @@ karakter — niet "schrijven vs lezen" (beide schrijven), maar **wát ze beheren
 dashboard beheert je publieke content, het business-dashboard je commerciële relatie- en sales-data
 (het ís een CRM: projecten, klantnotities, kwalificaties). Beide gated bovenop MD.com, beide
 hergebruiken bestaande bouwstenen.
-**Open ontwerpvraag (geparkeerd):** twee aparte dashboards, of één dashboard met twee ingangen?
+**Ontwerprichting (19-06):** neiging naar **één samenhangend systeem met twee ingangen** (redactie +
+business) i.p.v. twee losse dashboards — ze delen auth, design, REST-laag en vooral de data (een brand
+is content- én sales-object; cross-over is natuurlijk). Voorwaarde die de eerdere "twee"-zorg dekt:
+ontwerp als één geheel, maar **bouw/lanceer gefaseerd** — redactie-ingang eerst live (~1 aug), business-
+ingang later in dezelfde shell, zodat het zware business-traject de launch niet ophoudt. Plus rol-
+gebaseerde toegang per ingang (verschillende rechten/gevoeligheid). Te bevestigen via een demo van het
+geheel.
 **Volgorde: redactie eerst** (bouwt op bestaand werk, directe dagelijkse winst), **business
 daarna** (gated op de analytics-laag — die draait nu live).
 
@@ -385,6 +420,24 @@ Bewust uitgesteld. **Niet voorstellen als actieve volgende stap.**
 ---
 
 ## 9. Live / recent afgerond
+
+**Toegevoegd 21-06-2026 (feedback-fix-build + Johans backend-afronding):**
+- **Compare-pagina** (`/compare`, nieuw): vergelijk tot 3 materials naast elkaar —
+  General + Sensorial / Technical / Environmental / Content composition met semantic
+  pills, per-material kop-kaarten, Insider-guard + lege staat, deelbare `?ids=`-URL.
+  De environmental/content-rijen vullen zich zodra de taxonomie-termen in WP staan
+  (Johan: `meta.properties` + `mergeMaterialProperties` live; tot dan "Not specified").
+  **Resterend = redactie:** environmental/content-eigenschappen op de materials vullen
+  (geen code-blokkade; Johan levert een vulgraad-rapport als ijkpunt).
+- **Topmenu**: avatar + voornaam + status-afhankelijk account-menu (Insider → ring +
+  Membership & Insider insights; gratis → Become an Insider); log out onderaan in rood.
+- **Detailpagina-polish**: Preferred Source-blok staat nu ín het witte content-vel op
+  material/brand/event/talk/book (stond erbuiten); channel-hero herontworpen (titel +
+  follow op één regel, witte beschrijving in de hero); generiek follow-blok top-8 +
+  confirm-bij-ontvolgen; Events/Books-tegels (gelijke hoogte, Get tickets, inline
+  insider-prijs); footer- en homepage-correcties.
+- **Get tickets**: `external_website` komt nu ook op het event-list-endpoint mee.
+- **Follow-scope (backend)**: afgerond — zie §3, Follow-systeem.
 
 Bevestigd in de moedermap-scan (18-06-2026):
 - **Dashboard** (S13.x): brand/material-forms, profiel, Insider insights (gated download),
