@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IconChevronLeft, IconChevronRight, IconSearch } from './icons'
 import { ViewToggle } from './ViewToggle'
 import { cn } from '@/lib/utils/cn'
+import { useChannelBarPageSize } from '@/lib/hooks/useChannelBarPageSize'
 
 /** Default channels — uit MaterialDistrict_MockUp_DEF.html */
 export const DEFAULT_CHANNELS = [
@@ -72,14 +73,17 @@ export function ChannelBar({
   channels = DEFAULT_CHANNELS,
   activeChannel,
   onChannelChange,
-  pageSize = 6,
+  pageSize: maxPageSize = 6,
   searchPlaceholder = 'Search…',
   searchValue,
   onSearchChange,
   className,
 }: ChannelBarProps) {
   const allChannels = [ALL_CHANNELS, ...channels]
+  const mode = onSearchChange ? 'filter' : 'nav'
+  const { pageSize, innerRef } = useChannelBarPageSize(allChannels.length, maxPageSize, mode)
   const totalPages = Math.ceil(allChannels.length / pageSize)
+  const viewportRef = useRef<HTMLDivElement>(null)
 
   // Zoek welke pagina het actieve channel bevat — initial state
   const findActivePage = (chan: string) => {
@@ -88,6 +92,15 @@ export function ChannelBar({
   }
 
   const [page, setPage] = useState(() => findActivePage(activeChannel))
+
+  useEffect(() => {
+    const maxPage = Math.max(0, totalPages - 1)
+    if (page > maxPage) setPage(maxPage)
+  }, [page, totalPages])
+
+  useEffect(() => {
+    viewportRef.current?.scrollTo({ left: 0 })
+  }, [page])
 
   // Sync page wanneer activeChannel via parent wijzigt naar een andere pagina
   // (bv. via deep-link of clear-filter)
@@ -107,7 +120,7 @@ export function ChannelBar({
 
   return (
     <div className={cn('channel-bar', className)}>
-      <div className="channel-bar-inner">
+      <div className="channel-bar-inner" ref={innerRef}>
         <div className="channel-label-wrap">
           <span className="channel-label">Channel</span>
         </div>
@@ -124,7 +137,7 @@ export function ChannelBar({
           </button>
         </div>
 
-        <div className="channel-tabs-viewport" role="tablist" key={page}>
+        <div className="channel-tabs-viewport" ref={viewportRef} role="tablist" key={page}>
           {visibleChannels.map((channel) => {
             const isActive = channel === activeChannel
             return (

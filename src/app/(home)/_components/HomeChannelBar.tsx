@@ -15,9 +15,10 @@
  */
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { IconChevronLeft, IconChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
+import { useChannelBarPageSize } from '@/lib/hooks/useChannelBarPageSize'
 
 export interface HomeChannelBarItem {
   slug: string
@@ -35,12 +36,23 @@ const ALL_TAB: HomeChannelBarItem = { slug: '', label: 'All' }
 
 export function HomeChannelBar({
   channels,
-  pageSize = 8,
+  pageSize: maxPageSize = 8,
   className,
 }: HomeChannelBarProps) {
   const tabs = [ALL_TAB, ...channels]
+  const { pageSize, innerRef } = useChannelBarPageSize(tabs.length, maxPageSize, 'nav')
   const totalPages = Math.ceil(tabs.length / pageSize)
   const [page, setPage] = useState(0)
+  const viewportRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const maxPage = Math.max(0, totalPages - 1)
+    if (page > maxPage) setPage(maxPage)
+  }, [page, totalPages])
+
+  useEffect(() => {
+    viewportRef.current?.scrollTo({ left: 0 })
+  }, [page])
 
   const visible = tabs.slice(page * pageSize, (page + 1) * pageSize)
   const canPrev = page > 0
@@ -48,7 +60,7 @@ export function HomeChannelBar({
 
   return (
     <div className={cn('channel-bar', 'is-nav', className)}>
-      <div className="channel-bar-inner">
+      <div className="channel-bar-inner" ref={innerRef}>
         <div className="channel-label-wrap">
           <span className="channel-label">Channel</span>
         </div>
@@ -65,7 +77,7 @@ export function HomeChannelBar({
           </button>
         </div>
 
-        <div className="channel-tabs-viewport" key={page}>
+        <div className="channel-tabs-viewport" ref={viewportRef} key={page}>
           {visible.map((c) => (
             <Link
               key={c.slug || 'all'}
