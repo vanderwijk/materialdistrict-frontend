@@ -2,6 +2,7 @@
 
 import { IconSearch } from './icons'
 import { ViewToggle } from './ViewToggle'
+import { ChannelTabsRow } from './ChannelTabsRow'
 import { cn } from '@/lib/utils/cn'
 
 /** Default channels — uit MaterialDistrict_MockUp_DEF.html */
@@ -50,7 +51,7 @@ interface ChannelBarProps {
 /**
  * ChannelBar — universele bar voor overzichtspagina's (Materials, Articles, Events, Books).
  *
- * Toont alle channels als pills in één horizontaal scrollbare rij (CSS-only).
+ * Toont alle channels als pills in één scrollbare rij met chevron-scroll.
  * Rechts een zoekveld voor de actieve content-type. Sticky onder de header.
  */
 export function ChannelBar({
@@ -71,25 +72,23 @@ export function ChannelBar({
           <span className="channel-label">Channel</span>
         </div>
 
-        <div className="channel-tabs-scroll">
-          <div className="channel-tabs-viewport" role="tablist">
-            {allChannels.map((channel) => {
-              const isActive = channel === activeChannel
-              return (
-                <button
-                  key={channel}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  className={cn('channel-tab', isActive && 'active', channel === ALL_CHANNELS && 'is-all')}
-                  onClick={() => onChannelChange(channel)}
-                >
-                  {channel}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        <ChannelTabsRow viewportRole="tablist">
+          {allChannels.map((channel) => {
+            const isActive = channel === activeChannel
+            return (
+              <button
+                key={channel}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                className={cn('channel-tab', isActive && 'active', channel === ALL_CHANNELS && 'is-all')}
+                onClick={() => onChannelChange(channel)}
+              >
+                {channel}
+              </button>
+            )
+          })}
+        </ChannelTabsRow>
 
         {onSearchChange && (
           <div className="channel-search-wrap">

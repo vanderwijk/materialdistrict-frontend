@@ -1362,35 +1362,53 @@ h4 {
   white-space: nowrap;
 }
 
-/* Scrollable pill row — CSS-only, no pager chevrons. */
-.channel-tabs-scroll {
-  flex: 1 1 0;
-  min-width: 0;
-  position: relative;
+.channel-pager {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
-.channel-tabs-scroll::before,
-.channel-tabs-scroll::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 20px;
-  pointer-events: none;
-  z-index: 1;
+.channel-page-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: opacity var(--transition-base), background var(--transition-base), color var(--transition-base), border-color var(--transition-base);
 }
 
-.channel-tabs-scroll::before {
-  left: 0;
-  background: linear-gradient(to right, var(--surface), transparent);
+.channel-page-btn:hover:not(:disabled) {
+  background: var(--surface2);
+  color: var(--navy);
+  border-color: var(--navy);
 }
 
-.channel-tabs-scroll::after {
-  right: 0;
-  background: linear-gradient(to left, var(--surface), transparent);
+.channel-page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .channel-page-btn {
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+}
+
+[data-theme="dark"] .channel-page-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .channel-tabs-viewport {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -11705,13 +11723,17 @@ mark.search-mark {
   background: var(--ink);
   border-bottom-color: transparent;
 }
-.channel-tabs-scroll::before {
-  background: linear-gradient(to right, var(--bg), transparent);
-}
-.channel-tabs-scroll::after {
-  background: linear-gradient(to left, var(--bg), transparent);
-}
 .channel-search { background: var(--surface); }
+.channel-page-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
+[data-theme="dark"] .channel-page-btn:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--on-ink);
+  border-color: var(--ink);
+}
 
 /* --- Filterpaneel: op paper, ink-selectie, ronde icoon-acties --- */
 .uf-sidebar { background: transparent; border: none; border-radius: 0; }
