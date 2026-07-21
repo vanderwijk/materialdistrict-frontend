@@ -1,24 +1,14 @@
-'use client'
-
 /**
  * HomeChannelBar — channel-navigatie op de homepage (Homepage-1).
  * --------------------------------------------------------------------
  * Vervangt de oude `material_category`-pillen door dezelfde channel-bar als op
  * de overzichtspagina's, maar als NAVIGATIE: elke tab is een link naar
- * `/channel/<slug>` (en "All" naar de `/channel`-index), zonder het zoekveld en
- * de view-toggle die alleen op de overzichtspagina's zin hebben.
- *
- * Hergebruikt de `.channel-bar` / `.channel-tab`-styling uit globals.css
- * (DRY). Client-component voor de pager (chevrons); de tabs zelf zijn gewone
- * server-navigatie-links. De `is-nav`-modifier zet de bar op de homepage
- * statisch i.p.v. sticky.
+ * `/channel/<slug>` (en "All" naar de `/channel`-index), zonder zoekveld en
+ * view-toggle. Alle pills staan in één horizontaal scrollbare rij (CSS-only).
  */
 
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
-import { IconChevronLeft, IconChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
-import { useChannelBarPageSize } from '@/lib/hooks/useChannelBarPageSize'
 
 export interface HomeChannelBarItem {
   slug: string
@@ -27,78 +17,33 @@ export interface HomeChannelBarItem {
 
 export interface HomeChannelBarProps {
   channels: HomeChannelBarItem[]
-  /** Aantal tabs per pagina in de pager. Default 8. */
-  pageSize?: number
   className?: string
 }
 
 const ALL_TAB: HomeChannelBarItem = { slug: '', label: 'All' }
 
-export function HomeChannelBar({
-  channels,
-  pageSize: maxPageSize = 8,
-  className,
-}: HomeChannelBarProps) {
+export function HomeChannelBar({ channels, className }: HomeChannelBarProps) {
   const tabs = [ALL_TAB, ...channels]
-  const { pageSize, innerRef } = useChannelBarPageSize(tabs.length, maxPageSize, 'nav')
-  const totalPages = Math.ceil(tabs.length / pageSize)
-  const [page, setPage] = useState(0)
-  const viewportRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const maxPage = Math.max(0, totalPages - 1)
-    if (page > maxPage) setPage(maxPage)
-  }, [page, totalPages])
-
-  useEffect(() => {
-    viewportRef.current?.scrollTo({ left: 0 })
-  }, [page])
-
-  const visible = tabs.slice(page * pageSize, (page + 1) * pageSize)
-  const canPrev = page > 0
-  const canNext = page < totalPages - 1
 
   return (
     <div className={cn('channel-bar', 'is-nav', className)}>
-      <div className="channel-bar-inner" ref={innerRef}>
+      <div className="channel-bar-inner">
         <div className="channel-label-wrap">
           <span className="channel-label">Channel</span>
         </div>
 
-        <div className="channel-pager">
-          <button
-            type="button"
-            className="channel-page-btn"
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={!canPrev}
-            aria-label="Previous channels"
-          >
-            <IconChevronLeft size={10} strokeWidth={2} />
-          </button>
-        </div>
-
-        <div className="channel-tabs-viewport" ref={viewportRef} key={page}>
-          {visible.map((c) => (
-            <Link
-              key={c.slug || 'all'}
-              href={c.slug ? `/channel/${c.slug}` : '/channel'}
-              className={cn('channel-tab', c.slug === '' && 'is-all')}
-            >
-              {c.label}
-            </Link>
-          ))}
-        </div>
-
-        <div className="channel-pager">
-          <button
-            type="button"
-            className="channel-page-btn"
-            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={!canNext}
-            aria-label="Next channels"
-          >
-            <IconChevronRight size={10} strokeWidth={2} />
-          </button>
+        <div className="channel-tabs-scroll">
+          <div className="channel-tabs-viewport">
+            {tabs.map((c) => (
+              <Link
+                key={c.slug || 'all'}
+                href={c.slug ? `/channel/${c.slug}` : '/channel'}
+                className={cn('channel-tab', c.slug === '' && 'is-all')}
+              >
+                {c.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

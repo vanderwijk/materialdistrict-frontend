@@ -1,10 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { IconChevronLeft, IconChevronRight, IconSearch } from './icons'
+import { IconSearch } from './icons'
 import { ViewToggle } from './ViewToggle'
 import { cn } from '@/lib/utils/cn'
-import { useChannelBarPageSize } from '@/lib/hooks/useChannelBarPageSize'
 
 /** Default channels — uit MaterialDistrict_MockUp_DEF.html */
 export const DEFAULT_CHANNELS = [
@@ -40,8 +38,6 @@ interface ChannelBarProps {
   activeChannel: string
   /** Callback wanneer een channel-tab wordt geselecteerd. */
   onChannelChange: (channel: string) => void
-  /** Aantal channels per pagina in de pager. Default: 6. */
-  pageSize?: number
   /** Placeholder voor het zoekveld. Bv. "Search materials…". */
   searchPlaceholder?: string
   /** Huidige zoekwaarde. Controlled. */
@@ -54,117 +50,45 @@ interface ChannelBarProps {
 /**
  * ChannelBar — universele bar voor overzichtspagina's (Materials, Articles, Events, Books).
  *
- * Toont channels als tabs, paginated (default 8 per pagina), met chevron-navigatie.
+ * Toont alle channels als pills in één horizontaal scrollbare rij (CSS-only).
  * Rechts een zoekveld voor de actieve content-type. Sticky onder de header.
- *
- * @example
- *   const [channel, setChannel] = useState('All')
- *   const [search, setSearch] = useState('')
- *
- *   <ChannelBar
- *     activeChannel={channel}
- *     onChannelChange={setChannel}
- *     searchValue={search}
- *     onSearchChange={setSearch}
- *     searchPlaceholder="Search materials…"
- *   />
  */
 export function ChannelBar({
   channels = DEFAULT_CHANNELS,
   activeChannel,
   onChannelChange,
-  pageSize: maxPageSize = 6,
   searchPlaceholder = 'Search…',
   searchValue,
   onSearchChange,
   className,
 }: ChannelBarProps) {
   const allChannels = [ALL_CHANNELS, ...channels]
-  const mode = onSearchChange ? 'filter' : 'nav'
-  const { pageSize, innerRef } = useChannelBarPageSize(allChannels.length, maxPageSize, mode)
-  const totalPages = Math.ceil(allChannels.length / pageSize)
-  const viewportRef = useRef<HTMLDivElement>(null)
-
-  // Zoek welke pagina het actieve channel bevat — initial state
-  const findActivePage = (chan: string) => {
-    const idx = allChannels.indexOf(chan)
-    return idx === -1 ? 0 : Math.floor(idx / pageSize)
-  }
-
-  const [page, setPage] = useState(() => findActivePage(activeChannel))
-
-  useEffect(() => {
-    const maxPage = Math.max(0, totalPages - 1)
-    if (page > maxPage) setPage(maxPage)
-  }, [page, totalPages])
-
-  useEffect(() => {
-    viewportRef.current?.scrollTo({ left: 0 })
-  }, [page])
-
-  // Sync page wanneer activeChannel via parent wijzigt naar een andere pagina
-  // (bv. via deep-link of clear-filter)
-  const lastChannelRef = useRef(activeChannel)
-  useEffect(() => {
-    if (lastChannelRef.current !== activeChannel) {
-      const newPage = findActivePage(activeChannel)
-      if (newPage !== page) setPage(newPage)
-      lastChannelRef.current = activeChannel
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeChannel])
-
-  const visibleChannels = allChannels.slice(page * pageSize, (page + 1) * pageSize)
-  const canPrev = page > 0
-  const canNext = page < totalPages - 1
 
   return (
     <div className={cn('channel-bar', className)}>
-      <div className="channel-bar-inner" ref={innerRef}>
+      <div className="channel-bar-inner">
         <div className="channel-label-wrap">
           <span className="channel-label">Channel</span>
         </div>
 
-        <div className="channel-pager">
-          <button
-            type="button"
-            className="channel-page-btn"
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={!canPrev}
-            aria-label="Previous channels"
-          >
-            <IconChevronLeft size={10} strokeWidth={2} />
-          </button>
-        </div>
-
-        <div className="channel-tabs-viewport" ref={viewportRef} role="tablist" key={page}>
-          {visibleChannels.map((channel) => {
-            const isActive = channel === activeChannel
-            return (
-              <button
-                key={channel}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                className={cn('channel-tab', isActive && 'active', channel === ALL_CHANNELS && 'is-all')}
-                onClick={() => onChannelChange(channel)}
-              >
-                {channel}
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="channel-pager">
-          <button
-            type="button"
-            className="channel-page-btn"
-            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-            disabled={!canNext}
-            aria-label="Next channels"
-          >
-            <IconChevronRight size={10} strokeWidth={2} />
-          </button>
+        <div className="channel-tabs-scroll">
+          <div className="channel-tabs-viewport" role="tablist">
+            {allChannels.map((channel) => {
+              const isActive = channel === activeChannel
+              return (
+                <button
+                  key={channel}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  className={cn('channel-tab', isActive && 'active', channel === ALL_CHANNELS && 'is-all')}
+                  onClick={() => onChannelChange(channel)}
+                >
+                  {channel}
+                </button>
+              )
+            })}
+          </div>
         </div>
 
         {onSearchChange && (
