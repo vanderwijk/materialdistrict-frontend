@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { ReactNode } from 'react'
+import { logEvent } from '@/lib/api/events'
 import { ActionButton } from './ActionButton'
 import {
   IconSave,
@@ -86,7 +87,7 @@ interface DetailActionsProps {
  * eigen .detail-action klasse.
  */
 export function DetailActions({
-  type: _type,
+  type,
   itemId,
   shareTitle,
   includeCompare = false,
@@ -112,6 +113,17 @@ export function DetailActions({
     if (!isLoggedIn) {
       onRequireSignIn?.()
       return
+    }
+    // Alleen loggen bij het TOEVOEGEN (niet bij het weghalen): het `saved`-
+    // event registreert de bewaar-actie, niet elke toggle. `isSaved` is de
+    // stand vóór deze klik, dus loggen we wanneer die nog false is.
+    if (!isSaved && itemId !== undefined) {
+      void logEvent({
+        eventType: 'saved',
+        objectType: type,
+        objectId: itemId,
+        source: 'detail-actions',
+      })
     }
     if (isControlled) {
       onToggleSave?.()
@@ -148,6 +160,14 @@ export function DetailActions({
   function handleShare() {
     const title = shareTitle ?? (typeof document !== 'undefined' ? document.title : '')
     const url = typeof window !== 'undefined' ? window.location.href : ''
+    if (itemId !== undefined) {
+      void logEvent({
+        eventType: 'shared',
+        objectType: type,
+        objectId: itemId,
+        source: 'detail-actions',
+      })
+    }
     if (typeof navigator !== 'undefined' && navigator.share) {
       navigator.share({ title, url }).catch(() => {
         /* User cancelled — geen actie */
