@@ -1,20 +1,39 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import type { CSSProperties } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { IconBoard } from '@/components/ui/icons'
-import type { BoardDetail } from '@/types/dashboard'
+import { IconBoard, IconDelete } from '@/components/ui/icons'
+import type { BoardDetail, BoardItem } from '@/types/dashboard'
 import { formatBoardSummaryFromItems } from '@/lib/dashboard/board-summary'
 
 /**
  * BoardDetailPanel — toont de opgeslagen items van één board.
  *
- * Hergebruikt bewust de bookmark-card-opmaak (`bm-grid` / `bm-card`) zodat er
- * geen nieuwe CSS nodig is. Read-only in v1: items verwijderen zit hier (nog)
- * niet — dat wacht op een DELETE-endpoint.
- *
- * Server component: geen interactie, dus geen client-bundle nodig.
+ * Hergebruikt de bookmark-card-opmaak (`bm-grid` / `bm-card`). Verwijderen
+ * haalt het item alleen van dit board; de bookmark zelf blijft bestaan.
  */
 export function BoardDetailPanel({ board }: { board: BoardDetail }) {
+  const [items, setItems] = useState<BoardItem[]>(board.items)
+
+  async function remove(item: BoardItem) {
+    const prev = items
+    setItems((list) =>
+      list.filter((i) => !(i.type === item.type && i.itemId === item.itemId)),
+    )
+    try {
+      const res = await fetch(`/api/dashboard/boards/${encodeURIComponent(board.id)}/items`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: item.type, itemId: item.itemId }),
+      })
+      if (!res.ok) setItems(prev)
+    } catch {
+      setItems(prev)
+    }
+  }
+
   return (
     <div className="dash-panel">
       <Link href="/dashboard/boards" className="detail-header-back">
@@ -35,9 +54,9 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
         Back to boards
       </Link>
       <h2 className="panel-section-title board-detail-name">{board.name}</h2>
-      <p className="board-meta">{formatBoardSummaryFromItems(board.items)}</p>
+      <p className="board-meta">{formatBoardSummaryFromItems(items)}</p>
 
-      {board.items.length === 0 ? (
+      {items.length === 0 ? (
         <EmptyState
           icon={<IconBoard size={28} />}
           title="This board is empty"
@@ -50,7 +69,7 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
         />
       ) : (
         <div className="bm-grid">
-          {board.items.map((item) => {
+          {items.map((item) => {
             const cover = { '--cover': item.gradient ?? 'var(--surface2)' } as CSSProperties
             return (
               <article key={`${item.type}:${item.itemId}`} className="bm-card">
@@ -66,6 +85,14 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
                     <h3 className="bm-title">{item.title}</h3>
                   </div>
                 </Link>
+                <button
+                  type="button"
+                  className="bm-remove"
+                  onClick={() => remove(item)}
+                  aria-label={`Remove ${item.title} from this board`}
+                >
+                  <IconDelete size={16} />
+                </button>
               </article>
             )
           })}
