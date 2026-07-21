@@ -11687,9 +11687,16 @@ mark.search-mark {
 
 /* --- Channelbar: op paper, zwarte pill voor actief kanaal --- */
 .channel-bar { background: var(--bg); border-bottom: none; }
+.channel-bar-inner { align-items: center; }
+.channel-label { line-height: 1; }
 .channel-tabs-viewport { align-items: center; }
 .channel-tab {
-  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  padding: 7px 14px;
+  line-height: 1;
   border-bottom: none;
   border-radius: 999px;
   animation: none;
