@@ -176,6 +176,10 @@ export interface Board {
   /** Counts are computed by WordPress; the frontend only displays them. */
   materialCount: number
   articleCount: number
+  bookCount?: number
+  eventCount?: number
+  talkCount?: number
+  brandCount?: number
   /** CSS gradient string for the cover, injected via a custom property. */
   coverGradient: string
 }

@@ -11301,6 +11301,8 @@ mark.search-mark {
 /* --- Bookmarks --- */
 .bm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:16px}
 .bm-card{position:relative;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.bm-card-link{display:block;color:inherit;text-decoration:none}
+.bm-card-link:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .bm-cover{display:block;height:120px;background:var(--cover,var(--surface2))}
 .bm-cover img{width:100%;height:100%;object-fit:cover}
 .bm-body{padding:12px 14px 16px}
@@ -11311,6 +11313,8 @@ mark.search-mark {
 /* --- Boards --- */
 .board-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
 .board-card{position:relative;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden;background:var(--surface)}
+.board-card-link{display:block;color:inherit;text-decoration:none}
+.board-card-link:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .board-cover{height:90px;background:var(--cover,var(--surface2))}
 .board-body{padding:14px}
 .board-name{font-size:16px;font-weight:600}

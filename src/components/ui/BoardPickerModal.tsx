@@ -28,6 +28,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import { IconBoard, IconBoardAdd, IconClose, IconLoading } from '@/components/ui/icons'
 import type { Board, BookmarkType } from '@/types/dashboard'
+import { formatBoardSummaryFromBoard } from '@/lib/dashboard/board-summary'
 
 export interface BoardPickerModalProps {
   open: boolean
@@ -248,9 +249,7 @@ export function BoardPickerModal({ open, onClose, type, itemId, title }: BoardPi
                       </span>
                       <span className="git-option-text">
                         <span className="git-option-label">{board.name}</span>
-                        <span className="git-option-hint">
-                          {board.materialCount} materials · {board.articleCount} articles
-                        </span>
+                        <span className="git-option-hint">{formatBoardSummaryFromBoard(board)}</span>
                       </span>
                     </button>
                   </li>

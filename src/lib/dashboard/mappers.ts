@@ -305,6 +305,29 @@ interface RawBookmark {
   saved_at?: string
 }
 
+/** Legacy CMS hrefs used plural segments; Next.js routes are singular. */
+export function normalizeDashboardContentHref(href: string): string {
+  if (!href || href === '#') return href
+
+  let path = href
+  try {
+    if (/^https?:\/\//i.test(href)) {
+      const url = new URL(href)
+      path = `${url.pathname}${url.search}${url.hash}`
+    }
+  } catch {
+    // Keep original href when URL parsing fails.
+  }
+
+  return path
+    .replace(/^\/materials\//, '/material/')
+    .replace(/^\/articles\//, '/article/')
+    .replace(/^\/brands\//, '/brand/')
+    .replace(/^\/talks\//, '/talk/')
+    .replace(/^\/events\//, '/event/')
+    .replace(/^\/books\//, '/book/')
+}
+
 export function mapBookmark(raw: RawBookmark): BookmarkItem {
   return {
     id: raw.id,
@@ -312,7 +335,7 @@ export function mapBookmark(raw: RawBookmark): BookmarkItem {
     itemId: typeof raw.item_id === 'number' ? raw.item_id : 0,
     title: raw.title ?? '',
     label: raw.label ?? '',
-    href: raw.href ?? '#',
+    href: normalizeDashboardContentHref(raw.href ?? '#'),
     imageUrl: raw.image_url ?? null,
     gradient: raw.gradient ?? null,
     savedAt: raw.saved_at ?? '',
@@ -339,6 +362,10 @@ interface RawBoard {
   created_at?: string
   material_count?: number
   article_count?: number
+  book_count?: number
+  event_count?: number
+  talk_count?: number
+  brand_count?: number
   cover_gradient?: string
 }
 
@@ -349,6 +376,10 @@ export function mapBoard(raw: RawBoard): Board {
     createdAt: raw.created_at ?? '',
     materialCount: raw.material_count ?? 0,
     articleCount: raw.article_count ?? 0,
+    bookCount: raw.book_count ?? 0,
+    eventCount: raw.event_count ?? 0,
+    talkCount: raw.talk_count ?? 0,
+    brandCount: raw.brand_count ?? 0,
     coverGradient: raw.cover_gradient ?? 'linear-gradient(135deg,#d7e8b6,#eef6ff)',
   }
 }
@@ -380,7 +411,7 @@ export function mapBoardItem(raw: RawBoardItem): BoardItem {
     itemId: typeof raw.item_id === 'number' ? raw.item_id : 0,
     title: raw.title ?? '',
     label: raw.label ?? '',
-    href: raw.href ?? '#',
+    href: normalizeDashboardContentHref(raw.href ?? '#'),
     imageUrl: raw.image_url ?? null,
     gradient: raw.gradient ?? null,
     savedAt: raw.saved_at ?? '',

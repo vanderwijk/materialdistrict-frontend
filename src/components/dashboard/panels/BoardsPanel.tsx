@@ -6,6 +6,7 @@ import type { CSSProperties } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconBoard, IconAdd, IconDelete } from '@/components/ui/icons'
 import type { Board } from '@/types/dashboard'
+import { formatBoardSummaryFromBoard } from '@/lib/dashboard/board-summary'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /**
@@ -75,21 +76,13 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
             const cover = { '--cover': board.coverGradient } as CSSProperties
             return (
               <article key={board.id} className="board-card">
-                <Link
-                  href={`/dashboard/boards/${board.id}`}
-                  aria-hidden="true"
-                  tabIndex={-1}
-                >
+                <Link href={`/dashboard/boards/${board.id}`} className="board-card-link">
                   <div className="board-cover" style={cover} />
+                  <div className="board-body">
+                    <h3 className="board-name">{board.name}</h3>
+                    <p className="board-meta">{formatBoardSummaryFromBoard(board)}</p>
+                  </div>
                 </Link>
-                <div className="board-body">
-                  <h3 className="board-name">
-                    <Link href={`/dashboard/boards/${board.id}`}>{board.name}</Link>
-                  </h3>
-                  <p className="board-meta">
-                    {board.materialCount} materials · {board.articleCount} articles
-                  </p>
-                </div>
                 <button
                   type="button"
                   className="board-remove"

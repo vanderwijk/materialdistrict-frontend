@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconBoard } from '@/components/ui/icons'
 import type { BoardDetail } from '@/types/dashboard'
+import { formatBoardSummaryFromItems } from '@/lib/dashboard/board-summary'
 
 /**
  * BoardDetailPanel — toont de opgeslagen items van één board.
@@ -34,9 +35,7 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
         Back to boards
       </Link>
       <h2 className="panel-section-title board-detail-name">{board.name}</h2>
-      <p className="board-meta">
-        {board.materialCount} materials · {board.articleCount} articles
-      </p>
+      <p className="board-meta">{formatBoardSummaryFromItems(board.items)}</p>
 
       {board.items.length === 0 ? (
         <EmptyState
@@ -55,24 +54,18 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
             const cover = { '--cover': item.gradient ?? 'var(--surface2)' } as CSSProperties
             return (
               <article key={`${item.type}:${item.itemId}`} className="bm-card">
-                <Link
-                  href={item.href}
-                  className="bm-cover"
-                  style={cover}
-                  aria-hidden="true"
-                  tabIndex={-1}
-                >
-                  {item.imageUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.imageUrl} alt="" />
-                  )}
+                <Link href={item.href} className="bm-card-link">
+                  <div className="bm-cover" style={cover}>
+                    {item.imageUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={item.imageUrl} alt="" />
+                    )}
+                  </div>
+                  <div className="bm-body">
+                    <span className="tag">{item.label}</span>
+                    <h3 className="bm-title">{item.title}</h3>
+                  </div>
                 </Link>
-                <div className="bm-body">
-                  <span className="tag">{item.label}</span>
-                  <h3 className="bm-title">
-                    <Link href={item.href}>{item.title}</Link>
-                  </h3>
-                </div>
               </article>
             )
           })}

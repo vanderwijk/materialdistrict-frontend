@@ -86,18 +86,18 @@ export function BookmarksPanel({ initial }: { initial: BookmarkItem[] }) {
           const cover = { '--cover': item.gradient ?? 'var(--surface2)' } as CSSProperties
           return (
             <article key={item.id} className="bm-card">
-              <Link href={item.href} className="bm-cover" style={cover} aria-hidden="true" tabIndex={-1}>
-                {item.imageUrl && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.imageUrl} alt="" />
-                )}
+              <Link href={item.href} className="bm-card-link">
+                <div className="bm-cover" style={cover}>
+                  {item.imageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={item.imageUrl} alt="" />
+                  )}
+                </div>
+                <div className="bm-body">
+                  <span className="tag">{item.label}</span>
+                  <h3 className="bm-title">{item.title}</h3>
+                </div>
               </Link>
-              <div className="bm-body">
-                <span className="tag">{item.label}</span>
-                <h3 className="bm-title">
-                  <Link href={item.href}>{item.title}</Link>
-                </h3>
-              </div>
               <button
                 type="button"
                 className="bm-remove"
