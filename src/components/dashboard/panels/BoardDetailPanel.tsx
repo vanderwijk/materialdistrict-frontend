@@ -41,7 +41,7 @@ export function BoardDetailPanel({ board }: { board: BoardDetail }) {
         <EmptyState
           icon={<IconBoard size={28} />}
           title="This board is empty"
-          description="Add materials and articles to this board from their detail pages."
+          description="Add materials and stories to this board from their detail pages."
           actions={
             <Link href="/material" className="btn btn-primary">
               Browse materials

@@ -29,6 +29,7 @@ import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 import { IconBoard, IconBoardAdd, IconClose, IconLoading } from '@/components/ui/icons'
 import type { Board, BookmarkType } from '@/types/dashboard'
 import { formatBoardSummaryFromBoard } from '@/lib/dashboard/board-summary'
+import { BOOKMARK_TYPE_SINGULAR } from '@/lib/dashboard/bookmark-labels'
 
 export interface BoardPickerModalProps {
   open: boolean
@@ -41,14 +42,7 @@ export interface BoardPickerModalProps {
   title?: string
 }
 
-const SINGULAR: Record<BookmarkType, string> = {
-  materials: 'material',
-  articles: 'article',
-  brands: 'brand',
-  talks: 'talk',
-  events: 'event',
-  books: 'book',
-}
+const SINGULAR = BOOKMARK_TYPE_SINGULAR
 
 export function BoardPickerModal({ open, onClose, type, itemId, title }: BoardPickerModalProps) {
   const [boards, setBoards] = useState<Board[]>([])

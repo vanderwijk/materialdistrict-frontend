@@ -46,6 +46,7 @@ import type {
   LeadRoute,
   LeadRoutingConfig,
 } from '@/types/dashboard'
+import { bookmarkItemLabel } from '@/lib/dashboard/bookmark-labels'
 import type { MaterialProperties } from '@/types/material'
 import { EMPTY_MATERIAL_PROPERTIES } from '@/lib/utils/material-properties'
 
@@ -329,12 +330,13 @@ export function normalizeDashboardContentHref(href: string): string {
 }
 
 export function mapBookmark(raw: RawBookmark): BookmarkItem {
+  const type = raw.type ?? 'materials'
   return {
     id: raw.id,
-    type: raw.type ?? 'materials',
+    type,
     itemId: typeof raw.item_id === 'number' ? raw.item_id : 0,
     title: raw.title ?? '',
-    label: raw.label ?? '',
+    label: bookmarkItemLabel(type, raw.label),
     href: normalizeDashboardContentHref(raw.href ?? '#'),
     imageUrl: raw.image_url ?? null,
     gradient: raw.gradient ?? null,
@@ -406,11 +408,12 @@ interface RawBoardDetail extends RawBoard {
 }
 
 export function mapBoardItem(raw: RawBoardItem): BoardItem {
+  const type = raw.type ?? 'materials'
   return {
-    type: raw.type ?? 'materials',
+    type,
     itemId: typeof raw.item_id === 'number' ? raw.item_id : 0,
     title: raw.title ?? '',
-    label: raw.label ?? '',
+    label: bookmarkItemLabel(type, raw.label),
     href: normalizeDashboardContentHref(raw.href ?? '#'),
     imageUrl: raw.image_url ?? null,
     gradient: raw.gradient ?? null,

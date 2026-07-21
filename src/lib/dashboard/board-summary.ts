@@ -1,12 +1,13 @@
 import type { Board, BoardItem, BookmarkType } from '@/types/dashboard'
+import { BOOKMARK_TYPE_PLURAL, BOOKMARK_TYPE_SINGULAR } from '@/lib/dashboard/bookmark-labels'
 
 const SUMMARY_TYPES: { type: BookmarkType; singular: string; plural: string }[] = [
-  { type: 'materials', singular: 'material', plural: 'materials' },
-  { type: 'articles', singular: 'article', plural: 'articles' },
-  { type: 'books', singular: 'book', plural: 'books' },
-  { type: 'events', singular: 'event', plural: 'events' },
-  { type: 'talks', singular: 'talk', plural: 'talks' },
-  { type: 'brands', singular: 'brand', plural: 'brands' },
+  { type: 'materials', singular: BOOKMARK_TYPE_SINGULAR.materials, plural: BOOKMARK_TYPE_PLURAL.materials },
+  { type: 'articles', singular: BOOKMARK_TYPE_SINGULAR.articles, plural: BOOKMARK_TYPE_PLURAL.articles },
+  { type: 'books', singular: BOOKMARK_TYPE_SINGULAR.books, plural: BOOKMARK_TYPE_PLURAL.books },
+  { type: 'events', singular: BOOKMARK_TYPE_SINGULAR.events, plural: BOOKMARK_TYPE_PLURAL.events },
+  { type: 'talks', singular: BOOKMARK_TYPE_SINGULAR.talks, plural: BOOKMARK_TYPE_PLURAL.talks },
+  { type: 'brands', singular: BOOKMARK_TYPE_SINGULAR.brands, plural: BOOKMARK_TYPE_PLURAL.brands },
 ]
 
 function countByType(items: BoardItem[]): Partial<Record<BookmarkType, number>> {

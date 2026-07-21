@@ -7,15 +7,7 @@ import { Tabs, TabItem } from '@/components/ui/Tabs'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { IconDelete, IconSave } from '@/components/ui/icons'
 import type { BookmarkItem, BookmarkType } from '@/types/dashboard'
-
-const TYPE_LABEL: Record<BookmarkType, string> = {
-  materials: 'Materials',
-  articles: 'Articles',
-  brands: 'Brands',
-  talks: 'Talks',
-  events: 'Events',
-  books: 'Books',
-}
+import { BOOKMARK_TYPE_TAB_LABEL } from '@/lib/dashboard/bookmark-labels'
 
 /**
  * Bookmarks panel. Tabs are derived from the content types actually present;
@@ -59,7 +51,7 @@ export function BookmarksPanel({ initial }: { initial: BookmarkItem[] }) {
         <EmptyState
           icon={<IconSave size={28} />}
           title="No bookmarks yet"
-          description="Save materials, articles and brands to find them back here."
+          description="Save materials, stories and brands to find them back here."
           actions={
             <Link href="/material" className="btn btn-primary">
               Browse materials
@@ -76,7 +68,7 @@ export function BookmarksPanel({ initial }: { initial: BookmarkItem[] }) {
         <TabItem value="all" count={counts.all}>All</TabItem>
         {types.map((t) => (
           <TabItem key={t} value={t} count={counts[t]}>
-            {TYPE_LABEL[t]}
+            {BOOKMARK_TYPE_TAB_LABEL[t]}
           </TabItem>
         ))}
       </Tabs>

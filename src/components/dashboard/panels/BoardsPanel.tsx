@@ -10,7 +10,7 @@ import { formatBoardSummaryFromBoard } from '@/lib/dashboard/board-summary'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 /**
- * Boards panel (Insider). Project folders grouping saved materials/articles.
+ * Boards panel (Insider). Project folders grouping saved materials/stories.
  * Create → POST, delete → DELETE (`/md/v2/dashboard/boards`), both via the
  * `/api/dashboard/boards` proxy with optimistic UI.
  */
@@ -63,7 +63,7 @@ export function BoardsPanel({ initial }: { initial: Board[] }) {
         <EmptyState
           icon={<IconBoard size={28} />}
           title="No boards yet"
-          description="Create a board to group materials and articles per project."
+          description="Create a board to group materials and stories per project."
           actions={
             <button type="button" className="btn btn-primary" onClick={createBoard}>
               Create your first board
