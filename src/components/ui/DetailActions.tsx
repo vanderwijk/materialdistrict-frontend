@@ -26,8 +26,7 @@ interface DetailActionsProps {
   includeCompare?: boolean
   /**
    * §F2.9 P7a: toon de "Add to board"-knop. Default true (article/event/
-   * talk/material). Brand zet dit op false — daar bestaan alleen Save +
-   * Share (geen boards/compare).
+   * talk/material/brand/book).
    */
   includeBoard?: boolean
   /** Of het item al in de compare-lijst staat. */
