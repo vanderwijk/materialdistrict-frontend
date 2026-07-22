@@ -3352,3 +3352,62 @@ Zie `MANIFEST-feedback-fixes-21-06.md` voor per-bestand mapping.
 Negen punten uit Jeroens review van de gedeployde site, in één set: (1) channel-bar-label uitgelijnd; (2) Compare-knop op homepage-material-tegels (+ `(home)`-CompareProvider/Bar, nieuw `CardCompareButton`); (3) "Get tickets" ín de event-tegel (EventCard `home`-variant); (4) **F5** — footer-knop + full-width slide-up paneel (`FollowTransitionPanel`); (5) volgblok-card-achtergrond (`--surface2`) + "+N"-bolletje i.p.v. blauwe link; (6) volgblok consistent op álle detailpagina's via server-side channels (`getDigestChannels`); (7) Add to board + Compare in Insider-kleur (outline standaard, gevuld+wit actief); (8) renewable-pil kringloop-icoon i.p.v. vinkje; (9) channeloverzicht → follow-hub (`ChannelsHub`: hero + sort + you-follow + rijke kaarten met follow-toggle). `globals.css` append-only (§FEEDBACK-22-06 / -B / -C / -D); mappers-fix ongemoeid.
 
 Zie `MANIFEST-feedback-22-06.md`.
+
+---
+
+## Sessie — bannerintegratie GAM/GPT (22-07-2026)
+
+De drie bannerposities uit de F2-demo zijn aangesloten op Google Ad Manager via Google
+Publisher Tags. De containers stonden al klaar in de homepage achter de `ADS_ENABLED`-vlag
+(placeholder-dashboxen); die zijn vervangen door echte GPT-slots.
+
+**Aangeleverd door Johan (22-07):**
+- Network code `85712959`.
+- Ad units: `/85712959/md_billboard` (970×250, 728×90, 320×100), `/85712959/md_leaderboard`
+  (728×90, 320×100), `/85712959/md_medium_rectangle` (300×250).
+- Dynamische key-value `theme` aangemaakt (per pagina-channel).
+
+**Nieuw:**
+- `src/lib/ads/ad-units.ts` — network + ad-unit-paden + per-slot size mappings, één bron
+  van waarheid.
+- `src/components/ads/AdSlot.tsx` — één herbruikbare client-component voor elke positie.
+  Laadt gpt.js lazy (alleen op pagina's mét een slot), definieert de slot, past de
+  responsive `sizeMapping` toe (billboard/leaderboard krijgen per breakpoint een eigen
+  creative — geen CSS-schaling), zet optioneel `theme` als page-level targeting, en
+  `collapseEmptyDivs` zodat een ongeboekte positie geen gat achterlaat. Ruimt de slot
+  op bij unmount (`destroySlots`).
+
+**Gewijzigd:**
+- `src/app/(home)/page.tsx` — `AdSlot`-import; `ADS_ENABLED` van `false` → `true`; de drie
+  placeholder-divs vervangen door `<AdSlot name="billboard|leaderboard|mrec" />`. De
+  bestaande wrappers `.ad-billboard` / `.ad-leaderboard` blijven voor plaatsing.
+- `src/styles/globals.css` — nieuw `§HOME-ADS-LIVE`-blok (append-only): `.ad-unit`-centrering
+  + mobiel-override zodat de leaderboard zichtbaar blijft (320×100 via sizeMapping i.p.v. de
+  oude `display:none` uit §HOME-F2), en smallere billboard-padding op mobiel.
+- `next.config.ts` — CSP uitgebreid voor GPT/GAM (`securepubads.g.doubleclick.net`,
+  googlesyndication, doubleclick frames/images/connect). Zonder dit blokkeert de bestaande
+  CSP `gpt.js` en laden er geen banners.
+
+**Bewust NIET aangeraakt:**
+- `layout.tsx` — bleek niet nodig: gpt.js wordt lazy vanuit `AdSlot` geladen, dus geen
+  globale script-tag op ad-loze pagina's.
+- De oude placeholder-CSS (`.ad-slot`, `.ad-970/728/300`) in §HOME-F2 — inert gelaten
+  (append-only), niet verwijderd.
+
+**Inhoudelijke keuzes:**
+- **Theme-targeting op de homepage = leeg.** De homepage heeft geen enkel thema, dus er
+  wordt geen `theme` meegestuurd. De per-channel-verkoop komt vanzelf zodra dezelfde
+  `AdSlot` op detailpagina's (channel/material/artikel) staat mét het pagina-channel als
+  `theme`; dat kan later zonder Johan en zonder GAM-wijziging.
+- **collapseEmptyDivs i.p.v. gereserveerde ruimte:** in deze beginfase zijn de meeste
+  posities ongeboekt; een ingeklapte lege slot oogt beter dan een leeg gereserveerd vak.
+  Gevolg: een kleine layout-shift wanneer een creative wél laadt. Te heroverwegen zodra de
+  fill-rate stijgt.
+
+**Open / vervolg (geen blokkade):**
+- Derde-positie-vraag uit de roadmap: er zijn nu drie ad units, alle drie op de homepage.
+  Extra plaatsingen op detailpagina's zijn een losse vervolgstap.
+- `AdSlot` op detailpagina's zetten mét `theme` = de eerste stap richting per-channel-verkoop.
+
+Syntax gevalideerd met esbuild (geen tsc in deze omgeving). `globals.css` append-only
+bevestigd (comm -23 main−mine leeg).

@@ -18148,3 +18148,24 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   margin-top: auto;
 }
 .ch-hub-card-count { font-size: var(--text-sm); color: var(--text-muted); }
+
+/* ============================================================
+   §HOME-ADS-LIVE — echte GAM/GPT-slots (network 85712959)      22-07-2026
+   ------------------------------------------------------------
+   Sluit de al bestaande ad-containers (.ad-billboard / .ad-leaderboard en
+   de sidebar-plek) aan op Google Publisher Tags via <AdSlot/>. De .ad-unit
+   centreert de GPT-div; lege (ongeboekte) slots klappen in via
+   collapseEmptyDivs, zodat een onverkochte positie geen gat achterlaat.
+   Billboard en leaderboard krijgen per breakpoint een eigen creative-formaat
+   via GPT sizeMapping — geen CSS-schaling nodig.
+   ============================================================ */
+.ad-unit { display: flex; justify-content: center; align-items: center; width: 100%; }
+.ad-unit-target { margin: 0 auto; line-height: 0; }
+
+/* Leaderboard blijft op mobiel zichtbaar — de 320x100-creative wordt via
+   sizeMapping geserveerd. Overschrijft de oude display:none uit §HOME-F2. */
+@media (max-width: 1000px) {
+  .ad-leaderboard { display: flex; }
+  .ad-billboard { padding-left: 12px; padding-right: 12px; }
+}
+/* ======================== einde §HOME-ADS-LIVE ======================== */

@@ -64,6 +64,7 @@ import {
 import { BookCard } from '@/app/book/_components/BookCard'
 import { listBooks, listFeaturedBooks } from '@/lib/api/books'
 import type { BrandListItem } from '@/types/brand'
+import { AdSlot } from '@/components/ads/AdSlot'
 
 const pagePath = canonicalPath('/')
 
@@ -92,9 +93,10 @@ const TALKS_FETCH = 12
 /** Terugval voor de hero-telling als de count onverwacht 0/onbekend is. */
 const MATERIALS_COUNT_FALLBACK = 3200
 
-/** Ad-containers (GAM) staan klaar maar zijn uit tot GPT-script + ad-unit-ids
-    er zijn. Eén vlag-flip zet ze aan zodra GAM is aangesloten. */
-const ADS_ENABLED = false
+/** Ad-containers (GAM) — aangesloten op GPT (network 85712959, ad units van
+    Johan, 22-07). De slots renderen via <AdSlot/>; ongeboekte posities klappen
+    in (collapseEmptyDivs). Zet op false om ze pagina-breed uit te schakelen. */
+const ADS_ENABLED = true
 
 /** Statische marketing-content (geen WP-bron in v1; zie open-issues S10.x). */
 const QUOTES = [
@@ -315,11 +317,7 @@ export default async function HomePage() {
 
         {ADS_ENABLED && (
           <div className="ad-billboard">
-            <div className="ad-slot ad-970">
-              <span className="lbl">Advertisement</span>
-              <span className="dim">970 × 250</span>
-              <span className="note">Shown only when booked</span>
-            </div>
+            <AdSlot name="billboard" />
           </div>
         )}
 
@@ -362,10 +360,7 @@ export default async function HomePage() {
 
             {ADS_ENABLED && (
               <div className="ad-leaderboard">
-                <div className="ad-slot ad-728">
-                  <span className="lbl">Advertisement</span>
-                  <span className="dim">728 × 90</span>
-                </div>
+                <AdSlot name="leaderboard" />
               </div>
             )}
 
@@ -508,12 +503,7 @@ export default async function HomePage() {
               materials={sidebarMaterials}
             />
 
-            {ADS_ENABLED && (
-              <div className="ad-slot ad-300">
-                <span className="lbl">Advertisement</span>
-                <span className="dim">300 × 250</span>
-              </div>
-            )}
+            {ADS_ENABLED && <AdSlot name="mrec" />}
 
             {/* Manufacturer-promo */}
             <div className="sidebar-cta">
