@@ -38,8 +38,35 @@
 - **Bar→hub-bruggetje** — bewust niet in v1 (keuze 3). Klein later toe te voegen
   in `ChannelBarNav` ("Explore the {channel} channel →") bij een actief channel.
 
+## Open — channel-herstructurering fase 1 (24-07-2026) 🔴 SEO
+Fase 1 (termen) is op CMS toegepast via `md-channels-phase1-apply.php`: merges,
+renames, nieuwe lege channels, descriptions. Content ophangen = fase 2 — **nog
+niet gedaan**. Tot die tijd is de site in een SEO-kwetsbaar tussenstadium.
+
+Nog te doen:
+- **C-CH.4 (🔴)** — **Fase 2: content ophangen** aan de nieuwe lege channels
+  (`timber`, `net-zero-carbon`, `energy-resilience`, `regenerative`). Die staan
+  nu op `/channel` met 0 materials; hub-detail geeft terecht `notFound()`, maar
+  de index adverteert ze wél (inclusief CollectionPage ItemList).
+- **C-CH.5 (🔴)** — **301-redirects** van alle retired theme/channel-slugs naar
+  de nieuwe canonieke slugs (o.a. `ecology`, `biodegradable`, `recycling` →
+  `circular`; `biobased` → `bio-based-living-materials`; `sense-sensibility` →
+  `biophilic-human-centred`; `smart-materials` → `smart-responsive`;
+  `manufacture` / `technology-transfer` / `process` → `new-making`;
+  `innovation` / `trend` / `concept` / `curious` → `material-futures`;
+  `healing-environment` → `biophilic-human-centred`; `high-tech` →
+  `smart-responsive`). Zonder permanente redirects verliest inbound equity.
+- **C-CH.6 (🟡)** — **Lege channels verbergen** op de publieke `/channel`-index
+  (en uit de JSON-LD ItemList) tot ze content hebben — of pas publiceren ná
+  fase 2. Voorkomt thin/404-doelen vanuit de index.
+
+Zie live: https://materialdistrict-frontend.vercel.app/channel/
+
 ## Wijzigingen — append onderaan de lijst
 - **v1.x (04-06-2026, Sessie 12)** — Channel-hubs gebouwd (`/channels` +
   `/channels/[slug]`). Hub-beslissing afgesloten. Nieuw: C-CH.1 (featured-vlag-
   exposure, Johan), C-CH.2 (books-strip later), C-CH.3 (events-ordening). Verify-
   punten: `theme_thumbnail`-vorm + `?theme` op article/event.
+- **v1.y (24-07-2026)** — Na CMS fase-1 channel-herstructurering: C-CH.4
+  (content ophangen), C-CH.5 (301s retired slugs), C-CH.6 (lege channels
+  verbergen tot fase 2) als open SEO-follow-ups genoteerd.
