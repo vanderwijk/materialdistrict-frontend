@@ -7,7 +7,8 @@
  * datum-badge (dag + maand) linksonder, een "Past"-pill linksboven bij voorbije
  * events, en daaronder type-label, titel en locatie. Anders dan de generieke
  * `ContentCard` (tag-overlay + thumb) is de datum-badge het kenmerkende element,
- * daarom een eigen card.
+ * daarom een eigen card — de thumb zelf hergebruikt wel `Card.Thumb` (Next.js
+ * Image + AVIF/webp + responsive sizes), net als materials/articles/books.
  *
  * Locatie: `venue.city, country` of "Online" wanneer er geen fysieke venue is
  * (online events / `venue === null`).
@@ -16,7 +17,7 @@
 import Link from 'next/link'
 import type { EventListItem } from '@/types/event'
 import { eventTypeLabel } from '@/lib/config/event-types'
-import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
+import { Card, CardBookmarkButton } from '@/components/ui'
 
 const MONTHS_SHORT = [
   'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
@@ -101,28 +102,21 @@ export function EventCard({
   const detailHref = `/event/${event.slug}`
   const cardLabel = `${event.title} — ${eventTypeLabel(event.type)}, ${location}`
 
-  // Listing band is 120px tall — use WP resized renditions, not the full original.
-  // Same fallback chain as MaterialCard (medium_large ≈ 768×512 for retina cards).
+  // Hero: zelfde size-fallback als MaterialCard. Card.Thumb (Next.js Image)
+  // levert daarna AVIF/webp + responsive sizes per viewport.
   const thumbSrc = event.hero
     ? (event.hero.sizes?.medium_large?.url ??
       event.hero.sizes?.large?.url ??
       event.hero.sizes?.medium?.url ??
       event.hero.sourceUrl)
-    : null
+    : undefined
 
   const band = (
-    <div className="event-card-band">
-      {thumbSrc ? (
-        <img
-          src={thumbSrc}
-          alt={event.hero?.alt || ''}
-          className="event-card-img"
-          loading="lazy"
-        />
-      ) : (
-        <span className="event-card-band-fallback" aria-hidden="true" />
-      )}
-
+    <Card.Thumb
+      className="event-card-band"
+      src={thumbSrc}
+      alt={event.hero?.alt?.trim() || event.title}
+    >
       {event.isPast && <span className="event-card-past">Past</span>}
 
       <CardBookmarkButton type="events" itemId={event.id} withOverlay />
@@ -134,7 +128,7 @@ export function EventCard({
           <span className="event-card-date-year">{badge.year}</span>
         </span>
       )}
-    </div>
+    </Card.Thumb>
   )
 
   const body = (
