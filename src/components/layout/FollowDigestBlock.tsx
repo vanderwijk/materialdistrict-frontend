@@ -36,11 +36,12 @@ import {
 } from '@/lib/api/follows'
 import { DEFAULT_FOLLOW_TYPES, useMailFrequency } from '@/lib/hooks/useFollow'
 
-const FREQUENCIES: MailFrequency[] = ['daily', 'weekly', 'monthly']
+const FREQUENCIES: MailFrequency[] = ['daily', 'weekly', 'monthly', 'none']
 const FREQ_LABEL: Record<MailFrequency, string> = {
   daily: 'Daily',
   weekly: 'Weekly',
   monthly: 'Monthly',
+  none: 'No digest',
 }
 
 /** "a, b and c" — voor de samenvattingsregel. */

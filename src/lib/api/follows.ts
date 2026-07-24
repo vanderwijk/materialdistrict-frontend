@@ -21,7 +21,7 @@ export type FollowContentType =
   | 'event'
   | 'brand'
 
-export type MailFrequency = 'daily' | 'weekly' | 'monthly'
+export type MailFrequency = 'daily' | 'weekly' | 'monthly' | 'none'
 
 export interface FollowInput {
   entityType: FollowEntityType

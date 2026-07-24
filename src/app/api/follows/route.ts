@@ -18,7 +18,7 @@ import { getAuthCookie } from '@/lib/auth/cookies'
 export const dynamic = 'force-dynamic'
 
 const VALID_ENTITY = new Set(['channel', 'brand'])
-const VALID_FREQ = new Set(['daily', 'weekly', 'monthly'])
+const VALID_FREQ = new Set(['daily', 'weekly', 'monthly', 'none'])
 
 type WpFollowRecord = {
   entity_type?: string

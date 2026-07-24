@@ -40,11 +40,12 @@ const CONTENT_TYPES: { key: FollowContentType; label: string }[] = [
   { key: 'brand', label: 'Brands' },
 ]
 
-const FREQUENCIES: MailFrequency[] = ['daily', 'weekly', 'monthly']
+const FREQUENCIES: MailFrequency[] = ['daily', 'weekly', 'monthly', 'none']
 const FREQ_LABEL: Record<MailFrequency, string> = {
   daily: 'Daily',
   weekly: 'Weekly',
   monthly: 'Monthly',
+  none: 'No digest',
 }
 
 export interface DetailChannelPillProps {
