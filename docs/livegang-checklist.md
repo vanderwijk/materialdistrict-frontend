@@ -1,7 +1,7 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 17 juni 2026  
+**Laatst bijgewerkt:** 24 juli 2026  
 **Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
@@ -117,6 +117,27 @@
 | Register rate-limiting beslissing (W12) | ❓ besluit | 5/uur per IP ja/nee + documenteren |
 | Terms + Privacy links op `/register` (`href="#"`) | ❌ open | `/terms` + `/privacy` of link naar canonieke PDF (footer gebruikt al externe terms-PDF) |
 | Cookie settings in footer | verborgen | consent-tool kiezen (Cookiebot/Usercentrics/…) |
+
+### 2.3b Users: productie → CMS (cutover)
+
+**Status:** gepland — geen blinde sync; wel eenmalige gefilterde import  
+**Context (24-07-2026):** CMS-users bevroren sinds DB-kopie **22 juni 2026** (laatste ID ~`147326`). Nieuwe registraties gaan sindsdien alleen naar WP Engine. Steekproef ~100 recente prod-users: ~62% duidelijke spam (`*.click`, `mail24.top`, naam≠email, …), ~20% waarschijnlijk echt, rest grijs. Gap tot cutover: ordegrootte **~300–400** accounts, waarvan **~50–100** de moeite waard om te behouden.
+
+**Besluit:**
+
+- Incrementele sync neemt **geen users** mee (alleen content), zodat bots niet via de achterdeur in CMS belanden.
+- Bij cutover: **eenmalige gefilterde import** productie → CMS van echte accounts sinds 22 jun.
+- Classic registratie op productie (`MD_CLOSE_CLASSIC_REGISTRATION`) pas dichtzetten vlak vóór/bij Vercel-cutover (nieuwe frontend gebruikt die routes niet).
+
+**Filter (minimaal):**
+
+- [ ] Export users met `ID > 147326` (of `user_registered >= 2026-06-22 12:10:39`) van productie
+- [ ] Weg: wegwerpdomeinen / bekende bot-TLD’s (`.click`, `mail24.top`, `adult-work.info`, `*.travellersrest*`, `*.billieholiday*`, …)
+- [ ] Weg of review: nooit ingelogd + geen WC-orders + geen brand-koppeling (optioneel strenger)
+- [ ] Houd: bedrijfs-/edu-domains + coherente free-mail; grijze Gmails handmatig of mild meenemen
+- [ ] Import naar CMS: user + password hash + relevante usermeta (membership, `connected_brand_id`, …); dry-run → apply
+- [ ] Spot-check: 5 echte accounts kunnen inloggen op de Next-frontend tegen CMS
+- [ ] Na cutover: `MD_CLOSE_CLASSIC_REGISTRATION` op productie (optioneel meteen bij DNS)
 
 ### 2.4 Contactpagina
 
