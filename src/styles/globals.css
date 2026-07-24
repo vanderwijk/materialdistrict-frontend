@@ -17850,13 +17850,13 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 /* --- Punt 4 (F5): "Follow the Transition" = knop + full-width slide-up paneel
    In de footer staat niet langer het hele volgmenu uitgeklapt. Eén knop opent
    een paneel dat van onderen omhoog schuift met het volledige volgblok erin
-   (chips, frequentie, Start following). De knop staat in de donkere footer-
+   (chips, frequentie, Start following). De knop staat in de lichte footer-
    kolom; het paneel zelf is een licht vel op surface-niveau. */
 .follow-transition { margin-top: 4px; }
 .follow-transition-lead {
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-muted);
   margin: 0 0 12px;
 }
 .follow-transition-trigger {
