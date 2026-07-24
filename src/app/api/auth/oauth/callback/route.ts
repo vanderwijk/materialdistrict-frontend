@@ -51,7 +51,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const tokens = await exchangeOAuthCode(state.provider, code)
+    const tokens = await exchangeOAuthCode(state.provider, code, state.origin)
     if (state.provider === 'google' && !tokens.idToken) {
       return redirectWithError(request, 'oauth_provider_error', state.next)
     }

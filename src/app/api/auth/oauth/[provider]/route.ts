@@ -36,11 +36,12 @@ export async function GET(
   }
 
   const next = sanitizeOAuthNext(request.nextUrl.searchParams.get('next'))
-  const state = createOAuthState(rawProvider, next)
+  const origin = request.nextUrl.origin
+  const state = createOAuthState(rawProvider, next, origin)
 
   let authorizeUrl: string
   try {
-    authorizeUrl = buildProviderAuthorizeUrl(rawProvider, state)
+    authorizeUrl = buildProviderAuthorizeUrl(rawProvider, state, origin)
   } catch {
     return NextResponse.redirect(
       new URL(`/sign-in/?error=oauth_not_configured&provider=${rawProvider}`, request.url),

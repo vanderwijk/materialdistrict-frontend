@@ -20,16 +20,35 @@ export type OAuthProvider = 'google' | 'linkedin'
 const STATE_COOKIE = 'md_oauth_state'
 const STATE_TTL_SECONDS = 600
 
-export function getOAuthSiteUrl(): string {
-  const site =
+export function getOAuthSiteUrl(requestOrigin?: string | null): string {
+  // Prefer the public host the user actually hit (stable alias), not VERCEL_URL
+  // (deployment-specific *.vercel.app hostname — breaks Google redirect URI matching).
+  const fromRequest = (requestOrigin || '').replace(/\/$/, '')
+  if (fromRequest.startsWith('http://') || fromOriginIsHttps(fromRequest)) {
+    return fromRequest
+  }
+
+  const production =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL?.replace(/\/$/, '') ||
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
-  if (site) return site
+    ''
+  if (production) {
+    return production.startsWith('http') ? production : `https://${production}`
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL.replace(/\/$/, '')}`
+  }
+
   return 'http://localhost:3000'
 }
 
-export function getOAuthCallbackUrl(): string {
-  return `${getOAuthSiteUrl()}/api/auth/oauth/callback`
+function fromOriginIsHttps(value: string): boolean {
+  return value.startsWith('https://')
+}
+
+export function getOAuthCallbackUrl(requestOrigin?: string | null): string {
+  return `${getOAuthSiteUrl(requestOrigin)}/api/auth/oauth/callback`
 }
 
 function getStateSecret(): string {
@@ -65,18 +84,25 @@ interface OAuthStatePayload {
   next: string
   nonce: string
   exp: number
+  /** Origin used for redirect_uri — must match token exchange. */
+  origin: string
 }
 
 function signPayload(payload: string): string {
   return createHmac('sha256', getStateSecret()).update(payload).digest('base64url')
 }
 
-export function createOAuthState(provider: OAuthProvider, next: string): string {
+export function createOAuthState(
+  provider: OAuthProvider,
+  next: string,
+  origin: string,
+): string {
   const payload: OAuthStatePayload = {
     provider,
     next: sanitizeOAuthNext(next),
     nonce: randomBytes(16).toString('hex'),
     exp: Math.floor(Date.now() / 1000) + STATE_TTL_SECONDS,
+    origin: getOAuthSiteUrl(origin),
   }
   const body = Buffer.from(JSON.stringify(payload), 'utf8').toString('base64url')
   return `${body}.${signPayload(body)}`
@@ -102,6 +128,7 @@ export function parseOAuthState(state: string): OAuthStatePayload | null {
       next: sanitizeOAuthNext(json.next),
       nonce: String(json.nonce || ''),
       exp: json.exp,
+      origin: getOAuthSiteUrl(json.origin || ''),
     }
   } catch {
     return null
@@ -113,8 +140,9 @@ export { STATE_COOKIE, STATE_TTL_SECONDS }
 export function buildProviderAuthorizeUrl(
   provider: OAuthProvider,
   state: string,
+  requestOrigin?: string | null,
 ): string {
-  const redirectUri = getOAuthCallbackUrl()
+  const redirectUri = getOAuthCallbackUrl(requestOrigin)
   if (provider === 'google') {
     const clientId = process.env.GOOGLE_CLIENT_ID
     if (!clientId) throw new Error('GOOGLE_CLIENT_ID is not configured')
@@ -146,7 +174,7 @@ interface TokenExchangeResult {
   accessToken?: string
 }
 
-async function exchangeGoogleCode(code: string): Promise<TokenExchangeResult> {
+async function exchangeGoogleCode(code: string, origin: string): Promise<TokenExchangeResult> {
   const clientId = process.env.GOOGLE_CLIENT_ID
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET
   if (!clientId || !clientSecret) {
@@ -162,7 +190,7 @@ async function exchangeGoogleCode(code: string): Promise<TokenExchangeResult> {
     code,
     client_id: clientId,
     client_secret: clientSecret,
-    redirect_uri: getOAuthCallbackUrl(),
+    redirect_uri: getOAuthCallbackUrl(origin),
     grant_type: 'authorization_code',
   })
 
@@ -188,7 +216,7 @@ async function exchangeGoogleCode(code: string): Promise<TokenExchangeResult> {
   }
 }
 
-async function exchangeLinkedInCode(code: string): Promise<TokenExchangeResult> {
+async function exchangeLinkedInCode(code: string, origin: string): Promise<TokenExchangeResult> {
   const clientId = process.env.LINKEDIN_CLIENT_ID
   const clientSecret = process.env.LINKEDIN_CLIENT_SECRET
   if (!clientId || !clientSecret) {
@@ -204,7 +232,7 @@ async function exchangeLinkedInCode(code: string): Promise<TokenExchangeResult> 
     code,
     client_id: clientId,
     client_secret: clientSecret,
-    redirect_uri: getOAuthCallbackUrl(),
+    redirect_uri: getOAuthCallbackUrl(origin),
     grant_type: 'authorization_code',
   })
 
@@ -233,10 +261,11 @@ async function exchangeLinkedInCode(code: string): Promise<TokenExchangeResult> 
 export async function exchangeOAuthCode(
   provider: OAuthProvider,
   code: string,
+  origin: string,
 ): Promise<TokenExchangeResult> {
   return provider === 'google'
-    ? exchangeGoogleCode(code)
-    : exchangeLinkedInCode(code)
+    ? exchangeGoogleCode(code, origin)
+    : exchangeLinkedInCode(code, origin)
 }
 
 /**
