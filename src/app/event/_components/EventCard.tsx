@@ -101,12 +101,21 @@ export function EventCard({
   const detailHref = `/event/${event.slug}`
   const cardLabel = `${event.title} — ${eventTypeLabel(event.type)}, ${location}`
 
+  // Listing band is 120px tall — use WP resized renditions, not the full original.
+  // Same fallback chain as MaterialCard (medium_large ≈ 768×512 for retina cards).
+  const thumbSrc = event.hero
+    ? (event.hero.sizes?.medium_large?.url ??
+      event.hero.sizes?.large?.url ??
+      event.hero.sizes?.medium?.url ??
+      event.hero.sourceUrl)
+    : null
+
   const band = (
     <div className="event-card-band">
-      {event.hero ? (
+      {thumbSrc ? (
         <img
-          src={event.hero.sourceUrl}
-          alt={event.hero.alt || ''}
+          src={thumbSrc}
+          alt={event.hero?.alt || ''}
           className="event-card-img"
           loading="lazy"
         />
