@@ -28,11 +28,11 @@ export const metadata: Metadata = {
  */
 
 interface SignInPageProps {
-  searchParams: Promise<{ next?: string }>
+  searchParams: Promise<{ next?: string; error?: string }>
 }
 
 export default async function SignInPage({ searchParams }: SignInPageProps) {
-  const { next } = await searchParams
+  const { next, error } = await searchParams
   const safeNext = sanitizeNext(next)
 
   // Bail early if already logged in. We re-use the layout's auth
@@ -71,7 +71,7 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         </>
       }
     >
-      <SignInForm next={safeNext} />
+      <SignInForm next={safeNext} oauthError={error} />
     </AuthPageLayout>
   )
 }

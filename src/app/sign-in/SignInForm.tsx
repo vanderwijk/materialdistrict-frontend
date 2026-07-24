@@ -39,6 +39,8 @@ import { SocialAuthButtons } from '@/app/_auth-components/SocialAuthButtons'
 interface SignInFormProps {
   /** Sanitised target path for the post-login redirect. */
   next: string
+  /** OAuth callback error code from `?error=`. */
+  oauthError?: string
 }
 
 type SubmitState =
@@ -46,11 +48,37 @@ type SubmitState =
   | { kind: 'submitting' }
   | { kind: 'error'; message: string }
 
-export function SignInForm({ next }: SignInFormProps) {
+function oauthErrorMessage(code: string | undefined): string | null {
+  if (!code) return null
+  switch (code) {
+    case 'oauth_not_configured':
+      return 'Social login is not configured yet. Please use email and password, or try again later.'
+    case 'oauth_denied':
+      return 'Social login was cancelled. You can try again or use email and password.'
+    case 'oauth_invalid_state':
+      return 'Social login expired or was invalid. Please try again.'
+    case 'oauth_email_required':
+    case 'oauth_email_unverified':
+      return 'Your social account must have a verified email address to continue.'
+    case 'oauth_registration_disabled':
+      return 'New account registration is currently disabled.'
+    case 'oauth_failed':
+    case 'oauth_provider_error':
+    default:
+      if (code.startsWith('oauth_')) {
+        return 'Social login failed. Please try again or use email and password.'
+      }
+      return null
+  }
+}
+
+export function SignInForm({ next, oauthError }: SignInFormProps) {
   const router = useRouter()
   const { signIn } = useAuth()
-  const [state, setState] = useState<SubmitState>({ kind: 'idle' })
-
+  const initialOauth = oauthErrorMessage(oauthError)
+  const [state, setState] = useState<SubmitState>(
+    initialOauth ? { kind: 'error', message: initialOauth } : { kind: 'idle' },
+  )
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
 

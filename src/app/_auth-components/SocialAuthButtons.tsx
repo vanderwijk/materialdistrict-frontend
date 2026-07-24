@@ -2,12 +2,9 @@
  * SocialAuthButtons — Google + LinkedIn login, gedeeld door /sign-in en
  * /register.
  *
- * FORWARD-BUILT: de knoppen wijzen naar de OAuth-start-endpoints die Johan
- * nog moet bouwen (`/api/auth/oauth/{provider}`). Tot die bestaan doen ze
- * niets functioneels — de UI staat klaar zodat inschakelen één backend-stap
- * is. Identiteit blijft in WordPress (geen externe auth-service); de flow
- * eindigt met dezelfde JWT-cookie als e-mail/wachtwoord-login. Account-type
- * (Discover/List) wordt ná een eerste social login in een mini-stap gevraagd.
+ * Start OAuth via `/api/auth/oauth/{provider}` → provider →
+ * `/api/auth/oauth/callback` → WP `/md/v2/auth/oauth` → zelfde JWT-cookie
+ * als e-mail/wachtwoord. Vereist GOOGLE_* / LINKEDIN_* env vars op Vercel.
  */
 
 interface SocialAuthButtonsProps {

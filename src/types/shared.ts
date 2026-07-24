@@ -312,6 +312,13 @@ export type AuthErrorCode =
   | 'md_auth_invalid_token'
   | 'md_auth_weak_password'
   | 'md_auth_email_taken'
+  | 'md_auth_oauth_invalid_request'
+  | 'md_auth_oauth_invalid_token'
+  | 'md_auth_oauth_email_required'
+  | 'md_auth_oauth_email_unverified'
+  | 'md_auth_oauth_provider_error'
+  | 'md_auth_oauth_not_configured'
+  | 'md_auth_registration_disabled'
 
 /**
  * Error response shape from `/wp-json/md/v2/auth/*` endpoints.
