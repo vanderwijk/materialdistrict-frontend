@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light">
+<title>{{preheader}}</title>
+<!--[if mso]>
+<xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+<style>table,td,div,p,a,span{font-family:Arial,Helvetica,sans-serif !important;}</style>
+<![endif]-->
+<style>
+  @media only screen and (max-width:620px){
+    .w{width:100% !important;}
+    .p{padding-left:16px !important;padding-right:16px !important;}
+    .img{width:100% !important;height:auto !important;}
+    .col{display:block !important;width:100% !important;max-width:100% !important;padding:0 0 14px 0 !important;}
+    .fact{display:block !important;width:100% !important;border-right:0 !important;border-bottom:1px solid #f0efe9 !important;}
+    .h1{font-size:25px !important;}
+  }
+  a{color:#183E90;}
+</style>
+</head>
+<body style="margin:0;padding:0;background:#eef0f2;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;mso-hide:all;">{{preheader}}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#eef0f2;">
+<tr><td align="center" style="padding:16px 8px;">
+<table role="presentation" class="w" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#fbfaf7;">
+
+<!-- ============================ UTILITY BAR ============================ -->
+<tr><td class="p" style="background:#ffffff;padding:9px 20px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+    <td style="font-family:Arial,Helvetica,sans-serif;font-size:11px;color:#9a9a90;">Hi {{first_name}}</td>
+    <td align="right" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;"><a href="{{web_view_url}}" style="color:#183E90;text-decoration:none;">View email in browser</a></td>
+  </tr></table>
+</td></tr>
+
+<!-- ============================ ACCENT BAR ============================ -->
+<tr><td bgcolor="#2E8C32" style="height:6px;line-height:6px;font-size:0;">&nbsp;</td></tr>
+
+<!-- ============================ HEADER ============================ -->
+<tr><td class="p" style="background:#ffffff;padding:14px 20px;border-bottom:1px solid #ecebe5;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+    <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;letter-spacing:-0.2px;color:#0d1f2d;">
+      <a href="{{site_url}}" style="color:#0d1f2d;text-decoration:none;">MATERIAL DISTRICT.</a></td>
+    <td align="right" style="font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;color:#2E8C32;letter-spacing:0.6px;">{{campaign_label}}</td>
+  </tr></table>
+</td></tr>
+
+<!-- ============================ HERO ============================ -->
+<!-- IF hero_image_url -->
+<tr><td style="padding:0;">
+  <img class="img" src="{{hero_image_url}}" width="600" alt="{{hero_image_alt}}" style="display:block;width:600px;max-width:100%;height:auto;border:0;background:#eeece6;">
+</td></tr>
+<!-- ENDIF -->
+
+<!-- ============================ HEADLINE ============================ -->
+<tr><td class="p" style="padding:26px 24px 0;">
+  <!-- IF kicker -->
+  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.8px;color:#2E8C32;text-transform:uppercase;">{{kicker}}</p>
+  <!-- ENDIF -->
+  <h1 class="h1" style="margin:10px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:30px;line-height:1.1;font-weight:bold;letter-spacing:-0.7px;color:#0d1f2d;">{{headline}}</h1>
+  <p style="margin:12px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.7;color:#5a6a7a;">{{intro_text}}</p>
+</td></tr>
+
+<!-- ============================ FACTS STRIP ============================ -->
+<!-- Up to three facts. Omit the block entirely when the campaign has no event details. -->
+<!-- IF facts -->
+<tr><td class="p" style="padding:22px 24px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #eae9e3;border-radius:10px;"><tr>
+    <!-- BEGIN facts -->
+    <td class="fact" valign="top" style="padding:16px 14px;border-right:1px solid #f0efe9;">
+      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.6px;color:#9a9a90;text-transform:uppercase;">{{fact.label}}</p>
+      <p style="margin:5px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#0d1f2d;">{{fact.value}}</p>
+    </td>
+    <!-- END facts -->
+  </tr></table>
+</td></tr>
+<!-- ENDIF -->
+
+<!-- ============================ PRIMARY CTA ============================ -->
+<!-- The only mail type with a full-width button: here one action really does outrank the rest. -->
+<!-- IF cta_url -->
+<tr><td class="p" style="padding:20px 24px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+    <td align="center" bgcolor="#2E8C32" style="border-radius:6px;padding:16px;">
+      <a href="{{cta_url}}" style="font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;display:block;">{{cta_label}}</a></td>
+  </tr></table>
+  <!-- IF calendar_url -->
+  <p style="margin:10px 0 0;text-align:center;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#5a6a7a;">
+    <a href="{{calendar_url}}" style="color:#5a6a7a;">Add to calendar</a> &nbsp;&middot;&nbsp; Google, Outlook, iCal</p>
+  <!-- ENDIF -->
+</td></tr>
+<!-- ENDIF -->
+
+<!-- ============================ SECTIONS ============================ -->
+<!-- IF sections_label -->
+<tr><td class="p" style="padding:28px 24px 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.8px;color:#9a9a90;text-transform:uppercase;">{{sections_label}}</td></tr>
+<!-- ENDIF -->
+<!-- BEGIN sections -->
+<tr><td class="p" style="padding:14px 24px 16px;border-bottom:1px solid #eae9e3;">
+  <!-- IF section.image_url -->
+  <img class="img" src="{{section.image_url}}" width="552" alt="{{section.image_alt}}" style="display:block;width:552px;max-width:100%;height:auto;border:0;border-radius:10px;margin-bottom:14px;background:#eeece6;">
+  <!-- ENDIF -->
+  <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.25;font-weight:bold;color:#0d1f2d;">{{section.heading}}</p>
+  <p style="margin:6px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.65;color:#5a6a7a;">{{section.body}}</p>
+  <!-- IF section.link_url -->
+  <p style="margin:9px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;">
+    <a href="{{section.link_url}}" style="color:#183E90;text-decoration:none;">{{section.link_label}} &rarr;</a></p>
+  <!-- ENDIF -->
+</td></tr>
+<!-- END sections -->
+
+<!-- ============================ CARD PICKS ============================ -->
+<!-- Same card as the other two templates. Use for materials, talks or exhibitors. -->
+<!-- IF picks_label -->
+<tr><td class="p" style="padding:24px 20px 10px;font-family:Arial,Helvetica,sans-serif;font-size:11px;font-weight:bold;letter-spacing:0.8px;color:#88A800;">{{picks_label}}</td></tr>
+<!-- ENDIF -->
+<!-- BEGIN pick_rows -->
+<tr><td style="padding:0 16px 14px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+    <td class="col" width="50%" valign="top" style="padding-right:7px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #eae9e3;border-radius:10px;">
+        <tr><td><a href="{{row.left.url}}"><img class="img" src="{{row.left.image_url}}" width="274" alt="{{row.left.image_alt}}" style="display:block;width:274px;max-width:100%;height:auto;border:0;border-radius:10px 10px 0 0;background:#eeece6;"></a></td></tr>
+        <tr><td style="padding:12px 14px 15px;">
+          <!-- BEGIN row.left.pills -->
+          <span style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:10px;padding:2px 7px;border-radius:20px;background:{{pill.bg}};color:{{pill.fg}};margin:0 3px 6px 0;">{{pill.label}}</span>
+          <!-- END row.left.pills -->
+          <p style="margin:2px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#9a9a90;text-transform:uppercase;">{{row.left.kicker}}</p>
+          <p style="margin:4px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.25;font-weight:bold;color:#0d1f2d;">
+            <a href="{{row.left.url}}" style="color:#0d1f2d;text-decoration:none;">{{row.left.title}}</a></p>
+        </td></tr>
+      </table>
+    </td>
+    <!-- IF row.right -->
+    <td class="col" width="50%" valign="top" style="padding-left:7px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;border:1px solid #eae9e3;border-radius:10px;">
+        <tr><td><a href="{{row.right.url}}"><img class="img" src="{{row.right.image_url}}" width="274" alt="{{row.right.image_alt}}" style="display:block;width:274px;max-width:100%;height:auto;border:0;border-radius:10px 10px 0 0;background:#eeece6;"></a></td></tr>
+        <tr><td style="padding:12px 14px 15px;">
+          <!-- BEGIN row.right.pills -->
+          <span style="display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:10px;padding:2px 7px;border-radius:20px;background:{{pill.bg}};color:{{pill.fg}};margin:0 3px 6px 0;">{{pill.label}}</span>
+          <!-- END row.right.pills -->
+          <p style="margin:2px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.5px;color:#9a9a90;text-transform:uppercase;">{{row.right.kicker}}</p>
+          <p style="margin:4px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.25;font-weight:bold;color:#0d1f2d;">
+            <a href="{{row.right.url}}" style="color:#0d1f2d;text-decoration:none;">{{row.right.title}}</a></p>
+        </td></tr>
+      </table>
+    </td>
+    <!-- ENDIF -->
+  </tr></table>
+</td></tr>
+<!-- END pick_rows -->
+
+<!-- ============================ PARTNER LOGOS ============================ -->
+<!-- IF partner_logos -->
+<tr><td class="p" align="center" style="padding:26px 24px 0;">
+  <p style="margin:0 0 14px;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.8px;color:#9a9a90;text-transform:uppercase;">{{partner_logos_label}}</p>
+  <!-- BEGIN partner_logos -->
+  <img src="{{logo.image_url}}" height="30" alt="{{logo.alt}}" style="display:inline-block;height:30px;width:auto;border:0;margin:0 6px 8px;vertical-align:middle;">
+  <!-- END partner_logos -->
+</td></tr>
+<!-- ENDIF -->
+
+<!-- ============================ FOOTER ============================ -->
+<tr><td style="background:#eeeeea;padding:28px 22px 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+    <td class="col" width="56%" valign="top" style="padding-right:20px;">
+      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:bold;color:#0d1f2d;">MaterialDistrict</p>
+      <p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#5a6a7a;">The leading platform for innovative and sustainable materials &mdash; for architects, designers and manufacturers.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;"><tr>
+        <td bgcolor="#2E8C32" style="border-radius:6px;padding:10px 18px;">
+          <a href="{{follow_url}}" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:bold;color:#ffffff;text-decoration:none;">Follow the Transition &rarr;</a></td>
+      </tr></table>
+    </td>
+    <td class="col" width="44%" valign="top">
+      <p style="margin:0;font-family:Arial,Helvetica,sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.6px;color:#9a9a90;text-transform:uppercase;">Contact</p>
+      <p style="margin:8px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.7;color:#5a6a7a;">
+        info@materialdistrict.com<br>+31 (0)20 71 30 650<br><br>
+        {{company_name}}<br>{{company_address_line1}}<br>{{company_address_line2}}<br>{{company_country}}</p>
+    </td>
+  </tr></table>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:22px;border-top:1px solid #dedcd4;"><tr>
+    <td style="padding-top:14px;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.7;color:#9a9a90;">
+      {{permission_reminder}}<br>
+      &copy; 1999 &ndash; {{current_year}} MaterialDistrict &nbsp;&middot;&nbsp;
+      <a href="{{unsubscribe_url}}" style="color:#9a9a90;">Unsubscribe</a> &nbsp;&middot;&nbsp;
+      <a href="{{privacy_url}}" style="color:#9a9a90;">Privacy policy</a></td>
+  </tr></table>
+</td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>

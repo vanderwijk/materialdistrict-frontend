@@ -88,7 +88,7 @@ Lichter dan bij het anonieme gedrag uit deel 1: een follow is een expliciete opt
 
 ## Openstaande afhankelijkheden
 
-- **De mailtool** (op SES — Sendy, MailPoet of managed) is nog niet gekozen. Feature B hangt daaraan; Feature A (de follow-functie) niet — die kan vooruit.
+- ~~**De mailtool** (op SES — Sendy, MailPoet of managed) is nog niet gekozen.~~ **Besloten 24-07-2026 (mailsysteem-spec v7):** geen mailtool; WP assembleert → SES. Sendy uitfaseren. Zie [`mailsysteem-spec.md`](./mailsysteem-spec.md).
 
 ## Werkverdeling — samengevat
 

@@ -210,7 +210,7 @@ wp user meta list --keys=simplefavorites --format=count
 - [ ] Author-naam resolve in content API (`content.ts` TODO: `/wp/v2/users/<id>`)
 - [ ] `BOOK_CATEGORY_SLUG = 'books'` bevestigen (`woocommerce.ts`)
 - [ ] CSS opruimen: `detail-*` vs `article-*` klassen generaliseren (S7.1)
-- [ ] `globals-additions-auth.css` eventueel in `globals.css` opnemen
+- [x] `globals-additions-auth.css` in `globals.css` opgenomen (duplicaat verwijderd)
 
 ### 3.2 Database / WP ops
 
@@ -271,6 +271,23 @@ wp user meta list --keys=simplefavorites --format=count
 | Bookmarks (nieuw systeem) | [`dashboard-handoff-batch3-jeroen.md`](./dashboard-handoff-batch3-jeroen.md) § Bookmarks |
 | Brand deploy (Johan) | `materialdistrict-plugin/deploy-checklist-johan-brands.md` |
 | E2E-testaccounts | [`e2e-test-accounts.md`](./e2e-test-accounts.md) |
+| Mailsysteem v7 | [`mailsysteem-spec.md`](./mailsysteem-spec.md) |
+
+---
+
+## 7. Mailsysteem (fase 0 / 1) — 24-07-2026
+
+**Spec:** [`mailsysteem-spec.md`](./mailsysteem-spec.md) v7. Sendy-op-SES lead is **vervallen**; WP assembleert → SES.
+
+| # | Item | Status | Eigenaar |
+|---|------|--------|----------|
+| M1 | Suppressie-oogst uit Sendy → `wp_md_mail_suppression` | open · tijdgevoelig | Johan |
+| M2 | Contact-import (8.148 + 3.821) | open | Johan |
+| M3 | Config sets + `news@` + re-engagement-subdomein | open | Johan |
+| M4 | Queue/worker + SNS mail events + unsub/preferences | code klaar · deploy/ops | Johan |
+| M5 | Campagneverzending | code klaar · deploy | Johan |
+| M6 | Your update-assembler + Sendy uit | code klaar · oktober live | Johan |
+| M7 | Frontend voorkeurcentrum / banner-UI / "+N more" | open | Claude |
 
 ---
 

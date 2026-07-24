@@ -112,7 +112,7 @@ Tier-namen volgen jullie `ManufacturerTier` (`free|basis|plus|partner`). Het bra
 Suggestie als startpunt voor jou + juridisch: `anonymous_id` als pseudonieme first-party cookie (random UUID, geen PII), gezet onder de analytics-consentcategorie van de cookiebanner. Bewaartermijn op de ruwe eventlaag bv. ~14 maanden (genoeg voor jaar-op-jaar), daarna prunen; de samenvattingen zijn geaggregeerd en niet-herleidbaar en mogen langer blijven. Bij intrekken consent: cookie niet meer zetten, anonieme events stoppen.
 
 **Mailtool.**
-Suggestie: gezien SES al draait is **Sendy** de meest voor de hand liggende keuze — het verstuurt rechtstreeks via SES (lage kosten per mail) en doet lijsten, segmenten, automation en RSS-to-email, precies wat de digest nodig heeft. **MailPoet** is WP-native en prettig geïntegreerd, maar koppelt sterker aan WP en de verzend-/automation-tiers lopen op. **Managed (MailerLite / Brevo)** als je liever niets zelf host. Mijn lead: Sendy-op-SES. Blokkeert dit fundament niet — de follow-laag kan vooruit.
+~~Suggestie: Sendy-op-SES als lead.~~ **Vervallen (24-07-2026, mailsysteem-spec v7).** Geen lijsttool in het verzendpad: WordPress assembleert per ontvanger HTML, SES verstuurt. Sendy wordt uitgefaseerd, niet vervangen. Zie [`mailsysteem-spec.md`](./mailsysteem-spec.md).
 
 ---
 

@@ -647,8 +647,8 @@ boeken na.
   artikelen herbruikbaar. *Pending Johan:* WP-veld op materialen zetten/ontsluiten.
 
 **ℹ️ Opgemerkt**
-- Eén los CSS-bestand `src/styles/globals-additions-auth.css` naast `globals.css`;
-  kan desgewenst in `globals.css` worden opgenomen (één-bestand-regel).
+- ~~Eén los CSS-bestand `src/styles/globals-additions-auth.css`~~ — opgenomen in
+  `globals.css` §19; duplicaat verwijderd.
 
 ## §S10.2 voortgang (16-06-2026)
 Afgerond: categorie-snelmenu, onder-witruimte, featured-article-tile, Channels in nav,
@@ -668,3 +668,15 @@ en toont offline materialen toch. Backend moet `meta.publication.isOnline` bloot
 ## §S10.2 ronde-3 — open punten (18-06-2026)
 - Featured materials: blok is bewust verborgen tot er materialen met de WP `featured`-vlag zijn. Content-actie: een paar materialen aanvinken.
 - ~~Offline materiaal: homepage filtert op `meta.publication.isOnline`~~ → **opgelost**: `meta.publication` + top-level `publication` in `/wp/v2/material` (plugin `md_material_rest_publication_payload`). Offline materialen staan als `draft` en komen niet in anonieme REST-lijsten; `isOnline:false` voor edge-cases.
+
+## Mailsysteem v7 (24-07-2026)
+
+**Spec:** [`mailsysteem-spec.md`](./mailsysteem-spec.md). Sendy-op-SES lead vervallen; WP→SES eigen pad.
+
+- **M1** Suppressie-oogst Sendy → `wp_md_mail_suppression` (tijdgevoelig) — Johan
+- **M2** Contact-import 8.148 actief + 3.821 uitgeschreven — Johan
+- **M3** Config sets + `news@` + re-engagement-subdomein — Johan
+- **M4** Queue/worker + SNS mail events + preferences/unsub — Johan (september-MVP)
+- **M5** Campagneverzending — Johan
+- **M6** Your update-assembler + Sendy uit — Johan (oktober)
+- **M7** Frontend voorkeurcentrum / banners / "+N more" — Claude

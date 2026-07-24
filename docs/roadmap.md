@@ -186,16 +186,14 @@ Live: `insiderOnly`-vlag wordt al gelezen op materials/articles/reports; related
 Eigenaar: vooral backend
 
 ### Segmented newsletter / digest  ·  **[deels]**
-Live: de follow-voordeur (`FollowDigestBlock`) die de oude e-mailbox vervangt. Open: de
-digest-engine zelf — drie blokken (persoonlijke content / commerciële slots / insider-
-trigger), "nieuw sinds vorige cyclus", marketing-consent, en de **mailtool-keuze**
-(Sendy-op-SES vs MailPoet vs managed). Voorwaarde: materiaal goedgekeurd vóór opname
-(+ write-once eerste-goedkeurdatum). Begin segment-gericht, niet per individu.
-Fundament (Johan, 21-06, `8e5ecff`): de digest-filter-helpers staan klaar —
-`md_follows_includes_post_type()` / `md_follows_includes_content_type()` + post-type-
-mapping (`story`→`article`, `book`→`insider_report`, …), zodat de digest straks op de
-follow-scope kan filteren. De engine + mailtool-keuze zelf blijven open.
-Afhankelijk van: tooltkeuze + backend · Eigenaar: beide
+Live: de follow-voordeur (`FollowDigestBlock`) die de oude e-mailbox vervangt.
+**Mailtool-keuze: vervallen (24-07-2026).** Spec: [`mailsysteem-spec.md`](./mailsysteem-spec.md) v7 —
+WP assembleert HTML → SES; Sendy uitfaseren. Fase 0 (verzendfundament, september) +
+fase 1 (Your update-assembler, oktober). Open: queue/worker, campagnepad, consent-
+model, assembler, intro-generatie. Voorwaarde: `_md_first_approved_at` +
+`_md_distribution_approved` (merkuploads). Fundament (Johan, 21-06, `8e5ecff`):
+digest-filter-helpers klaar.
+Afhankelijk van: backend fase 0/1 · Eigenaar: beide
 
 ### "New in your channels"-pagina  ·  **[open]**
 De pagina achter de "+24 more"-link: persoonlijke cross-channel listing op de FacetWP-
