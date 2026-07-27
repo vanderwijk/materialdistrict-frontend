@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import {
   Search,
@@ -349,8 +350,9 @@ export function Header({
       </div>
 
       {/* Mobile drawer */}
-      {mobileOpen && (
-        <>
+      {mobileOpen &&
+        createPortal(
+          <>
           <div
             className="mobile-nav-backdrop open"
             onClick={() => setMobileOpen(false)}
@@ -538,8 +540,9 @@ export function Header({
               )}
             </div>
           </div>
-        </>
-      )}
+          </>,
+          document.body,
+        )}
     </header>
   )
 }
