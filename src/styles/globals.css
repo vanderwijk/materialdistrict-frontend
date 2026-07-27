@@ -5337,9 +5337,13 @@ a:focus-visible {
   align-items: start;
 }
 
+.mat-detail-wrap > * {
+  min-width: 0;
+}
+
 @media (max-width: 1024px) {
   .mat-detail-wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
 }
@@ -7084,6 +7088,7 @@ button.mat-gallery-hero:focus-visible {
   align-items: center;
   gap: var(--space-3);
   flex: 1 1 0;
+  min-width: 0;
   max-width: 45%;
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border);
