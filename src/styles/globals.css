@@ -731,6 +731,8 @@ h4 {
    ------------------------------------------------------------ */
 .card {
   display: block;
+  width: 100%;
+  min-width: 0;
   background: var(--surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
@@ -1097,7 +1099,11 @@ h4 {
   .site-header { height: var(--header-height-mobile); }
   .site-header-inner { padding: 0 var(--content-padding-mobile); gap: 10px; }
   .header-nav { display: none; }
-  .hide-mobile { display: none; }
+  /* De generieke .icon-btn wordt verderop in dit stylesheet opnieuw
+     gedeclareerd. Houd de header-selector daarom specifieker, anders worden
+     Bookmarks/Boards/Cart op mobile opnieuw inline-flex en maken ze de hele
+     pagina breder dan de viewport. */
+  .header-actions > .hide-mobile { display: none; }
   .show-mobile { display: inline-flex; }
   .icon-btn.show-mobile { display: inline-flex; }
 }
@@ -1734,9 +1740,14 @@ h4 {
   margin: 0 auto;
   padding: 32px var(--content-padding-desktop) 80px;
   display: grid;
-  grid-template-columns: var(--filter-sidebar-width) 1fr;
+  grid-template-columns: var(--filter-sidebar-width) minmax(0, 1fr);
   gap: 32px;
   align-items: start;
+}
+
+.ov-wrap > *,
+.ov-wrap-single {
+  min-width: 0;
 }
 
 /* Single-column overzichts-container — zelfde max-width/padding als .ov-wrap,
@@ -1766,14 +1777,14 @@ h4 {
   }
 }
 
-.ov-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.ov-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.ov-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.ov-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.ov-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.ov-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
 
 /* Generic grid helpers — kleinere gap dan ov-grid-* (gebruikt op homepage) */
-.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 
 @media (max-width: 1024px) {
   .ov-wrap {
@@ -1792,9 +1803,9 @@ h4 {
   .ov-wrap > .uf-sidebar:not(.mob-open) { display: none; }
   .ov-grid-2 { grid-template-columns: 1fr; }
   .ov-grid-3,
-  .ov-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .ov-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   .grid-3,
-  .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 }
 
 @media (max-width: 480px) {
