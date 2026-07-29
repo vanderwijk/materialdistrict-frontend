@@ -14881,6 +14881,29 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 /* Meer lucht onderaan de homepage (de hp-main-bodem stond op 10px). */
 .hp-main { padding-bottom: 72px; }
 @media (max-width: 768px) {
+  /* Eén mobiele page-gutter voor homepage en detail-shells. Interne
+     component-padding (cards, hero-inhoud en detail-sheet) blijft intact. */
+  .hp-hero,
+  .hp-cats,
+  .hp-main {
+    padding-left: var(--content-padding-mobile);
+    padding-right: var(--content-padding-mobile);
+  }
+
+  /* .hp-cats heeft zelf de page-gutter; voorkom de oudere dubbele 32px
+     inset op de scrollbare binnenrij. */
+  .hp-cats-inner {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Article/event/talk gebruiken .pub-layout binnen .pub-wrap. De buitenste
+     wrapper levert al 14px; haal de tweede mobiele gutter daarom weg. */
+  .pub-wrap > .pub-layout {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
   .hp-main { padding-bottom: 56px; }
 }
 
