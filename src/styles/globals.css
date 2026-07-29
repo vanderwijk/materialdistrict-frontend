@@ -14900,6 +14900,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   /* Article/event/talk gebruiken .pub-layout binnen .pub-wrap. De buitenste
      wrapper levert al 14px; haal de tweede mobiele gutter daarom weg. */
   .pub-wrap > .pub-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
