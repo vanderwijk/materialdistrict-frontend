@@ -14,7 +14,8 @@
  *
  * Gating (C14): alleen de VIDEO loopt via <TalkVideoGate>. Summary/metadata
  * blijven zichtbaar als teaser. `insiderOnly` komt uit `meta.insider_only`
- * (talk-default true).
+ * (talk-default true). Voor Insider-only talks levert public REST geen
+ * `vimeo_id`; members laden die client-side via `/api/talks/{id}/embed`.
  *
  * Speakers (C11): namen, getoond in de sidebar. Company (C12): platte tekst,
  * geen brand-link. Velden die WP niet levert (event, language, bio, topics,
@@ -204,7 +205,8 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
           {/* Main column */}
           <div>
             <TalkVideoGate
-              vimeoId={talk.vimeoId}
+              talkId={talk.id}
+              vimeoId={talk.insiderOnly ? null : talk.vimeoId}
               title={talk.title}
               insiderOnly={talk.insiderOnly}
               posterUrl={talk.hero?.sizes?.large?.url ?? talk.hero?.sourceUrl}
@@ -276,7 +278,8 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
             description: stripHtml(talk.excerptHtml) || undefined,
             thumbnailUrl: talk.hero?.sizes?.large?.url ?? talk.hero?.sourceUrl,
             uploadDate: talk.date,
-            vimeoId: talk.vimeoId,
+            // Never put the player URL in public JSON-LD for Insider-only talks.
+            vimeoId: talk.insiderOnly ? null : talk.vimeoId,
             durationSeconds: talk.durationSeconds,
           }),
           buildBreadcrumbList([
