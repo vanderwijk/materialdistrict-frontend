@@ -12,15 +12,18 @@
  *  - Gated (insiderOnly && niet-member): een locked poster (hero, gedimd,
  *    play-badge) + <InsiderGate variant="paywall"> met talk-copy.
  *
- * C14-default: talks zijn standaard insider-only, dus dit firet voor de
- * meeste talks voor niet-members.
+ * Insider-only talks: `vimeoId` komt NIET mee uit SSR/public REST (paywall-
+ * bypass voorkomen). Members laden hem client-side via /api/talks/{id}/embed.
  */
 
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/components/providers/AuthContext'
 import { InsiderGate } from '@/components/ui'
 import { TalkVideo } from './TalkVideo'
 
 export interface TalkVideoGateProps {
+  talkId: number
+  /** Present for free talks; null for Insider-only until the member fetch resolves. */
   vimeoId: string | null
   title: string
   insiderOnly: boolean
@@ -29,6 +32,7 @@ export interface TalkVideoGateProps {
 }
 
 export function TalkVideoGate({
+  talkId,
   vimeoId,
   title,
   insiderOnly,
@@ -36,9 +40,61 @@ export function TalkVideoGate({
 }: TalkVideoGateProps) {
   const { isMember } = useAuth()
   const gated = insiderOnly && !isMember
+  const [memberVimeoId, setMemberVimeoId] = useState<string | null>(
+    insiderOnly ? null : vimeoId,
+  )
+  const [embedStatus, setEmbedStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>(
+    insiderOnly ? 'idle' : vimeoId ? 'ready' : 'idle',
+  )
+
+  useEffect(() => {
+    if (!insiderOnly || !isMember) {
+      return
+    }
+
+    let cancelled = false
+    setEmbedStatus('loading')
+
+    void (async () => {
+      try {
+        const res = await fetch(`/api/talks/${talkId}/embed`, {
+          method: 'GET',
+          credentials: 'same-origin',
+          cache: 'no-store',
+        })
+        if (!res.ok) {
+          throw new Error(`embed ${res.status}`)
+        }
+        const data = (await res.json()) as { vimeoId?: string | null }
+        if (cancelled) return
+        setMemberVimeoId(data.vimeoId ?? null)
+        setEmbedStatus('ready')
+      } catch {
+        if (cancelled) return
+        setMemberVimeoId(null)
+        setEmbedStatus('error')
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [insiderOnly, isMember, talkId])
 
   if (!gated) {
-    return <TalkVideo vimeoId={vimeoId} title={title} />
+    if (insiderOnly && embedStatus === 'loading') {
+      return (
+        <div className="talk-video-gate" aria-busy="true">
+          <div
+            className="talk-video-locked"
+            style={posterUrl ? { backgroundImage: `url(${posterUrl})` } : undefined}
+            aria-hidden="true"
+          />
+        </div>
+      )
+    }
+
+    return <TalkVideo vimeoId={insiderOnly ? memberVimeoId : vimeoId} title={title} />
   }
 
   return (
