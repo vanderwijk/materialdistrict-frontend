@@ -281,7 +281,7 @@ wp user meta list --keys=simplefavorites --format=count
 
 | # | Item | Status | Eigenaar |
 |---|------|--------|----------|
-| M1 | Suppressie-oogst uit Sendy → `wp_md_mail_suppression` | open · tijdgevoelig | Johan |
+| M1 | Suppressie-oogst uit Sendy → `wp_md_mail_suppression` | ✅ CMS 24-07-2026 · 41.277 rijen (`sendy_export`; bounce 39.581 / complaint 1.696) | Johan |
 | M2 | Contact-import (8.148 + 3.821) | open | Johan |
 | M3 | Config sets + `news@` + re-engagement-subdomein | open | Johan |
 | M4 | Queue/worker + SNS mail events + unsub/preferences | code klaar · deploy/ops | Johan |
