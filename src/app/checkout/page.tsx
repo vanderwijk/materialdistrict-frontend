@@ -1,11 +1,21 @@
 /**
- * `/checkout` — afrekenpagina (all-NextJS order-flow). Niet indexeerbaar.
- * Dunne server-wrapper rond de client-`CheckoutView`. Dit is ook de
- * cancel/failure-return-route voor redirect-gateways (handoff §4.3).
+ * `/checkout` — dual-purpose:
+ *
+ * 1. Insider subscription: `?plan=insider[&interval=monthly|annual]`
+ *    Server redirect to Stripe Checkout Session via WP
+ *    `POST /md/v2/checkout/insider`. No WooCommerce cart involved.
+ *
+ * 2. Book storefront: no `plan` param → WooCommerce Store API checkout UI.
+ *
+ * The book checkout merge previously replaced this page entirely and dropped
+ * the Insider branch, so membership CTAs landed on an empty WC cart.
  */
 
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { createInsiderCheckout, WordPressError } from '@/lib/api/wordpress'
+import { getAuthCookie } from '@/lib/auth/cookies'
 import { getCheckoutPrefill } from '@/lib/checkout/prefill'
 import { CheckoutView } from './_components/CheckoutView'
 
@@ -14,7 +24,62 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-export default async function CheckoutPage() {
+// Insider branch POSTs to WP and redirects externally; never cache.
+export const dynamic = 'force-dynamic'
+
+interface CheckoutPageProps {
+  searchParams: Promise<{ plan?: string; interval?: string }>
+}
+
+async function startInsiderCheckout(interval: 'monthly' | 'annual'): Promise<never> {
+  const selfHref = `/checkout?plan=insider&interval=${interval}`
+  const signInHref = `/sign-in?next=${encodeURIComponent(selfHref)}`
+
+  const token = await getAuthCookie()
+  if (!token) {
+    redirect(signInHref)
+  }
+
+  let checkoutUrl: string | undefined
+  try {
+    const session = await createInsiderCheckout(token, interval)
+    checkoutUrl = session.checkoutUrl
+  } catch (err) {
+    const status = err instanceof WordPressError ? err.status : 0
+    if (status === 401) {
+      redirect(signInHref)
+    }
+    if (status === 409) {
+      redirect('/dashboard/membership?checkout=already')
+    }
+    if (status === 503) {
+      redirect('/membership?checkout=unavailable')
+    }
+    console.error('[checkout] insider checkout failed', err)
+    redirect('/membership?checkout=error')
+  }
+
+  if (!checkoutUrl) {
+    redirect('/membership?checkout=error')
+  }
+
+  redirect(checkoutUrl)
+}
+
+export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
+  const { plan, interval: rawInterval } = await searchParams
+
+  // Unknown plan query → membership marketing page (not the book cart).
+  if (plan && plan !== 'insider') {
+    redirect('/membership')
+  }
+
+  if (plan === 'insider') {
+    const interval: 'monthly' | 'annual' =
+      rawInterval === 'annual' ? 'annual' : 'monthly'
+    await startInsiderCheckout(interval)
+  }
+
   const prefill = await getCheckoutPrefill()
 
   return (
