@@ -39,7 +39,8 @@ Belangrijkste afwijkingen:
   Net Zero & Carbon en Regenerative laden hun stories en talks.
 - De zoekfunctie werkt nu volledig: het header-zoekveld navigeert met Enter
   naar `/search/?q=wood`, de resultatenroute werkt en ook de lege zoekstaat is aanwezig.
-- De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
+- De follow-loginflow bewaart de herkomstpagina nu; na login keert de gebruiker
+  terug naar hetzelfde channel.
 - Een goedgekeurde aanvraag wordt als draft-brand gekoppeld maar blijft
   niet-klikbaar als `Pending setup`. De goedkeuringsmail zegt dat het brand
   beheerd kan worden en linkt naar een URL die niet naar het dashboard leidt.
@@ -60,7 +61,7 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | B1 | Geslaagd | Bio-based & Living Materials gevolgd. Schakelaar werd “Following” en bleef checked na verversen. |
 | B2 | Geslaagd | Ontvolgen opende “Unfollow Bio-based & Living Materials?”; na bevestiging stond de schakelaar weer op “Follow”. |
 | B3 | Niet geslaagd | Opnieuw getest na de nieuwste deployment: uitgelogd volgen geeft nog steeds geen redirect, maar de modal “Create a free account to follow”. URL blijft `/channel/bio-based-living-materials/`. Screenshot van de eerste meting: [B3-follow-logged-out-modal.png](./B3-follow-logged-out-modal.png). |
-| B4 | Niet geslaagd | De loginlink uit de modal gaat nog steeds naar `/sign-in/` zonder `next`. Na login kwam het testaccount opnieuw op `/material/`, niet terug op het channel. |
+| B4 | Geslaagd | Nieuwste hertest: de loginlink uit de Follow-modal gaat naar `/sign-in/?next=%2Fchannel%2Fbio-based-living-materials%2F`. De loginpagina behoudt dezelfde bestemming ook in de Google-, LinkedIn- en registratielinks. Na succesvolle login kwam het testaccount terug op exact `/channel/bio-based-living-materials/`, met het channel normaal geladen. |
 | B5 | Geslaagd | Exacte frequentie: label “Email updates:” met “Weekly” geselecteerd. |
 | C1 | Geslaagd | `/membership/` toont €10/maand, €100/jaar en de voordelen. |
 | C2 | Geslaagd | Nieuwste hertest: `/checkout/?plan=insider&interval=monthly` opent Stripe Sandbox voor €10 per maand en toont `iDEAL | Wero` naast kaart. Selecteren van iDEAL toont naam, Nederland als regio, het bankredirectbericht en de SEPA-mandaattekst voor vervolgbetalingen. Er is geen betaling ingediend, zodat geen tweede Insider-abonnement ontstond. De oudere screenshot [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png) documenteert uitsluitend de inmiddels vervallen meting. |
@@ -119,20 +120,17 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 
 ### Ernstig
 
-1. **Kritieke follow-returnflow verliest de herkomstpagina.**
-   Van `/channel/bio-based-living-materials/` naar `/sign-in/` zonder `next`; na login naar `/material/`.
-
-2. **Partner-testfixture is niet als Partner actief.**
+1. **Partner-testfixture is niet als Partner actief.**
    `e2e-partner-brand` toont “Current plan Basis”, waardoor channel coupling
    vergrendeld blijft. iDEAL/Wero bij Insider is wel hersteld en is daarom uit
    deze openstaande lijst verwijderd.
 
-3. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
+2. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
    De verse mail voor `ZZTEST-20260731-brand-link-07` linkt naar
    `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07`
    in plaats van het dashboard op `materialdistrict-frontend.vercel.app`.
 
-4. **SVG-upload wordt tegengesproken door de backend.**
+3. **SVG-upload wordt tegengesproken door de backend.**
    Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
    dezelfde frontend-media-API gaf voor een geldig SVG-bestand
    `File type is not allowed.` PNG werd wel geaccepteerd.
@@ -145,7 +143,8 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
    Exact: “Email and password are required.” terwijl beide velden gevuld waren.
 
 2. **Uitgelogd volgen opent een accountmodal in plaats van de verwachte directe loginredirect.**
-   Dit is vooral hinderlijk; het ernstige gevolg — verlies van de return-URL — staat apart vermeld.
+   Dit wijkt nog af van B3 in het draaiboek, maar de loginlink bewaart inmiddels
+   de return-URL en brengt de gebruiker na login correct terug naar het channel.
 
 3. **Welkomstmail loopt vooruit op de brandgoedkeuring.**
    Een als fabrikant geregistreerd Gmail-account ontvangt direct “your brand
