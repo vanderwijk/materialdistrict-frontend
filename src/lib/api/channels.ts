@@ -78,6 +78,10 @@ function toChannel(raw: unknown): Channel | null {
 /**
  * GET /md/v2/material-channels — de canonieke channels met term-id, slug en
  * label. Robuust voor afwijkende response-vormen; lege lijst bij fout.
+ *
+ * Channels met 0 materials worden weggelaten (nav, `/channel`-index, ChannelBar,
+ * follow-chips). Voorkomt lege hubs die als 404 openen tot fase-2 content hangt.
+ * `count` is materials-only — bewust dezelfde teller als de catalogus toont.
  */
 export const getChannelCatalog = cache(async function getChannelCatalog(): Promise<Channel[]> {
   try {
@@ -86,7 +90,7 @@ export const getChannelCatalog = cache(async function getChannelCatalog(): Promi
     })
     return extractArray(res)
       .map(toChannel)
-      .filter((c): c is Channel => c !== null)
+      .filter((c): c is Channel => c !== null && c.count > 0)
   } catch {
     return []
   }
