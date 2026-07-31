@@ -35,8 +35,8 @@ Belangrijkste afwijkingen:
 - De Stripe Sandbox-betaling toont een successmelding, activeert de Insider-status en blijft actief na opnieuw inloggen.
 - iDEAL/Wero is bij de nieuwste hertest beschikbaar in de Insider-checkout; de
   eerste betaling gaat via de bank en vervolgbetalingen via SEPA-incasso.
-- Drie van de nieuwe channels in de hoofdnavigatie geven nog 404;
-  `regenerative` is hersteld.
+- De vier opnieuw gecontroleerde channels werken: Timber, Energy & Resilience,
+  Net Zero & Carbon en Regenerative laden hun stories en talks.
 - De zoekfunctie werkt nu volledig: het header-zoekveld navigeert met Enter
   naar `/search/?q=wood`, de resultatenroute werkt en ook de lege zoekstaat is aanwezig.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
@@ -101,7 +101,7 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | G2 | Geslaagd | Hertest na deployment: unauthenticated `/wp-json/wp/v2/talk?per_page=100` geeft 200 op CMS en productie. Alle 92 CMS- en 99 productierecords zijn Insider-only en hebben `meta.vimeo_id:null`; er lekt geen Vimeo-ID. `meta.has_video` is `true` bij 91/92 CMS-records en 99/99 productierecords. De ene CMS-talk met `has_video:false` heeft eveneens `vimeo_id:null`. |
 | G3 | Geslaagd | Hertest na deployment: unauthenticated `/wp-json/wp/v2/lead` geeft op CMS en productie 404 met code `rest_no_route`; de voorheen publieke leadcollectie is niet meer via deze route beschikbaar. |
 | G4 | Geslaagd | Unauthenticated `/wp-json/wp/v2/users?per_page=5` geeft op beide hosts 401 met code `rest_forbidden`; er zijn geen e-mailadressen of gebruikersnamen zichtbaar. |
-| H1 | Deels geslaagd | Nieuwste hertest van de vier eerdere 404-routes: `regenerative` werkt nu en toont zeven stories en twee talks. `energy-resilience`, `net-zero-carbon` en `timber` geven nog steeds 404. Screenshot van Timber: [H1-timber-404.png](./H1-timber-404.png). |
+| H1 | Geslaagd | Alle vier eerdere 404-routes zijn opnieuw in de browser getest en werken na het laden van de client-side inhoud. Timber toont 48 stories; Energy & Resilience 38 stories en 3 talks; Net Zero & Carbon 24 stories en 1 talk; Regenerative 7 stories en 2 talks. De oude screenshot [H1-timber-404.png](./H1-timber-404.png) documenteert uitsluitend de vervallen meting. |
 | H2 | Geslaagd | Homepage van boven tot onder gecontroleerd: inhoud aanwezig, geen kapotte of nul-grote afbeeldingen. |
 | H3 | Geslaagd | Het JavaScript-zoekveld in de header opent correct. Handmatige verificatie door de gebruiker bevestigt dat invoer van `wood` gevolgd door Enter naar `/search/?q=wood` navigeert; die route toont 1.330 resultaten. De eerdere automatiseringsmeting waarbij de URL niet veranderde was een false negative. Screenshot [H3-search-no-navigation.png](./H3-search-no-navigation.png) documenteert uitsluitend die vervallen automatiseringsmeting. |
 | H4 | Geslaagd | De zoekroute toont nu een nette lege staat. Query `qzxvbnm987654321nomatch` geeft “No results found” met links naar Materials en Stories, niet langer een 404. De oude screenshot [H4-search-route-404.png](./H4-search-route-404.png) documenteert de vervallen situatie. |
@@ -122,21 +122,17 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 1. **Kritieke follow-returnflow verliest de herkomstpagina.**
    Van `/channel/bio-based-living-materials/` naar `/sign-in/` zonder `next`; na login naar `/material/`.
 
-2. **Drie aangeboden channels geven 404.**
-   `energy-resilience`, `net-zero-carbon` en `timber`. `regenerative` is hersteld.
-   Voorbeeld: `https://materialdistrict-frontend.vercel.app/channel/timber/`.
-
-3. **Partner-testfixture is niet als Partner actief.**
+2. **Partner-testfixture is niet als Partner actief.**
    `e2e-partner-brand` toont “Current plan Basis”, waardoor channel coupling
    vergrendeld blijft. iDEAL/Wero bij Insider is wel hersteld en is daarom uit
    deze openstaande lijst verwijderd.
 
-4. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
+3. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
    De verse mail voor `ZZTEST-20260731-brand-link-07` linkt naar
    `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07`
    in plaats van het dashboard op `materialdistrict-frontend.vercel.app`.
 
-5. **SVG-upload wordt tegengesproken door de backend.**
+4. **SVG-upload wordt tegengesproken door de backend.**
    Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
    dezelfde frontend-media-API gaf voor een geldig SVG-bestand
    `File type is not allowed.` PNG werd wel geaccepteerd.
