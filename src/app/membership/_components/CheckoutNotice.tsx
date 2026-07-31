@@ -1,40 +1,105 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useAuth } from '@/components/providers/AuthContext'
+import { isInsider } from '@/lib/auth/user-helpers'
+import type { User } from '@/types/shared'
 
 /**
  * Post-checkout notices on /membership (`?checkout=…`).
  *
- * - success: payment completed; refresh auth so Insider state appears once
- *   the Stripe webhook has written membership meta on CMS.
- * - cancel / unavailable / error / already: one-shot banners.
+ * success: poll `/api/auth/me` until Insider meta is present (Stripe webhook),
+ * update AuthContext so MembershipCta flips, then show a welcome banner.
  */
 export function CheckoutNotice() {
   const params = useSearchParams()
   const router = useRouter()
+  const { isMember, signIn } = useAuth()
   const status = params.get('checkout')
+
+  const [confirmed, setConfirmed] = useState(false)
+  const [timedOut, setTimedOut] = useState(false)
+
+  useEffect(() => {
+    if (status === 'success' && isMember) {
+      setConfirmed(true)
+    }
+  }, [status, isMember])
 
   useEffect(() => {
     if (status !== 'success') return
+    if (isMember || confirmed) return
 
-    // Webhook usually lands within a second; refresh twice so CTA flips to Insider.
-    const first = window.setTimeout(() => router.refresh(), 800)
-    const second = window.setTimeout(() => router.refresh(), 3500)
-    return () => {
-      window.clearTimeout(first)
-      window.clearTimeout(second)
+    let cancelled = false
+    let attempts = 0
+    const maxAttempts = 12
+    let timer: number | undefined
+
+    async function poll() {
+      attempts += 1
+      try {
+        const res = await fetch('/api/auth/me', { cache: 'no-store' })
+        if (res.ok) {
+          const data = (await res.json()) as { user: User | null }
+          if (data.user && isInsider(data.user)) {
+            if (!cancelled) {
+              signIn(data.user)
+              setConfirmed(true)
+              router.refresh()
+              // Drop session_id from the URL; keep checkout=success for the banner.
+              router.replace('/membership?checkout=success', { scroll: false })
+            }
+            return
+          }
+        }
+      } catch {
+        // Ignore transient network errors and keep polling.
+      }
+
+      if (cancelled) return
+
+      if (attempts >= maxAttempts) {
+        setTimedOut(true)
+        return
+      }
+
+      const delay = attempts < 4 ? 700 : 1500
+      timer = window.setTimeout(poll, delay)
     }
-  }, [status, router])
+
+    void poll()
+
+    return () => {
+      cancelled = true
+      if (timer !== undefined) window.clearTimeout(timer)
+    }
+  }, [status, isMember, confirmed, signIn, router])
 
   if (!status) return null
 
   if (status === 'success') {
+    if (confirmed || isMember) {
+      return (
+        <div className="form-banner is-success" role="status">
+          <strong>Welcome to Insider.</strong> Your membership is active — you
+          have full access.
+        </div>
+      )
+    }
+
+    if (timedOut) {
+      return (
+        <div className="form-banner is-success" role="status">
+          <strong>Payment received.</strong> Your membership should be active —
+          refresh the page if you still see Free access.
+        </div>
+      )
+    }
+
     return (
       <div className="form-banner is-success" role="status">
-        <strong>Payment received.</strong> Your Insider membership activates
-        within a few seconds — this page will update automatically. If it still
-        says Free, refresh once.
+        <strong>Payment received.</strong> Activating your membership…
       </div>
     )
   }

@@ -157,9 +157,20 @@ export function AuthProvider({
       return
     }
     setUser((prev) => {
-      // Same user (or both null) → don't trigger a re-render.
+      // Same reference (or both null) → don't trigger a re-render.
       if (prev === initialUser) return prev
-      if (prev && initialUser && prev.id === initialUser.id) return prev
+      // Same identity can still change server-side (e.g. Insider after
+      // Stripe webhook). Sync when membership (or brands) drift.
+      if (prev && initialUser && prev.id === initialUser.id) {
+        if (
+          prev.membership?.isInsider === initialUser.membership?.isInsider &&
+          prev.membership?.tier === initialUser.membership?.tier &&
+          prev.membership?.status === initialUser.membership?.status &&
+          prev.brands?.length === initialUser.brands?.length
+        ) {
+          return prev
+        }
+      }
       return initialUser
     })
   }, [initialUser])
