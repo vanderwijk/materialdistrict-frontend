@@ -273,10 +273,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Clip horizontal spill from grids/carousels without breaking position:sticky. */
+html {
+  overflow-x: clip;
+}
+
 /* App-shell: zet deze klasse op de root-wrapper in layout.tsx
    zodat de footer netjes onderaan blijft staan ook bij weinig content. */
 .app-shell {
   min-height: 100vh;
+  max-width: 100%;
+  overflow-x: clip;
   display: flex;
   flex-direction: column;
 }
@@ -1810,10 +1817,10 @@ h4 {
 
 @media (max-width: 480px) {
   .ov-grid-3,
-  .ov-grid-4 { grid-template-columns: 1fr; }
+  .ov-grid-4 { grid-template-columns: minmax(0, 1fr); }
   .grid-2,
   .grid-3,
-  .grid-4 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ------------------------------------------------------------
@@ -12210,12 +12217,12 @@ mark.search-mark {
 .hp-main{max-width:1280px; margin:0 auto; padding:34px 32px 10px; display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:46px; align-items:start}
 .hp-content{min-width:0; display:flex; flex-direction:column; gap:46px}
 .hp-content > .hp-section{margin:0}
-.hp-main .section-hd{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:18px}
-.hp-main .section-title{font-size:24px; font-weight:400; letter-spacing:-.02em; margin:0; color:var(--text); font-family:var(--font-display)}
-.hp-main .section-link{font-size:15px; font-weight:600; color:var(--link); text-transform:none; letter-spacing:0}
+.hp-main .section-hd{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:18px; min-width:0}
+.hp-main .section-title{font-size:24px; font-weight:400; letter-spacing:-.02em; margin:0; color:var(--text); font-family:var(--font-display); min-width:0; flex:1 1 auto}
+.hp-main .section-link{font-size:15px; font-weight:600; color:var(--link); text-transform:none; letter-spacing:0; flex-shrink:0}
 .hp-main .section-link:hover{color:var(--navy); text-decoration:underline}
-.hp-main .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:26px}
-.hp-main .grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:24px; align-items:start}
+.hp-main .grid-3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px}
+.hp-main .grid-2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; align-items:start}
 
 /* ---- Insider-CTA (teal) ---- */
 .insider-cta{background:var(--ct-insider); color:#fff; border-radius:var(--radius-lg); padding:36px 34px; display:grid; grid-template-columns:1.1fr 1fr; gap:34px; align-items:center}
@@ -12293,17 +12300,17 @@ mark.search-mark {
 
 /* ---- responsive ---- */
 @media(max-width:1000px){
-  .hp-hero-block{grid-template-columns:1fr}
+  .hp-hero-block{grid-template-columns:minmax(0,1fr)}
   .hp-hero-block .hero-title,.hp-hero-block .hero-mf .t{font-size:46px}
-  .hp-main{grid-template-columns:1fr}
+  .hp-main{grid-template-columns:minmax(0,1fr)}
   .hp-sidebar{position:static}
-  .hp-main .grid-3,.partner-grid{grid-template-columns:repeat(2,1fr)}
-  .hp-main .grid-2,.insider-cta,.quote-grid{grid-template-columns:1fr}
+  .hp-main .grid-3,.partner-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hp-main .grid-2,.insider-cta,.quote-grid{grid-template-columns:minmax(0,1fr)}
   .ad-leaderboard{display:none}
 }
 /* Phone: beat the 2-col .hp-main .grid-3 rule so 3 items do not leave an empty cell. */
 @media(max-width:480px){
-  .hp-main .grid-3{grid-template-columns:1fr}
+  .hp-main .grid-3{grid-template-columns:minmax(0,1fr)}
 }
 /* ============================ einde §HOME-F2 ============================ */
 
@@ -14900,6 +14907,17 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 
 /* Meer lucht onderaan de homepage (de hp-main-bodem stond op 10px). */
 .hp-main { padding-bottom: 72px; }
+/* Prevent section headers / grids from expanding the page past the viewport. */
+.hp-main .section-hd { min-width: 0; }
+.hp-main .section-title { min-width: 0; }
+.hp-section { min-width: 0; max-width: 100%; }
+.channel-bar.is-nav,
+.channel-bar.is-nav .channel-bar-inner {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.channel-bar.is-nav { overflow-x: clip; }
 @media (max-width: 768px) {
   /* Eén mobiele page-gutter voor homepage en detail-shells. Interne
      component-padding (cards, hero-inhoud en detail-sheet) blijft intact. */
@@ -14908,6 +14926,8 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .hp-main {
     padding-left: var(--content-padding-mobile);
     padding-right: var(--content-padding-mobile);
+    box-sizing: border-box;
+    max-width: 100%;
   }
 
   /* .hp-cats heeft zelf de page-gutter; voorkom de oudere dubbele 32px
@@ -18585,8 +18605,9 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   bottom: var(--space-5);
   z-index: 901;
   box-sizing: border-box;
+  /* Avoid 100vw — it includes the scrollbar gutter and can widen the page. */
   width: min(340px, calc(100% - 2 * var(--space-5)));
-  max-width: calc(100vw - 2 * var(--space-5));
+  max-width: 340px;
   max-height: min(70vh, calc(100dvh - 2 * var(--space-5) - env(safe-area-inset-bottom, 0px)));
   overflow-x: hidden;
   overflow-y: auto;
@@ -18638,12 +18659,18 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 .fb-input:focus-visible { outline: 2px solid var(--navy); outline-offset: 1px; }
 /* Honeypot: onzichtbaar voor mensen, wel invulbaar voor bots. Niet
-   display:none — sommige bots slaan verborgen velden juist over. */
+   display:none — sommige bots slaan verborgen velden juist over.
+   Geen left:-9999px: dat kan op mobiel de scrollbreedte oprekken. */
 .fb-hp {
   position: absolute;
-  left: -9999px;
   width: 1px;
   height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
   opacity: 0;
 }
 .fb-error {
