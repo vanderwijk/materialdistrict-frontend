@@ -18787,3 +18787,354 @@ a.mat-detail-tag:hover::after { opacity: 1; }
     transform: none;
   }
 }
+
+/* ============================================================
+   §EDITORIAL-PAGES — Our Mission / About / Innovation Fund /
+   Contact / 404  (31-07-2026)
+   ------------------------------------------------------------
+   Tekst komt uit WordPress, vormgeving hier: in een headless
+   opzet heeft een pagebuilder geen effect. Zie
+   src/components/content/EditorialPage.tsx voor de varianten.
+   Alleen nieuwe classes; niets bestaands gewijzigd.
+   ============================================================ */
+
+.ed-page { padding-bottom: 64px; }
+
+/* --- hero --- */
+.ed-hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 44px var(--content-padding-desktop) 40px;
+  margin-bottom: 44px;
+}
+.ed-hero-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.ed-eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+.ed-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.2vw, 3rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin: 0 0 18px;
+}
+.ed-hero-lede p {
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+}
+.ed-hero-lede p:last-child { margin-bottom: 0; }
+/* De WP-lede krijgt iets meer gewicht dan gewone tekst. */
+.ed-hero-lede .lede {
+  color: var(--text);
+  font-size: 1.25rem;
+}
+
+/* --- beeldband uit de eigen database --- */
+.ed-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: var(--max-width);
+  margin: -20px auto 44px;
+  padding: 0 var(--content-padding-desktop);
+}
+.ed-strip-item {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.ed-strip-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.ed-strip-caption {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+}
+.ed-strip-item:hover .ed-strip-caption { color: var(--link-hover); }
+
+/* --- body --- */
+.ed-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 var(--content-padding-desktop);
+}
+.ed-section + .ed-section { margin-top: 44px; }
+
+.ed-section-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+
+.ed-prose p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 0 0 14px;
+}
+.ed-prose p:last-child { margin-bottom: 0; }
+.ed-prose h3 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin: 22px 0 6px;
+}
+.ed-prose a { color: var(--link); }
+.ed-prose a:hover { color: var(--link-hover); }
+.ed-prose ul,
+.ed-prose ol { margin: 0 0 14px; padding-left: 22px; line-height: 1.7; }
+.ed-prose li { margin-bottom: 6px; }
+
+/* --- variant: cards (thema's, pijlers) --- */
+.ed-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+.ed-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 18px;
+}
+.ed-card-title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 8px;
+}
+.ed-card-body p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* --- variant: highlight (één uitspraak die eruit moet) --- */
+.ed-section-highlight {
+  background: var(--green-pale);
+  border-left: 4px solid var(--green);
+  border-radius: 0 14px 14px 0;
+  padding: 26px 28px;
+}
+.ed-section-highlight .ed-section-title { color: var(--text); }
+.ed-section-highlight .ed-prose p { color: var(--text); }
+.ed-section-highlight .ed-prose p:first-child {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+/* --- variant: facts --- */
+.ed-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+.ed-facts li {
+  padding: 12px 2px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* --- variant: checklist --- */
+.ed-checklist {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+}
+.ed-checklist li {
+  position: relative;
+  padding: 6px 0 6px 26px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+.ed-checklist li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 13px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+}
+
+/* --- afsluitende CTA --- */
+.ed-cta {
+  max-width: 760px;
+  margin: 56px auto 0;
+  padding: 0 var(--content-padding-desktop);
+}
+.ed-cta-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 16px;
+}
+.ed-cta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.ed-cta-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+}
+.ed-cta-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.ed-cta-card p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+
+/* --- contact + 404: onderwerpkaarten --- */
+.ct-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.ct-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transition-base), transform 0.15s ease;
+}
+.ct-card:hover {
+  border-color: var(--navy);
+  transform: translateY(-1px);
+}
+.ct-card.is-highlighted {
+  border-color: var(--navy);
+  box-shadow: var(--shadow-md);
+}
+.ct-card:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+.ct-card-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.ct-card-desc {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+.ct-card-action {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--link);
+}
+.ct-card:hover .ct-card-action { color: var(--link-hover); }
+
+.ct-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+.ct-address {
+  font-style: normal;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+.ct-direct {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9375rem;
+}
+.ct-note {
+  margin-top: 20px;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+}
+
+/* --- responsief --- */
+@media (max-width: 900px) {
+  .ed-cards { grid-template-columns: 1fr; }
+  .ed-strip { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .ed-hero { padding: 32px var(--content-padding-mobile) 28px; margin-bottom: 32px; }
+  .ed-body,
+  .ed-cta { padding: 0 var(--content-padding-mobile); }
+  .ed-strip { padding: 0 var(--content-padding-mobile); margin-bottom: 32px; }
+  .ed-cta-grid,
+  .ct-grid { grid-template-columns: 1fr; }
+  .ed-section + .ed-section { margin-top: 32px; }
+  .ed-section-highlight { padding: 20px 18px; }
+}
+/* ======================== einde §EDITORIAL-PAGES ======================== */
+
+/* ============================================================
+   §FOOTER-COMPANY — zesde footerkolom (31-07-2026)
+   ------------------------------------------------------------
+   About / Our mission / FAQ / Contact hadden nergens een ingang.
+   Het grid ging van 5 naar 6 kolommen. Append-only: de basisregel
+   én beide breekpunten worden hier opnieuw gezet, omdat een later
+   in het bestand staande regel anders de media queries zou
+   overrulen die eerder staan.
+   ============================================================ */
+.footer-inner {
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 32px;
+}
+@media (max-width: 1100px) {
+  .footer-inner { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .footer-col-brand { grid-column: 1 / -1; padding-right: 0; }
+}
+@media (max-width: 768px) {
+  .footer-inner { grid-template-columns: 1fr; gap: 28px; }
+}
+/* ======================== einde §FOOTER-COMPANY ======================== */

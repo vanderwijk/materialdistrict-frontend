@@ -12,7 +12,13 @@
  * Sessie 11 (29-05-2026). Bron: instructie-andere-agent-standaard-paginas.md.
  *
  * Bewust NIET hier opgenomen:
- *  - `contact`  → eigen route (/contact) met Gravity Forms-maatwerk
+ *  - `contact`  → eigen route (/contact), 31-07-2026
+ *  - `about`, `our-mission`, `innovation-fund` → eigen ontworpen routes
+ *                 (31-07-2026). De tekst blijft de gelijknamige WP-page; alleen
+ *                 de weergave is eigen. Een statisch segment wint van
+ *                 [pageSlug], dus hier weglaten voorkomt een dubbele definitie.
+ *  - `jobs`     → bewust weggelaten: staat nog op de oude site, gaat voorlopig
+ *                 niet mee naar de nieuwe (besluit Jeroen 31-07-2026)
  *  - `faq`      → eigen route (/faq) met uitklapbare vragen + FAQPage-schema
  *                 (31-07-2026). De inhoud blijft de WP-page `faq`; alleen de
  *                 weergave is eigen. Een statisch segment wint van [pageSlug],
@@ -30,11 +36,9 @@
  * statisch route-segment wint altijd van de generieke [pageSlug]-template.
  */
 export const PAGE_SLUG_MAP: Record<string, string> = {
-  about: 'about',
-  jobs: 'jobs',
-  'our-mission': 'our-mission',
-  'innovation-fund': 'innovation-fund',
   'privacy-statement': 'privacy-statement',
+  'accessibility-statement': 'accessibility-statement',
+  'cookie-statement': 'cookie-statement',
 }
 
 /** Alle toegestane route-segmenten — voor `generateStaticParams()`. */

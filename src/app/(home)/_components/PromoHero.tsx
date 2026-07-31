@@ -43,11 +43,12 @@ export function PromoHero({ materialCount }: PromoHeroProps) {
         </button>
 
         <div className="hero-left">
-          <p className="hero-eyebrow">Discover materials</p>
+          <p className="hero-eyebrow">For specifiers</p>
           <h2 className="hero-title">Where ideas meet materials.</h2>
           <p className="hero-desc">
             {formatCount(materialCount)}+ innovative and sustainable materials
-            for architecture and interior design. Free to explore.
+            for architecture and interior design. Create a free account to follow
+            the themes you work with and get what is new each week.
           </p>
           <div className="hero-actions">
             <Link href="/register" className="btn btn-lg btn-ink">

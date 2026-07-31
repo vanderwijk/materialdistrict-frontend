@@ -3649,3 +3649,25 @@ meeste effect: de zes verschillende tracking-waarden op caps-labels samentrekken
 naar één. Verder: dode CSS opruimen, knopvarianten samenvoegen (67× de
 component tegen 139× een handmatige klasse), inline stijlen eruit, fluid
 typografie voor de drie grootste treden.
+
+# Contentpagina's + footer — 31-07-2026 (md-copy-pages-31-07-v2)
+
+Zip van Claude op een **oudere** `globals.css`-basis (vóór vormgeving-opschoning
+en soft-launch feedback/404). **Niet blind geplaatst.**
+
+## Geplaatst
+- Nieuwe routes: `/about`, `/our-mission`, `/innovation-fund`, `/contact`
+- `EditorialPage`, footer Company-kolom, PromoHero-copy, home `<h1>`,
+  become-a-partner sales-led CTA's, `static-pages` allowlist,
+  `scripts/wp-import-pages.php` (+ accessibility/cookie, apply-flag hardening behouden)
+- `globals.css`: alleen §EDITORIAL-PAGES + §FOOTER-COMPANY geappend (licht getokeniseerd)
+
+## Bewust níét overgenomen uit de zip
+- Volledige `globals.css` (zou vormgeving + soft-launch regresseren)
+- `not-found.tsx` (HEAD heeft NotFoundLogger + soft-launch copy)
+- `search/page.tsx` (HEAD heeft `SearchForm` + same-page refresh)
+
+## Bugs in de zip die hier zijn hersteld
+1. `our-mission` gebruikte `m.thumbnail` — `MaterialListItem` heeft `hero.sourceUrl`
+2. `/contact?subject=membership&tier=…` werd genegeerd; nu highlight + mailto-onderwerp
+

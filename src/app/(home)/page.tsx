@@ -312,7 +312,8 @@ export default async function HomePage() {
     <HomeHeroProvider>
       <div className="fade-in">
         <h1 className="sr-only">
-          MaterialDistrict — materials, stories, events and books
+          MaterialDistrict — sustainable material innovation for architecture and
+          interior design
         </h1>
 
         {ADS_ENABLED && (

@@ -30,8 +30,9 @@ const SPECIFIER_LINKS: FooterLink[] = [
   { label: 'Compare materials', href: '/compare' },
   { label: 'Boards', href: '/dashboard/boards' },
   { label: 'Insider insights', href: '/membership' },
-  { label: 'Changemakers', href: '/changemakers' },
-  { label: 'Transitioners', href: '/transitioners' },
+  // Changemakers en Transitioners stonden hier als link, maar die routes
+  // bestaan niet — dat was op elke pagina een 404. Verwijderd 31-07-2026;
+  // besluit over het concept zelf staat nog open bij Jeroen.
 ]
 
 const MANUFACTURER_LINKS: FooterLink[] = [
@@ -39,6 +40,19 @@ const MANUFACTURER_LINKS: FooterLink[] = [
   { label: 'Brand profile', href: '/brand' },
   { label: 'Reach 80,000+ specifiers', href: '/become-a-partner' },
   { label: 'Sample requests', href: '/become-a-partner' },
+  { label: 'Innovation Fund', href: '/innovation-fund' },
+]
+
+/**
+ * Redactionele en organisatiepagina's. Deze bestonden wel maar hadden nergens
+ * een ingang: zonder de URL te kennen was About, Our Mission of de FAQ niet te
+ * vinden. Toegevoegd 31-07-2026.
+ */
+const COMPANY_LINKS: FooterLink[] = [
+  { label: 'About MaterialDistrict', href: '/about' },
+  { label: 'Our mission', href: '/our-mission' },
+  { label: 'Frequently asked questions', href: '/faq' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 const LEGAL_LINKS: FooterLink[] = [
@@ -47,6 +61,8 @@ const LEGAL_LINKS: FooterLink[] = [
   // directe link naar de stabiele asset-host (HTTP 200, application/pdf, geen
   // redirect, buiten de WAF). Externe download in nieuw tabblad via `external`.
   // Geen CSP-aanpassing nodig zolang we niet embedden (iframe/object).
+  { label: 'Accessibility', href: '/accessibility-statement' },
+  { label: 'Cookies', href: '/cookie-statement' },
   {
     label: 'Terms of use',
     href: 'https://materiahost.nl/assets/MaterialDistrict_TermsConditions_V20-01.pdf',
@@ -97,6 +113,9 @@ export async function Footer({ className }: FooterProps) {
 
         {/* For manufacturers */}
         <FooterColumn title="For manufacturers" links={MANUFACTURER_LINKS} />
+
+        {/* Company */}
+        <FooterColumn title="Company" links={COMPANY_LINKS} />
 
         {/* Contact + socials */}
         <div className="footer-col">

@@ -321,6 +321,93 @@ $pages[] = array(
 HTML
 );
 
+// ----------------------------------------- Accessibility statement
+$pages[] = array(
+	'slug'  => 'accessibility-statement',
+	'title' => 'Accessibility Statement',
+	'html'  => <<<'HTML'
+<p class="lede">We want MaterialDistrict to be usable by everyone, including people who rely on assistive technology.</p>
+
+<h2>Our aim</h2>
+<p>We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. We do not claim full compliance: parts of this website contain material submitted by third parties, and older content predates the current guidelines. Where we fall short, we would rather say so and fix it than claim otherwise.</p>
+
+<h2>What we have done</h2>
+<ul>
+<li>Colour contrast across text, buttons and interface elements reviewed and corrected to meet the AA threshold.</li>
+<li>Keyboard navigation throughout the site, including focus trapping in dialogs and menus, and a visible focus indicator on every interactive element.</li>
+<li>Semantic headings, landmarks and labels so screen readers can navigate the page structure.</li>
+<li>Alternative text on images, and decorative images marked so they are skipped.</li>
+<li>Interface components that work without a mouse and without relying on colour alone to convey meaning.</li>
+<li>Respect for the operating system setting that reduces motion.</li>
+</ul>
+
+<h2>Known limitations</h2>
+<ul>
+<li>Material images and documents supplied by manufacturers may lack useful alternative text. We correct these as we come across them.</li>
+<li>Some older PDF documents are not tagged for screen readers.</li>
+<li>Video content does not consistently carry captions.</li>
+</ul>
+
+<h2>Telling us about a problem</h2>
+<p>If you run into something on this website you cannot use, we would like to hear about it. Email <a href="mailto:info@materialdistrict.com">info@materialdistrict.com</a> with the page address and a short description of what went wrong, and which assistive technology or browser you were using if that is relevant.</p>
+<p>We aim to respond within five working days. If a fix takes longer, we will tell you what we are doing and offer another way to get at the information in the meantime.</p>
+
+<h2>About this statement</h2>
+<p>This statement applies to materialdistrict.com. It was last reviewed on [TO CONFIRM &mdash; review date] and describes the situation at that moment. We review it whenever the website changes substantially.</p>
+HTML
+);
+
+// ------------------------------------------------ Cookie statement
+// LET OP: de opsomming per categorie is bewust nog niet compleet. Een
+// cookieverklaring hoort per cookie te noemen wie hem zet en hoe lang hij
+// blijft; die inventarisatie is niet uit de frontendcode af te leiden.
+// De [TO CONFIRM]-plekken zijn echte gaten, geen opvulling.
+$pages[] = array(
+	'slug'  => 'cookie-statement',
+	'title' => 'Cookie Statement',
+	'html'  => <<<'HTML'
+<p class="lede">What cookies MaterialDistrict uses, what they do, and how you can control them.</p>
+
+<h2>What cookies are</h2>
+<p>A cookie is a small file a website stores on your device. Some are needed to make the site work at all; others help us understand how the site is used, or support advertising. Similar technologies such as local storage work the same way and are covered by this statement.</p>
+
+<h2>Strictly necessary</h2>
+<p>These make the website function. They cannot be switched off, and they are set without asking, because the site does not work without them.</p>
+<ul>
+<li><strong>Sign-in session</strong> &mdash; keeps you logged in as you move between pages. Set by MaterialDistrict. [TO CONFIRM &mdash; duration]</li>
+<li><strong>Shopping basket and checkout</strong> &mdash; remembers what you have added and carries your order through payment. Set by MaterialDistrict and our payment provider. [TO CONFIRM &mdash; duration]</li>
+<li><strong>Security</strong> &mdash; protects forms and sign-in against abuse. [TO CONFIRM &mdash; provider and duration]</li>
+</ul>
+
+<h2>Functional</h2>
+<p>These remember choices you have made, so you do not have to make them again.</p>
+<ul>
+<li><strong>Interface preferences</strong> &mdash; such as light or dark display, and dismissed introductions. Set by MaterialDistrict. [TO CONFIRM &mdash; duration]</li>
+</ul>
+
+<h2>Analytics</h2>
+<p>These help us understand which materials and articles are found and read, so we can improve the platform and guide our editorial choices. We also use them to give brands aggregated insight into how their materials are viewed.</p>
+<ul>
+<li>[TO CONFIRM &mdash; complete list of analytics cookies, provider and duration]</li>
+</ul>
+
+<h2>Advertising</h2>
+<p>Some pages carry advertising served through Google Ad Manager. Where you have given consent, this may involve cookies set by Google, and information about the page you are viewing may be shared with Google as the advertising provider.</p>
+<ul>
+<li>[TO CONFIRM &mdash; complete list of advertising cookies and durations]</li>
+</ul>
+
+<h2>Managing your choices</h2>
+<p>You can change your choice for non-essential cookies at any time through the cookie preference tool. You can also delete or block cookies in your browser settings; note that blocking strictly necessary cookies will stop parts of the website from working, including signing in and checkout.</p>
+
+<h2>Changes</h2>
+<p>We update this statement when the cookies we use change. The current version and its revision date are always published on this page.</p>
+
+<h2>Questions</h2>
+<p>For questions about cookies or the use of your personal data, contact <a href="mailto:info@materialdistrict.com">info@materialdistrict.com</a>. See also our <a href="/privacy-statement">Privacy Statement</a>.</p>
+HTML
+);
+
 // ---------------------------------------------------------------- Uitvoer
 WP_CLI::line( '' );
 WP_CLI::line( $apply

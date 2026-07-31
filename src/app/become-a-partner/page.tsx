@@ -131,11 +131,12 @@ export default function BecomeAPartnerPage() {
           const isFeatured = tier === FEATURED_TIER
           const priceMain = isFree ? eur(0) : eur(MANUFACTURER_PRICING[tier].annual)
           const accent = isFeatured ? 'var(--green)' : MANUFACTURER_TIER_COLORS[tier]
-          // Free → register as manufacturer. Paid tiers → same onboarding;
-          // after a brand exists, upgrades go through Stripe on the brand
-          // membership panel (not a sales-only contact form).
-          const ctaLabel = isFree ? 'Start free' : `Choose ${TIER_LABELS[tier]}`
-          const ctaHref = '/register?next=/become-a-partner'
+          // Brand upgrades are sales-led: there is no self-service checkout
+          // for a membership. Only the free route can promise a sign-up.
+          const ctaLabel = isFree ? 'Start free' : `Talk to us about ${TIER_LABELS[tier]}`
+          const ctaHref = isFree
+            ? '/register?next=/become-a-partner'
+            : `/contact?subject=membership&tier=${tier}`
 
           return (
             <div
