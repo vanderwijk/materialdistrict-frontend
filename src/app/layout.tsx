@@ -5,6 +5,7 @@ import { AppChrome } from '@/components/layout/AppChrome'
 import { AuthenticatedAppShell } from '@/components/layout/AuthenticatedAppShell'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
+import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import '@/styles/globals.css'
 
 /**
@@ -116,6 +117,9 @@ export default function RootLayout({
             Per-page entities (Product/Article/Event/Book) live in the
             individual page.tsx files. */}
         <JsonLd data={[buildOrganization(), buildWebSite()]} />
+        {/* Soft-launch reporter — visible to everyone, signed in or not.
+            Remove this line when the test month ends. */}
+        <FeedbackButton />
       </body>
     </html>
   )

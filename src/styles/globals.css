@@ -18469,3 +18469,196 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .faq-chevron { transition: none; }
 }
 /* ======================== einde §FAQ-ACCORDION ======================== */
+
+/* ============================================================
+   §SOFTLAUNCH-404 — sitebrede not-found-pagina               31-07-2026
+   ------------------------------------------------------------
+   Vervangt de kale Next.js-default ("This page could not be found"), die
+   buiten de site-chrome rendert en de bezoeker geen uitweg biedt. Na een
+   migratie is een 404 meestal een oude inbound link, geen typfout — de
+   bezoeker had dus een echte intentie en verdient een vervolgstap.
+   ============================================================ */
+.nf-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-16) var(--space-6);
+}
+.nf-inner { max-width: 560px; text-align: center; }
+.nf-eyebrow {
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+  margin: 0 0 var(--space-3);
+}
+.nf-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: var(--text-3xl);
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0 0 var(--space-4);
+}
+.nf-body {
+  font-size: var(--text-md);
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 var(--space-8);
+}
+.nf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+}
+.nf-help {
+  font-size: var(--text-sm);
+  color: var(--text-hint);
+  margin: var(--space-8) 0 0;
+}
+@media (max-width: 600px) {
+  .nf-wrap { padding: var(--space-12) var(--space-4); }
+  .nf-title { font-size: var(--text-2xl); }
+  .nf-actions { flex-direction: column; }
+}
+/* ======================== einde §SOFTLAUNCH-404 ======================== */
+
+/* ============================================================
+   §SOFTLAUNCH-FEEDBACK — meldknop tijdens de testmaand       31-07-2026
+   ------------------------------------------------------------
+   Vaste knop rechtsonder, zichtbaar voor iedereen (ook uitgelogd). Bewust
+   één veld: elk extra veld kost meldingen. Navy i.p.v. groen — groen is
+   gereserveerd voor conversie-acties, dit is er geen.
+
+   z-index blijft onder een eventuele cookiebalk: een meldknop mag nooit
+   een consent-keuze afdekken.
+   ============================================================ */
+.fb-trigger {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid var(--navy);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--navy);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(13, 31, 45, 0.12);
+  transition: background var(--transition-base), color var(--transition-base);
+}
+.fb-trigger:hover { background: var(--navy); color: #fff; }
+.fb-trigger span[aria-hidden] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.fb-trigger:hover span[aria-hidden] { background: #fff; color: var(--navy); }
+
+.fb-panel {
+  position: fixed;
+  right: var(--space-5);
+  bottom: calc(var(--space-5) + 48px);
+  z-index: 901;
+  width: min(340px, calc(100vw - 2 * var(--space-5)));
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 28px rgba(13, 31, 45, 0.18);
+}
+.fb-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.fb-title {
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--text);
+  margin: 0;
+}
+.fb-close {
+  border: 0;
+  background: none;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text-hint);
+  cursor: pointer;
+  padding: 0 2px;
+}
+.fb-close:hover { color: var(--text); }
+.fb-hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: var(--space-2) 0 var(--space-3);
+  line-height: 1.5;
+}
+.fb-input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  resize: vertical;
+}
+.fb-input:focus-visible { outline: 2px solid var(--navy); outline-offset: 1px; }
+/* Honeypot: onzichtbaar voor mensen, wel invulbaar voor bots. Niet
+   display:none — sommige bots slaan verborgen velden juist over. */
+.fb-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.fb-error {
+  font-size: var(--text-sm);
+  color: #C0392B;
+  margin: var(--space-3) 0 0;
+  line-height: 1.5;
+}
+.fb-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+}
+.fb-done { text-align: center; padding: var(--space-2) 0; }
+.fb-done-title {
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+}
+.fb-done-body {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-4);
+  line-height: 1.5;
+}
+@media (max-width: 600px) {
+  .fb-trigger { right: var(--space-3); bottom: var(--space-3); }
+  .fb-panel { right: var(--space-3); bottom: calc(var(--space-3) + 48px); }
+}
+@media print { .fb-trigger, .fb-panel { display: none; } }
+/* ==================== einde §SOFTLAUNCH-FEEDBACK ==================== */
