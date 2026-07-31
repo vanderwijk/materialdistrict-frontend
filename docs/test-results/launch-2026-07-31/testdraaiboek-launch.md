@@ -282,3 +282,18 @@ Lever aan het eind:
 
 Rapporteer ook wat er goed ging. Een lijst met alleen problemen geeft geen beeld
 van wat er wél staat.
+
+---
+
+## Open UI-todos (soft-launch, 31-07-2026)
+
+Niet onderdeel van dit testrapport; genoteerd voor een latere polish-ronde.
+Canonieke lijst: [`docs/open-issues.md`](../../open-issues.md) § Soft-launch UI
+en afvinklijst in [`docs/livegang-checklist.md`](../../livegang-checklist.md) §3.4.
+
+| ID | Todo |
+|----|------|
+| SL-UI-1 | Channel-pagina’s: één sitebrede achtergrondkleur i.p.v. grijs + beige |
+| SL-UI-2 | “Something broken”-modal: knop verbergen bij openen; geen horizontale scroll op mobiel; copy “We send the address along automatically.” herschrijven |
+| SL-UI-3 | Mobiel: stories-/materials-blokken met 3 items over 2 kolommen → lege ruimte; grid/aantal fixen |
+| SL-UI-4 | Zoekpagina mobiel: toetsenbord sluiten na Enter; breadcrumb `Home – Home – Search` opschonen; zoekveld volle breedte |

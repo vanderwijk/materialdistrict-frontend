@@ -680,3 +680,38 @@ en toont offline materialen toch. Backend moet `meta.publication.isOnline` bloot
 - **M5** Campagneverzending — Johan
 - **M6** Your update-assembler + Sendy uit — Johan (oktober)
 - **M7** Frontend voorkeurcentrum / banners / "+N more" — Claude
+
+---
+
+## Soft-launch UI (31-07-2026)
+
+**Bron:** Johan, soft-launch feedback (niet blokkerend voor cutover; wel zichtbaar op mobiel).  
+**Eigenaar:** frontend  
+**Checklist:** [`livegang-checklist.md`](./livegang-checklist.md) §3.4
+
+### SL-UI-1 — Channel-pagina achtergrondkleur 🟢
+Channel-pagina’s gebruiken nu twee achtergrondkleuren (grijs en beige). Dat moet
+één kleur worden: dezelfde sitebrede achtergrond die elders op de site wordt
+gebruikt.
+
+### SL-UI-2 — “Something broken”-modal (responsive + copy) 🟢
+Op smartphone:
+- De floating feedbackknop moet **verborgen** worden zodra de modal opent.
+- De modal past niet goed in het viewport → horizontale scroll; layout inkorten
+  zodat alles binnen het scherm blijft.
+- Copy aanpassen: “We send the address along automatically.” is grammaticaal
+  niet correct (bijv. “We include the page address automatically.” / “We send
+  the page address automatically.” — kies consistente site-tone).
+
+### SL-UI-3 — Stories/materials-blokken: 3 items over 2 kolommen 🟢
+Op mobiel tonen blokken met stories en materials 3 content-items over twee
+kolommen, waardoor er een lege cel/ruimte ontstaat. Fix: even aantal tonen op
+2-koloms breakpoints, of 1 kolom / 2×2 layout zodat het grid vol is.
+
+### SL-UI-4 — Zoekpagina mobiel (toetsenbord, breadcrumb, breedte) 🟢
+- Na Enter op een zoekwoord moet het virtuele toetsenbord sluiten (blur op het
+  input), anders blijft een deel van de resultaten achter het keyboard.
+- Breadcrumb toont dubbel Home: `Home – Home – Search` → opschonen naar één
+  Home (of alleen `Search` als dat het patroon is).
+- Het zoekveld is smaller dan de zoekknop; veld moet over de volle beschikbare
+  breedte lopen, gelijk aan de knop.

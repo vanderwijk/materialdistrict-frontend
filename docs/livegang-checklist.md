@@ -226,6 +226,15 @@ wp user meta list --keys=simplefavorites --format=count
 - [ ] FacetWP plugin deactiveren op WP Engine (pas als theme + `/materials` niet meer afhankelijk zijn)
 - [ ] Favorites-plugin verwijderen — zie **§2.8** (eerst bookmark-migratie)
 
+### 3.4 Soft-launch UI-polish (31-07-2026)
+
+Bron: Johan, soft-launch feedback. Details: [`open-issues.md`](./open-issues.md) § Soft-launch UI (31-07-2026).
+
+- [ ] **SL-UI-1** Channel-pagina’s: één sitebrede achtergrondkleur (nu grijs + beige)
+- [ ] **SL-UI-2** “Something broken”-modal op mobiel: verberg feedbackknop bij openen; geen horizontale scroll; copy “We send the address along automatically.” herschrijven
+- [ ] **SL-UI-3** Mobiel: stories-/materials-blokken tonen 3 items over 2 kolommen → lege cel; grid/aantal fixen
+- [ ] **SL-UI-4** Zoekpagina mobiel: toetsenbord sluiten na Enter; breadcrumb `Home – Home – Search` opschonen; zoekveld volle breedte (gelijk aan knop)
+
 ---
 
 ## 4. ✅ Recent afgerond (ter referentie)
