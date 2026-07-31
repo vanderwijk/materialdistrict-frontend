@@ -113,7 +113,8 @@ export function FeedbackButton() {
 
     setStatus('sending')
     try {
-      const response = await fetch('/api/feedback', {
+      // trailingSlash: true — keep the slash so POST is not redirected (308).
+      const response = await fetch('/api/feedback/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'same-origin',
@@ -126,6 +127,8 @@ export function FeedbackButton() {
               : '',
           userAgent:
             typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 400) : '',
+          // Honeypot — server + client discard when non-empty.
+          website: honeypot,
         }),
       })
       setStatus(response.ok ? 'sent' : 'error')

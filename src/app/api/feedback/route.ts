@@ -32,6 +32,8 @@ interface FeedbackBody {
   url: string
   viewport?: string
   userAgent?: string
+  /** Honeypot — must stay empty. Bots that fill it get a fake success. */
+  website?: string
 }
 
 function isValidBody(input: unknown): input is FeedbackBody {
@@ -45,6 +47,7 @@ function isValidBody(input: unknown): input is FeedbackBody {
   if (typeof body.url !== 'string' || body.url.length > MAX_URL) return false
   if (body.viewport !== undefined && typeof body.viewport !== 'string') return false
   if (body.userAgent !== undefined && typeof body.userAgent !== 'string') return false
+  if (body.website !== undefined && typeof body.website !== 'string') return false
 
   return true
 }
@@ -67,11 +70,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     )
   }
 
+  // Honeypot: pretend success so bots do not learn to skip the field.
+  if (raw.website?.trim()) {
+    return NextResponse.json({ ok: true }, { status: 202 })
+  }
+
   const token = await getAuthCookie()
 
   const wpBody: Record<string, unknown> = {
     message: raw.message.trim().slice(0, MAX_MESSAGE),
     url: raw.url.slice(0, MAX_URL),
+    website: '',
   }
   if (raw.viewport) wpBody.viewport = raw.viewport.slice(0, 32)
   if (raw.userAgent) wpBody.user_agent = raw.userAgent.slice(0, MAX_UA)
