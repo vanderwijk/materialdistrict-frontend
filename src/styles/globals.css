@@ -6240,8 +6240,24 @@ a:focus-visible {
 
 .ov-pagination {
   margin-top: var(--space-8);
+  margin-bottom: var(--space-6);
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
+  gap: 12px 16px;
+}
+.ov-pagination-status,
+.ov-pagination-info {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+.ov-pagination-btn,
+.ov-pagination .btn {
+  min-width: 5.5rem;
 }
 
 /* ------------------------------------------------------------
