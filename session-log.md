@@ -3481,3 +3481,71 @@ niet — dat laatste terwijl de banners al draaien.
 Syntax van alle gewijzigde TS/TSX gevalideerd met esbuild. `globals.css` append-only,
 accoladebalans 3246/3246. De FAQ-HTML uit het importscript is door dezelfde parser als de
 frontend gehaald: 4 secties, 22 vragen.
+
+---
+
+## Sessie — herclassificatie tweede aanloop, blok 1: Coatings (31-07-2026)
+
+**Aanleiding.** De eerste aanloop deelde 2.264 records in met een woordenteller: 68%
+eerste keuze gelijk aan de redactie, 90% binnen de top drie. Dat cijfer klopte en het
+resultaat was op de site toch onhoudbaar — *Leather look tiles* onder Bio-based omdat
+"leather" in de tekst staat, *Rodruza Living Bricks* met drie channels omdat er "Living"
+in de merknaam staat. Van 165 records die daarna met de hand zijn gelezen moest 93%
+worden gecorrigeerd. Besluit: lezen, niet tellen.
+
+**Vastgesteld aan het begin van deze sessie**, gemeten op de live CMS via de publieke API
+in plaats van nagevraagd bij Johan:
+- **v4 is toegepast.** Van de 153 met de hand gelezen records in `correcties.csv` staan
+  alle 136 met een ingevulde channelkolom exact zo op het CMS. Nul afwijkingen.
+- **De 23 records waar "bewust geen channel" stond, hebben hun oude channels behouden.**
+  Een lege kolom laat het veld met rust in plaats van het te legen. Dat oordeel is dus
+  niet uitgevoerd; `md-apply-classificatie.php` kan een channelset niet leegmaken.
+- **De rubriek op de stories staat publiek verkeerd.** Steekproef van 20 per rubriek:
+  van People (44) klopt ongeveer een vijfde, Collaborations (178) bevat vrijwel niets
+  over een samenwerking, Projects (918) is ruwweg half goed. Terugdraaien vraagt
+  `md-backup-20260731-121456.csv` — de backup van de eerste apply. De latere
+  `md-backup-20260731-123610.csv` brengt maar één stap terug.
+- **Materiaaltypes zijn nooit doorgevoerd:** Composites en Leather staan op 0, Coatings
+  op 229. De 128 typewijzigingen uit `typewijzigingen.csv` liggen er nog.
+- Van de 3.244 gepubliceerde materialen hebben er **1.251 nul channels**, zonder de
+  reden die §4.3 van het regelboek voorschrijft.
+
+**Bronhiërarchie toegepast.** Het regelboek stond niet in de frontend-moedermap; Johan
+heeft het vanuit de plugin-repo naar `docs/materiaal-classificatie-regelboek.md`
+gekopieerd. Twee punten waarop de sessiebundel van 31-07 het regelboek niet dekte:
+- **Papier en karton zijn niet open.** §3.2 wijst cellulosevezel uit oud papier expliciet
+  toe aan Bio-based (excl. Wood). De bundel zette dit als vraag bij Sigrid.
+- **Twee harde grenzen ontbraken in de bundel:** maximaal drie channels per materiaal en
+  maximaal twee uit de duurzaamheidsgroep (§4.2). Live gemeten worden die nu vrijwel
+  nageleefd — 3 materialen boven de drie, nul boven de twee.
+
+**Regelboek naar v1.1.** De vangregels van 31-07 zijn opgenomen als §3.6, plus §3.7 voor
+het openstaande bamboe-punt. Ze spreken v1.0 niet tegen; ze scherpen §3.1 aan en maken
+hem toepasbaar op channels. Reden om ze in het normdocument te zetten en niet in een
+bundel: bundels verlopen, normdocumenten niet.
+
+**Blok 1 geleverd: alle 229 Coatings gelezen.** Per record een typevoorstel met zekerheid,
+nul tot drie channels, de reden bij nul en één regel motivering met de toegepaste regel.
+Gesorteerd op laagste zekerheid bovenaan, conform §6.
+- **185 van 229 (81%) blijven Coatings.** Het regelboek verwachtte ruwweg 70%. Het
+  verschil zit vrijwel volledig in de 21 pleisters en stucwerken, die ik onder
+  "opgebrachte laagsystemen" (§3.4) heb gehouden. Gaan die eruit, dan komt het percentage
+  op ongeveer 72%. Dit is een normvraag, geen leesfout — zie MANIFEST.
+- **44 verlaten Coatings**, waarvan drie letterlijk in het regelboek benoemde gevallen:
+  *Droplet* en *Ridge* (acryl-gemodificeerd gips → Composites), *EKOTEX Opposites*
+  (glasvezelbehang met biobased finish → Composites) en *CoolLeather* (spraytoepassing
+  van leerreststroom → Leather, §3.3). Composites en Leather krijgen hiermee hun eerste
+  gevulde records.
+- **103 records krijgen nul channels**, met reden: 88 generiek, 15 te weinig info.
+- Timber en Regenerative krijgen in deze set geen enkele toekenning. Dat is te verwachten
+  bij coatings, maar het betekent dat ze uit een ander blok gevuld moeten raken.
+
+**Nog niet gedaan:** niets toegepast op het CMS. Het voorstel is een reviewlijst; de
+schrijfronde gaat pas na sign-off van Jeroen en Sigrid, via het bestaande
+`md-apply-classificatie.php`.
+
+**Geleverd:** `herclassificatie-coatings-v1.zip` — `docs/materiaal-classificatie-regelboek.md`
+(v1.1), `docs/herclassificatie/coatings-voorstel-v1.csv` (229 rijen), `session-log.md`,
+`MANIFEST.md`. Alle 229 oordelen zijn machinaal getoetst aan de regels van het regelboek:
+geldig type, maximaal drie channels, maximaal twee uit de duurzaamheidsgroep, geldige
+reden bij nul channels. Nul overtredingen.

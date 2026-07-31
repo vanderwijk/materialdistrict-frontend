@@ -6,8 +6,10 @@
 > voorstellen toetst. Wijzigt de norm, dan wijzigt dit bestand en draait de run
 > opnieuw — niet omgekeerd.
 >
-> Versie 1.0 · 26-07-2026 · gekalibreerd op 68 handmatig beoordeelde grensgevallen
-> (`kalibratieset-68.csv`).
+> Versie 1.1 · 31-07-2026 · gekalibreerd op 68 handmatig beoordeelde grensgevallen
+> (`kalibratieset-68.csv`). Versie 1.1 voegt §3.6 toe: de vangregels die op 31-07 zijn
+> besloten na de eerste, mislukte classificatieronde. Ze spreken versie 1.0 niet tegen;
+> ze scherpen §3.1 aan en maken hem toepasbaar op channels.
 
 ---
 
@@ -27,21 +29,25 @@
 
 ## 2. De tien material types
 
-| Type | Kern |
-|---|---|
-| (Bio)Plastics | Polymeren, synthetisch of biobased, inclusief biopolymeren |
-| Bio-based (excl. Wood) | Plantaardig, dierlijk of microbieel materiaal dat geen hout is |
-| Wood | Hout en houtplaatmateriaal |
-| Metals | Metalen en metaallegeringen |
-| Glass | Glas |
-| Ceramics | Gebakken keramiek, baksteen, porselein, geëxpandeerde klei |
-| Concrete | Cement- en mineraalgebonden gietmaterialen |
-| Natural Stones | Natuursteen in gewonnen vorm |
-| Composites | Materialen waarvan de combinatie de identiteit ís — zie §3 |
-| Leather | Dierlijke huid en herwonnen leervezel — zie §3.3 |
+| Type | Kern | Codeprefix |
+|---|---|---|
+| (Bio)Plastics | Polymeren, synthetisch of biobased, inclusief biopolymeren | PLA |
+| Bio-based (excl. Wood) | Plantaardig, dierlijk of microbieel materiaal dat geen hout is | ONA |
+| Wood | Hout en houtplaatmateriaal | WOO |
+| Metals | Metalen en metaallegeringen | MET |
+| Glass | Glas | GLA |
+| Ceramics | Gebakken keramiek, baksteen, porselein, geëxpandeerde klei | CER |
+| Concrete | Cement- en mineraalgebonden gietmaterialen | CON |
+| Natural Stones | Natuursteen in gewonnen vorm | NST |
+| Composites | Materialen waarvan de combinatie de identiteit ís — zie §3 | COM |
+| Leather | Dierlijke huid en herwonnen leervezel — zie §3.3 | LEA |
 
-**Coatings** blijft bestaan als elfde type. Zie §3.4 — dit wijkt af van het
+**Coatings** blijft bestaan als elfde type (codeprefix **COA**). Zie §3.4 — dit wijkt af van het
 eerdere plan om de categorie als legacy uit te faseren.
+
+De prefixes staan ook als term meta `_material_code_prefix` op `material_category`
+(31-07-2026). Composites en Leather hadden nog geen materialen en dus nog geen
+prefix in de bestaande codes; **COM** en **LEA** zijn toen vastgelegd.
 
 ---
 
@@ -149,6 +155,44 @@ Verwachting: ruwweg 70% van de 229 gepubliceerde coatings blijft staan.
 Is er te weinig informatie om de basisstof te bepalen, dan blijft het huidige type
 staan met zekerheid **laag** en de reden *"substantie niet te bepalen uit de tekst"*.
 Niet gokken, en niet leegmaken.
+
+
+### 3.6 Vangregels — harde onmogelijkheden
+
+Besloten 31-07-2026, nadat een geautomatiseerde ronde 2.264 records indeelde op
+woordfrequentie. Die ronde haalde 68% eerste keuze en 90% binnen de top drie, en was
+op de site toch onhoudbaar. De vier fouten die daaronder zaten zijn hier vastgelegd als
+harde regels. Ze gelden ongeacht wat de tekst suggereert, en ze gelden ook wanneer een
+mens leest — bij record 400 wordt dezelfde soort fout gemaakt als een teller maakt.
+
+1. **Een minerale of metallische identiteit sluit Bio-based & Living Materials uit.**
+   Type Metals, Glass, Ceramics, Concrete of Natural Stones kan dat channel nooit dragen.
+2. **Timber vereist een houten identiteit.** Een coating, lijm of behandeling die op hout
+   wordt toegepast draagt Timber niet; het hout doet dat. Voor bamboe geldt de regel tot
+   nader order alleen bij type Wood — zie §3.7.
+3. **Uiterlijk is geen samenstelling.** Staat er *look*, *print*, *effect*, *imitation*,
+   *inspired by* of iets vergelijkbaars bij de materiaalterm, dan telt die term niet mee
+   voor het stof-channel. Dit is de aanscherping van §3.1: daar gold uiterlijk al niet voor
+   het **type**, hier geldt het ook niet voor het **channel**. *Leather look tiles*,
+   *Animal & Leather Print Tiles* en *Grass & Leaves* — een glazen tegel met grasmotief —
+   kwamen alle drie onder Bio-based terecht.
+4. **Bewijs uit alleen de productnaam telt niet.** *Rodruza Living Bricks*, gebakken
+   kleisteen, kreeg drie channels omdat er "Living" in de merknaam staat.
+
+**Houd de lijst smal.** Circular, Acoustic, Biophilic & Human-Centred, Smart & Responsive,
+Net Zero & Carbon en Energy & Resilience kunnen bij élk materiaaltype horen: beton kan
+circulair zijn, metaal kan akoestisch zijn. Meer combinaties hard uitsluiten is gokken met
+een ander gezicht.
+
+### 3.7 Openstaand — bamboe
+
+Bamboe is botanisch een gras en geen hout, maar §3.2b laat twijfel tussen hout en biobased
+naar Wood gaan. Die twee lijnen wijzen tegengesteld. Zolang de redactie hier geen uitspraak
+over heeft gedaan blijven bamboe-materialen ongemoeid; ze staan nu verspreid over
+Bio-based (excl. Wood), Wood en (Bio)Plastics.
+
+Papier en karton zijn **niet** open: §3.2 wijst cellulosevezel uit oud papier expliciet toe
+aan Bio-based (excl. Wood).
 
 ---
 
