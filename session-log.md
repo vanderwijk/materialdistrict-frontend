@@ -3549,3 +3549,103 @@ schrijfronde gaat pas na sign-off van Jeroen en Sigrid, via het bestaande
 `MANIFEST.md`. Alle 229 oordelen zijn machinaal getoetst aan de regels van het regelboek:
 geldig type, maximaal drie channels, maximaal twee uit de duurzaamheidsgroep, geldige
 reden bij nul channels. Nul overtredingen.
+
+
+> **Integratie-noot (Cursor):** zip stond op `775e601`; op `main` gemerged zodat soft-launch overflow/feedback-CSS en de classificatie-sessie behouden blijven. Één mislukte patch-hunk (homepage §HOME-F2) handmatig hersteld; §TOUCH shadow-reset aangescherpt.
+
+
+# Vormgeving-opschoning — 31-07-2026
+
+**Aanleiding.** Johan constateerde inconsistenties in de schaalgroottes. Vraag van
+Jeroen: een volledige scan op vormgevingsinconsistenties, met als kader "puntjes op
+de i, in de basis niets meer verbouwen".
+
+**Gebouwd op** `main` @ `775e601`, schone checkout gelijk aan `origin/main`.
+
+## De oorzaak
+
+De type-schaal stond in `rem` en was ooit met factor 1,1 opgehoogd, terwijl de
+commentaren de waarden van vóór die ophoging bleven noemen: `--text-sm` heette
+"13px" maar was 14,3px. Wie het token pakte kreeg iets anders dan wie het
+commentaar volgde. Daar komen de halve stappen vandaan (10,5 / 11,5 / 12,5 /
+13,5 / 14,5px).
+
+Bevestiging: de "vreemde" losse waarden in het bestand — 31, 48, 57 en 70px —
+zijn precies de tokenwaarden, met de hand uitgerekend en overgetypt. Daarom kon
+de schaal naar hele pixels met verschuivingen onder de halve pixel.
+
+De meting vooraf: 752 font-size-declaraties waarvan 165 via een token; 1.348
+losse ruimtewaarden tegen 246 tokengebruiken; 84 schaduwen waarvan 39 eenmalig
+verzonnen; focusring in 8 kleuren; dezelfde 150ms in drie schrijfwijzen.
+
+## Gedaan
+
+- **Tokens compleet gemaakt.** Type-schaal naar hele pixels (`--text-2xs` erbij);
+  `--radius-sm` (bestond niet maar werd gebruikt, tweemaal zonder terugvalwaarde
+  waardoor de ronding stil wegviel), `--radius-xl`, `--radius-pill`; `--shadow-md`
+  en `--shadow-panel`; `--focus-ring` c.s.; `--transition-mid`; `--red-action`.
+- **Losse waarden aangesloten:** 497 font-sizes, 20 halve stappen, 82 rondingen,
+  6 kapotte `var(--radius-*, fallback)`, 27 schaduwen, 49 focusringen, 59
+  transitieduren, 139 ruimtewaarden buiten het raster.
+- **Vier defecten:** dubbel `data-reading-size`-blok opgeruimd; dode dark-mode
+  material-tag verwijderd; losse rood `#c0392b` (10×) naar `--red-action`; nieuw
+  `§TOUCH`-blok dat lift- en schaduw-hovers uitzet op apparaten zonder muis
+  (17 families) — op touch bleef zo'n staat na een tik hangen.
+- **Normdocument** `docs/vormgeving-regelboek.md` (versie 1.0): ladders voor
+  typografie, ruimte, ronding, schaduw, focus, beweging en breekpunten, plus een
+  toetslijst voor elke levering die `globals.css` raakt.
+
+**`globals.css` is deze keer in-place bewerkt**, niet alleen aangevuld — bewuste
+eenmalige uitzondering op de append-only-regel. Eén nieuwe sectie achteraan.
+
+## Drie oordelen onderweg
+
+1. **Richtinggevoelige schaduwen buiten de ladder gehouden.** Drie schaduwen
+   wijzen opzij (uitschuifpaneel) of omhoog (sticky balk). Die naar een
+   neerwaartse ladder trekken draait de richting om. De eerste versie van het
+   script deed dat wel; opgevangen in de verificatie.
+2. **Dode CSS niet verwijderd.** 211 klassen zijn aantoonbaar ongebruikt in
+   `src/`, maar of WordPress-content ze gebruikt is van hieruit niet te
+   verifiëren — en dat blijkt pas op een pagina die niemand deze week test.
+   Geïnventariseerd in `docs/dode-css-inventaris-31-07.md`, op te pakken na de
+   soft-launch. De eerste meting gaf 263; met een correctie voor dynamisch
+   samengestelde klassenamen (35 sjabloonprefixen in de code) blijven er 211 over.
+3. **Ruimte op een 2px-raster gelaten, niet op 4px.** 6, 10, 14, 18 en 22px komen
+   honderden keren voor; die naar viervouden duwen verschuift lay-outs en is
+   verbouwen, geen polijsten. Alleen oneven waarden en de uitschieters boven 24px
+   zijn gecorrigeerd.
+
+## Twee correcties op de eerste scan
+
+- **Contrast.** De gemelde faalpunten (groene knop 3,5:1, `--text-hint` 2,3:1,
+  amber, dark-mode material-tag) zijn al opgelost in sectie 38, het
+  WCAG-correctieblok uit sessie A11Y-1. De eerste meting las de `:root`-waarden
+  zonder die latere laag. Alleen de dode regel is opgeruimd.
+- **Breekpunt-overlap.** De gemelde botsing op 768px en 1024px bestaat in de
+  praktijk niet: de `min-width`-regels raken andere selectors dan de
+  `max-width`-regels. Gecontroleerd op alle 142 media queries.
+
+Beide keren dezelfde les: in een bestand van 18.664 regels met vijftig lagen
+liegt de eerste definitie. Vandaar dat het regelboek per bouwsteen vastlegt welke
+laag de norm is — voor actiekleuren is dat sectie 38, niet `:root`.
+
+## Verificatie
+
+Haakjesbalans 3282/3282. Parse-fouten met tinycss2: 0 (baseline ook 0). Unieke
+selectors 2634 vóór en ná, geen verdwenen. Declaratietelling per eigenschap
+gelijk, op twee bewuste verwijderingen en één toevoeging na. `var()` zonder
+definitie van 21 naar 20 (`--radius-sm` opgelost; de rest zijn variabelen die via
+JS of inline gezet worden, pre-existent).
+
+**Bij het testen op letten:** de schaduwen. Dat is de enige plek met echt
+zichtbaar effect — 27 eenmalige waarden zijn naar vier treden getrokken, enkele
+worden iets zachter of steviger. Typografie, ruimte en ronding verschuiven max
+0,5 tot 2px.
+
+## Open / vervolg
+
+Acht punten staan in `docs/vormgeving-regelboek.md` §11. De goedkoopste met het
+meeste effect: de zes verschillende tracking-waarden op caps-labels samentrekken
+naar één. Verder: dode CSS opruimen, knopvarianten samenvoegen (67× de
+component tegen 139× een handmatige klasse), inline stijlen eruit, fluid
+typografie voor de drie grootste treden.
