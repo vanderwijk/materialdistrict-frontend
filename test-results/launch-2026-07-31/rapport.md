@@ -2,9 +2,9 @@
 
 - Uitgevoerd: 31 juli 2026
 - Omgeving: `https://materialdistrict-frontend.vercel.app/`
-- Omgeving beoordeeld als staging/preview op basis van het `vercel.app`-domein.
+- De frontend draait op een previewdomein, maar gebruikt via `WP_API_URL` de gedeelde backend `https://cms.materialdistrict.com/wp-json`; dit is geen geïsoleerde stagingomgeving.
 - Testaccounts: bestaande E2E-fixtures uit `docs/e2e-test-accounts.md`.
-- Werkwijze: zichtbare browserflows; openbare API ook met `curl`.
+- Werkwijze: zichtbare browserflows; openbare API met unauthenticated `curl` tegen zowel `cms.materialdistrict.com` als `materialdistrict.com`.
 - Er zijn geen reparaties of work-arounds uitgevoerd.
 
 ## Samenvatting
@@ -27,7 +27,8 @@ Belangrijkste afwijkingen:
 - De globale zoekfunctie navigeert niet; de doelroute `/search/` bestaat niet en geeft 404.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
 - Een brand kan niet direct worden aangemaakt; alleen een review-aanvraag wordt verzonden. Daardoor zijn D2–D5 en E4–E7 geblokkeerd.
-- De openbare brand- en talk-API geven 403, waardoor de bedoelde publieke responses niet beschikbaar zijn.
+- De openbare talk-API geeft bij alle 10 gecontroleerde talks het Vimeo-ID prijs via `meta.vimeo_id`.
+- De openbare lead-API is zonder authenticatie beschikbaar en meldt 43.916 records op CMS en 43.982 op productie.
 
 ## Resultaat per stap
 
@@ -75,10 +76,10 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | F7 | Geblokkeerd | In de beschikbare artikelindex was geen herkenbaar Insider-only artikel/rapport als testsample aanwezig. |
 | F8 | Geblokkeerd | Op het gecontroleerde materiaal was geen Insider-download aanwezig om gericht te testen. |
 | F9 | Geblokkeerd | De Insider-checkout is al bij C2 geblokkeerd. |
-| G1 | Niet geslaagd | `/wp-json/wp/v2/brand?per_page=5` redirect naar slash-variant en geeft 403 Forbidden; bedoelde publieke data is niet beschikbaar. Screenshot: [G1-public-api-403.png](./G1-public-api-403.png). |
-| G2 | Niet geslaagd | `/wp-json/wp/v2/talk?per_page=5` geeft na redirect 403 Forbidden; videolek kon daardoor niet op de bedoelde response worden beoordeeld. |
-| G3 | Geslaagd | `/wp-json/wp/v2/lead` geeft 403 Forbidden en is niet publiek beschikbaar. |
-| G4 | Geslaagd met beperking | `/wp-json/wp/v2/users` geeft 403 Forbidden; er lekken geen e-mails of gebruikersnamen, maar zichtbare gebruikersnamen konden niet afzonderlijk worden beoordeeld. |
+| G1 | Geslaagd | Unauthenticated `/wp-json/wp/v2/brand?per_page=5` geeft 200 op CMS en productie. In beide steekproeven van vijf brands zijn geen e-mailadressen, Stripe-gerelateerde velden of Stripe-identifiers gevonden. |
+| G2 | Niet geslaagd | Unauthenticated `/wp-json/wp/v2/talk?per_page=10` geeft 200 op CMS en productie. Op beide hosts bevatten alle 10 gecontroleerde talks een niet-lege `meta.vimeo_id`. De responseheaders melden in totaal 92 talks op CMS en 99 op productie. |
+| G3 | Niet geslaagd | Unauthenticated `/wp-json/wp/v2/lead?per_page=1` geeft 200 op beide hosts. `X-WP-Total` meldt 43.916 records op CMS en 43.982 op productie; het endpoint hoort niet publiek beschikbaar te zijn. |
+| G4 | Geslaagd | Unauthenticated `/wp-json/wp/v2/users?per_page=5` geeft op beide hosts 401 met code `rest_forbidden`; er zijn geen e-mailadressen of gebruikersnamen zichtbaar. |
 | H1 | Niet geslaagd | De eerste elf zichtbare channelpagina's t/m Translucency tonen inhoud. Energy & Resilience, Net Zero & Carbon, Regenerative en Timber staan ook in de hoofdnavigatie maar geven 404. Screenshot: [H1-timber-404.png](./H1-timber-404.png). |
 | H2 | Geslaagd | Homepage van boven tot onder gecontroleerd: inhoud aanwezig, geen kapotte of nul-grote afbeeldingen. |
 | H3 | Niet geslaagd | Zoeken op `wood` en `timber` via het header-zoekveld navigeerde niet. De implementatie wijst naar `/search?q=…`, maar `/search/` geeft 404. Screenshot: [H3-search-no-navigation.png](./H3-search-no-navigation.png). |
@@ -91,7 +92,12 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 
 ### Blokkerend
 
-1. **Insider-betaling kan niet starten.**
+1. **De openbare talk-API lekt Vimeo-ID's.**
+   URL's: `https://cms.materialdistrict.com/wp-json/wp/v2/talk?per_page=10` en `https://materialdistrict.com/wp-json/wp/v2/talk?per_page=10`.
+   Beide endpoints geven 200; alle 10 gecontroleerde records per host bevatten een niet-lege `meta.vimeo_id`.
+   Gevolg: de afscherming in de frontend bij F4–F6 voorkomt niet dat een bezoeker het video-ID rechtstreeks via WordPress opvraagt.
+
+2. **Insider-betaling kan niet starten.**
    URL's: `https://materialdistrict-frontend.vercel.app/checkout/?plan=insider` en `https://materialdistrict-frontend.vercel.app/checkout/?plan=insider&interval=monthly`
    Exact: “Your cart is empty.”
    Gevolg: C2–C7 en F9 zijn niet uitvoerbaar.
@@ -115,9 +121,10 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
    Exact: “Thanks — your request has been sent. We'll review it and get back to you.”
    Gevolg: D2–D5 en E4–E7 zijn geblokkeerd ten opzichte van het draaiboek.
 
-5. **Publieke brand- en talk-API geven 403.**
-   URL's: `/wp-json/wp/v2/brand?per_page=5` en `/wp-json/wp/v2/talk?per_page=5`.
-   Exact: “403: Forbidden.”
+5. **De lead-API is zonder authenticatie beschikbaar.**
+   URL's: `https://cms.materialdistrict.com/wp-json/wp/v2/lead?per_page=1` en `https://materialdistrict.com/wp-json/wp/v2/lead?per_page=1`.
+   Beide endpoints geven 200. De responseheaders melden respectievelijk 43.916 en 43.982 records.
+   Het draaiboek verwacht dat dit endpoint niet beschikbaar is.
 
 6. **Partner-testfixture is niet als Partner actief.**
    `e2e-partner-brand` toont “Current plan Free”, waardoor channel coupling niet kan worden getest.
@@ -149,6 +156,7 @@ Tijdelijke followstatus op Bio-based & Living Materials is na de test weer verwi
 
 ## Testbeperkingen
 
+- De eerste G1–G4-meting tegen `materialdistrict-frontend.vercel.app/wp-json/` was ongeldig: op die host draait geen WordPress. De API-resultaten in dit rapport zijn vervangen door de hertest tegen de twee WordPress-hosts. De bestaande screenshot `G1-public-api-403.png` documenteert uitsluitend die vervallen eerste meting en geldt niet als bewijs voor G1–G4.
 - Gmail is gekoppeld en de registratie- en resetmails zijn gecontroleerd. De AWS-trackinglink in de resetmail kon niet door de geautomatiseerde browser worden geopend; de gebruiker heeft die finale resetstap handmatig bevestigd.
 - De kapotte Insider-checkout blokkeerde de betaal- en prijsmanipulatietests.
 - De brandaanvraag leverde geen direct bruikbaar testbrand op.
