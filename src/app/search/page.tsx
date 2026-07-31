@@ -91,8 +91,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           <Breadcrumb items={[{ label: 'Search' }]} />
           <h1 className="t-display-lg">Search</h1>
 
-          {/* GET-form via client wrapper: blur dismisses the mobile keyboard. */}
-          <SearchForm defaultQuery={q} />
+          {/* key remounts when ?q= changes from the header search. */}
+          <SearchForm key={q || 'empty'} defaultQuery={q} />
 
           {hasQuery && (
             <p className="ov-page-lede">

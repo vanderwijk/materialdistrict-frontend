@@ -82,9 +82,13 @@ export function HeaderShell() {
       onInsiderInsightsClick={() => router.push('/dashboard/insider-insights')}
       onBecomeInsiderClick={() => router.push('/membership')}
       onSearch={(q) => {
-        if (q.trim()) {
-          router.push(`/search?q=${encodeURIComponent(q.trim())}`)
-        }
+        const query = q.trim()
+        if (!query) return
+        const href = `/search?q=${encodeURIComponent(query)}`
+        // Soft-nav with only a ?q= change (already on /search) does not
+        // always re-run the search RSC — refresh forces fresh results.
+        router.push(href)
+        router.refresh()
       }}
     />
   )

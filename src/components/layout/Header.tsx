@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import {
@@ -142,6 +142,13 @@ export function Header({
     }
   }, [mobileOpen])
 
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false)
+    // Overlay is only opacity:0 when closed — without blur the mobile
+    // keyboard stays open and steals subsequent header searches.
+    searchInputRef.current?.blur()
+  }, [])
+
   // Focus de search input wanneer overlay opent
   useEffect(() => {
     if (searchOpen) {
@@ -153,11 +160,11 @@ export function Header({
   useEffect(() => {
     if (!searchOpen) return
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSearchOpen(false)
+      if (e.key === 'Escape') closeSearch()
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [searchOpen])
+  }, [searchOpen, closeSearch])
 
   // Sessie 7 fix Punt 20: click-buiten sluit search-overlay.
   // Vervangt de oude `onBlur` op het input-veld (die was te aggressief —
@@ -170,12 +177,12 @@ export function Header({
       const target = e.target as Node | null
       const wrap = searchInputRef.current?.closest('.search-wrap')
       if (wrap && target && !wrap.contains(target)) {
-        setSearchOpen(false)
+        closeSearch()
       }
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
-  }, [searchOpen])
+  }, [searchOpen, closeSearch])
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -187,8 +194,10 @@ export function Header({
         attributes: { query },
       })
     }
-    onSearch?.(searchValue)
+    // Blur before navigate so iOS/Android dismiss the keyboard.
+    searchInputRef.current?.blur()
     setSearchOpen(false)
+    onSearch?.(searchValue)
   }
 
   return (
@@ -237,7 +246,7 @@ export function Header({
             <button
               type="button"
               className="header-search-close"
-              onClick={() => setSearchOpen(false)}
+              onClick={closeSearch}
               aria-label="Close search"
             >
               <X size={16} strokeWidth={2} />

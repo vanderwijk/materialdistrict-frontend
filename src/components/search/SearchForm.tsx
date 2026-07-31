@@ -1,22 +1,54 @@
 'use client'
 
 /**
- * SearchForm — GET search field for `/search`.
+ * SearchForm — search field for `/search`.
  *
- * Kept as a client component so mobile browsers dismiss the virtual keyboard
- * on submit (blur the input before the browser navigates). Markup and action
- * stay a plain GET form so the page still works without JS.
+ * Uses client navigation so a new query from this form (or a header search
+ * that lands here) always refreshes results. Blurs the input on submit and
+ * whenever the URL query changes so mobile keyboards dismiss.
  */
 
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface SearchFormProps {
-  /** Current query, mirrored into the input as the default value. */
+  /** Current query from the URL (`?q=`). */
   defaultQuery?: string
 }
 
 export function SearchForm({ defaultQuery = '' }: SearchFormProps) {
+  const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
+  const [value, setValue] = useState(defaultQuery)
+
+  // Sync when the URL query changes (e.g. header search while already on /search).
+  useEffect(() => {
+    setValue(defaultQuery)
+    inputRef.current?.blur()
+    if (
+      typeof document !== 'undefined' &&
+      document.activeElement instanceof HTMLElement &&
+      document.activeElement.matches('input, textarea')
+    ) {
+      document.activeElement.blur()
+    }
+  }, [defaultQuery])
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    inputRef.current?.blur()
+
+    const query = value.trim()
+    if (!query) {
+      router.push('/search')
+      router.refresh()
+      return
+    }
+
+    const href = `/search?q=${encodeURIComponent(query)}`
+    router.push(href)
+    router.refresh()
+  }
 
   return (
     <form
@@ -24,9 +56,7 @@ export function SearchForm({ defaultQuery = '' }: SearchFormProps) {
       action="/search"
       method="get"
       role="search"
-      onSubmit={() => {
-        inputRef.current?.blur()
-      }}
+      onSubmit={handleSubmit}
     >
       <label className="srch-form-label" htmlFor="srch-q">
         Search MaterialDistrict
@@ -38,7 +68,8 @@ export function SearchForm({ defaultQuery = '' }: SearchFormProps) {
           className="srch-input"
           type="search"
           name="q"
-          defaultValue={defaultQuery}
+          value={value}
+          onChange={(event) => setValue(event.target.value)}
           placeholder="Search materials, stories, brands, events and talks"
           autoComplete="off"
           enterKeyHint="search"
