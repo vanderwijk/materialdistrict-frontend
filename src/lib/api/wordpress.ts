@@ -1704,18 +1704,21 @@ export async function registerUser(args: {
 }
 
 /**
- * Rauwe WP-respons van POST /md/v2/checkout/insider.
+ * Rauwe WP-respons van POST /md/v2/checkout/insider|brand.
  */
-interface WPInsiderCheckoutResponse {
+interface WPCheckoutSessionResponse {
   checkout_url: string
   session_id: string
 }
 
-/** Resultaat van een gestarte Insider-checkout-sessie. */
-export interface InsiderCheckoutSession {
+/** Resultaat van een gestarte Stripe Checkout-sessie. */
+export interface CheckoutSession {
   checkoutUrl: string
   sessionId: string
 }
+
+/** @deprecated Alias — gebruik `CheckoutSession`. */
+export type InsiderCheckoutSession = CheckoutSession
 
 /**
  * Start een Stripe-checkout voor het Insider-abonnement (P2, handoff S12 §3).
@@ -1732,13 +1735,43 @@ export interface InsiderCheckoutSession {
 export async function createInsiderCheckout(
   token: string,
   interval: 'monthly' | 'annual',
-): Promise<InsiderCheckoutSession> {
-  const raw = await wpAuthFetch<WPInsiderCheckoutResponse>(
+): Promise<CheckoutSession> {
+  const raw = await wpAuthFetch<WPCheckoutSessionResponse>(
     '/md/v2/checkout/insider',
     {
       method: 'POST',
       bearer: token,
       body: { interval },
+    },
+  )
+  return {
+    checkoutUrl: raw.checkout_url,
+    sessionId: raw.session_id,
+  }
+}
+
+/**
+ * Start een Stripe-checkout voor een brand tier (Basis / Plus / Partner).
+ *
+ * @throws WordPressAuthError / WordPressError:
+ *   - 401 → niet geauthenticeerd
+ *   - 403 → geen beheerder van dit brand
+ *   - 409 → al op dit of hoger plan
+ *   - 503 → Stripe niet geconfigureerd
+ */
+export async function createBrandCheckout(
+  token: string,
+  args: { brandId: number; tier: 'basis' | 'plus' | 'partner' },
+): Promise<CheckoutSession> {
+  const raw = await wpAuthFetch<WPCheckoutSessionResponse>(
+    '/md/v2/checkout/brand',
+    {
+      method: 'POST',
+      bearer: token,
+      body: {
+        brand_id: args.brandId,
+        tier: args.tier,
+      },
     },
   )
   return {

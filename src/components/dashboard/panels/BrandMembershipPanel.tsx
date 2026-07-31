@@ -9,7 +9,7 @@ import {
 } from '@/lib/config/membership'
 import { UNLIMITED_PUBLICATIONS } from '@/types/shared'
 import type { BrandMembership } from '@/types/shared'
-import { UpgradeRequestButton } from './UpgradeRequestButton'
+import { BrandCheckoutButton } from './BrandCheckoutButton'
 
 const TIERS: ManufacturerTier[] = ['free', 'basis', 'plus', 'partner']
 const TIER_LABEL: Record<ManufacturerTier, string> = {
@@ -152,8 +152,8 @@ export function BrandMembershipPanel({ brand }: { brand: BrandMembership }) {
                     <td key={t} className={isCurrent ? 'plan-active-col' : undefined}>
                       {isCurrent ? (
                         <span className="memb-current-cell">Current plan</span>
-                      ) : isHigher ? (
-                        <UpgradeRequestButton
+                      ) : isHigher && t !== 'free' ? (
+                        <BrandCheckoutButton
                           brandId={brand.id}
                           brandSlug={brand.slug}
                           targetTier={t}
@@ -172,8 +172,8 @@ export function BrandMembershipPanel({ brand }: { brand: BrandMembership }) {
           requests become visible once you publish at least one material.
         </p>
         <p className="field-helper memb-note-sub">
-          Plan changes are reviewed by our team — request an upgrade above and
-          we’ll be in touch.
+          Upgrade securely via Stripe Checkout. Annual billing; cancel anytime
+          at period end.
         </p>
       </div>
     </>
