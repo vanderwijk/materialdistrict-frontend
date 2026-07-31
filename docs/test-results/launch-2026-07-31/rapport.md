@@ -33,9 +33,12 @@ Belangrijkste positieve resultaten:
 Belangrijkste afwijkingen:
 
 - De Stripe Sandbox-betaling toont een successmelding, activeert de Insider-status en blijft actief na opnieuw inloggen.
-- SEPA-incasso is nu beschikbaar met IBAN- en mandaatformulier; het volgens het draaiboek vereiste iDEAL wordt nog niet getoond.
-- Vier van de nieuwe channels in de hoofdnavigatie geven een 404.
-- De globale zoekfunctie navigeert niet; de doelroute `/search/` bestaat niet en geeft 404.
+- iDEAL/Wero is bij de nieuwste hertest beschikbaar in de Insider-checkout; de
+  eerste betaling gaat via de bank en vervolgbetalingen via SEPA-incasso.
+- Drie van de nieuwe channels in de hoofdnavigatie geven nog 404;
+  `regenerative` is hersteld.
+- De route `/search/` en de lege zoekstaat werken nu, maar het zoekveld in de
+  header verstuurt de zoekopdracht nog niet.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
 - Een goedgekeurde aanvraag wordt als draft-brand gekoppeld maar blijft
   niet-klikbaar als `Pending setup`. De goedkeuringsmail zegt dat het brand
@@ -56,17 +59,17 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | A7 | Niet geslaagd | `geen-apenstaartje` werd geblokkeerd, maar de melding was onjuist: “Email and password are required.” terwijl beide velden gevuld waren. URL: `/register/`. Screenshot: [A7-invalid-email-wrong-error.png](./A7-invalid-email-wrong-error.png). |
 | B1 | Geslaagd | Bio-based & Living Materials gevolgd. Schakelaar werd “Following” en bleef checked na verversen. |
 | B2 | Geslaagd | Ontvolgen opende “Unfollow Bio-based & Living Materials?”; na bevestiging stond de schakelaar weer op “Follow”. |
-| B3 | Niet geslaagd | Uitgelogd volgen gaf geen redirect, maar een modal “Create a free account to follow”. URL bleef `/channel/bio-based-living-materials/`. Screenshot: [B3-follow-logged-out-modal.png](./B3-follow-logged-out-modal.png). |
-| B4 | Niet geslaagd | De loginlink uit de modal ging naar `/sign-in/` zonder `next`. Na login kwam de gebruiker op `/material/`, niet terug op het channel. |
+| B3 | Niet geslaagd | Opnieuw getest na de nieuwste deployment: uitgelogd volgen geeft nog steeds geen redirect, maar de modal “Create a free account to follow”. URL blijft `/channel/bio-based-living-materials/`. Screenshot van de eerste meting: [B3-follow-logged-out-modal.png](./B3-follow-logged-out-modal.png). |
+| B4 | Niet geslaagd | De loginlink uit de modal gaat nog steeds naar `/sign-in/` zonder `next`. Na login kwam het testaccount opnieuw op `/material/`, niet terug op het channel. |
 | B5 | Geslaagd | Exacte frequentie: label “Email updates:” met “Weekly” geselecteerd. |
 | C1 | Geslaagd | `/membership/` toont €10/maand, €100/jaar en de voordelen. |
-| C2 | Niet geslaagd | Hertest na activeren van SEPA: `/checkout/?plan=insider` opent Stripe Sandbox voor €10 per maand met kaart, Klarna en “SEPA-incasso”. Selecteren van SEPA toont een IBAN-, rekeningnaam-, adres- en incassomandaatformulier. iDEAL zelf ontbreekt nog steeds, zodat de in het draaiboek gevraagde iDEAL-bankkeuze en simulatie niet konden worden uitgevoerd. Screenshot: [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png). |
+| C2 | Geslaagd | Nieuwste hertest: `/checkout/?plan=insider&interval=monthly` opent Stripe Sandbox voor €10 per maand en toont `iDEAL | Wero` naast kaart. Selecteren van iDEAL toont naam, Nederland als regio, het bankredirectbericht en de SEPA-mandaattekst voor vervolgbetalingen. Er is geen betaling ingediend, zodat geen tweede Insider-abonnement ontstond. De oudere screenshot [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png) documenteert uitsluitend de inmiddels vervallen meting. |
 | C3 | Geslaagd | Een sandboxbetaling met `4242 4242 4242 4242`, `12/34` en CVC `123` werd geaccepteerd. De return naar `/membership/?checkout=success&session_id=…` toont “Payment received.” en, na de auth-refresh, “You’re an Insider — you have full access.” Screenshot: [C3-retest-payment-success.png](./C3-retest-payment-success.png). |
 | C4 | Geslaagd | `/dashboard/membership/` toont na de betaling Status `active`, Billing `Monthly` en verlenging op 31 augustus 2026. De avatar heeft de Insider-ring. Na volledig uitloggen en opnieuw inloggen bleef dezelfde actieve status zichtbaar. Screenshot: [C4-retest-insider-active.png](./C4-retest-insider-active.png). |
 | C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
 | C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
 | C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
-| D1 | Deels geslaagd | Opnieuw vanaf nul uitgevoerd met `ZZTEST-20260731-brand-flow-06`. De aanvraag is uitsluitend via `materialdistrict-frontend.vercel.app/dashboard/brands/new/` ingediend. Alleen de goedkeuring is via WordPress `Brands → Brand requests` uitgevoerd. De aanvraag verscheen daar met de juiste gebruiker, contactgegevens, website en boodschap; goedkeuren gaf “Request approved. Brand created and requester notified.” Direct na opnieuw inloggen stond het brand niet-klikbaar als `Pending setup`; bij een latere controle werd het zonder verdere CMS-ingreep alsnog een klikbaar Brand account en opende de profielroute correct. De flow kent dus een onduidelijke propagatievertraging zonder voortgangsindicatie of automatische refresh. Screenshots: [BRAND-flow-06-cms-approved.png](./BRAND-flow-06-cms-approved.png), [BRAND-flow-06-approved-pending-setup.png](./BRAND-flow-06-approved-pending-setup.png), [BRAND-flow-06-accessible-after-delay.png](./BRAND-flow-06-accessible-after-delay.png). |
+| D1 | Deels geslaagd | Opnieuw vanaf nul uitgevoerd met `ZZTEST-20260731-brand-flow-06`. De aanvraag is uitsluitend via `materialdistrict-frontend.vercel.app/dashboard/brands/new/` ingediend. Alleen de goedkeuring is via WordPress `Brands → Brand requests` uitgevoerd. De aanvraag verscheen daar met de juiste gebruiker, contactgegevens, website en boodschap; goedkeuren gaf “Request approved. Brand created and requester notified.” Direct na opnieuw inloggen stond het brand niet-klikbaar als `Pending setup`; bij een latere controle werd het zonder verdere CMS-ingreep alsnog een klikbaar Brand account en opende de profielroute correct. De flow kent dus een onduidelijke propagatievertraging zonder voortgangsindicatie of automatische refresh. Aanvullend is `ZZTEST-20260731-brand-link-07` via dezelfde frontend aangevraagd en in CMS goedgekeurd. De nieuwe goedkeuringsmail kwam aan, maar linkt nog naar `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07` in plaats van het frontenddashboard. Screenshots van de eerdere flow: [BRAND-flow-06-cms-approved.png](./BRAND-flow-06-cms-approved.png), [BRAND-flow-06-approved-pending-setup.png](./BRAND-flow-06-approved-pending-setup.png), [BRAND-flow-06-accessible-after-delay.png](./BRAND-flow-06-accessible-after-delay.png). |
 | D2 | Deels geslaagd | `ZZTEST-20260731-brand-flow-06` werd na vertraging beheerbaar; de directe frontend-profielroute laadt. Direct na goedkeuring bood de UI echter geen klikbare route en geen aanwijzing dat wachten/verversen nodig was. |
 | D3 | Geslaagd | Op het beheerbare testbrand `ZZTEST-20260731-brand-e2e-05` zijn beschrijving, telefoon en adres uitsluitend via het frontend opgeslagen. Na volledige herlaadactie bleven alle waarden aanwezig. Het vooraf ingevulde land moest eerst naar een ander land en terug naar Nederland worden gezet voordat validatie groen werd en opslaan werkelijk startte. Screenshot: [BRAND-e2e-05-profile-saved.png](./BRAND-e2e-05-profile-saved.png). |
 | D4 | Geslaagd | Verplichte profielvelden, volledig adres en het aanwezige logo werden door het frontend geaccepteerd; de opgeslagen waarden zijn tevens teruggelezen via de publieke brand-API. |
@@ -80,8 +83,8 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | BM7 | Geslaagd | Controle op het andere brand `ZZTEST-20260731-brand-e2e-05` (ID `138593`) toont nog steeds Free. De succesvolle webhook heeft dus het brand uit de checkoutsessie bijgewerkt en niet een ander brand van dezelfde gebruiker. |
 | E1 | Geslaagd | Via bestaand eigen fixture-brand opende `/dashboard/brands/e2e-basis-brand/materials/new/` het formulier “Add material”. |
 | E2 | Geslaagd | Elf typen zichtbaar: (Bio)Plastics, Bio-based (excl. Wood), Ceramics, Coatings, Composites, Concrete, Glass, Leather, Metals, Natural Stones en Wood. |
-| E3 | Niet geslaagd | De als Partner gedocumenteerde fixture toonde “Current plan Free”; channel coupling bleef vergrendeld. De openbare header biedt 15 channels aan, waaronder Sustainable, Lightweight, Translucency en Leisure & Hospitality. Screenshot: [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png). |
-| E4 | Deels geslaagd | Materiaal `ZZTEST-20260731-material-e2e-05` is via de beveiligde frontend-API onder brand `138593` aangemaakt als ID `138602`, met featured image, Wood, Indoor en applicatie Acoustic Wall Panels. De in-appbrowser kon het macOS-bestandsvenster niet bedienen; daarom is de upload via dezelfde `/api/dashboard/media`-route uitgevoerd. SVG werd ondanks de UI-tekst “JPEG, PNG, SVG or WebP” door de backend geweigerd als niet-toegestaan; PNG werd geaccepteerd. |
+| E3 | Niet geslaagd | Nieuwste hertest: de als Partner gedocumenteerde fixture `e2e-partner-brand` toont nu “Current plan Basis”, niet Partner. Op het materiaalformulier blijft “Channel coupling requires Partner” vergrendeld. De fixture is dus wel gewijzigd sinds de eerste meting (toen Free), maar nog niet correct geprovisioneerd. Oude screenshot: [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png). |
+| E4 | Deels geslaagd | Materiaal `ZZTEST-20260731-material-e2e-05` is via de beveiligde frontend-API onder brand `138593` aangemaakt als ID `138602`, met featured image, Wood, Indoor en applicatie Acoustic Wall Panels. SVG is opnieuw via dezelfde frontendroute `/api/dashboard/media` getest onder brand `138595`; `ZZTEST-20260731-upload-07.svg` gaf opnieuw HTTP 400 met `File type is not allowed.` PNG werd bij de eerdere test wel geaccepteerd. |
 | E5 | Geslaagd | De materialenlijst toont het nieuwe materiaal met categorie Acoustic Wall Panels, datum 31 juli 2026 en status Offline. |
 | E6 | Geslaagd | De frontend-editpagina voor materiaal ID `138602` toont de volledige beschrijving, type Wood, Indoor, featured image, Acoustic Wall Panels en de opgegeven filtereigenschappen. Screenshot: [BRAND-e2e-05-material-138602.png](./BRAND-e2e-05-material-138602.png). |
 | E7 | Deels geslaagd | Het materiaal is aangemaakt maar blijft Offline. De gratis tier toont `0 of 0 published`; publicatie is niet afgerond. Een mislukte eerste create met een niet-toegestane attachment liet bovendien materiaal ID `138597` achter, waardoor dezelfde testnaam tweemaal in de lijst staat. |
@@ -98,10 +101,10 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | G2 | Geslaagd | Hertest na deployment: unauthenticated `/wp-json/wp/v2/talk?per_page=100` geeft 200 op CMS en productie. Alle 92 CMS- en 99 productierecords zijn Insider-only en hebben `meta.vimeo_id:null`; er lekt geen Vimeo-ID. `meta.has_video` is `true` bij 91/92 CMS-records en 99/99 productierecords. De ene CMS-talk met `has_video:false` heeft eveneens `vimeo_id:null`. |
 | G3 | Geslaagd | Hertest na deployment: unauthenticated `/wp-json/wp/v2/lead` geeft op CMS en productie 404 met code `rest_no_route`; de voorheen publieke leadcollectie is niet meer via deze route beschikbaar. |
 | G4 | Geslaagd | Unauthenticated `/wp-json/wp/v2/users?per_page=5` geeft op beide hosts 401 met code `rest_forbidden`; er zijn geen e-mailadressen of gebruikersnamen zichtbaar. |
-| H1 | Niet geslaagd | De eerste elf zichtbare channelpagina's t/m Translucency tonen inhoud. Energy & Resilience, Net Zero & Carbon, Regenerative en Timber staan ook in de hoofdnavigatie maar geven 404. Screenshot: [H1-timber-404.png](./H1-timber-404.png). |
+| H1 | Deels geslaagd | Nieuwste hertest van de vier eerdere 404-routes: `regenerative` werkt nu en toont zeven stories en twee talks. `energy-resilience`, `net-zero-carbon` en `timber` geven nog steeds 404. Screenshot van Timber: [H1-timber-404.png](./H1-timber-404.png). |
 | H2 | Geslaagd | Homepage van boven tot onder gecontroleerd: inhoud aanwezig, geen kapotte of nul-grote afbeeldingen. |
-| H3 | Niet geslaagd | Zoeken op `wood` en `timber` via het header-zoekveld navigeerde niet. De implementatie wijst naar `/search?q=…`, maar `/search/` geeft 404. Screenshot: [H3-search-no-navigation.png](./H3-search-no-navigation.png). |
-| H4 | Niet geslaagd | `/search/?q=zztest-no-results-20260731` geeft een generieke 404 in plaats van een lege zoekstaat. Screenshot: [H4-search-route-404.png](./H4-search-route-404.png). |
+| H3 | Deels geslaagd | `/search/?q=wood` werkt nu en toont 1.330 resultaten. Het header-zoekveld navigeert echter nog niet: na openen, `wood` invoeren en Enter blijft de URL op de huidige pagina. Screenshot [H3-search-no-navigation.png](./H3-search-no-navigation.png) toont de eerdere meting van hetzelfde headerprobleem. |
+| H4 | Geslaagd | De zoekroute toont nu een nette lege staat. Query `qzxvbnm987654321nomatch` geeft “No results found” met links naar Materials en Stories, niet langer een 404. De oude screenshot [H4-search-route-404.png](./H4-search-route-404.png) documenteert de vervallen situatie. |
 | H5 | Geslaagd | `/zztest-20260731-does-not-exist/` toont een nette sitebrede 404 met “This page could not be found.” |
 | H6 | Geslaagd | Homepage, materiaalpagina en artikelpagina getest op 390×844. Geen horizontale overflow; geen kapotte afbeeldingen. Screenshot: [H6-mobile-material.png](./H6-mobile-material.png). |
 | H7 | Waarneming | Tijdens deze browsersessie verscheen geen cookiemelding. Omdat bestaande browservoorkeuren niet zijn gewist, is dit niet als defect beoordeeld. |
@@ -119,29 +122,25 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 1. **Kritieke follow-returnflow verliest de herkomstpagina.**
    Van `/channel/bio-based-living-materials/` naar `/sign-in/` zonder `next`; na login naar `/material/`.
 
-2. **Globale zoekfunctie heeft geen werkende doelroute.**
-   Het veld navigeert niet; `https://materialdistrict-frontend.vercel.app/search/?q=zztest-no-results-20260731` geeft “404 — This page could not be found.”
+2. **Globale zoekfunctie verstuurt de zoekopdracht niet vanuit de header.**
+   De doelroute `/search/` werkt inmiddels, inclusief resultaten en lege staat.
+   Invoer in het header-zoekveld gevolgd door Enter laat de URL echter ongewijzigd.
 
-3. **Vier aangeboden channels geven 404.**
-   `energy-resilience`, `net-zero-carbon`, `regenerative` en `timber`.
+3. **Drie aangeboden channels geven 404.**
+   `energy-resilience`, `net-zero-carbon` en `timber`. `regenerative` is hersteld.
    Voorbeeld: `https://materialdistrict-frontend.vercel.app/channel/timber/`.
 
 4. **Partner-testfixture is niet als Partner actief.**
-   `e2e-partner-brand` toont “Current plan Free”, waardoor channel coupling niet kan worden getest.
+   `e2e-partner-brand` toont “Current plan Basis”, waardoor channel coupling
+   vergrendeld blijft. iDEAL/Wero bij Insider is wel hersteld en is daarom uit
+   deze openstaande lijst verwijderd.
 
-5. **iDEAL ontbreekt in Stripe Checkout.**
-   De sandboxcheckout opent correct voor €10 per maand en biedt kaart, Klarna en SEPA-incasso.
-   Selecteren van SEPA toont een volledig IBAN- en incassomandaatformulier.
-   De vereiste iDEAL-bankkeuze en simulatie uit C2 zijn niet beschikbaar.
-   Screenshot: [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png).
+5. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
+   De verse mail voor `ZZTEST-20260731-brand-link-07` linkt naar
+   `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07`
+   in plaats van het dashboard op `materialdistrict-frontend.vercel.app`.
 
-6. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
-   De mail zegt “You can manage it in your dashboard” en linkt naar
-   `https://materialdistrict.com/dashboard/brands`; deze URL kwam uit op een
-   niet-gerelateerde openbare brandpagina. Het niet-beheerbare brand zelf staat
-   hierboven als vertraagde onboardingbevinding vermeld.
-
-7. **SVG-upload wordt tegengesproken door de backend.**
+6. **SVG-upload wordt tegengesproken door de backend.**
    Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
    dezelfde frontend-media-API gaf voor een geldig SVG-bestand
    `File type is not allowed.` PNG werd wel geaccepteerd.
@@ -171,6 +170,7 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 | Brandaanvraag | `ZZTEST-20260731-brand-reject-04` | Afgewezen met testreden; uit de wachtrij verwijderd en geen brand-record aangemaakt. |
 | Brand | `ZZTEST-20260731-brand-e2e-05` — ID `138593` | Afgebroken test: na goedkeuring handmatig in CMS gepubliceerd en voorzien van de bestaande `woocommerce-placeholder`. Niet gebruikt voor de nieuwe frontend-only hertest. |
 | Brand | `ZZTEST-20260731-brand-flow-06` — ID `138595` | Nieuwe frontend-only hertest; via Brand requests goedgekeurd en aanvankelijk `Pending setup`, later zonder CMS-ingreep alsnog klikbaar. Nu actief op Basis na een geslaagde Stripe Sandbox-betaling; nog niet zichtbaar in de publieke brand-API. |
+| Brand | `ZZTEST-20260731-brand-link-07` | Verse hertest van de mailbeheerlink; via frontend aangevraagd en in CMS goedgekeurd. Goedkeuringsmail linkt nog naar de verkeerde host. |
 | Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138597` | Achtergebleven Offline-record van de eerste create die HTTP 400 gaf vanwege een niet-toegestane attachment. |
 | Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138602` | Via de frontend-API aangemaakt en zichtbaar/bewerkbaar in het dashboard; status Offline. |
 | Brandtier-aanvraag | Basis voor brand ID `138593` | Membership-pagina toont `Requested ✓`; huidige tier blijft Free en er is geen Stripe-sessie gestart. |
