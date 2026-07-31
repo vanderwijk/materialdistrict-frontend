@@ -51,10 +51,19 @@ export function FeedbackButton() {
     setMessage('')
   }, [pathname])
 
+  const returnFocus = useRef(false)
+
   const close = useCallback(() => {
+    returnFocus.current = true
     setOpen(false)
-    triggerRef.current?.focus()
   }, [])
+
+  // Restore focus after the trigger is shown again (hidden while open).
+  useEffect(() => {
+    if (open || !returnFocus.current) return
+    returnFocus.current = false
+    triggerRef.current?.focus()
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -174,7 +183,7 @@ export function FeedbackButton() {
               </div>
 
               <p className="fb-hint">
-                What went wrong on this page? We send the address along
+                What went wrong on this page? We include the page address
                 automatically.
               </p>
 

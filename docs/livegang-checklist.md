@@ -230,10 +230,10 @@ wp user meta list --keys=simplefavorites --format=count
 
 Bron: Johan, soft-launch feedback. Details: [`open-issues.md`](./open-issues.md) § Soft-launch UI (31-07-2026).
 
-- [ ] **SL-UI-1** Channel-pagina’s: één sitebrede achtergrondkleur (nu grijs + beige)
-- [ ] **SL-UI-2** “Something broken”-modal op mobiel: verberg feedbackknop bij openen; geen horizontale scroll; copy “We send the address along automatically.” herschrijven
-- [ ] **SL-UI-3** Mobiel: stories-/materials-blokken tonen 3 items over 2 kolommen → lege cel; grid/aantal fixen
-- [ ] **SL-UI-4** Zoekpagina mobiel: toetsenbord sluiten na Enter; breadcrumb `Home – Home – Search` opschonen; zoekveld volle breedte (gelijk aan knop)
+- [x] **SL-UI-1** Channel-pagina’s: één sitebrede achtergrondkleur (nu grijs + beige)
+- [x] **SL-UI-2** “Something broken”-modal op mobiel: verberg feedbackknop bij openen; geen horizontale scroll; copy “We send the address along automatically.” herschrijven
+- [x] **SL-UI-3** Mobiel: stories-/materials-blokken tonen 3 items over 2 kolommen → lege cel; grid/aantal fixen
+- [x] **SL-UI-4** Zoekpagina mobiel: toetsenbord sluiten na Enter; breadcrumb `Home – Home – Search` opschonen; zoekveld volle breedte (gelijk aan knop)
 
 ---
 

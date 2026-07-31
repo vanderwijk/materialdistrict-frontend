@@ -19,6 +19,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
+import { SearchForm } from '@/components/search/SearchForm'
 import { Button, EmptyState, Tag } from '@/components/ui'
 import { searchSite, type SearchResultItem } from '@/lib/api/search'
 import { canonicalPath } from '@/lib/seo/urls'
@@ -87,30 +88,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     <main>
       <header className="ov-page-header">
         <div className="ov-page-header-main">
-          <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Search' }]} />
+          <Breadcrumb items={[{ label: 'Search' }]} />
           <h1 className="t-display-lg">Search</h1>
 
-          {/* Eigen zoekveld op de pagina. Bewust een echte GET-form: werkt
-              zonder JavaScript en houdt de pagina een server-component. */}
-          <form className="srch-form" action="/search" method="get" role="search">
-            <label className="srch-form-label" htmlFor="srch-q">
-              Search MaterialDistrict
-            </label>
-            <div className="srch-form-row">
-              <input
-                id="srch-q"
-                className="srch-input"
-                type="search"
-                name="q"
-                defaultValue={q}
-                placeholder="Search materials, stories, brands, events and talks"
-                autoComplete="off"
-              />
-              <button type="submit" className="btn btn-primary srch-submit">
-                Search
-              </button>
-            </div>
-          </form>
+          {/* GET-form via client wrapper: blur dismisses the mobile keyboard. */}
+          <SearchForm defaultQuery={q} />
 
           {hasQuery && (
             <p className="ov-page-lede">

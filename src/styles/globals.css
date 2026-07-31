@@ -2996,7 +2996,7 @@ a:focus-visible {
    leesbaar. is-plain = geen thumbnail → effen surface met normale tekstkleur. */
 .channel-hero {
   position: relative;
-  background-color: var(--surface2);
+  background-color: var(--bg);
   background-image:
     linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.62) 100%),
     var(--channel-hero-img, none);
@@ -12301,6 +12301,10 @@ mark.search-mark {
   .hp-main .grid-2,.insider-cta,.quote-grid{grid-template-columns:1fr}
   .ad-leaderboard{display:none}
 }
+/* Phone: beat the 2-col .hp-main .grid-3 rule so 3 items do not leave an empty cell. */
+@media(max-width:480px){
+  .hp-main .grid-3{grid-template-columns:1fr}
+}
 /* ============================ einde §HOME-F2 ============================ */
 
 /* ============================================================
@@ -18373,7 +18377,11 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 
 @media (max-width: 560px) {
-  .srch-form-row { flex-direction: column; }
+  .srch-form-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .srch-input,
   .srch-submit { width: 100%; }
   .srch-row-link { gap: 12px; padding: 14px 8px; margin: 0 -8px; }
   .srch-thumb { width: 72px; height: 56px; }
@@ -18555,6 +18563,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   box-shadow: 0 2px 10px rgba(13, 31, 45, 0.12);
   transition: background var(--transition-base), color var(--transition-base);
 }
+.fb-trigger[aria-expanded="true"] { display: none; }
 .fb-trigger:hover { background: var(--navy); color: #fff; }
 .fb-trigger span[aria-hidden] {
   display: inline-flex;
@@ -18573,9 +18582,14 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 .fb-panel {
   position: fixed;
   right: var(--space-5);
-  bottom: calc(var(--space-5) + 48px);
+  bottom: var(--space-5);
   z-index: 901;
-  width: min(340px, calc(100vw - 2 * var(--space-5)));
+  box-sizing: border-box;
+  width: min(340px, calc(100% - 2 * var(--space-5)));
+  max-width: calc(100vw - 2 * var(--space-5));
+  max-height: min(70vh, calc(100dvh - 2 * var(--space-5) - env(safe-area-inset-bottom, 0px)));
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: var(--space-5);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -18657,8 +18671,18 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   line-height: 1.5;
 }
 @media (max-width: 600px) {
-  .fb-trigger { right: var(--space-3); bottom: var(--space-3); }
-  .fb-panel { right: var(--space-3); bottom: calc(var(--space-3) + 48px); }
+  .fb-trigger {
+    right: max(var(--space-3), env(safe-area-inset-right, 0px));
+    bottom: max(var(--space-3), env(safe-area-inset-bottom, 0px));
+  }
+  .fb-panel {
+    right: max(var(--space-3), env(safe-area-inset-right, 0px));
+    left: max(var(--space-3), env(safe-area-inset-left, 0px));
+    bottom: max(var(--space-3), env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    max-height: calc(100dvh - 2 * var(--space-3) - env(safe-area-inset-bottom, 0px) - env(safe-area-inset-top, 0px));
+  }
 }
 @media print { .fb-trigger, .fb-panel { display: none; } }
 /* ==================== einde §SOFTLAUNCH-FEEDBACK ==================== */
