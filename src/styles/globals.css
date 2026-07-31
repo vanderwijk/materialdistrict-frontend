@@ -18233,14 +18233,18 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 .srch-form-row {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 .srch-input {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 11px 14px;
+  height: 42px;
+  box-sizing: border-box;
+  padding: 0 14px;
   font: inherit;
   font-size: 0.9375rem;
+  line-height: 1.2;
   color: var(--text);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -18252,7 +18256,12 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   outline-offset: 1px;
   border-color: var(--navy);
 }
-.srch-submit { flex: 0 0 auto; }
+.srch-submit {
+  flex: 0 0 auto;
+  height: 42px;
+  padding: 0 18px;
+  align-self: center;
+}
 
 /* --- telling per type over de huidige pagina --- */
 .srch-breakdown {
