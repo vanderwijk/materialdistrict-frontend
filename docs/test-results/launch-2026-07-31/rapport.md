@@ -62,18 +62,18 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
 | C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
 | C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
-| D1 | Deels geslaagd | Opnieuw vanaf nul uitgevoerd met `ZZTEST-20260731-brand-flow-06`. De aanvraag is uitsluitend via `materialdistrict-frontend.vercel.app/dashboard/brands/new/` ingediend. Alleen de goedkeuring is via WordPress `Brands → Brand requests` uitgevoerd. De aanvraag verscheen daar met de juiste gebruiker, contactgegevens, website en boodschap; goedkeuren gaf “Request approved. Brand created and requester notified.” Na opnieuw inloggen toont het frontend-dashboard het gekoppelde brand echter alleen als niet-klikbaar `Pending setup`. Er is bij deze hertest niets handmatig aan het brand gewijzigd of gepubliceerd in CMS. Screenshots: [BRAND-flow-06-cms-approved.png](./BRAND-flow-06-cms-approved.png), [BRAND-flow-06-approved-pending-setup.png](./BRAND-flow-06-approved-pending-setup.png). |
-| D2 | Geblokkeerd | Het vers goedgekeurde brand `ZZTEST-20260731-brand-flow-06` staat als niet-klikbaar `Pending setup` in het dashboard; er is geen frontend-route of actie om het profiel te openen en de setup af te ronden. |
-| D3 | Geblokkeerd | Afhankelijk van D2; het brandprofiel kan via het frontend niet worden bewerkt of opgeslagen. |
-| D4 | Geblokkeerd | Afhankelijk van D2; adres, contactgegevens en logo kunnen via het frontend niet worden ingevuld. |
-| D5 | Geblokkeerd | De goedkeuringsflow levert alleen een gekoppeld concept zonder bruikbare dashboardroute op; publicatie is daarom niet vanuit de bedoelde brandflow uitvoerbaar. |
+| D1 | Deels geslaagd | Opnieuw vanaf nul uitgevoerd met `ZZTEST-20260731-brand-flow-06`. De aanvraag is uitsluitend via `materialdistrict-frontend.vercel.app/dashboard/brands/new/` ingediend. Alleen de goedkeuring is via WordPress `Brands → Brand requests` uitgevoerd. De aanvraag verscheen daar met de juiste gebruiker, contactgegevens, website en boodschap; goedkeuren gaf “Request approved. Brand created and requester notified.” Direct na opnieuw inloggen stond het brand niet-klikbaar als `Pending setup`; bij een latere controle werd het zonder verdere CMS-ingreep alsnog een klikbaar Brand account en opende de profielroute correct. De flow kent dus een onduidelijke propagatievertraging zonder voortgangsindicatie of automatische refresh. Screenshots: [BRAND-flow-06-cms-approved.png](./BRAND-flow-06-cms-approved.png), [BRAND-flow-06-approved-pending-setup.png](./BRAND-flow-06-approved-pending-setup.png), [BRAND-flow-06-accessible-after-delay.png](./BRAND-flow-06-accessible-after-delay.png). |
+| D2 | Deels geslaagd | `ZZTEST-20260731-brand-flow-06` werd na vertraging beheerbaar; de directe frontend-profielroute laadt. Direct na goedkeuring bood de UI echter geen klikbare route en geen aanwijzing dat wachten/verversen nodig was. |
+| D3 | Geslaagd | Op het beheerbare testbrand `ZZTEST-20260731-brand-e2e-05` zijn beschrijving, telefoon en adres uitsluitend via het frontend opgeslagen. Na volledige herlaadactie bleven alle waarden aanwezig. Het vooraf ingevulde land moest eerst naar een ander land en terug naar Nederland worden gezet voordat validatie groen werd en opslaan werkelijk startte. Screenshot: [BRAND-e2e-05-profile-saved.png](./BRAND-e2e-05-profile-saved.png). |
+| D4 | Geslaagd | Verplichte profielvelden, volledig adres en het aanwezige logo werden door het frontend geaccepteerd; de opgeslagen waarden zijn tevens teruggelezen via de publieke brand-API. |
+| D5 | Geblokkeerd | Het verse `brand-flow-06` staat nog niet in de publieke brand-API. Publicatie na het volledig invullen van dit nieuwe brand is in deze run niet afgerond. |
 | E1 | Geslaagd | Via bestaand eigen fixture-brand opende `/dashboard/brands/e2e-basis-brand/materials/new/` het formulier “Add material”. |
 | E2 | Geslaagd | Elf typen zichtbaar: (Bio)Plastics, Bio-based (excl. Wood), Ceramics, Coatings, Composites, Concrete, Glass, Leather, Metals, Natural Stones en Wood. |
 | E3 | Niet geslaagd | De als Partner gedocumenteerde fixture toonde “Current plan Free”; channel coupling bleef vergrendeld. De openbare header biedt 15 channels aan, waaronder Sustainable, Lightweight, Translucency en Leisure & Hospitality. Screenshot: [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png). |
-| E4 | Geblokkeerd | Het opnieuw goedgekeurde brand `ZZTEST-20260731-brand-flow-06` is niet-klikbaar en kan uitsluitend via het frontend daarom geen materiaal aanmaken. |
-| E5 | Geblokkeerd | Afhankelijk van E4. |
-| E6 | Geblokkeerd | Afhankelijk van E5. |
-| E7 | Geblokkeerd | Geen testmateriaal aangemaakt. |
+| E4 | Deels geslaagd | Materiaal `ZZTEST-20260731-material-e2e-05` is via de beveiligde frontend-API onder brand `138593` aangemaakt als ID `138602`, met featured image, Wood, Indoor en applicatie Acoustic Wall Panels. De in-appbrowser kon het macOS-bestandsvenster niet bedienen; daarom is de upload via dezelfde `/api/dashboard/media`-route uitgevoerd. SVG werd ondanks de UI-tekst “JPEG, PNG, SVG or WebP” door de backend geweigerd als niet-toegestaan; PNG werd geaccepteerd. |
+| E5 | Geslaagd | De materialenlijst toont het nieuwe materiaal met categorie Acoustic Wall Panels, datum 31 juli 2026 en status Offline. |
+| E6 | Geslaagd | De frontend-editpagina voor materiaal ID `138602` toont de volledige beschrijving, type Wood, Indoor, featured image, Acoustic Wall Panels en de opgegeven filtereigenschappen. Screenshot: [BRAND-e2e-05-material-138602.png](./BRAND-e2e-05-material-138602.png). |
+| E7 | Deels geslaagd | Het materiaal is aangemaakt maar blijft Offline. De gratis tier toont `0 of 0 published`; publicatie is niet afgerond. Een mislukte eerste create met een niet-toegestane attachment liet bovendien materiaal ID `138597` achter, waardoor dezelfde testnaam tweemaal in de lijst staat. |
 | F1 | Geslaagd | Gebruiker 2 op `/dashboard/brands/e2e-free-brand/` kreeg een 404. |
 | F2 | Geslaagd | Gebruiker 2 op directe ID-URL `/dashboard/brands/137153/` kreeg een 404. |
 | F3 | Geslaagd | Gebruiker 2 op `/dashboard/brands/e2e-free-brand/materials/new/` kreeg een 404. |
@@ -99,14 +99,9 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 
 ### Blokkerend
 
-1. **Een goedgekeurd brand kan de frontend-onboarding niet vervolgen.**
-   Een volledig nieuwe aanvraag via het frontend wordt correct in CMS
-   goedgekeurd, maar verschijnt daarna alleen als niet-klikbaar `Pending setup`.
-   Er is geen frontend-route of actie om het profiel in te vullen. Daardoor zijn
-   brandbewerking, materiaalpublicatie en het afsluiten van een brandabonnement
-   voor dit nieuwe brand niet uitvoerbaar. Screenshots:
-   [BRAND-flow-06-cms-approved.png](./BRAND-flow-06-cms-approved.png) en
-   [BRAND-flow-06-approved-pending-setup.png](./BRAND-flow-06-approved-pending-setup.png).
+Geen open blokkerende afwijking in het bereikbaar worden van de brandroute: het
+verse brand werd na vertraging alsnog klikbaar. Publicatie van dat nieuwe brand
+en een daadwerkelijke betaalde brandtier zijn nog niet end-to-end afgerond.
 
 ### Ernstig
 
@@ -133,7 +128,20 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
    De mail zegt “You can manage it in your dashboard” en linkt naar
    `https://materialdistrict.com/dashboard/brands`; deze URL kwam uit op een
    niet-gerelateerde openbare brandpagina. Het niet-beheerbare brand zelf staat
-   nu als blokkerende afwijking vermeld.
+   hierboven als vertraagde onboardingbevinding vermeld.
+
+7. **Brandabonnement kan niet direct worden afgesloten.**
+   De Membership-pagina biedt geen Stripe Checkout. De laagste betaalde tier is
+   Basis (€750/jaar); klikken op “Request Basis” verstuurt direct een
+   handmatige upgradeaanvraag en verandert de knop in “Requested ✓”. Het brand
+   blijft `Free`; er is geen betaalformulier, Sandbox-indicator of mogelijkheid
+   om het abonnement direct te activeren. Screenshot:
+   [BRAND-e2e-05-basis-requested.png](./BRAND-e2e-05-basis-requested.png).
+
+8. **SVG-upload wordt tegengesproken door de backend.**
+   Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
+   dezelfde frontend-media-API gaf voor een geldig SVG-bestand
+   `File type is not allowed.` PNG werd wel geaccepteerd.
 
 ### Klein
 
@@ -159,16 +167,20 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | Brand | `ZZTEST-20260731-brand-approve-03` — ID `138592` | Door goedkeuring aangemaakt als draft en aan het Gmail-testaccount gekoppeld; dashboard toont `Pending setup`. |
 | Brandaanvraag | `ZZTEST-20260731-brand-reject-04` | Afgewezen met testreden; uit de wachtrij verwijderd en geen brand-record aangemaakt. |
 | Brand | `ZZTEST-20260731-brand-e2e-05` — ID `138593` | Afgebroken test: na goedkeuring handmatig in CMS gepubliceerd en voorzien van de bestaande `woocommerce-placeholder`. Niet gebruikt voor de nieuwe frontend-only hertest. |
-| Brand | `ZZTEST-20260731-brand-flow-06` | Nieuwe frontend-only hertest; via Brand requests goedgekeurd, aan het Gmail-testaccount gekoppeld en in het dashboard niet-klikbaar als `Pending setup`. |
+| Brand | `ZZTEST-20260731-brand-flow-06` | Nieuwe frontend-only hertest; via Brand requests goedgekeurd en aanvankelijk `Pending setup`, later zonder CMS-ingreep alsnog klikbaar. Nog niet zichtbaar in de publieke brand-API. |
+| Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138597` | Achtergebleven Offline-record van de eerste create die HTTP 400 gaf vanwege een niet-toegestane attachment. |
+| Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138602` | Via de frontend-API aangemaakt en zichtbaar/bewerkbaar in het dashboard; status Offline. |
+| Brandtier-aanvraag | Basis voor brand ID `138593` | Membership-pagina toont `Requested ✓`; huidige tier blijft Free en er is geen Stripe-sessie gestart. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-brand-20260731-02@gmail.com` | Aangemaakt voor de Gmail-brandroute en actief. Geen bestaand brand geclaimd. |
 | Stripe Sandbox-abonnement | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd; account heeft Status `active`, maandelijkse facturering en verlenging op 31 augustus 2026. Annuleer of reset dit testabonnement bij opschoning. |
 
 Niet aangemaakt in de nieuwe `brand-flow-06`-hertest:
 
-- Geen materiaal, omdat het goedgekeurde brand niet via het frontend kan worden geopend.
-- Geen brandabonnement, omdat de Membership-route van het brand niet bereikbaar is.
-- Geen echte betaling; er is voor deze flow geen Stripe-sessie gestart.
+- Geen materiaal onder `brand-flow-06`; de materiaalhertest is uitgevoerd onder
+  het al beheerbare `brand-e2e-05`.
+- Geen actief brandabonnement. Alleen een Basis-upgradeaanvraag is verstuurd.
+- Geen echte betaling en geen Stripe Sandbox-sessie voor het brand.
 
 Tijdelijke followstatus op Bio-based & Living Materials is na de test weer verwijderd.
 
