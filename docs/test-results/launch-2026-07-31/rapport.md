@@ -37,8 +37,8 @@ Belangrijkste afwijkingen:
   eerste betaling gaat via de bank en vervolgbetalingen via SEPA-incasso.
 - Drie van de nieuwe channels in de hoofdnavigatie geven nog 404;
   `regenerative` is hersteld.
-- De route `/search/` en de lege zoekstaat werken nu, maar het zoekveld in de
-  header verstuurt de zoekopdracht nog niet.
+- De zoekfunctie werkt nu volledig: het header-zoekveld navigeert met Enter
+  naar `/search/?q=wood`, de resultatenroute werkt en ook de lege zoekstaat is aanwezig.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
 - Een goedgekeurde aanvraag wordt als draft-brand gekoppeld maar blijft
   niet-klikbaar als `Pending setup`. De goedkeuringsmail zegt dat het brand
@@ -103,7 +103,7 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | G4 | Geslaagd | Unauthenticated `/wp-json/wp/v2/users?per_page=5` geeft op beide hosts 401 met code `rest_forbidden`; er zijn geen e-mailadressen of gebruikersnamen zichtbaar. |
 | H1 | Deels geslaagd | Nieuwste hertest van de vier eerdere 404-routes: `regenerative` werkt nu en toont zeven stories en twee talks. `energy-resilience`, `net-zero-carbon` en `timber` geven nog steeds 404. Screenshot van Timber: [H1-timber-404.png](./H1-timber-404.png). |
 | H2 | Geslaagd | Homepage van boven tot onder gecontroleerd: inhoud aanwezig, geen kapotte of nul-grote afbeeldingen. |
-| H3 | Deels geslaagd | `/search/?q=wood` werkt nu en toont 1.330 resultaten. Het header-zoekveld navigeert echter nog niet: na openen, `wood` invoeren en Enter blijft de URL op de huidige pagina. Screenshot [H3-search-no-navigation.png](./H3-search-no-navigation.png) toont de eerdere meting van hetzelfde headerprobleem. |
+| H3 | Geslaagd | Het JavaScript-zoekveld in de header opent correct. Handmatige verificatie door de gebruiker bevestigt dat invoer van `wood` gevolgd door Enter naar `/search/?q=wood` navigeert; die route toont 1.330 resultaten. De eerdere automatiseringsmeting waarbij de URL niet veranderde was een false negative. Screenshot [H3-search-no-navigation.png](./H3-search-no-navigation.png) documenteert uitsluitend die vervallen automatiseringsmeting. |
 | H4 | Geslaagd | De zoekroute toont nu een nette lege staat. Query `qzxvbnm987654321nomatch` geeft “No results found” met links naar Materials en Stories, niet langer een 404. De oude screenshot [H4-search-route-404.png](./H4-search-route-404.png) documenteert de vervallen situatie. |
 | H5 | Geslaagd | `/zztest-20260731-does-not-exist/` toont een nette sitebrede 404 met “This page could not be found.” |
 | H6 | Geslaagd | Homepage, materiaalpagina en artikelpagina getest op 390×844. Geen horizontale overflow; geen kapotte afbeeldingen. Screenshot: [H6-mobile-material.png](./H6-mobile-material.png). |
@@ -122,25 +122,21 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 1. **Kritieke follow-returnflow verliest de herkomstpagina.**
    Van `/channel/bio-based-living-materials/` naar `/sign-in/` zonder `next`; na login naar `/material/`.
 
-2. **Globale zoekfunctie verstuurt de zoekopdracht niet vanuit de header.**
-   De doelroute `/search/` werkt inmiddels, inclusief resultaten en lege staat.
-   Invoer in het header-zoekveld gevolgd door Enter laat de URL echter ongewijzigd.
-
-3. **Drie aangeboden channels geven 404.**
+2. **Drie aangeboden channels geven 404.**
    `energy-resilience`, `net-zero-carbon` en `timber`. `regenerative` is hersteld.
    Voorbeeld: `https://materialdistrict-frontend.vercel.app/channel/timber/`.
 
-4. **Partner-testfixture is niet als Partner actief.**
+3. **Partner-testfixture is niet als Partner actief.**
    `e2e-partner-brand` toont “Current plan Basis”, waardoor channel coupling
    vergrendeld blijft. iDEAL/Wero bij Insider is wel hersteld en is daarom uit
    deze openstaande lijst verwijderd.
 
-5. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
+4. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
    De verse mail voor `ZZTEST-20260731-brand-link-07` linkt naar
    `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07`
    in plaats van het dashboard op `materialdistrict-frontend.vercel.app`.
 
-6. **SVG-upload wordt tegengesproken door de backend.**
+5. **SVG-upload wordt tegengesproken door de backend.**
    Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
    dezelfde frontend-media-API gaf voor een geldig SVG-bestand
    `File type is not allowed.` PNG werd wel geaccepteerd.
