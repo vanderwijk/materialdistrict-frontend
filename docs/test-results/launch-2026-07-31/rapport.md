@@ -60,7 +60,7 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
 | C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
 | C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
-| D1 | Niet geslaagd | Hertest met nieuw Gmail-account `vanderwijk+zztest-brand-20260731-02@gmail.com`: de reviewroute accepteerde `ZZTEST-20260731-brand-02` en toonde “Thanks — your request has been sent. We'll review it and get back to you.”; er verscheen geen beheersbaar brand in het dashboard. Afwijking: ondanks het publieke Gmail-domein werden vijf bestaande brands (`Achille Pinto`, `Addit Studio`, `Alessia Giardino`, `Alexandra Devaux` en `Alice Corbetta`) met domein `gmail.com` als direct claimbaar aangeboden. Er is bewust niet op “Claim” geklikt. De notificatie naar `info@materialdistrict.com` kon niet worden geverifieerd: alleen `vanderwijk@gmail.com` is gekoppeld en daar verscheen geen doorgestuurde aanvraag in All Mail. Screenshots: [D1-retest-gmail-pending-unsafe-candidates.png](./D1-retest-gmail-pending-unsafe-candidates.png), [D1-retest-gmail-request-pending.png](./D1-retest-gmail-request-pending.png). |
+| D1 | Niet geslaagd | Hertest met nieuw Gmail-account `vanderwijk+zztest-brand-20260731-02@gmail.com`: de reviewroute accepteerde `ZZTEST-20260731-brand-02` en toonde “Thanks — your request has been sent. We'll review it and get back to you.”; er verscheen geen beheersbaar brand in het dashboard. Afwijking: ondanks het publieke Gmail-domein werden vijf bestaande brands (`Achille Pinto`, `Addit Studio`, `Alessia Giardino`, `Alexandra Devaux` en `Alice Corbetta`) met domein `gmail.com` als direct claimbaar aangeboden. Er is bewust niet op “Claim” geklikt. De notificatie naar `info@materialdistrict.com` kon niet worden geverifieerd: alleen `vanderwijk@gmail.com` is gekoppeld en daar verscheen geen doorgestuurde aanvraag in All Mail. De registratiemail aan het fabrikantaccount zei bovendien “your brand account is now ready”, terwijl het dashboard nog `Pending setup` toonde en de aanvraag nog niet was goedgekeurd. Screenshots: [D1-retest-gmail-pending-unsafe-candidates.png](./D1-retest-gmail-pending-unsafe-candidates.png), [D1-retest-gmail-request-pending.png](./D1-retest-gmail-request-pending.png). |
 | D2 | Geblokkeerd | D1 leverde geen testbrand op. |
 | D3 | Geblokkeerd | D1 leverde geen testbrand op. |
 | D4 | Geblokkeerd | D1 leverde geen testbrand op. |
@@ -135,6 +135,11 @@ Geen open blokkerende afwijkingen na de hertests van G2, G3 en C3–C4.
 
 2. **Uitgelogd volgen opent een accountmodal in plaats van de verwachte directe loginredirect.**
    Dit is vooral hinderlijk; het ernstige gevolg — verlies van de return-URL — staat apart vermeld.
+
+3. **Welkomstmail loopt vooruit op de brandgoedkeuring.**
+   Een als fabrikant geregistreerd Gmail-account ontvangt direct “your brand
+   account is now ready”, terwijl het dashboard `Pending setup` toont en de
+   brandaanvraag nog op goedkeuring wacht.
 
 ## Achtergebleven testdata
 
