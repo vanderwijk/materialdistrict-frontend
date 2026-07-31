@@ -21,6 +21,10 @@ Belangrijkste positieve resultaten:
 - De elf materiaaltypen zijn aanwezig, inclusief Composites en Leather.
 - De publieke talk-API verbergt na de hertest de Vimeo-ID's van alle 92 CMS- en 99 productietalks.
 - De publieke lead-route is na de hertest op CMS en productie verwijderd en geeft 404.
+- De WordPress-wachtrij voor brandaanvragen toont nieuwe aanvragen met alle
+  ingediende gegevens; goedkeuren en weigeren werken en sturen de juiste e-mails.
+- Publieke e-maildomeinen zoals `gmail.com` leveren na de hertest geen direct
+  claimbare bestaande brands meer op.
 
 Belangrijkste afwijkingen:
 
@@ -29,15 +33,13 @@ Belangrijkste afwijkingen:
 - Vier van de nieuwe channels in de hoofdnavigatie geven een 404.
 - De globale zoekfunctie navigeert niet; de doelroute `/search/` bestaat niet en geeft 404.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
-- De Gmail-reviewroute accepteert een nieuwe brandaanvraag zoals bedoeld; tot
-  goedkeuring blijven D2–D5 en E4–E7 geblokkeerd.
-- Hertest brand-onboarding: een Gmail-account krijgt ten onrechte vijf bestaande brands
-  met domein `gmail.com` als direct claimbare kandidaten te zien. Geen van deze
-  claims is uitgevoerd, om geen bestaand brand aan een verkeerde gebruiker te koppelen.
+- Een goedgekeurde aanvraag wordt als draft-brand gekoppeld maar blijft
+  niet-klikbaar als `Pending setup`. De goedkeuringsmail zegt dat het brand
+  beheerd kan worden en linkt naar een URL die niet naar het dashboard leidt.
 
 ## Resultaat per stap
 
-Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
+Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 
 | Stap | Uitkomst | Wat is gedaan en gezien |
 |---|---|---|
@@ -60,15 +62,15 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
 | C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
 | C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
-| D1 | Niet geslaagd | Hertest met nieuw Gmail-account `vanderwijk+zztest-brand-20260731-02@gmail.com`: de reviewroute accepteerde `ZZTEST-20260731-brand-02` en toonde “Thanks — your request has been sent. We'll review it and get back to you.”; er verscheen geen beheersbaar brand in het dashboard. De interne notificatie kwam om 12:56 aan op `info@materialdistrict.com`, van `MaterialDistrict <requests@materialdistrict.com>`, met onderwerp `Dashboard brand request: ZZTEST-20260731-brand-02` en de juiste aanvrager-, contact-, website- en berichtgegevens. Afwijking: ondanks het publieke Gmail-domein werden vijf bestaande brands (`Achille Pinto`, `Addit Studio`, `Alessia Giardino`, `Alexandra Devaux` en `Alice Corbetta`) met domein `gmail.com` als direct claimbaar aangeboden. Er is bewust niet op “Claim” geklikt. De registratiemail aan het fabrikantaccount zei bovendien “your brand account is now ready”, terwijl het dashboard nog `Pending setup` toonde en de aanvraag nog niet was goedgekeurd. Screenshots: [D1-retest-gmail-pending-unsafe-candidates.png](./D1-retest-gmail-pending-unsafe-candidates.png), [D1-retest-gmail-request-pending.png](./D1-retest-gmail-request-pending.png). |
-| D2 | Geblokkeerd | D1 leverde geen testbrand op. |
-| D3 | Geblokkeerd | D1 leverde geen testbrand op. |
-| D4 | Geblokkeerd | D1 leverde geen testbrand op. |
-| D5 | Geblokkeerd | D1 leverde geen openbare brandpagina op. |
+| D1 | Deels geslaagd | Hertest van de nieuwe beheerfunctie met `ZZTEST-20260731-brand-approve-03` en `ZZTEST-20260731-brand-reject-04`. Het Gmail-account toont nu correct “No matching brands.” en biedt geen bestaande Gmail-brands meer ter directe claim aan. Beide aanvragen verschenen onder WordPress `Brands → Brand requests` met de juiste gebruiker, contactgegevens, website, bericht en datum. Goedkeuren gaf “Request approved. Brand created and requester notified.”, maakte draft-brand ID `138592` aan, koppelde dit aan de gebruiker en stuurde de juiste goedkeuringsmail. Weigeren met een reden gaf “Request rejected. Requester notified.”, stuurde een mail met de opgegeven reden en maakte geen brand-record aan. Afwijking: het goedgekeurde brand blijft in het dashboard niet-klikbaar als `Pending setup`; de mail zegt wel dat het beheerd kan worden en linkt naar `https://materialdistrict.com/dashboard/brands`, maar deze URL kwam uit op een niet-gerelateerde openbare brandpagina. Screenshots: [D1-retest-brand-request-approved.png](./D1-retest-brand-request-approved.png), [D1-retest-brand-request-rejected.png](./D1-retest-brand-request-rejected.png), [D1-retest-approved-brand-pending-setup.png](./D1-retest-approved-brand-pending-setup.png). |
+| D2 | Geblokkeerd | Het goedgekeurde draft-brand staat als niet-klikbaar `Pending setup` in het dashboard; het profiel kan niet worden geopend. |
+| D3 | Geblokkeerd | Het goedgekeurde draft-brand is nog niet via het dashboard te beheren. |
+| D4 | Geblokkeerd | Het goedgekeurde draft-brand is nog niet via het dashboard te beheren. |
+| D5 | Geblokkeerd | Draft-brand `138592` is niet gepubliceerd en heeft geen openbare brandpagina. |
 | E1 | Geslaagd | Via bestaand eigen fixture-brand opende `/dashboard/brands/e2e-basis-brand/materials/new/` het formulier “Add material”. |
 | E2 | Geslaagd | Elf typen zichtbaar: (Bio)Plastics, Bio-based (excl. Wood), Ceramics, Coatings, Composites, Concrete, Glass, Leather, Metals, Natural Stones en Wood. |
 | E3 | Niet geslaagd | De als Partner gedocumenteerde fixture toonde “Current plan Free”; channel coupling bleef vergrendeld. De openbare header biedt 15 channels aan, waaronder Sustainable, Lightweight, Translucency en Leisure & Hospitality. Screenshot: [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png). |
-| E4 | Geblokkeerd | Geen testbrand uit D1; bestaand fixture-brand is niet aangepast. |
+| E4 | Geblokkeerd | Het goedgekeurde draft-brand uit D1 is niet-klikbaar en kan niet worden beheerd. |
 | E5 | Geblokkeerd | Afhankelijk van E4. |
 | E6 | Geblokkeerd | Afhankelijk van E5. |
 | E7 | Geblokkeerd | Geen testmateriaal aangemaakt. |
@@ -120,11 +122,13 @@ Geen open blokkerende afwijkingen na de hertests van G2, G3 en C3–C4.
    De vereiste iDEAL-bankkeuze en simulatie uit C2 zijn niet beschikbaar.
    Screenshot: [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png).
 
-6. **Publieke e-maildomeinen worden gebruikt voor directe brandclaims.**
-   Een nieuw account op `gmail.com` krijgt bestaande brands met hetzelfde generieke
-   domein als claimbare kandidaten aangeboden. Dit doorbreekt de bedoelde
-   goedkeuringsroute voor Gmail-gebruikers. Er is geen claim uitgevoerd.
-   Screenshot: [D1-retest-gmail-pending-unsafe-candidates.png](./D1-retest-gmail-pending-unsafe-candidates.png).
+6. **Goedgekeurd brand is nog niet beheerbaar en de e-maillink is onjuist.**
+   Goedkeuring maakt draft-brand `138592` en koppelt het aan de gebruiker, maar
+   het dashboard toont het alleen als niet-klikbaar `Pending setup`. De mail zegt
+   “You can manage it in your dashboard” en linkt naar
+   `https://materialdistrict.com/dashboard/brands`; deze URL kwam uit op een
+   niet-gerelateerde openbare brandpagina. Screenshot:
+   [D1-retest-approved-brand-pending-setup.png](./D1-retest-approved-brand-pending-setup.png).
 
 ### Klein
 
@@ -146,14 +150,16 @@ Geen open blokkerende afwijkingen na de hertests van G2, G3 en C3–C4.
 | Type | Identificatie | Status |
 |---|---|---|
 | Brandaanvraag | `ZZTEST-20260731-brand-01` | Achtergebleven als review-aanvraag; er werd geen ID in de UI getoond en er is geen verwijderactie beschikbaar. |
-| Brandaanvraag | `ZZTEST-20260731-brand-02` | Hertest; achtergebleven als review-aanvraag. Er werd geen ID in de UI getoond en er is geen verwijderactie beschikbaar. |
+| Brandaanvraag | `ZZTEST-20260731-brand-02` | Vóór de nieuwe beheerwachtrij aangemaakt en niet zichtbaar in de nieuwe wachtrij. |
+| Brand | `ZZTEST-20260731-brand-approve-03` — ID `138592` | Door goedkeuring aangemaakt als draft en aan het Gmail-testaccount gekoppeld; dashboard toont `Pending setup`. |
+| Brandaanvraag | `ZZTEST-20260731-brand-reject-04` | Afgewezen met testreden; uit de wachtrij verwijderd en geen brand-record aangemaakt. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-brand-20260731-02@gmail.com` | Aangemaakt voor de Gmail-brandroute en actief. Geen bestaand brand geclaimd. |
 | Stripe Sandbox-abonnement | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd; account heeft Status `active`, maandelijkse facturering en verlenging op 31 augustus 2026. Annuleer of reset dit testabonnement bij opschoning. |
 
 Niet aangemaakt:
 
-- Geen brandrecord in het dashboard.
+- Geen gepubliceerd brandrecord; goedkeuring heeft alleen draft-brand `138592` aangemaakt.
 - Geen materiaal.
 - Geen echte betaling; alle betaaltests zijn zichtbaar als Stripe Sandbox uitgevoerd.
 
