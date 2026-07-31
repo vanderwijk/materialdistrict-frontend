@@ -25,6 +25,10 @@ Belangrijkste positieve resultaten:
   ingediende gegevens; goedkeuren en weigeren werken en sturen de juiste e-mails.
 - Publieke e-maildomeinen zoals `gmail.com` leveren na de hertest geen direct
   claimbare bestaande brands meer op.
+- De aanvullende brandmembership-hertest is volledig geslaagd: een Basis-plan
+  opent Stripe Sandbox voor exact €750 per jaar, verwerkt kaartbetaling en zet
+  alleen het gekozen brand via de webhook van Free naar Basis. De status blijft
+  na verversen en opnieuw inloggen behouden.
 
 Belangrijkste afwijkingen:
 
@@ -67,6 +71,13 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | D3 | Geslaagd | Op het beheerbare testbrand `ZZTEST-20260731-brand-e2e-05` zijn beschrijving, telefoon en adres uitsluitend via het frontend opgeslagen. Na volledige herlaadactie bleven alle waarden aanwezig. Het vooraf ingevulde land moest eerst naar een ander land en terug naar Nederland worden gezet voordat validatie groen werd en opslaan werkelijk startte. Screenshot: [BRAND-e2e-05-profile-saved.png](./BRAND-e2e-05-profile-saved.png). |
 | D4 | Geslaagd | Verplichte profielvelden, volledig adres en het aanwezige logo werden door het frontend geaccepteerd; de opgeslagen waarden zijn tevens teruggelezen via de publieke brand-API. |
 | D5 | Geblokkeerd | Het verse `brand-flow-06` staat nog niet in de publieke brand-API. Publicatie na het volledig invullen van dit nieuwe brand is in deze run niet afgerond. |
+| BM1 | Geslaagd | De Membership-pagina van `ZZTEST-20260731-brand-flow-06` toont Free, Basis €750/jaar, Plus €1.500/jaar en Partner €3.000/jaar. “Upgrade to Basis” start `/checkout/?plan=brand&brandId=138595&tier=basis&brandSlug=zztest-20260731-brand-flow-06`. |
+| BM2 | Geslaagd | De serverroute maakt een Stripe Checkout Session in Sandbox aan voor “Basic”, jaarlijks gefactureerd, totaal vandaag €750. De checkout toont kaart en iDEAL/Wero; bij iDEAL staat de toelichting dat vervolgbetalingen via SEPA Direct Debit lopen. |
+| BM3 | Geslaagd | Annuleren via “Terug naar MaterialDistrict” keert terug naar de juiste brandmembershiproute met `?checkout=cancel`, toont “Checkout was cancelled. No charge was made” en laat de tier op Free. |
+| BM4 | Geslaagd | Stripe-testkaart `4000 0000 0000 0002` wordt geweigerd met “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Er wordt geen plan geactiveerd. |
+| BM5 | Geslaagd | Testkaart `4242 4242 4242 4242`, vervaldatum `12/34` en CVC `123` werd geaccepteerd. Return naar de brandmembershippagina bevat `checkout=success` en de Checkout Session-ID en toont “Payment received. Your brand plan is active.” |
+| BM6 | Geslaagd | Brand ID `138595` veranderde direct van Free naar Basis en toont `0 of 5 materials published`. De status bleef aanwezig na een volledige herlaadactie en na uitloggen en opnieuw inloggen. Screenshots: [BRAND-flow-06-basis-active.jpg](./BRAND-flow-06-basis-active.jpg), [BRAND-flow-06-basis-persists-relogin.jpg](./BRAND-flow-06-basis-persists-relogin.jpg). |
+| BM7 | Geslaagd | Controle op het andere brand `ZZTEST-20260731-brand-e2e-05` (ID `138593`) toont nog steeds Free. De succesvolle webhook heeft dus het brand uit de checkoutsessie bijgewerkt en niet een ander brand van dezelfde gebruiker. |
 | E1 | Geslaagd | Via bestaand eigen fixture-brand opende `/dashboard/brands/e2e-basis-brand/materials/new/` het formulier “Add material”. |
 | E2 | Geslaagd | Elf typen zichtbaar: (Bio)Plastics, Bio-based (excl. Wood), Ceramics, Coatings, Composites, Concrete, Glass, Leather, Metals, Natural Stones en Wood. |
 | E3 | Niet geslaagd | De als Partner gedocumenteerde fixture toonde “Current plan Free”; channel coupling bleef vergrendeld. De openbare header biedt 15 channels aan, waaronder Sustainable, Lightweight, Translucency en Leisure & Hospitality. Screenshot: [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png). |
@@ -100,8 +111,8 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 ### Blokkerend
 
 Geen open blokkerende afwijking in het bereikbaar worden van de brandroute: het
-verse brand werd na vertraging alsnog klikbaar. Publicatie van dat nieuwe brand
-en een daadwerkelijke betaalde brandtier zijn nog niet end-to-end afgerond.
+verse brand werd na vertraging alsnog klikbaar. De betaalde Basis-tier is nu
+end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 
 ### Ernstig
 
@@ -130,15 +141,7 @@ en een daadwerkelijke betaalde brandtier zijn nog niet end-to-end afgerond.
    niet-gerelateerde openbare brandpagina. Het niet-beheerbare brand zelf staat
    hierboven als vertraagde onboardingbevinding vermeld.
 
-7. **Brandabonnement kan niet direct worden afgesloten.**
-   De Membership-pagina biedt geen Stripe Checkout. De laagste betaalde tier is
-   Basis (€750/jaar); klikken op “Request Basis” verstuurt direct een
-   handmatige upgradeaanvraag en verandert de knop in “Requested ✓”. Het brand
-   blijft `Free`; er is geen betaalformulier, Sandbox-indicator of mogelijkheid
-   om het abonnement direct te activeren. Screenshot:
-   [BRAND-e2e-05-basis-requested.png](./BRAND-e2e-05-basis-requested.png).
-
-8. **SVG-upload wordt tegengesproken door de backend.**
+7. **SVG-upload wordt tegengesproken door de backend.**
    Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
    dezelfde frontend-media-API gaf voor een geldig SVG-bestand
    `File type is not allowed.` PNG werd wel geaccepteerd.
@@ -167,20 +170,22 @@ en een daadwerkelijke betaalde brandtier zijn nog niet end-to-end afgerond.
 | Brand | `ZZTEST-20260731-brand-approve-03` — ID `138592` | Door goedkeuring aangemaakt als draft en aan het Gmail-testaccount gekoppeld; dashboard toont `Pending setup`. |
 | Brandaanvraag | `ZZTEST-20260731-brand-reject-04` | Afgewezen met testreden; uit de wachtrij verwijderd en geen brand-record aangemaakt. |
 | Brand | `ZZTEST-20260731-brand-e2e-05` — ID `138593` | Afgebroken test: na goedkeuring handmatig in CMS gepubliceerd en voorzien van de bestaande `woocommerce-placeholder`. Niet gebruikt voor de nieuwe frontend-only hertest. |
-| Brand | `ZZTEST-20260731-brand-flow-06` | Nieuwe frontend-only hertest; via Brand requests goedgekeurd en aanvankelijk `Pending setup`, later zonder CMS-ingreep alsnog klikbaar. Nog niet zichtbaar in de publieke brand-API. |
+| Brand | `ZZTEST-20260731-brand-flow-06` — ID `138595` | Nieuwe frontend-only hertest; via Brand requests goedgekeurd en aanvankelijk `Pending setup`, later zonder CMS-ingreep alsnog klikbaar. Nu actief op Basis na een geslaagde Stripe Sandbox-betaling; nog niet zichtbaar in de publieke brand-API. |
 | Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138597` | Achtergebleven Offline-record van de eerste create die HTTP 400 gaf vanwege een niet-toegestane attachment. |
 | Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138602` | Via de frontend-API aangemaakt en zichtbaar/bewerkbaar in het dashboard; status Offline. |
 | Brandtier-aanvraag | Basis voor brand ID `138593` | Membership-pagina toont `Requested ✓`; huidige tier blijft Free en er is geen Stripe-sessie gestart. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-brand-20260731-02@gmail.com` | Aangemaakt voor de Gmail-brandroute en actief. Geen bestaand brand geclaimd. |
 | Stripe Sandbox-abonnement | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd; account heeft Status `active`, maandelijkse facturering en verlenging op 31 augustus 2026. Annuleer of reset dit testabonnement bij opschoning. |
+| Stripe Sandbox-brandabonnement | Brand `ZZTEST-20260731-brand-flow-06` — ID `138595`; Checkout Session `cs_test_a1wDHG4YhkL4VYCVVdzKED5vYQYbAg96wN93FSe297egGt6uSiB6sHmJmm` | Testkaartbetaling geaccepteerd; brand staat op Basis met 5 publicaties en jaarlijkse facturering van €750. Annuleer of reset dit testabonnement bij opschoning. |
 
-Niet aangemaakt in de nieuwe `brand-flow-06`-hertest:
+Status van de nieuwe `brand-flow-06`-hertest:
 
 - Geen materiaal onder `brand-flow-06`; de materiaalhertest is uitgevoerd onder
   het al beheerbare `brand-e2e-05`.
-- Geen actief brandabonnement. Alleen een Basis-upgradeaanvraag is verstuurd.
-- Geen echte betaling en geen Stripe Sandbox-sessie voor het brand.
+- Voor `brand-flow-06` is nu wel een actief Basis-brandabonnement en een Stripe
+  Sandbox-sessie aangemaakt. De oudere handmatige Basis-upgradeaanvraag hoort
+  bij brand ID `138593` en blijft als aparte testdata staan.
 
 Tijdelijke followstatus op Bio-based & Living Materials is na de test weer verwijderd.
 
