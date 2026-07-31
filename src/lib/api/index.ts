@@ -64,6 +64,10 @@ export {
 } from './channels'
 export type { Channel, ChannelIndexItem, ChannelTerm } from './channels'
 
+// Global SearchWP search (`/search`)
+export { searchSite } from './search'
+export type { SearchResultItem, SearchResultType, SearchResults } from './search'
+
 // FacetWP — voor het hoofdoverzicht /materials met filtering
 export {
   facetwpFetch,
