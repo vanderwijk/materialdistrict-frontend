@@ -1,19 +1,11 @@
 /**
- * `/search?q=` — global SearchWP-backed site search.
+ * `/search?q=&type=` — global SearchWP-backed site search.
  *
  * Header search and WebSite SearchAction JSON-LD both point here. Empty or
  * no-hit queries render an EmptyState (not a 404).
  *
- * Vormgeving (31-07-2026). Zoekresultaten zijn een gerangschikte lijst, geen
- * bladercatalogus: daarom rijen i.p.v. een kaartraster. Een rij toont de
- * relevantievolgorde van SearchWP zoals hij is, met het contenttype als
- * label zodat je in één blik ziet wát je gevonden hebt. Verder: een eigen
- * zoekveld op de pagina (voorheen kon je alleen vanuit de header zoeken) en
- * een telling per type over de huidige pagina.
- *
- * Nog niet mogelijk: échte filtertabs per type. Dat vraagt een `type`-param
- * op `/md/v2/search`; zolang die er niet is zou filteren op de client een
- * gepagineerde set halveren en dus liegen. Zie de mail aan Johan.
+ * Type tabs use the server `type` param on `/md/v2/search` so totals and
+ * pagination stay honest. Client-side filtering of a mixed page would lie.
  */
 
 import type { Metadata } from 'next'
@@ -21,7 +13,11 @@ import Link from 'next/link'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SearchForm } from '@/components/search/SearchForm'
 import { Button, EmptyState, Tag } from '@/components/ui'
-import { searchSite, type SearchResultItem } from '@/lib/api/search'
+import {
+  searchSite,
+  type SearchResultItem,
+  type SearchResultType,
+} from '@/lib/api/search'
 import { canonicalPath } from '@/lib/seo/urls'
 
 export const metadata: Metadata = {
@@ -31,7 +27,23 @@ export const metadata: Metadata = {
 }
 
 interface SearchPageProps {
-  searchParams: Promise<{ q?: string; page?: string }>
+  searchParams: Promise<{ q?: string; page?: string; type?: string }>
+}
+
+const SEARCH_TYPES: readonly SearchResultType[] = [
+  'material',
+  'article',
+  'brand',
+  'event',
+  'talk',
+]
+
+const TYPE_LABEL: Record<SearchResultType, string> = {
+  material: 'Materials',
+  article: 'Stories',
+  brand: 'Brands',
+  event: 'Events',
+  talk: 'Talks',
 }
 
 function parsePage(raw: string | undefined): number {
@@ -39,50 +51,40 @@ function parsePage(raw: string | undefined): number {
   return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 1
 }
 
-/** Leesbaar meervoud per contenttype, voor de telling boven de resultaten. */
-const TYPE_PLURAL: Record<SearchResultItem['type'], string> = {
-  material: 'materials',
-  article: 'stories',
-  brand: 'brands',
-  event: 'events',
-  talk: 'talks',
+function parseType(raw: string | undefined): SearchResultType | undefined {
+  if (!raw) return undefined
+  return (SEARCH_TYPES as readonly string[]).includes(raw)
+    ? (raw as SearchResultType)
+    : undefined
 }
 
-/** Telling per type over de resultaten van déze pagina, in vaste volgorde. */
-function countByType(
-  items: readonly SearchResultItem[]
-): Array<{ type: SearchResultItem['type']; count: number }> {
-  const order: Array<SearchResultItem['type']> = [
-    'material',
-    'article',
-    'brand',
-    'event',
-    'talk',
-  ]
-  return order
-    .map((type) => ({ type, count: items.filter((i) => i.type === type).length }))
-    .filter((entry) => entry.count > 0)
+function searchHref(q: string, opts: { type?: SearchResultType; page?: number } = {}): string {
+  const params = new URLSearchParams()
+  params.set('q', q)
+  if (opts.type) params.set('type', opts.type)
+  if (opts.page && opts.page > 1) params.set('page', String(opts.page))
+  return `/search?${params.toString()}`
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams
   const q = (params.q ?? '').trim()
   const page = parsePage(params.page)
+  const type = parseType(params.type)
 
   const results = q
-    ? await searchSite(q, { page, perPage: 24 })
+    ? await searchSite(q, { page, perPage: 24, type })
     : {
         q: '',
         page: 1,
         perPage: 24,
         total: 0,
         totalPages: 0,
-        items: [],
+        items: [] as SearchResultItem[],
       }
 
   const hasQuery = q.length > 0
   const totalLabel = results.total.toLocaleString('en-US')
-  const typeCounts = countByType(results.items)
 
   return (
     <main>
@@ -91,14 +93,22 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           <Breadcrumb items={[{ label: 'Search' }]} />
           <h1 className="t-display-lg">Search</h1>
 
-          {/* key remounts when ?q= changes from the header search. */}
-          <SearchForm key={q || 'empty'} defaultQuery={q} />
+          {/* key remounts when ?q= or ?type= changes from the header / tabs. */}
+          <SearchForm
+            key={`${q || 'empty'}-${type || 'all'}`}
+            defaultQuery={q}
+            type={type}
+          />
 
           {hasQuery && (
             <p className="ov-page-lede">
               {results.total > 0
-                ? `${totalLabel} result${results.total === 1 ? '' : 's'} for “${results.q}”`
-                : `No results for “${results.q}”`}
+                ? `${totalLabel} result${results.total === 1 ? '' : 's'} for “${results.q}”${
+                    type ? ` in ${TYPE_LABEL[type].toLowerCase()}` : ''
+                  }`
+                : `No results for “${results.q}”${
+                    type ? ` in ${TYPE_LABEL[type].toLowerCase()}` : ''
+                  }`}
             </p>
           )}
         </div>
@@ -125,12 +135,43 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           />
         )}
 
+        {hasQuery && (
+          <nav className="srch-tabs" aria-label="Filter by content type">
+            <Link
+              href={searchHref(q)}
+              className={`srch-tab${!type ? ' is-active' : ''}`}
+              aria-current={!type ? 'page' : undefined}
+            >
+              All
+            </Link>
+            {SEARCH_TYPES.map((tabType) => (
+              <Link
+                key={tabType}
+                href={searchHref(q, { type: tabType })}
+                className={`srch-tab${type === tabType ? ' is-active' : ''}`}
+                aria-current={type === tabType ? 'page' : undefined}
+              >
+                {TYPE_LABEL[tabType]}
+              </Link>
+            ))}
+          </nav>
+        )}
+
         {hasQuery && results.items.length === 0 && (
           <EmptyState
             title="No results found"
-            description="Try a different spelling, a broader term, or browse materials and stories."
+            description={
+              type
+                ? `Nothing matched in ${TYPE_LABEL[type].toLowerCase()}. Try All, or a broader term.`
+                : 'Try a different spelling, a broader term, or browse materials and stories.'
+            }
             actions={
               <>
+                {type && (
+                  <Button as="link" href={searchHref(q)} variant="outline" size="sm">
+                    Show all types
+                  </Button>
+                )}
                 <Button as="link" href="/material" variant="outline" size="sm">
                   Browse materials
                 </Button>
@@ -144,19 +185,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
         {results.items.length > 0 && (
           <>
-            {typeCounts.length > 1 && (
-              <p className="srch-breakdown">
-                On this page:{' '}
-                {typeCounts.map((entry, i) => (
-                  <span key={entry.type}>
-                    {i > 0 && ' · '}
-                    <span className="srch-breakdown-n">{entry.count}</span>{' '}
-                    {TYPE_PLURAL[entry.type]}
-                  </span>
-                ))}
-              </p>
-            )}
-
             <ol className="srch-list">
               {results.items.map((item) => (
                 <li className="srch-row" key={`${item.type}-${item.id}`}>
@@ -189,7 +217,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 {page > 1 && (
                   <Link
                     className="btn btn-outline btn-sm"
-                    href={`/search?q=${encodeURIComponent(q)}&page=${page - 1}`}
+                    href={searchHref(q, { type, page: page - 1 })}
                   >
                     Previous
                   </Link>
@@ -200,7 +228,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 {page < results.totalPages && (
                   <Link
                     className="btn btn-outline btn-sm"
-                    href={`/search?q=${encodeURIComponent(q)}&page=${page + 1}`}
+                    href={searchHref(q, { type, page: page + 1 })}
                   >
                     Next
                   </Link>

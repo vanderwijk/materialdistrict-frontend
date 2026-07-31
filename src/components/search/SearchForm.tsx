@@ -10,13 +10,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import type { SearchResultType } from '@/lib/api/search'
 
 interface SearchFormProps {
   /** Current query from the URL (`?q=`). */
   defaultQuery?: string
+  /** Active type filter from the URL (`?type=`). Preserved on submit. */
+  type?: SearchResultType
 }
 
-export function SearchForm({ defaultQuery = '' }: SearchFormProps) {
+export function SearchForm({ defaultQuery = '', type }: SearchFormProps) {
   const router = useRouter()
   const inputRef = useRef<HTMLInputElement>(null)
   const [value, setValue] = useState(defaultQuery)
@@ -45,8 +48,9 @@ export function SearchForm({ defaultQuery = '' }: SearchFormProps) {
       return
     }
 
-    const href = `/search?q=${encodeURIComponent(query)}`
-    router.push(href)
+    const params = new URLSearchParams({ q: query })
+    if (type) params.set('type', type)
+    router.push(`/search?${params.toString()}`)
     router.refresh()
   }
 
@@ -74,6 +78,7 @@ export function SearchForm({ defaultQuery = '' }: SearchFormProps) {
           autoComplete="off"
           enterKeyHint="search"
         />
+        {type ? <input type="hidden" name="type" value={type} /> : null}
         <button type="submit" className="btn btn-primary srch-submit">
           Search
         </button>

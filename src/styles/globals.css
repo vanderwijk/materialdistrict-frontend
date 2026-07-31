@@ -19138,3 +19138,125 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .footer-inner { grid-template-columns: 1fr; gap: 28px; }
 }
 /* ======================== einde §FOOTER-COMPANY ======================== */
+
+/* ============================================================
+   §CONTACT-FORM + §SEARCH-TYPE-TABS — 31-07-2026
+   ------------------------------------------------------------
+   Contact: echt formulier op /contact (POST /api/contact/).
+   Search: filtertabs die ?type= naar /md/v2/search doorgeven.
+   ============================================================ */
+.ct-form-wrap { display: flex; flex-direction: column; gap: 32px; }
+.ct-topics { border: 0; margin: 0; padding: 0; min-width: 0; }
+.ct-topics-legend {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.ct-card { cursor: pointer; text-align: left; width: 100%; }
+.ct-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+.ct-form-subject {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.ct-form-row { display: flex; flex-direction: column; gap: 6px; }
+.ct-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+.ct-optional { font-weight: 400; color: var(--text-hint); }
+.ct-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: var(--text-base);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.ct-input:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--navy);
+}
+.ct-textarea { resize: vertical; min-height: 140px; line-height: 1.5; }
+.ct-hp {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+}
+.ct-form-error {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--red-action);
+}
+.ct-form-actions { display: flex; justify-content: flex-start; }
+.ct-form-done {
+  max-width: 560px;
+  padding: 24px;
+  background: var(--surface2);
+  border-radius: var(--radius-lg);
+}
+.ct-form-done-title {
+  margin: 0 0 8px;
+  font-weight: 700;
+  font-size: var(--text-lg);
+  color: var(--text);
+}
+.ct-form-done-body {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.srch-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 22px;
+}
+.srch-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  transition: border-color var(--transition-base), color var(--transition-base), background var(--transition-base);
+}
+.srch-tab:hover { border-color: var(--text-hint); color: var(--text); }
+.srch-tab.is-active {
+  color: #fff;
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.srch-tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+@media (max-width: 560px) {
+  .srch-tabs { gap: 6px; }
+  .srch-tab { padding: 6px 10px; font-size: var(--text-xs); }
+}
+/* ============== einde §CONTACT-FORM + §SEARCH-TYPE-TABS ============== */
