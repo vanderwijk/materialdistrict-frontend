@@ -84,7 +84,7 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | BM7 | Geslaagd | Controle op het andere brand `ZZTEST-20260731-brand-e2e-05` (ID `138593`) toont nog steeds Free. De succesvolle webhook heeft dus het brand uit de checkoutsessie bijgewerkt en niet een ander brand van dezelfde gebruiker. |
 | E1 | Geslaagd | Via bestaand eigen fixture-brand opende `/dashboard/brands/e2e-basis-brand/materials/new/` het formulier “Add material”. |
 | E2 | Geslaagd | Elf typen zichtbaar: (Bio)Plastics, Bio-based (excl. Wood), Ceramics, Coatings, Composites, Concrete, Glass, Leather, Metals, Natural Stones en Wood. |
-| E3 | Niet geslaagd | Nieuwste hertest: de als Partner gedocumenteerde fixture `e2e-partner-brand` toont nu “Current plan Basis”, niet Partner. Op het materiaalformulier blijft “Channel coupling requires Partner” vergrendeld. De fixture is dus wel gewijzigd sinds de eerste meting (toen Free), maar nog niet correct geprovisioneerd. Oude screenshot: [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png). |
+| E3 | Geslaagd | Hertest na plugin-commit `b457c8b`: volledig uit- en opnieuw ingelogd als `e2e-dashboard-partner@materialdistrict.com`. Membership toont “Current plan Partner” en `0 materials published · unlimited`. Channel coupling is ontgrendeld op zowel het brandprofiel als `/materials/new/`. Op het nieuwe materiaal konden Acoustic, Biobased en Biodegradable tegelijk worden geselecteerd; een vierde channel werd geblokkeerd met “You can select up to 3 channels.” Er is niet gepubliceerd, dus deze hertest liet geen nieuw materiaal achter. De oude screenshot [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png) documenteert uitsluitend de vervallen situatie. Op het brandprofiel telt nog één bestaande niet-zichtbare fixturewaarde mee voor de limiet; dit raakt de herstelde Partner-gate op het materiaalformulier niet. |
 | E4 | Deels geslaagd | Materiaal `ZZTEST-20260731-material-e2e-05` is via de beveiligde frontend-API onder brand `138593` aangemaakt als ID `138602`, met featured image, Wood, Indoor en applicatie Acoustic Wall Panels. SVG is opnieuw via dezelfde frontendroute `/api/dashboard/media` getest onder brand `138595`; `ZZTEST-20260731-upload-07.svg` gaf opnieuw HTTP 400 met `File type is not allowed.` PNG werd bij de eerdere test wel geaccepteerd. |
 | E5 | Geslaagd | De materialenlijst toont het nieuwe materiaal met categorie Acoustic Wall Panels, datum 31 juli 2026 en status Offline. |
 | E6 | Geslaagd | De frontend-editpagina voor materiaal ID `138602` toont de volledige beschrijving, type Wood, Indoor, featured image, Acoustic Wall Panels en de opgegeven filtereigenschappen. Screenshot: [BRAND-e2e-05-material-138602.png](./BRAND-e2e-05-material-138602.png). |
@@ -120,17 +120,12 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 
 ### Ernstig
 
-1. **Partner-testfixture is niet als Partner actief.**
-   `e2e-partner-brand` toont “Current plan Basis”, waardoor channel coupling
-   vergrendeld blijft. iDEAL/Wero bij Insider is wel hersteld en is daarom uit
-   deze openstaande lijst verwijderd.
-
-2. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
+1. **De goedkeuringsmail bevat nog een onjuiste beheerlink.**
    De verse mail voor `ZZTEST-20260731-brand-link-07` linkt naar
    `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07`
    in plaats van het dashboard op `materialdistrict-frontend.vercel.app`.
 
-3. **SVG-upload wordt tegengesproken door de backend.**
+2. **SVG-upload wordt tegengesproken door de backend.**
    Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
    dezelfde frontend-media-API gaf voor een geldig SVG-bestand
    `File type is not allowed.` PNG werd wel geaccepteerd.
