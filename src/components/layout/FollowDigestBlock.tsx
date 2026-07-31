@@ -25,7 +25,9 @@
  */
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { useAuth } from '@/components/providers/AuthContext'
+import { authHref } from '@/lib/auth/return-url'
 import {
   followEntity,
   setMailFrequency,
@@ -76,9 +78,12 @@ const TOP_N = 8
 export function FollowDigestBlock({
   channels = [],
   compact = false,
-  createAccountHref = '/register',
-  signInHref = '/sign-in',
+  createAccountHref,
+  signInHref,
 }: FollowDigestBlockProps) {
+  const pathname = usePathname()
+  const resolvedCreateAccountHref = createAccountHref ?? authHref('/register', pathname)
+  const resolvedSignInHref = signInHref ?? authHref('/sign-in', pathname)
   const { isLoggedIn } = useAuth()
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const hydratedFrequency = useMailFrequency('weekly')
@@ -233,10 +238,10 @@ export function FollowDigestBlock({
         <div className="follow-digest-catch">
           <p className="follow-catch-title">Create a free account to follow</p>
           <p className="follow-catch-sub">Your follows and digest live in your account.</p>
-          <a className="follow-catch-btn" href={createAccountHref}>
+          <a className="follow-catch-btn" href={resolvedCreateAccountHref}>
             Create account
           </a>
-          <a className="follow-catch-login" href={signInHref}>
+          <a className="follow-catch-login" href={resolvedSignInHref}>
             Already have one? Log in
           </a>
         </div>

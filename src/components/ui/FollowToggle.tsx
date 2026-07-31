@@ -24,7 +24,9 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils/cn'
+import { authHref } from '@/lib/auth/return-url'
 import {
   useFollow,
   useMailFrequency,
@@ -79,10 +81,14 @@ export function FollowToggle({
   initialTypes,
   mailFrequency = 'weekly',
   onMailFrequencyChange,
-  createAccountHref = '/register',
-  signInHref = '/sign-in',
+  createAccountHref,
+  signInHref,
   className,
 }: FollowToggleProps) {
+  const pathname = usePathname()
+  const resolvedCreateAccountHref = createAccountHref ?? authHref('/register', pathname)
+  const resolvedSignInHref = signInHref ?? authHref('/sign-in', pathname)
+
   const { isLoggedIn, following, busy, follow, unfollow, updateTypes, types } = useFollow({
     entityType,
     entityId,
@@ -289,10 +295,10 @@ export function FollowToggle({
               ? `Get updates from ${entityName} and everything you follow.`
               : 'Your follows and digest live in your account.'}
           </p>
-          <a className="follow-catch-btn" href={createAccountHref}>
+          <a className="follow-catch-btn" href={resolvedCreateAccountHref}>
             Create account
           </a>
-          <a className="follow-catch-login" href={signInHref}>
+          <a className="follow-catch-login" href={resolvedSignInHref}>
             Already have one? Log in
           </a>
         </div>

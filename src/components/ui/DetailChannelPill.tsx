@@ -21,6 +21,8 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { authHref } from '@/lib/auth/return-url'
 import { useFollow, useMailFrequency, DEFAULT_FOLLOW_TYPES } from '@/lib/hooks/useFollow'
 import {
   setMailFrequency,
@@ -60,9 +62,13 @@ export function DetailChannelPill({
   id,
   slug,
   label,
-  createAccountHref = '/register',
-  signInHref = '/sign-in',
+  createAccountHref,
+  signInHref,
 }: DetailChannelPillProps) {
+  const pathname = usePathname()
+  const resolvedCreateAccountHref = createAccountHref ?? authHref('/register', pathname)
+  const resolvedSignInHref = signInHref ?? authHref('/sign-in', pathname)
+
   const { isLoggedIn, following, busy, follow, unfollow, updateTypes, types } = useFollow({
     entityType: 'channel',
     entityId: id,
@@ -261,10 +267,10 @@ export function DetailChannelPill({
           <p className="follow-catch-sub">
             Get updates from {label} and everything you follow.
           </p>
-          <a className="follow-catch-btn" href={createAccountHref}>
+          <a className="follow-catch-btn" href={resolvedCreateAccountHref}>
             Create account
           </a>
-          <a className="follow-catch-login" href={signInHref}>
+          <a className="follow-catch-login" href={resolvedSignInHref}>
             Already have one? Log in
           </a>
         </div>
