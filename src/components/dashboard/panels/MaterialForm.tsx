@@ -126,12 +126,14 @@ export function MaterialForm({
     if (featuredInputRef.current) featuredInputRef.current.value = ''
   }
 
-  // Featured image wordt 16:9 bijgesneden vóór upload. SVG gaat ongecropt door.
+  // Featured image wordt 16:9 bijgesneden vóór upload. SVG is not allowed for
+  // material images — only raster formats (server rejects .svg on context=image).
   function onFeaturedPick(file: File | null) {
     if (featuredInputRef.current) featuredInputRef.current.value = ''
     if (!file) return
-    if (file.type === 'image/svg+xml') {
-      void handleFeaturedChange(file)
+    const name = file.name.toLowerCase()
+    if (file.type === 'image/svg+xml' || name.endsWith('.svg')) {
+      setSaveError('SVG is only supported for brand logos, not material images.')
       return
     }
     setFeaturedCropFile(file)
@@ -264,9 +266,9 @@ export function MaterialForm({
             <input
               ref={featuredInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
               className="sr-only"
-              onChange={(e) => handleFeaturedChange(e.target.files?.[0] ?? null)}
+              onChange={(e) => onFeaturedPick(e.target.files?.[0] ?? null)}
             />
             <button
               type="button"
@@ -276,6 +278,7 @@ export function MaterialForm({
             >
               <IconUpload size={16} /> {uploading ? 'Uploading…' : 'Choose image'}
             </button>
+            <p className="field-helper">JPEG, PNG or WebP.</p>
           </div>
         </div>
       </div>
@@ -336,6 +339,7 @@ export function MaterialForm({
               onUpload={(file) => uploadFile(file, 'image')}
               uploading={uploading}
             />
+            <p className="field-helper">JPEG, PNG or WebP.</p>
           </div>
           <div>
             {canVideos ? (

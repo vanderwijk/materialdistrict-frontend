@@ -13,8 +13,9 @@
  * `post_parent` so the public site reads them via `?parent=<post_id>`.
  *
  * FormData: `file` (required), `brand_id` (required), `context` (`image` |
- * `document`, default `image`). Do not set Content-Type manually — fetch keeps
- * the multipart boundary intact.
+ * `document` | `brand_logo`, default `image`). SVG is only accepted by WP for
+ * `brand_logo`. Do not set Content-Type manually — fetch keeps the multipart
+ * boundary intact.
  */
 
 import { NextResponse } from 'next/server'
@@ -23,13 +24,15 @@ import { getTokenOr401, dashboardError } from '@/lib/api/dashboard-proxy'
 import { DashboardApiError } from '@/lib/api/dashboard'
 import type { MaterialAsset } from '@/types/dashboard'
 
+type MediaContext = 'image' | 'document' | 'brand_logo'
+
 export async function POST(request: Request): Promise<NextResponse> {
   const { token, error } = await getTokenOr401()
   if (error) return error
 
   let file: File | null = null
   let brandId: string | null = null
-  let context: 'image' | 'document' = 'image'
+  let context: MediaContext = 'image'
 
   try {
     const form = await request.formData()
@@ -42,7 +45,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     const rawContext = form.get('context')
-    if (rawContext === 'document') context = 'document'
+    if (rawContext === 'document' || rawContext === 'brand_logo' || rawContext === 'image') {
+      context = rawContext
+    }
   } catch {
     // fall through to validation errors below
   }

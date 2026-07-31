@@ -85,7 +85,7 @@ export function BrandProfileForm({
   /** Upload one file via the scoped dashboard media endpoint → MaterialAsset. */
   async function uploadFile(
     file: File,
-    context: 'image' | 'document' = 'image',
+    context: 'image' | 'document' | 'brand_logo' = 'image',
   ): Promise<MaterialAsset | null> {
     setSaveError(null)
     setUploading(true)
@@ -111,21 +111,30 @@ export function BrandProfileForm({
 
   async function handleLogoChange(file: File | null) {
     if (!file) return
-    const asset = await uploadFile(file)
+    const asset = await uploadFile(file, 'brand_logo')
     if (!asset) return
     setForm((f) => ({ ...f, logoUrl: asset.url, logoName: asset.name, logoId: asset.id }))
     if (logoInputRef.current) logoInputRef.current.value = ''
   }
 
   // Logo wordt vierkant (1:1) bijgesneden vóór upload. SVG kan niet naar canvas
-  // en gaat ongecropt door.
+  // en gaat ongecropt door — alleen via context=brand_logo (server sanitizes).
   function onLogoPick(file: File | null) {
     if (logoInputRef.current) logoInputRef.current.value = ''
     if (!file) return
-    if (file.type === 'image/svg+xml') {
+
+    const name = file.name.toLowerCase()
+    const isSvg =
+      file.type === 'image/svg+xml' || name.endsWith('.svg')
+    if (isSvg) {
+      if (file.size > 2 * 1024 * 1024) {
+        setSaveError('Logo files may be at most 2 MB.')
+        return
+      }
       void handleLogoChange(file)
       return
     }
+
     setLogoCropFile(file)
   }
 
@@ -256,7 +265,7 @@ export function BrandProfileForm({
               id="brand-logo-input"
               ref={logoInputRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/svg+xml,.jpg,.jpeg,.png,.webp,.svg"
               className="sr-only"
               onChange={(e) => onLogoPick(e.target.files?.[0] ?? null)}
             />
@@ -268,7 +277,7 @@ export function BrandProfileForm({
             >
               <IconUpload size={16} /> {uploading ? 'Uploading…' : 'Choose logo'}
             </button>
-            <p className="field-helper">JPEG, PNG, SVG or WebP.</p>
+            <p className="field-helper">JPEG, PNG, WebP or SVG (max 2 MB).</p>
           </div>
         </div>
       </div>
@@ -380,6 +389,7 @@ export function BrandProfileForm({
               onUpload={(file) => uploadFile(file, 'image')}
               uploading={uploading}
             />
+            <p className="field-helper">JPEG, PNG or WebP. Use the logo field above for SVG.</p>
           </div>
           <div>
             {canVideos ? (

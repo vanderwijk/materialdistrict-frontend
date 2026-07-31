@@ -34,7 +34,7 @@ export function GalleryField({
   onChange,
   onUpload,
   uploading = false,
-  accept = 'image/*',
+  accept = 'image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp',
 }: GalleryFieldProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -42,6 +42,11 @@ export function GalleryField({
     if (!files || files.length === 0) return
     const uploaded: MaterialAsset[] = []
     for (const file of Array.from(files)) {
+      const name = file.name.toLowerCase()
+      // Galleries stay raster-only; SVG is scoped to brand logos server-side.
+      if (file.type === 'image/svg+xml' || name.endsWith('.svg')) {
+        continue
+      }
       const asset = await onUpload(file)
       if (asset) uploaded.push(asset)
     }
