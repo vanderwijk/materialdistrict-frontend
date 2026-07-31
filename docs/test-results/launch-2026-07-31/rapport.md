@@ -24,8 +24,8 @@ Belangrijkste positieve resultaten:
 
 Belangrijkste afwijkingen:
 
-- De Insider-checkout opent nu in Stripe Sandbox, maar een geaccepteerde testbetaling activeert geen Insider-status in het account.
-- Stripe Checkout biedt kaart en Klarna aan, maar niet het volgens het draaiboek vereiste iDEAL.
+- De Stripe Sandbox-betaling toont een successmelding, activeert de Insider-status en blijft actief na opnieuw inloggen.
+- SEPA-incasso is nu beschikbaar met IBAN- en mandaatformulier; het volgens het draaiboek vereiste iDEAL wordt nog niet getoond.
 - Vier van de nieuwe channels in de hoofdnavigatie geven een 404.
 - De globale zoekfunctie navigeert niet; de doelroute `/search/` bestaat niet en geeft 404.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
@@ -50,9 +50,9 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | B4 | Niet geslaagd | De loginlink uit de modal ging naar `/sign-in/` zonder `next`. Na login kwam de gebruiker op `/material/`, niet terug op het channel. |
 | B5 | Geslaagd | Exacte frequentie: label “Email updates:” met “Weekly” geselecteerd. |
 | C1 | Geslaagd | `/membership/` toont €10/maand, €100/jaar en de voordelen. |
-| C2 | Niet geslaagd | Hertest: zowel `/checkout/?plan=insider` als `/checkout/?plan=insider&interval=monthly` openen nu Stripe Checkout voor €10 per maand met de duidelijke indicator “Sandbox”. Kaart en Klarna zijn beschikbaar, maar iDEAL ontbreekt; de in het draaiboek verwachte bankkeuze en iDEAL-simulatie konden daarom niet worden getest. Screenshot: [C2-retest-stripe-sandbox-no-ideal.png](./C2-retest-stripe-sandbox-no-ideal.png). De eerdere screenshots met de lege winkelwagen documenteren de inmiddels opgeloste eerste meting. |
-| C3 | Niet geslaagd | Een sandboxbetaling met `4242 4242 4242 4242`, `12/34` en CVC `123` werd door Stripe geaccepteerd en keerde terug naar `/membership/?checkout=success&session_id=…`. Er verscheen echter geen bevestigingsscherm; de pagina bleef de gratis CTA “Become an Insider” tonen. |
-| C4 | Niet geslaagd | Na de succesvolle Stripe-return, ruim 30 seconden wachten en opnieuw laden bleef `/dashboard/profile/` en `/dashboard/membership/` exact “E2EFree Free” en “Become an Insider” tonen. Er was geen actieve Insider-status of ring rond de avatar. Screenshot: [C4-retest-success-still-free.png](./C4-retest-success-still-free.png). |
+| C2 | Niet geslaagd | Hertest na activeren van SEPA: `/checkout/?plan=insider` opent Stripe Sandbox voor €10 per maand met kaart, Klarna en “SEPA-incasso”. Selecteren van SEPA toont een IBAN-, rekeningnaam-, adres- en incassomandaatformulier. iDEAL zelf ontbreekt nog steeds, zodat de in het draaiboek gevraagde iDEAL-bankkeuze en simulatie niet konden worden uitgevoerd. Screenshot: [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png). |
+| C3 | Geslaagd | Een sandboxbetaling met `4242 4242 4242 4242`, `12/34` en CVC `123` werd geaccepteerd. De return naar `/membership/?checkout=success&session_id=…` toont “Payment received.” en, na de auth-refresh, “You’re an Insider — you have full access.” Screenshot: [C3-retest-payment-success.png](./C3-retest-payment-success.png). |
+| C4 | Geslaagd | `/dashboard/membership/` toont na de betaling Status `active`, Billing `Monthly` en verlenging op 31 augustus 2026. De avatar heeft de Insider-ring. Na volledig uitloggen en opnieuw inloggen bleef dezelfde actieve status zichtbaar. Screenshot: [C4-retest-insider-active.png](./C4-retest-insider-active.png). |
 | C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
 | C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
 | C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
@@ -93,12 +93,7 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 
 ### Blokkerend
 
-1. **Geaccepteerde Stripe-betaling activeert geen Insider-status.**
-   URL's: `https://materialdistrict-frontend.vercel.app/checkout/?plan=insider` en `https://materialdistrict-frontend.vercel.app/checkout/?plan=insider&interval=monthly`
-   Stripe Sandbox accepteert de testkaart en retourneert naar `checkout=success`, maar toont geen bevestigingsscherm.
-   `/dashboard/profile/` en `/dashboard/membership/` blijven ook na ruim 30 seconden en herladen “Free” tonen.
-   Gevolg: de klant kan betalen zonder de gekochte Insider-rechten te ontvangen.
-   Screenshot: [C4-retest-success-still-free.png](./C4-retest-success-still-free.png).
+Geen open blokkerende afwijkingen na de hertests van G2, G3 en C3–C4.
 
 ### Ernstig
 
@@ -121,9 +116,10 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
    `e2e-partner-brand` toont “Current plan Free”, waardoor channel coupling niet kan worden getest.
 
 6. **iDEAL ontbreekt in Stripe Checkout.**
-   De sandboxcheckout opent correct voor €10 per maand, maar biedt alleen kaart en Klarna.
+   De sandboxcheckout opent correct voor €10 per maand en biedt kaart, Klarna en SEPA-incasso.
+   Selecteren van SEPA toont een volledig IBAN- en incassomandaatformulier.
    De vereiste iDEAL-bankkeuze en simulatie uit C2 zijn niet beschikbaar.
-   Screenshot: [C2-retest-stripe-sandbox-no-ideal.png](./C2-retest-stripe-sandbox-no-ideal.png).
+   Screenshot: [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png).
 
 ### Klein
 
@@ -141,7 +137,7 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 |---|---|---|
 | Brandaanvraag | `ZZTEST-20260731-brand-01` | Achtergebleven als review-aanvraag; er werd geen ID in de UI getoond en er is geen verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
-| Stripe Sandbox-checkout | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd en teruggekeerd met `checkout=success`; account bleef Free. Controleer de bijbehorende testsessie of het testabonnement in Stripe bij opschoning. |
+| Stripe Sandbox-abonnement | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd; account heeft Status `active`, maandelijkse facturering en verlenging op 31 augustus 2026. Annuleer of reset dit testabonnement bij opschoning. |
 
 Niet aangemaakt:
 
