@@ -1,6 +1,6 @@
 /**
  * POST /api/dashboard/brands/request-new
- * Request a brand-new brand (stored pending in WP usermeta; no auto-create).
+ * Request a brand-new brand (pending in WP; approved via Brands → Brand requests).
  * Body `{ name, website?, email?, message? }` (`name` required) → `{ status }`.
  */
 
