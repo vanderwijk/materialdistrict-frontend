@@ -29,6 +29,9 @@ Belangrijkste positieve resultaten:
   opent Stripe Sandbox voor exact €750 per jaar, verwerkt kaartbetaling en zet
   alleen het gekozen brand via de webhook van Free naar Basis. De status blijft
   na verversen en opnieuw inloggen behouden.
+- Veilige SVG-brandlogo's zijn nu scoped beschikbaar. Alleen `brand_logo`
+  accepteert SVG; actieve inhoud wordt verwijderd en onveilige XML, externe
+  resources, te grote bestanden en SVG buiten de logo-context worden geweigerd.
 
 Belangrijkste afwijkingen:
 
@@ -85,7 +88,7 @@ Legenda: **Geslaagd**, **Deels geslaagd**, **Niet geslaagd**, **Geblokkeerd**, *
 | E1 | Geslaagd | Via bestaand eigen fixture-brand opende `/dashboard/brands/e2e-basis-brand/materials/new/` het formulier “Add material”. |
 | E2 | Geslaagd | Elf typen zichtbaar: (Bio)Plastics, Bio-based (excl. Wood), Ceramics, Coatings, Composites, Concrete, Glass, Leather, Metals, Natural Stones en Wood. |
 | E3 | Geslaagd | Hertest na plugin-commit `b457c8b`: volledig uit- en opnieuw ingelogd als `e2e-dashboard-partner@materialdistrict.com`. Membership toont “Current plan Partner” en `0 materials published · unlimited`. Channel coupling is ontgrendeld op zowel het brandprofiel als `/materials/new/`. Op het nieuwe materiaal konden Acoustic, Biobased en Biodegradable tegelijk worden geselecteerd; een vierde channel werd geblokkeerd met “You can select up to 3 channels.” Er is niet gepubliceerd, dus deze hertest liet geen nieuw materiaal achter. De oude screenshot [E3-partner-fixture-shows-free.png](./E3-partner-fixture-shows-free.png) documenteert uitsluitend de vervallen situatie. Op het brandprofiel telt nog één bestaande niet-zichtbare fixturewaarde mee voor de limiet; dit raakt de herstelde Partner-gate op het materiaalformulier niet. |
-| E4 | Deels geslaagd | Materiaal `ZZTEST-20260731-material-e2e-05` is via de beveiligde frontend-API onder brand `138593` aangemaakt als ID `138602`, met featured image, Wood, Indoor en applicatie Acoustic Wall Panels. SVG is opnieuw via dezelfde frontendroute `/api/dashboard/media` getest onder brand `138595`; `ZZTEST-20260731-upload-07.svg` gaf opnieuw HTTP 400 met `File type is not allowed.` PNG werd bij de eerdere test wel geaccepteerd. |
+| E4 | Geslaagd | Materiaal `ZZTEST-20260731-material-e2e-05` is via de beveiligde frontend-API onder brand `138593` aangemaakt als ID `138602`, met featured image, Wood, Indoor en applicatie Acoustic Wall Panels. Aanvullende SVG-securityhertest na plugin `35b081f` en frontend `e901ef8`: een veilige SVG met `context=brand_logo` gaf 200 en attachment `138611`; exact hetzelfde bestand met `context=image` gaf 400 `File type is not allowed.` SVG's met script, `onload`, `javascript:` en `foreignObject` werden geaccepteerd na sanitization; de publiek opgeslagen bestanden bevatten de actieve constructies niet meer. Externe image, DTD/XXE, malformed XML, HTML-as-SVG en `logo.svg.php` gaven 400 `md_dashboard_invalid_svg`. Een bestand van 2,1 MB gaf 400 `md_dashboard_file_too_large`. Uitgelogd gaf 401; upload naar een brand van een andere gebruiker gaf de bestaande afschermende 404. PNG en JPEG bleven met 200 werken. De live logo-input accepteert alleen JPEG/PNG/WebP/SVG en vermeldt maximaal 2 MB; het materiaalformulier vermeldt geen SVG meer. |
 | E5 | Geslaagd | De materialenlijst toont het nieuwe materiaal met categorie Acoustic Wall Panels, datum 31 juli 2026 en status Offline. |
 | E6 | Geslaagd | De frontend-editpagina voor materiaal ID `138602` toont de volledige beschrijving, type Wood, Indoor, featured image, Acoustic Wall Panels en de opgegeven filtereigenschappen. Screenshot: [BRAND-e2e-05-material-138602.png](./BRAND-e2e-05-material-138602.png). |
 | E7 | Deels geslaagd | Het materiaal is aangemaakt maar blijft Offline. De gratis tier toont `0 of 0 published`; publicatie is niet afgerond. Een mislukte eerste create met een niet-toegestane attachment liet bovendien materiaal ID `138597` achter, waardoor dezelfde testnaam tweemaal in de lijst staat. |
@@ -125,11 +128,6 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
    `https://materialdistrict.com/dashboard/brands/zztest-20260731-brand-link-07`
    in plaats van het dashboard op `materialdistrict-frontend.vercel.app`.
 
-2. **SVG-upload wordt tegengesproken door de backend.**
-   Het materiaalformulier vermeldt “JPEG, PNG, SVG or WebP”, maar upload via
-   dezelfde frontend-media-API gaf voor een geldig SVG-bestand
-   `File type is not allowed.` PNG werd wel geaccepteerd.
-
 ### Klein
 
 1. **Ongeldig e-mailadres krijgt een misleidende melding.**
@@ -159,6 +157,7 @@ end-to-end afgerond; publicatie van het nieuwe brand is nog niet afgerond.
 | Brand | `ZZTEST-20260731-brand-link-07` | Verse hertest van de mailbeheerlink; via frontend aangevraagd en in CMS goedgekeurd. Goedkeuringsmail linkt nog naar de verkeerde host. |
 | Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138597` | Achtergebleven Offline-record van de eerste create die HTTP 400 gaf vanwege een niet-toegestane attachment. |
 | Materiaal | `ZZTEST-20260731-material-e2e-05` — ID `138602` | Via de frontend-API aangemaakt en zichtbaar/bewerkbaar in het dashboard; status Offline. |
+| Media-attachments | IDs `138611`–`138617` | SVG-securityhertest onder `e2e-partner-brand`: veilige SVG, vier gesaniteerde SVG's, PNG en JPEG. Niet aan het brandprofiel opgeslagen; opruimbare orphan testattachments. |
 | Brandtier-aanvraag | Basis voor brand ID `138593` | Membership-pagina toont `Requested ✓`; huidige tier blijft Free en er is geen Stripe-sessie gestart. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-brand-20260731-02@gmail.com` | Aangemaakt voor de Gmail-brandroute en actief. Geen bestaand brand geclaimd. |
