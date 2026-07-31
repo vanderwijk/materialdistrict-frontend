@@ -296,7 +296,7 @@ export const PROPERTY_GROUP_LABELS: Record<MaterialPropertyGroupKey, string> = {
  *  - 'neutral'    → geel (Moderate, Variable, Medium ...)
  *  - 'negative'   → rood (No, Poor, Hard, etc — alleen voor
  *                   sustainability-velden waar 'No' echt slecht is)
- *  - 'unknown'    → grijs (lege waarde of "Unknown")
+ *  - 'unknown'    → grijs (lege waarde of "Not specified")
  *  - 'default'    → grijs (descriptief, geen oordeel — bv Glossiness=Matte)
  */
 export type PillSemantic = 'positive' | 'neutral' | 'negative' | 'unknown' | 'default'
@@ -474,7 +474,7 @@ export const PROPERTY_VALUE_OPTIONS: Record<MaterialPropertyKey, PropertyValueOp
   odeur: [{ value: 'none', label: 'None' }, { value: 'slight', label: 'Slight' }, { value: 'strong', label: 'Strong' }],
   weight: [{ value: 'light', label: 'Light' }, { value: 'medium', label: 'Medium' }, { value: 'heavy', label: 'Heavy' }],
   fire_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
-  uv_resistance: [{ value: 'unknown', label: 'Unknown' }, { value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
+  uv_resistance: [{ value: 'unknown', label: 'Not specified' }, { value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
   weather_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
   scratch_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
   chemical_resistance: [{ value: 'low', label: 'Low' }, { value: 'moderate', label: 'Moderate' }, { value: 'good', label: 'Good' }],
