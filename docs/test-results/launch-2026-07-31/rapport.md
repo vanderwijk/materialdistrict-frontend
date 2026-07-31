@@ -24,7 +24,8 @@ Belangrijkste positieve resultaten:
 
 Belangrijkste afwijkingen:
 
-- De Insider-checkout kan niet starten: `/checkout/?plan=insider` toont “Your cart is empty.”
+- De Insider-checkout opent nu in Stripe Sandbox, maar een geaccepteerde testbetaling activeert geen Insider-status in het account.
+- Stripe Checkout biedt kaart en Klarna aan, maar niet het volgens het draaiboek vereiste iDEAL.
 - Vier van de nieuwe channels in de hoofdnavigatie geven een 404.
 - De globale zoekfunctie navigeert niet; de doelroute `/search/` bestaat niet en geeft 404.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
@@ -49,12 +50,12 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | B4 | Niet geslaagd | De loginlink uit de modal ging naar `/sign-in/` zonder `next`. Na login kwam de gebruiker op `/material/`, niet terug op het channel. |
 | B5 | Geslaagd | Exacte frequentie: label “Email updates:” met “Weekly” geselecteerd. |
 | C1 | Geslaagd | `/membership/` toont €10/maand, €100/jaar en de voordelen. |
-| C2 | Niet geslaagd | `/checkout/?plan=insider` toont algemene checkout met exact “Your cart is empty.” en “Browse books”; geen Stripe- of iDEAL-flow. Op 31 juli 2026 opnieuw getest met de aangeleverde Stripe-testkaart beschikbaar. Ook de officiële account-CTA “Choose monthly” naar `/checkout/?plan=insider&interval=monthly` eindigde in dezelfde lege winkelwagen. De kaart kon daardoor nergens worden ingevoerd. Screenshots: [C2-membership-checkout-empty-cart.png](./C2-membership-checkout-empty-cart.png), [C2-retest-monthly-empty-cart.png](./C2-retest-monthly-empty-cart.png). |
-| C3 | Geblokkeerd | Checkout kon niet worden gestart. |
-| C4 | Geblokkeerd | Afhankelijk van C3. |
-| C5 | Geblokkeerd | Afhankelijk van C3 en mailboxtoegang. |
-| C6 | Geblokkeerd | Geen betaalflow beschikbaar om af te breken. |
-| C7 | Geblokkeerd | Geen kaart- of Stripe-flow beschikbaar. |
+| C2 | Niet geslaagd | Hertest: zowel `/checkout/?plan=insider` als `/checkout/?plan=insider&interval=monthly` openen nu Stripe Checkout voor €10 per maand met de duidelijke indicator “Sandbox”. Kaart en Klarna zijn beschikbaar, maar iDEAL ontbreekt; de in het draaiboek verwachte bankkeuze en iDEAL-simulatie konden daarom niet worden getest. Screenshot: [C2-retest-stripe-sandbox-no-ideal.png](./C2-retest-stripe-sandbox-no-ideal.png). De eerdere screenshots met de lege winkelwagen documenteren de inmiddels opgeloste eerste meting. |
+| C3 | Niet geslaagd | Een sandboxbetaling met `4242 4242 4242 4242`, `12/34` en CVC `123` werd door Stripe geaccepteerd en keerde terug naar `/membership/?checkout=success&session_id=…`. Er verscheen echter geen bevestigingsscherm; de pagina bleef de gratis CTA “Become an Insider” tonen. |
+| C4 | Niet geslaagd | Na de succesvolle Stripe-return, ruim 30 seconden wachten en opnieuw laden bleef `/dashboard/profile/` en `/dashboard/membership/` exact “E2EFree Free” en “Become an Insider” tonen. Er was geen actieve Insider-status of ring rond de avatar. Screenshot: [C4-retest-success-still-free.png](./C4-retest-success-still-free.png). |
+| C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
+| C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
+| C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
 | D1 | Niet geslaagd | “Add brand” leidt naar een review-aanvraag. `ZZTEST-20260731-brand-01` resulteerde alleen in “Thanks — your request has been sent. We'll review it and get back to you.”; er verscheen geen brand in het dashboard. Screenshot: [D1-brand-request-not-created.png](./D1-brand-request-not-created.png). |
 | D2 | Geblokkeerd | D1 leverde geen testbrand op. |
 | D3 | Geblokkeerd | D1 leverde geen testbrand op. |
@@ -75,7 +76,7 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | F6 | Geslaagd | Na uitsluiting van de door de Codex-browser geïnjecteerde sidebar-node stond geen reeks van negen of tien cijfers in de talkbron van de gratis gebruiker. |
 | F7 | Geblokkeerd | In de beschikbare artikelindex was geen herkenbaar Insider-only artikel/rapport als testsample aanwezig. |
 | F8 | Geblokkeerd | Op het gecontroleerde materiaal was geen Insider-download aanwezig om gericht te testen. |
-| F9 | Geblokkeerd | De Insider-checkout is al bij C2 geblokkeerd. |
+| F9 | Geslaagd | Checkout gestart met gemanipuleerde parameters `amount=1`, `price=1` en `discount=100`. Stripe Sandbox bleef €10 per maand tonen. De gemanipuleerde sessie is met de weigerkaart ingediend en gaf de normale kaartweigering; de serverprijs won en er werd geen Insider-status toegekend. |
 | G1 | Geslaagd | Unauthenticated `/wp-json/wp/v2/brand?per_page=5` geeft 200 op CMS en productie. In beide steekproeven van vijf brands zijn geen e-mailadressen, Stripe-gerelateerde velden of Stripe-identifiers gevonden. |
 | G2 | Geslaagd | Hertest na deployment: unauthenticated `/wp-json/wp/v2/talk?per_page=100` geeft 200 op CMS en productie. Alle 92 CMS- en 99 productierecords zijn Insider-only en hebben `meta.vimeo_id:null`; er lekt geen Vimeo-ID. `meta.has_video` is `true` bij 91/92 CMS-records en 99/99 productierecords. De ene CMS-talk met `has_video:false` heeft eveneens `vimeo_id:null`. |
 | G3 | Geslaagd | Hertest na deployment: unauthenticated `/wp-json/wp/v2/lead` geeft op CMS en productie 404 met code `rest_no_route`; de voorheen publieke leadcollectie is niet meer via deze route beschikbaar. |
@@ -92,12 +93,12 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 
 ### Blokkerend
 
-1. **Insider-betaling kan niet starten.**
+1. **Geaccepteerde Stripe-betaling activeert geen Insider-status.**
    URL's: `https://materialdistrict-frontend.vercel.app/checkout/?plan=insider` en `https://materialdistrict-frontend.vercel.app/checkout/?plan=insider&interval=monthly`
-   Exact: “Your cart is empty.”
-   Gevolg: C2–C7 en F9 zijn niet uitvoerbaar.
-   Hertest: uitgevoerd nadat testkaart `4242 4242 4242 4242` beschikbaar was gesteld; er verscheen nog steeds geen Stripe-formulier of testmode-indicator en de kaartgegevens zijn niet verzonden.
-   Screenshots: [C2-membership-checkout-empty-cart.png](./C2-membership-checkout-empty-cart.png), [C2-retest-monthly-empty-cart.png](./C2-retest-monthly-empty-cart.png).
+   Stripe Sandbox accepteert de testkaart en retourneert naar `checkout=success`, maar toont geen bevestigingsscherm.
+   `/dashboard/profile/` en `/dashboard/membership/` blijven ook na ruim 30 seconden en herladen “Free” tonen.
+   Gevolg: de klant kan betalen zonder de gekochte Insider-rechten te ontvangen.
+   Screenshot: [C4-retest-success-still-free.png](./C4-retest-success-still-free.png).
 
 ### Ernstig
 
@@ -119,6 +120,11 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 5. **Partner-testfixture is niet als Partner actief.**
    `e2e-partner-brand` toont “Current plan Free”, waardoor channel coupling niet kan worden getest.
 
+6. **iDEAL ontbreekt in Stripe Checkout.**
+   De sandboxcheckout opent correct voor €10 per maand, maar biedt alleen kaart en Klarna.
+   De vereiste iDEAL-bankkeuze en simulatie uit C2 zijn niet beschikbaar.
+   Screenshot: [C2-retest-stripe-sandbox-no-ideal.png](./C2-retest-stripe-sandbox-no-ideal.png).
+
 ### Klein
 
 1. **Ongeldig e-mailadres krijgt een misleidende melding.**
@@ -135,12 +141,13 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 |---|---|---|
 | Brandaanvraag | `ZZTEST-20260731-brand-01` | Achtergebleven als review-aanvraag; er werd geen ID in de UI getoond en er is geen verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
+| Stripe Sandbox-checkout | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd en teruggekeerd met `checkout=success`; account bleef Free. Controleer de bijbehorende testsessie of het testabonnement in Stripe bij opschoning. |
 
 Niet aangemaakt:
 
 - Geen brandrecord in het dashboard.
 - Geen materiaal.
-- Geen testabonnement of betaling.
+- Geen echte betaling; alle betaaltests zijn zichtbaar als Stripe Sandbox uitgevoerd.
 
 Tijdelijke followstatus op Bio-based & Living Materials is na de test weer verwijderd.
 
@@ -148,6 +155,6 @@ Tijdelijke followstatus op Bio-based & Living Materials is na de test weer verwi
 
 - De eerste G1–G4-meting tegen `materialdistrict-frontend.vercel.app/wp-json/` was ongeldig: op die host draait geen WordPress. De API-resultaten in dit rapport zijn vervangen door de hertest tegen de twee WordPress-hosts. De bestaande screenshot `G1-public-api-403.png` documenteert uitsluitend die vervallen eerste meting en geldt niet als bewijs voor G1–G4.
 - Gmail is gekoppeld en de registratie- en resetmails zijn gecontroleerd. De AWS-trackinglink in de resetmail kon niet door de geautomatiseerde browser worden geopend; de gebruiker heeft die finale resetstap handmatig bevestigd.
-- De kapotte Insider-checkout blokkeerde de betaal- en prijsmanipulatietests.
+- C5 kon niet worden gecontroleerd omdat de gebruikte E2E-fixturemailbox niet toegankelijk is.
 - De brandaanvraag leverde geen direct bruikbaar testbrand op.
 - Het draaiboek vroeg om elf channels, terwijl de header er vijftien toont. Alle vijftien zichtbare links zijn daarom gecontroleerd; elf werken en vier geven 404.
