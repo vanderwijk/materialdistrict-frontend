@@ -3411,3 +3411,73 @@ Publisher Tags. De containers stonden al klaar in de homepage achter de `ADS_ENA
 
 Syntax gevalideerd met esbuild (geen tsc in deze omgeving). `globals.css` append-only
 bevestigd (comm -23 main−mine leeg).
+
+---
+
+## Sessie — copy, zoekpagina & FAQ (31-07-2026)
+
+Aanleiding: Jeroen liet ChatGPT de algemene pagina's schrijven (About, Our Mission,
+contact, privacy, FAQ) en vroeg om een oordeel. Daaruit rolde een bredere ronde: de
+teksten kloppend maken met het platform, en meteen de drie dingen doen die daaruit
+volgden.
+
+**Wat er mis was met de aangeleverde tekst** (kort, volledig in het revisiedocument):
+verkeerde tiernamen, "27 years" bij oprichting 1998, een verzonnen homepage-contenttype
+("featured projects", terwijl Talks juist ontbrak), het woord *channel* kwam nergens
+voor, en de Innovation Fund stond op de Brand Membership-pagina alsof het korting op een
+lidmaatschap was. De privacyverklaring dekte de analytics-DB, Stripe en Google Ad Manager
+niet — dat laatste terwijl de banners al draaien.
+
+**Besluiten van Jeroen deze sessie:**
+- De **ambitie 2030** (vanaf 2030 alleen nog circulaire materiaalinnovaties op het
+  platform) blijft staan en krijgt een eigen kop op Our Mission. Stond nergens in de
+  nieuwe site, terwijl het publiek is en het scherpste dat MD ooit heeft gezegd.
+- **Sample requests zijn voor iedereen.** `membership-config.md` én de config zeiden
+  Insider-only; de live site deed dat nooit. De echte poort is
+  `sampleRequestsInsidersOnly`, een instelling *per merk*.
+- **Volgen blijft gratis.** Argument: het voedt de mailinglijst, de datalaag en de
+  Insider-trechter. Een betaalmuur ervoor krimpt alle drie.
+- **Hernoemen van de brand-tiers naar Starter / Professional / Partner is uitgesteld.**
+  Wel gecorrigeerd: "Basis" → "Basic" op de Engelse pagina. De sleutel `basis` blijft.
+
+**Geleverd (`md-copy-search-faq-31-07.zip`):**
+- `membership/page.tsx` — "Quarterly trend reports" → **Insider insights** (een frequentie
+  in een betaalde propositie is een leverplicht; de bibliotheek is catalogi, boekfragmenten
+  en onderzoek). Nieuw blok "Start with a free account". Volgen, weekupdate en sample
+  requests toegevoegd aan de vergelijkingstabel. Inline style eruit.
+  **Bug gerepareerd:** de rij "Insider insights" las voor de Insider-kolom de vlag van
+  *Insider articles* — copy-paste-fout, viel niet op omdat beide aanstonden.
+- `become-a-partner/page.tsx` — Basic i.p.v. Basis; de "Choose …"-knoppen beloofden een
+  checkout die niet bestaat (brand-upgrades zijn sales-led) en gaan nu naar `/contact`.
+- `membership.ts` — `sampleRequests: true` voor free; nieuwe vlaggen `followChannels` en
+  `weeklyUpdate` op beide tiers.
+- `Footer.tsx` — © 1998 (stond op 1999, op elke pagina).
+- `search/page.tsx` — vormgeving. Resultaten zijn een gerangschikte lijst, geen
+  bladercatalogus: rijen i.p.v. kaartraster, contenttype als label, telling per type over
+  de huidige pagina, en een eigen zoekveld op de pagina (voorheen kon je alleen vanuit de
+  header zoeken). Echte filtertabs per type kunnen pas als `/md/v2/search` een `type`-param
+  krijgt — client-side filteren op een gepagineerde set liegt.
+- `faq/page.tsx` — nieuw. Eigen route met uitklapbare vragen (native `<details>`, geen JS)
+  en `FAQPage`-structured data. `faq` daarom uit `PAGE_SLUG_MAP` gehaald; een statisch
+  segment wint toch van `[pageSlug]`. Valt terug op gewone prozaweergave als de HTML de
+  h2/h3-structuur niet heeft.
+- `static-pages.ts` — `our-mission` en `innovation-fund` toegevoegd aan de allowlist.
+- `globals.css` — twee nieuwe §-blokken (§SEARCH-RESULTS, §FAQ-ACCORDION) plus één
+  regel voor de verwijderde inline style. Append-only, accoladebalans gecontroleerd.
+- `scripts/wp-import-pages.php` — WP-CLI-import van About, Our Mission, Innovation Fund,
+  FAQ en Privacy Statement. Droogloop standaard, `--apply` schrijft. Herhaalbaar op slug,
+  dus een tekstrevisie is opnieuw draaien i.p.v. plakken in de editor.
+- `membership-config.md` — normdocument bijgewerkt met de vier besluiten hierboven, plus
+  de materiaalpublicatie van €150 (tussenstand) naar €250.
+
+**Open / vervolg:**
+- `type`-param op `/md/v2/search` → echte filtertabs op de zoekpagina.
+- De aantallen in About (merken, materialen, abonnees) staan als `[TO CONFIRM]`.
+- Privacyverklaring juridisch laten toetsen. Advertentiecookies vragen voorafgaande
+  toestemming en de consent-tool is niet gebouwd — dat is het meest blootgestelde punt.
+- Staging staat op robots-disallow (terecht). Zorgen dat die instelling niet meeverhuist
+  naar productie.
+
+Syntax van alle gewijzigde TS/TSX gevalideerd met esbuild. `globals.css` append-only,
+accoladebalans 3246/3246. De FAQ-HTML uit het importscript is door dezelfde parser als de
+frontend gehaald: 4 secties, 22 vragen.

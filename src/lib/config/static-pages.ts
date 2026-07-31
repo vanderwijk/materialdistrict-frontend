@@ -13,6 +13,10 @@
  *
  * Bewust NIET hier opgenomen:
  *  - `contact`  → eigen route (/contact) met Gravity Forms-maatwerk
+ *  - `faq`      → eigen route (/faq) met uitklapbare vragen + FAQPage-schema
+ *                 (31-07-2026). De inhoud blijft de WP-page `faq`; alleen de
+ *                 weergave is eigen. Een statisch segment wint van [pageSlug],
+ *                 dus hier weglaten voorkomt een dubbele definitie.
  *  - `sitemap`  → vervalt als contentpagina; gedekt door sitemap.ts (machine)
  *  - `brands`   → géén `page`; dit is het bestaande brand-overzicht (/brands)
  */
@@ -27,8 +31,9 @@
  */
 export const PAGE_SLUG_MAP: Record<string, string> = {
   about: 'about',
-  faq: 'faq',
   jobs: 'jobs',
+  'our-mission': 'our-mission',
+  'innovation-fund': 'innovation-fund',
   'privacy-statement': 'privacy-statement',
 }
 

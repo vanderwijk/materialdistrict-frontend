@@ -84,10 +84,19 @@ export const READER_FEATURES = {
     viewBrands: true,
     viewArticlesNonGated: true,
     bookmarks: true,
+    // Following channels and the weekly personal update are deliberately free:
+    // they feed the mailing list, the data layer and the Insider funnel.
+    // Gating them would shrink all three. Decision Jeroen, 31-07-2026.
+    followChannels: true,
+    weeklyUpdate: true,
     compareLimit: 3,
     fullCompare: false,
     downloadPdfsEpds: false,
-    sampleRequests: false,
+    // Open to every visitor. A brand may restrict its own materials to
+    // Insiders through `sampleRequestsInsidersOnly` in its lead-routing
+    // settings, but that is a per-brand choice, not a reader tier feature.
+    // Corrected 31-07-2026 — was `false`, which never matched live behaviour.
+    sampleRequests: true,
     exportCompareAsPdf: false,
     savedSearchesAlerts: false,
     insiderInsights: false,
@@ -101,6 +110,8 @@ export const READER_FEATURES = {
     viewBrands: true,
     viewArticlesNonGated: true,
     bookmarks: true,
+    followChannels: true,
+    weeklyUpdate: true,
     compareLimit: Infinity,
     fullCompare: true,
     downloadPdfsEpds: true,

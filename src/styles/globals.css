@@ -18209,3 +18209,238 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .ad-billboard { padding-left: 12px; padding-right: 12px; }
 }
 /* ======================== einde §HOME-ADS-LIVE ======================== */
+
+/* ============================================================
+   §SEARCH-RESULTS — zoekresultatenpagina (31-07-2026)
+   ------------------------------------------------------------
+   Resultaten zijn een gerangschikte lijst, geen bladercatalogus:
+   rijen scannen sneller dan een kaartraster en houden de
+   relevantievolgorde van SearchWP leesbaar. Alleen nieuwe classes;
+   geen bestaande regels gewijzigd. Kleuren via bestaande tokens.
+   ============================================================ */
+
+/* --- zoekveld op de pagina zelf --- */
+.srch-form {
+  margin: 18px 0 4px;
+  max-width: 640px;
+}
+.srch-form-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.srch-form-row {
+  display: flex;
+  gap: 8px;
+}
+.srch-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 11px 14px;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.srch-input::placeholder { color: var(--text-hint); }
+.srch-input:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 1px;
+  border-color: var(--navy);
+}
+.srch-submit { flex: 0 0 auto; }
+
+/* --- telling per type over de huidige pagina --- */
+.srch-breakdown {
+  margin: 0 0 18px;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.srch-breakdown-n {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* --- resultatenlijst --- */
+.srch-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+.srch-row { border-bottom: 1px solid var(--border); }
+
+.srch-row-link {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 18px 12px;
+  margin: 0 -12px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background-color 0.15s ease;
+}
+.srch-row-link:hover { background: var(--surface2); }
+.srch-row-link:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: -2px;
+}
+
+/* Thumbnail. Vaste maat zodat titels op één verticale lijn staan en het
+   oog langs de lijst kan scannen i.p.v. per rij te herpositioneren. */
+.srch-thumb {
+  flex: 0 0 auto;
+  display: block;
+  width: 104px;
+  height: 78px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+.srch-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* Brands zijn logo's, geen foto's: niet bijsnijden. */
+.srch-thumb-brand img {
+  object-fit: contain;
+  padding: 8px;
+  background: var(--surface);
+}
+
+.srch-body {
+  display: block;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.srch-meta {
+  display: block;
+  margin-bottom: 6px;
+}
+.srch-title {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+}
+.srch-row-link:hover .srch-title { color: var(--link-hover); }
+
+.srch-excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 4px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+@media (max-width: 560px) {
+  .srch-form-row { flex-direction: column; }
+  .srch-submit { width: 100%; }
+  .srch-row-link { gap: 12px; padding: 14px 8px; margin: 0 -8px; }
+  .srch-thumb { width: 72px; height: 56px; }
+  .srch-title { font-size: 1rem; }
+  .srch-excerpt { -webkit-line-clamp: 3; line-clamp: 3; }
+}
+/* ======================== einde §SEARCH-RESULTS ======================== */
+
+/* ============================================================
+   §MEMBERSHIP-COPY-31-07 — kleine aanvulling
+   ------------------------------------------------------------
+   Vervangt de inline style op de afsluitende regel van
+   /membership (inline styling is niet toegestaan, zie
+   architecture-rules.md).
+   ============================================================ */
+.mkt-lede-centred {
+  text-align: center;
+  margin-top: 20px;
+}
+/* ==================== einde §MEMBERSHIP-COPY-31-07 ==================== */
+
+/* ============================================================
+   §FAQ-ACCORDION — /faq (31-07-2026)
+   ------------------------------------------------------------
+   Gebouwd op native <details>/<summary>: geen JavaScript, van
+   zichzelf toetsenbord-toegankelijk. Alleen nieuwe classes.
+   ============================================================ */
+.faq-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+}
+.faq-section + .faq-section { margin-top: 40px; }
+
+.faq-section-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--navy);
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-q {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 4px;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+/* Verbergt het standaard-driehoekje in Safari/Chrome. */
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q:hover { color: var(--link-hover); }
+.faq-q:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+.faq-q-text { flex: 1 1 auto; }
+
+.faq-chevron {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  color: var(--text-muted);
+  transition: transform 0.18s ease;
+}
+.faq-item[open] .faq-chevron { transform: rotate(180deg); }
+
+.faq-a {
+  padding: 0 4px 20px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+.faq-a p { margin: 0 0 12px; }
+.faq-a p:last-child { margin-bottom: 0; }
+.faq-a a { color: var(--link); }
+.faq-a a:hover { color: var(--link-hover); }
+.faq-a ul,
+.faq-a ol { margin: 0 0 12px; padding-left: 20px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-chevron { transition: none; }
+}
+/* ======================== einde §FAQ-ACCORDION ======================== */

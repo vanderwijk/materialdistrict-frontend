@@ -6,6 +6,32 @@
 
 ---
 
+## Wijzigingen 31-07-2026
+
+Besluiten van Jeroen, verwerkt in dit document én in `src/lib/config/membership.ts`:
+
+1. **Sample requests zijn voor iedereen**, niet Insider-only. Dit document én de
+   config zeiden `—` voor het gratis account; de live site deed dat nooit. De
+   werkelijke poort is `sampleRequestsInsidersOnly`, een **instelling per merk**
+   in de lead-routing (standaard uit). Een merk mág zijn eigen materialen tot
+   Insiders beperken; het is geen readertier-functie.
+2. **Channels volgen en de wekelijkse update zijn gratis** en staan nu als
+   expliciete vlaggen in de config (`followChannels`, `weeklyUpdate`). Ze
+   ontbraken hier volledig, waardoor ze ook uit de Free-vs-Insider-tabel op
+   `/membership` vielen. Reden om ze gratis te houden: ze voeden de
+   mailinglijst, de datalaag en de Insider-trechter — alle drie krimpen als je
+   er een betaalmuur voor zet.
+3. **Materiaalpublicatie stond hier nog op €150.** Dat is een tussenstand; de
+   vastgestelde prijs is €250 per materiaal per jaar, zoals ook op
+   `/become-a-partner` staat.
+4. **Tiernaam `basis` wordt in de UI als "Basic" getoond.** De sleutel blijft
+   `basis`; alleen het Engelse label is gecorrigeerd. Een bredere hernoeming
+   (Starter / Professional / Partner) is besproken en **uitgesteld** — als die
+   komt, hoeven alleen de labels mee, niet de sleutels, mits Stripe-productnamen
+   en verkoopmateriaal gelijk lopen.
+
+---
+
 ## Overzicht: twee onafhankelijke membership-systemen
 
 MaterialDistrict heeft twee losstaande membership-systemen die naast elkaar bestaan:
@@ -67,10 +93,12 @@ VAT = {
 | Brands bekijken | ✓ | ✓ |
 | Articles bekijken (niet-gated) | ✓ | ✓ |
 | Bookmarks | ✓ | ✓ |
+| **Channels volgen** | ✓ | ✓ |
+| **Wekelijkse persoonlijke update** | ✓ | ✓ |
 | Materialen vergelijken (beperkt) | 3 max | Onbeperkt |
 | **Full material comparison** | — | ✓ |
 | **Download PDFs & EPDs** | — | ✓ |
-| **Sample requests** | — | ✓ |
+| Sample requests | ✓ | ✓ |
 | **Export compare as PDF** | — | ✓ |
 | **Saved searches & alerts** | — | ✓ |
 | **Insider insights** (rapporten, fair PDFs) | — | ✓ |
@@ -162,9 +190,9 @@ FAIR_DISCOUNT = {
 |---|---|---|---|---|
 | Listed in Brand Directory | ✓ | ✓ | ✓ | ✓ |
 | Individual Brand Page | ✓ | ✓ | ✓ | ✓ |
-| Listed in Materials Directory | + €150/mat/jr | ✓ | ✓ | ✓ |
+| Listed in Materials Directory | + €250/mat/jr | ✓ | ✓ | ✓ |
 | Individual Material Pages | per materiaal | 5 | 15 | Onbeperkt |
-| Receive Sample & Info Requests | — | ✓ | ✓ | ✓ |
+| Receive Sample & Info Requests | met materiaal | ✓ | ✓ | ✓ |
 | Access to Statistics | — | Basis | Full | Full |
 | Geo-based Lead Routing | — | — | ✓ | ✓ |
 | Add Brochures & Videos | — | — | ✓ | ✓ |
@@ -264,7 +292,7 @@ Brands die vóór het nieuwe systeem materialen hadden, krijgen een legacy-banne
 - Overview / Statistics
 - Materials (beheren, toevoegen)
 - Brand profile
-- Sample requests *(vanaf Basis)*
+- Sample requests *(zodra er een materiaal gepubliceerd is)*
 - Lead routing *(alleen Plus / Partner)*
 - Featured placements *(alleen Partner)*
 - Invoices

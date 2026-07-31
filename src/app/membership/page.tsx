@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   title: 'Insider membership',
   description:
     'Unlock the full MaterialDistrict platform: side-by-side comparison, ' +
-    'datasheets & EPDs, saved searches, boards and quarterly trend reports.',
+    'datasheets & EPDs, saved searches, boards and the Insider insights library.',
   alternates: { canonical: canonicalPath('/membership') },
 }
 
@@ -43,8 +43,8 @@ const FEATURE_CARDS: ReadonlyArray<{ title: string; desc: string }> = [
     desc: 'Side-by-side comparison of sensorial, technical and environmental properties.',
   },
   {
-    title: 'Quarterly trend reports',
-    desc: 'PDF reports on sustainable material trends, market signals and innovation.',
+    title: 'Insider insights',
+    desc: 'Our library of trend reports, exhibition catalogues, book extracts and material research — yours to download.',
   },
   {
     title: 'Download datasheets & EPDs',
@@ -74,13 +74,16 @@ const COMPARE_ROWS: ReadonlyArray<{
   free: boolean
   insider: boolean
 }> = [
+  { label: 'Follow channels', free: READER_FEATURES.free.followChannels, insider: READER_FEATURES.insider.followChannels },
+  { label: 'Your weekly update', free: READER_FEATURES.free.weeklyUpdate, insider: READER_FEATURES.insider.weeklyUpdate },
   { label: 'Browse & bookmark materials', free: READER_FEATURES.free.bookmarks, insider: READER_FEATURES.insider.bookmarks },
+  { label: 'Request samples & information', free: READER_FEATURES.free.sampleRequests, insider: READER_FEATURES.insider.sampleRequests },
   { label: 'Full side-by-side comparison', free: READER_FEATURES.free.fullCompare, insider: READER_FEATURES.insider.fullCompare },
   { label: 'Download datasheets & EPDs', free: READER_FEATURES.free.downloadPdfsEpds, insider: READER_FEATURES.insider.downloadPdfsEpds },
   { label: 'Export comparison as PDF', free: READER_FEATURES.free.exportCompareAsPdf, insider: READER_FEATURES.insider.exportCompareAsPdf },
   { label: 'Saved searches & alerts', free: READER_FEATURES.free.savedSearchesAlerts, insider: READER_FEATURES.insider.savedSearchesAlerts },
   { label: 'Boards', free: READER_FEATURES.free.boards, insider: READER_FEATURES.insider.boards },
-  { label: 'Insider insights & trend reports', free: READER_FEATURES.free.insiderInsights, insider: READER_FEATURES.insider.insiderArticles },
+  { label: 'Insider insights library', free: READER_FEATURES.free.insiderInsights, insider: READER_FEATURES.insider.insiderInsights },
   { label: 'Insider articles', free: READER_FEATURES.free.insiderArticles, insider: READER_FEATURES.insider.insiderArticles },
   { label: 'Discount on books', free: READER_FEATURES.free.bookDiscount, insider: READER_FEATURES.insider.bookDiscount },
   { label: 'Free event entry (1× / year)', free: READER_FEATURES.free.freeEventEntryPerYear, insider: READER_FEATURES.insider.freeEventEntryPerYear },
@@ -110,8 +113,8 @@ export default function MembershipPage() {
         <h1 className="page-title">Become a MaterialDistrict Insider</h1>
         <p className="mkt-lede">
           Your free account gives you access to thousands of materials. Insider
-          adds the tools serious specifiers need — comparison, downloads, trend
-          reports and more.
+          adds the tools serious specifiers need — comparison, downloads,
+          insights and more.
         </p>
 
         <div className="mkt-price">
@@ -124,6 +127,14 @@ export default function MembershipPage() {
 
         <MembershipCta />
       </section>
+
+      <h2 className="mkt-section-title">Start with a free account</h2>
+      <p className="mkt-lede mkt-lede-centred">
+        A free account is where every professional starts. Follow the channels
+        that match your practice and we tell you each week what is new in them.
+        Bookmark what you want to keep, and request samples straight from a
+        material page. It costs nothing, and it stays free.
+      </p>
 
       <h2 className="mkt-section-title">What you unlock</h2>
       <div className="grid-3">
@@ -156,7 +167,7 @@ export default function MembershipPage() {
           </tbody>
         </table>
       </div>
-      <p className="mkt-lede" style={{ textAlign: 'center', marginTop: '20px' }}>
+      <p className="mkt-lede mkt-lede-centred">
         Insiders also get a {bookDiscountPct}% discount on all books in the shop.
       </p>
     </main>

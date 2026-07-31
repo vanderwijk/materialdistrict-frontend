@@ -137,7 +137,7 @@ export async function Footer({ className }: FooterProps) {
 
       <div className="footer-bottom">
         <div className="footer-bottom-left">
-          <span>© 1999 – {new Date().getFullYear()} MaterialDistrict</span>
+          <span>© 1998 – {new Date().getFullYear()} MaterialDistrict</span>
           <PreferredSourceButton
             variant="compact"
             placement="footer"

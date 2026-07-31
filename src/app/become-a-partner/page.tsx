@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   title: 'Become a partner',
   description:
     'List your materials on MaterialDistrict and get found by architects, ' +
-    'designers and specifiers. Pay per material, or choose a Basis, Plus or ' +
+    'designers and specifiers. Pay per material, or choose a Basic, Plus or ' +
     'Partner membership.',
   alternates: { canonical: canonicalPath('/become-a-partner') },
 }
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 const TIER_ORDER: readonly ManufacturerTier[] = ['free', 'basis', 'plus', 'partner']
 const TIER_LABELS: Record<ManufacturerTier, string> = {
   free: 'Free',
-  basis: 'Basis',
+  basis: 'Basic',
   plus: 'Plus',
   partner: 'Partner',
 }
@@ -131,7 +131,11 @@ export default function BecomeAPartnerPage() {
           const isFeatured = tier === FEATURED_TIER
           const priceMain = isFree ? eur(0) : eur(MANUFACTURER_PRICING[tier].annual)
           const accent = isFeatured ? 'var(--green)' : MANUFACTURER_TIER_COLORS[tier]
+          // Free → register as manufacturer. Paid tiers → same onboarding;
+          // after a brand exists, upgrades go through Stripe on the brand
+          // membership panel (not a sales-only contact form).
           const ctaLabel = isFree ? 'Start free' : `Choose ${TIER_LABELS[tier]}`
+          const ctaHref = '/register?next=/become-a-partner'
 
           return (
             <div
@@ -160,7 +164,7 @@ export default function BecomeAPartnerPage() {
                 ))}
               </ul>
 
-              <a href="/register?next=/become-a-partner" className="btn btn-outline">
+              <a href={ctaHref} className="btn btn-outline">
                 {ctaLabel}
               </a>
             </div>
