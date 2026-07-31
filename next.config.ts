@@ -60,7 +60,7 @@ if (isDevelopment) {
 const ContentSecurityPolicy = [
   "default-src 'self'",
   // GPT + Stripe; 'unsafe-eval' remains required by Next/GPT tooling paths.
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://www.google.com https://pagead2.googlesyndication.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://www.google.com https://pagead2.googlesyndication.com https://*.adtrafficquality.google",
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://media.materialdistrict.com https://secure.gravatar.com https://securepubads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://*.gstatic.com`,
   "font-src 'self' data:",
