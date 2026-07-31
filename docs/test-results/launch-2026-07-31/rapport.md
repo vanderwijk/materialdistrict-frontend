@@ -29,7 +29,11 @@ Belangrijkste afwijkingen:
 - Vier van de nieuwe channels in de hoofdnavigatie geven een 404.
 - De globale zoekfunctie navigeert niet; de doelroute `/search/` bestaat niet en geeft 404.
 - De follow-loginflow bewaart de herkomstpagina niet; na login komt de gebruiker op `/material/`.
-- Een brand kan niet direct worden aangemaakt; alleen een review-aanvraag wordt verzonden. Daardoor zijn D2–D5 en E4–E7 geblokkeerd.
+- De Gmail-reviewroute accepteert een nieuwe brandaanvraag zoals bedoeld; tot
+  goedkeuring blijven D2–D5 en E4–E7 geblokkeerd.
+- Hertest brand-onboarding: een Gmail-account krijgt ten onrechte vijf bestaande brands
+  met domein `gmail.com` als direct claimbare kandidaten te zien. Geen van deze
+  claims is uitgevoerd, om geen bestaand brand aan een verkeerde gebruiker te koppelen.
 
 ## Resultaat per stap
 
@@ -56,7 +60,7 @@ Legenda: **Geslaagd**, **Niet geslaagd**, **Geblokkeerd**, **Waarneming**.
 | C5 | Geblokkeerd | De succesvolle testbetaling gebruikte `e2e-dashboard-free@materialdistrict.com`; voor die mailbox is geen toegang beschikbaar. Een bevestigingsmail kon daardoor niet worden gecontroleerd. |
 | C6 | Geslaagd | Vanuit Stripe Sandbox via “Terug naar MaterialDistrict” afgebroken. Terugkeer ging naar `/membership/?checkout=cancel`; de gratis CTA bleef zichtbaar en er werden geen Insider-rechten toegekend. |
 | C7 | Geslaagd | De officiële Stripe-weigerkaart `4000 0000 0000 0002` gaf duidelijk: “Je creditcard is geweigerd. Probeer te betalen met een debitcard.” Na terugkeer bleef het account gratis. Screenshot: [C7-retest-declined-card.png](./C7-retest-declined-card.png). |
-| D1 | Niet geslaagd | “Add brand” leidt naar een review-aanvraag. `ZZTEST-20260731-brand-01` resulteerde alleen in “Thanks — your request has been sent. We'll review it and get back to you.”; er verscheen geen brand in het dashboard. Screenshot: [D1-brand-request-not-created.png](./D1-brand-request-not-created.png). |
+| D1 | Niet geslaagd | Hertest met nieuw Gmail-account `vanderwijk+zztest-brand-20260731-02@gmail.com`: de reviewroute accepteerde `ZZTEST-20260731-brand-02` en toonde “Thanks — your request has been sent. We'll review it and get back to you.”; er verscheen geen beheersbaar brand in het dashboard. Afwijking: ondanks het publieke Gmail-domein werden vijf bestaande brands (`Achille Pinto`, `Addit Studio`, `Alessia Giardino`, `Alexandra Devaux` en `Alice Corbetta`) met domein `gmail.com` als direct claimbaar aangeboden. Er is bewust niet op “Claim” geklikt. De notificatie naar `info@materialdistrict.com` kon niet worden geverifieerd: alleen `vanderwijk@gmail.com` is gekoppeld en daar verscheen geen doorgestuurde aanvraag in All Mail. Screenshots: [D1-retest-gmail-pending-unsafe-candidates.png](./D1-retest-gmail-pending-unsafe-candidates.png), [D1-retest-gmail-request-pending.png](./D1-retest-gmail-request-pending.png). |
 | D2 | Geblokkeerd | D1 leverde geen testbrand op. |
 | D3 | Geblokkeerd | D1 leverde geen testbrand op. |
 | D4 | Geblokkeerd | D1 leverde geen testbrand op. |
@@ -107,19 +111,20 @@ Geen open blokkerende afwijkingen na de hertests van G2, G3 en C3–C4.
    `energy-resilience`, `net-zero-carbon`, `regenerative` en `timber`.
    Voorbeeld: `https://materialdistrict-frontend.vercel.app/channel/timber/`.
 
-4. **Brand-onboarding maakt geen brand aan.**
-   URL: `https://materialdistrict-frontend.vercel.app/dashboard/brands/new/`
-   Exact: “Thanks — your request has been sent. We'll review it and get back to you.”
-   Gevolg: D2–D5 en E4–E7 zijn geblokkeerd ten opzichte van het draaiboek.
-
-5. **Partner-testfixture is niet als Partner actief.**
+4. **Partner-testfixture is niet als Partner actief.**
    `e2e-partner-brand` toont “Current plan Free”, waardoor channel coupling niet kan worden getest.
 
-6. **iDEAL ontbreekt in Stripe Checkout.**
+5. **iDEAL ontbreekt in Stripe Checkout.**
    De sandboxcheckout opent correct voor €10 per maand en biedt kaart, Klarna en SEPA-incasso.
    Selecteren van SEPA toont een volledig IBAN- en incassomandaatformulier.
    De vereiste iDEAL-bankkeuze en simulatie uit C2 zijn niet beschikbaar.
    Screenshot: [C2-retest-sepa-visible-no-ideal.png](./C2-retest-sepa-visible-no-ideal.png).
+
+6. **Publieke e-maildomeinen worden gebruikt voor directe brandclaims.**
+   Een nieuw account op `gmail.com` krijgt bestaande brands met hetzelfde generieke
+   domein als claimbare kandidaten aangeboden. Dit doorbreekt de bedoelde
+   goedkeuringsroute voor Gmail-gebruikers. Er is geen claim uitgevoerd.
+   Screenshot: [D1-retest-gmail-pending-unsafe-candidates.png](./D1-retest-gmail-pending-unsafe-candidates.png).
 
 ### Klein
 
@@ -136,7 +141,9 @@ Geen open blokkerende afwijkingen na de hertests van G2, G3 en C3–C4.
 | Type | Identificatie | Status |
 |---|---|---|
 | Brandaanvraag | `ZZTEST-20260731-brand-01` | Achtergebleven als review-aanvraag; er werd geen ID in de UI getoond en er is geen verwijderactie beschikbaar. |
+| Brandaanvraag | `ZZTEST-20260731-brand-02` | Hertest; achtergebleven als review-aanvraag. Er werd geen ID in de UI getoond en er is geen verwijderactie beschikbaar. |
 | Account | `vanderwijk+zztest-20260731-01@gmail.com` | Aangemaakt en actief; wachtwoordreset voltooid. Op `/dashboard/profile/` is geen account-ID of verwijderactie beschikbaar. |
+| Account | `vanderwijk+zztest-brand-20260731-02@gmail.com` | Aangemaakt voor de Gmail-brandroute en actief. Geen bestaand brand geclaimd. |
 | Stripe Sandbox-abonnement | `e2e-dashboard-free@materialdistrict.com` | Testkaartbetaling geaccepteerd; account heeft Status `active`, maandelijkse facturering en verlenging op 31 augustus 2026. Annuleer of reset dit testabonnement bij opschoning. |
 
 Niet aangemaakt:
@@ -151,6 +158,10 @@ Tijdelijke followstatus op Bio-based & Living Materials is na de test weer verwi
 
 - De eerste G1–G4-meting tegen `materialdistrict-frontend.vercel.app/wp-json/` was ongeldig: op die host draait geen WordPress. De API-resultaten in dit rapport zijn vervangen door de hertest tegen de twee WordPress-hosts. De bestaande screenshot `G1-public-api-403.png` documenteert uitsluitend die vervallen eerste meting en geldt niet als bewijs voor G1–G4.
 - Gmail is gekoppeld en de registratie- en resetmails zijn gecontroleerd. De AWS-trackinglink in de resetmail kon niet door de geautomatiseerde browser worden geopend; de gebruiker heeft die finale resetstap handmatig bevestigd.
+- Voor de brand-hertest is alleen `vanderwijk@gmail.com` als mailbox gekoppeld.
+  Ontvangst van de interne notificatie op `info@materialdistrict.com` kon daarom
+  niet rechtstreeks worden gecontroleerd; in de persoonlijke mailbox stond ook
+  geen doorgestuurde kopie.
 - C5 kon niet worden gecontroleerd omdat de gebruikte E2E-fixturemailbox niet toegankelijk is.
 - De brandaanvraag leverde geen direct bruikbaar testbrand op.
 - Het draaiboek vroeg om elf channels, terwijl de header er vijftien toont. Alle vijftien zichtbare links zijn daarom gecontroleerd; elf werken en vier geven 404.
