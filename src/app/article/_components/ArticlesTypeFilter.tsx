@@ -29,6 +29,7 @@ import { useTransition } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import {
   STORY_TYPES,
+  STORY_TYPE_META,
   storyTypeLabel,
   type StoryType,
 } from '@/lib/config/story-types'
@@ -97,6 +98,7 @@ export function ArticlesTypeFilter({
         </li>
         {STORY_TYPES.map((type) => {
           const active = selectedType === type
+          const meta = STORY_TYPE_META[type]
           return (
             <li key={type}>
               <button
@@ -106,6 +108,11 @@ export function ArticlesTypeFilter({
                 data-active={active ? '' : undefined}
                 aria-pressed={active}
                 onClick={() => select(type)}
+                style={
+                  active
+                    ? { backgroundColor: meta.color, color: '#fff' }
+                    : undefined
+                }
               >
                 <span className="articles-type-label">{storyTypeLabel(type)}</span>
                 <span className="filter-count">{countByType.get(type) ?? 0}</span>

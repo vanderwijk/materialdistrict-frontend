@@ -127,7 +127,7 @@ export function ArticlesMobileSidebar({ children }: { children: ReactNode }) {
             <IconClose size={12} strokeWidth={2} />
           </button>
         </div>
-        {children}
+        <div className="articles-drawer-body">{children}</div>
       </aside>
     </>
   )
