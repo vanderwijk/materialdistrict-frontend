@@ -673,7 +673,7 @@ en toont offline materialen toch. Backend moet `meta.publication.isOnline` bloot
 
 **Spec:** [`mailsysteem-spec.md`](./mailsysteem-spec.md). Sendy-op-SES lead vervallen; WP→SES eigen pad.
 
-- **M1** Suppressie-oogst Sendy → `wp_md_mail_suppression` (tijdgevoelig) — Johan
+- **M1** ✅ Suppressie-oogst Sendy → `wp_md_mail_suppression` — CMS 24-07-2026 (41.277 × `sendy_export`; bevestigd 29-07-2026)
 - **M2** Contact-import 8.148 actief + 3.821 uitgeschreven — Johan
 - **M3** Config sets + `news@` + re-engagement-subdomein — Johan
 - **M4** Queue/worker + SNS mail events + preferences/unsub — Johan (september-MVP)

@@ -3,7 +3,12 @@
 **Voor:** lokale Cursor-agent met WP-CLI op CMS (en desgewenst production).  
 **Context:** launch-punten Claude → Johan (29-07-2026). Cloud-agent had geen CMS-shell; dit is ops op de database.
 
-Voer uit op **CMS eerst** (`cms.materialdistrict.com`). Production alleen als die DB al dezelfde content/mail-schema heeft of na expliciete go.
+**Status 29-07-2026 (CMS):** ✅ afgerond  
+- Testposts `133915` / `137173` / `137213` permanent verwijderd (`material` CPT heeft geen trash → direct `--force`).  
+- Suppressie: `wp_md_mail_suppression` = **41.277** rijen, allemaal `source=sendy_export` (bounce 39.581 / complaint 1.696; geoogst 24-07-2026 14:24–14:25 UTC). `mail_suppressed=1` op 1.623 users. Geen nabewerking.
+
+Voer uit op **CMS eerst** (`cms.materialdistrict.com`). Production alleen als die DB al dezelfde content/mail-schema heeft of na expliciete go.  
+Onderstaande stappen blijven staan als naslag / herhaalcheck.
 
 ---
 
