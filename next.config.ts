@@ -5,8 +5,7 @@ import type { NextConfig } from 'next'
  *
  * - Image domains: WordPress media-host
  * - Security headers: CSP, frame-ancestors, X-Content-Type-Options
- * - Redirects: legacy WordPress-URLs blijven werken (toe te voegen in latere sessie
- *   wanneer we de exacte mapping van de huidige site kennen)
+ * - Redirects: legacy WordPress-URLs → Next (sitemap-meting 31-07-2026; 424 van 10.901)
  */
 
 const WP_HOST = process.env.WP_API_URL
@@ -140,10 +139,159 @@ const nextConfig: NextConfig = {
     ]
   },
 
-  // Legacy redirects — wordt gevuld zodra we de huidige WP-permalinks
-  // hebben gemapt op de Next.js routes. Voorlopig leeg.
+  /**
+   * Legacy redirects — WordPress permalinks → Next.js routes.
+   * Derived from the live sitemap on 31-07-2026: 10.901 indexed URLs measured
+   * against the new frontend. 10.477 (96,1%) already resolve unchanged; the
+   * 424 that break fall into the groups below. All permanent (301).
+   */
   async redirects() {
-    return []
+    return [
+      // ------------------------------------------------------------------
+      // 1. Books — WooCommerce products moved to /book/
+      //    31 URLs. Verified: all 31 slugs resolve 1-on-1.
+      // ------------------------------------------------------------------
+      {
+        source: '/product/:slug',
+        destination: '/book/:slug',
+        permanent: true,
+      },
+      {
+        source: '/product-category/books/:path*',
+        destination: '/book',
+        permanent: true,
+      },
+      {
+        source: '/product-category/:path*',
+        destination: '/book',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 2. Sensory and technical archives → matching filter on /material
+      //    ~50 URLs / 15 taxonomies. Verified 31-07-2026: all 48 old term
+      //    slugs work as filter values. Hyphen in path → underscore in query.
+      // ------------------------------------------------------------------
+      {
+        source: '/glossiness/:value',
+        destination: '/material/?glossiness=:value',
+        permanent: true,
+      },
+      {
+        source: '/translucence/:value',
+        destination: '/material/?translucence=:value',
+        permanent: true,
+      },
+      {
+        source: '/structure/:value',
+        destination: '/material/?structure=:value',
+        permanent: true,
+      },
+      {
+        source: '/texture/:value',
+        destination: '/material/?texture=:value',
+        permanent: true,
+      },
+      {
+        source: '/hardness/:value',
+        destination: '/material/?hardness=:value',
+        permanent: true,
+      },
+      {
+        source: '/temperature/:value',
+        destination: '/material/?temperature=:value',
+        permanent: true,
+      },
+      {
+        source: '/acoustics/:value',
+        destination: '/material/?acoustics=:value',
+        permanent: true,
+      },
+      {
+        source: '/odeur/:value',
+        destination: '/material/?odeur=:value',
+        permanent: true,
+      },
+      {
+        source: '/fire-resistance/:value',
+        destination: '/material/?fire_resistance=:value',
+        permanent: true,
+      },
+      {
+        source: '/uv-resistance/:value',
+        destination: '/material/?uv_resistance=:value',
+        permanent: true,
+      },
+      {
+        source: '/weather-resistance/:value',
+        destination: '/material/?weather_resistance=:value',
+        permanent: true,
+      },
+      {
+        source: '/scratch-resistance/:value',
+        destination: '/material/?scratch_resistance=:value',
+        permanent: true,
+      },
+      {
+        source: '/chemical-resistance/:value',
+        destination: '/material/?chemical_resistance=:value',
+        permanent: true,
+      },
+      {
+        source: '/weight/:value',
+        destination: '/material/?weight=:value',
+        permanent: true,
+      },
+      {
+        source: '/renewable/:value',
+        destination: '/material/?renewable=:value',
+        permanent: true,
+      },
+      // Bare archive roots have no filter value to carry over.
+      {
+        source:
+          '/:taxonomy(glossiness|translucence|structure|texture|hardness|temperature|acoustics|odeur|fire-resistance|uv-resistance|weather-resistance|scratch-resistance|chemical-resistance|weight|renewable)',
+        destination: '/material',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 3. Editorial and event taxonomies (+ 242 location archives → /event)
+      // ------------------------------------------------------------------
+      {
+        source: '/story-type/:slug*',
+        destination: '/article',
+        permanent: true,
+      },
+      {
+        source: '/event-type/:slug*',
+        destination: '/event',
+        permanent: true,
+      },
+      {
+        source: '/location/:slug*',
+        destination: '/event',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 4. Speaker archives — 92 auto-generated person taxonomy pages → /talk
+      // ------------------------------------------------------------------
+      {
+        source: '/person/:slug*',
+        destination: '/talk',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 5. Jobs pages under /about — removed, no replacement
+      // ------------------------------------------------------------------
+      {
+        source: '/about/jobs/:path*',
+        destination: '/about',
+        permanent: true,
+      },
+    ]
   },
 }
 
