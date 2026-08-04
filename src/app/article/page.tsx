@@ -47,6 +47,11 @@ import {
   type StoryType,
 } from '@/lib/config/story-types'
 import { ArticlesTypeFilter } from './_components/ArticlesTypeFilter'
+import {
+  ArticlesFilterTrigger,
+  ArticlesMobileFilterProvider,
+  ArticlesMobileSidebar,
+} from './_components/ArticlesMobileFilters'
 import { RecentlyViewedRail } from '@/components/ui'
 import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
 import { ArticlesPagination } from './_components/ArticlesPagination'
@@ -141,7 +146,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   const [featured, ...rest] = result.items
 
   return (
-    <>
+    <ArticlesMobileFilterProvider activeCount={selectedType ? 1 : 0}>
       <header className="ov-page-header">
         <div className="ov-page-header-main">
           <Breadcrumb items={[{ label: 'Stories' }]} />
@@ -158,8 +163,13 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         }
       />
 
+      <div className="ov-filter-trigger-row">
+        <ArticlesFilterTrigger />
+        <div className="ov-filter-trigger-row-aside" />
+      </div>
+
       <div className="ov-wrap">
-        <div className="articles-sidebar-col">
+        <ArticlesMobileSidebar>
           <ArticlesTypeFilter
             options={typeOptions}
             selectedType={selectedType}
@@ -209,7 +219,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               View Partner →
             </Button>
           </div>
-        </div>
+        </ArticlesMobileSidebar>
 
         <div>
           {/* Type-intro-banner wanneer een type actief is (mockup-patroon) */}
@@ -354,6 +364,6 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           ]),
         ]}
       />
-    </>
+    </ArticlesMobileFilterProvider>
   )
 }

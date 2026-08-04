@@ -8045,6 +8045,15 @@ mark.search-mark {
   .uf-header-save {
     padding: 4px 6px;
   }
+
+  /* FilterSidebar-trigger in .ov-wrap: grid stretcht items standaard
+     full-width → knop ogen gecentreerd. Zelfde links-uitgelijnde
+     compacte knop als Materials (.ov-filter-trigger-row). */
+  .ov-wrap > .mob-filter-trigger {
+    justify-self: start;
+    width: auto;
+    margin-bottom: 4px;
+  }
 }
 
 /* ------------------------------------------------------------
@@ -9651,10 +9660,69 @@ mark.search-mark {
   top: 114px;
 }
 
-@media (max-width: 900px) {
+.articles-drawer-header {
+  display: none;
+}
+
+@media (max-width: 1024px) {
   .articles-sidebar-col {
-    position: static;
-    top: auto;
+    display: none;
+    position: fixed;
+    left: 0;
+    top: var(--header-height-mobile);
+    bottom: 0;
+    width: var(--filter-sidebar-mobile);
+    z-index: var(--z-overlay);
+    border-radius: 0;
+    border: none;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    transform: translateX(-100%);
+    transition: transform var(--transition-panel);
+    max-height: none;
+    min-width: 0;
+    overflow-y: auto;
+    background: var(--surface);
+    padding: 0 var(--space-4) var(--space-6);
+    gap: var(--space-4);
+  }
+
+  .articles-sidebar-col.articles-sidebar-drawer-open {
+    display: flex;
+    transform: translateX(0);
+  }
+
+  .articles-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 0;
+    margin: 0 calc(-1 * var(--space-4));
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .articles-drawer-header .uf-header-title {
+    color: var(--text);
+  }
+
+  .articles-drawer-header .uf-header-close {
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .articles-sidebar-drawer-open .uf-header-close {
+    display: inline-flex;
   }
 }
 
@@ -11804,11 +11872,11 @@ mark.search-mark {
 /* --- Filterpaneel: op paper, ink-selectie, ronde icoon-acties --- */
 .uf-sidebar { background: transparent; border: none; border-radius: 0; }
 .uf-header {
+  border-bottom: 1px solid var(--border);
   background: transparent;
   min-height: 0;
-  padding: 2px 14px 12px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 4px;
+  /* margin-bottom: 4px; */
+  padding: 14px 12px;
 }
 .uf-header-title {
   color: var(--text);

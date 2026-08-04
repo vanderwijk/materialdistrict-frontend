@@ -21,8 +21,8 @@
  * telling bij News. De UI markeert dat met een subtiele hint. Zodra
  * gekoppeld verdeelt alles zich vanzelf, zonder frontend-wijziging.
  *
- * Op mobile volgt dit dezelfde `.filter-sidebar`-drawer-conventie als de
- * andere overzichten (CSS verbergt 'm op smal scherm).
+ * Op mobile: drawer via `ArticlesMobileFilters` (Filters-knop + linker
+ * panel), consistent met Materials/Brands/Books.
  */
 
 import { useTransition } from 'react'
