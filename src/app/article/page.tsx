@@ -176,49 +176,6 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
             totalCount={totalArticleCount}
             pendingBackend={!STORY_TYPE_BACKEND_CONNECTED}
           />
-
-          {/* People CTA */}
-          <div className="articles-cta articles-cta-people">
-            <div className="articles-cta-eyebrow">People</div>
-            <div className="articles-cta-title">
-              Know someone driving the transition?
-            </div>
-            <p className="articles-cta-body">
-              Nominate a person for a People story.
-            </p>
-            <Button
-              as="link"
-              href="#nominate"
-              variant="green"
-              size="sm"
-              className="articles-cta-btn"
-            >
-              Nominate →
-            </Button>
-          </div>
-
-          {/* Partner CTA */}
-          <div className="articles-cta articles-cta-partner">
-            <div className="articles-cta-eyebrow articles-cta-eyebrow-navy">
-              Partner stories
-            </div>
-            <div className="articles-cta-title articles-cta-title-dark">
-              Tell your brand story
-            </div>
-            <p className="articles-cta-body articles-cta-body-muted">
-              Partner members get 1 brand story per year, distributed to
-              80,000+ specifiers.
-            </p>
-            <Button
-              as="link"
-              href="/membership"
-              variant="outline"
-              size="sm"
-              className="articles-cta-btn"
-            >
-              View Partner →
-            </Button>
-          </div>
         </ArticlesMobileSidebar>
 
         <div>
@@ -331,28 +288,6 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
           )}
 
           <RecentlyViewedRail entity="articles" variant="inline" />
-
-          {/* Nominate-sectie (mockup-patroon). Statisch in v1 — de submit
-              is nog niet aan een endpoint gekoppeld; zie open-issues. */}
-          <section id="nominate" className="articles-nominate">
-            <div className="articles-nominate-intro">
-              <div className="articles-cta-eyebrow articles-cta-eyebrow-navy">
-                Nominate a person
-              </div>
-              <h2 className="t-display-md">
-                Know someone driving the transition?
-              </h2>
-              <p className="t-body">
-                A People story is about the individual — their choices, their
-                convictions, their work. We select based on impact, not
-                profile. You can nominate yourself or someone else.
-              </p>
-              <p className="articles-nominate-note">
-                Every nomination is reviewed by the MaterialDistrict editorial
-                team. We reach out personally.
-              </p>
-            </div>
-          </section>
         </div>
       </div>
 

@@ -3,7 +3,7 @@
 /**
  * ArticlesMobileFilters — mobiele Filters-drawer voor /article.
  *
- * Op desktop: kinderen (story-type-filter + CTA's) in de normale sidebar.
+ * Op desktop: story-type-filter in de normale sidebar.
  * Op mobile: zelfde patroon als Materials — compacte "Filters"-knop in
  * `.ov-filter-trigger-row`, inhoud in een linker drawer. De drawer wordt
  * naar `document.body` geportald zodat geen ancestor de scroll afkapt.
