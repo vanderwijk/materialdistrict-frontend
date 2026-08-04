@@ -113,17 +113,35 @@ function parseVimeo(url: URL): VideoSource | null {
 
   if (!id || !/^\d+$/.test(id)) return null
   const cleanHash = hash && /^[\w-]+$/.test(hash) ? hash : null
-  const embedUrl = cleanHash
-    ? `https://player.vimeo.com/video/${id}?h=${cleanHash}`
-    : `https://player.vimeo.com/video/${id}`
   return {
     provider: 'vimeo',
     id,
     hash: cleanHash,
     // Vimeo-thumbnails vereisen een API-call → niet voorspelbaar.
-    embedUrl,
+    embedUrl: buildVimeoEmbedUrl(id, cleanHash),
     thumbnailUrl: null,
   }
+}
+
+/**
+ * Clean Vimeo player chrome (matches account embed preset
+ * "materialdistrict.com" / 121194095). Presets are applied per-video in
+ * Vimeo; these URL params harden the same look even when a video still has
+ * the default preset.
+ */
+export function buildVimeoEmbedUrl(
+  vimeoId: string,
+  hash: string | null = null,
+): string {
+  const params = new URLSearchParams({
+    title: '0',
+    byline: '0',
+    portrait: '0',
+    badge: '0',
+    dnt: '1',
+  })
+  if (hash) params.set('h', hash)
+  return `https://player.vimeo.com/video/${encodeURIComponent(vimeoId)}?${params.toString()}`
 }
 
 /**
