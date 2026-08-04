@@ -13,13 +13,26 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPage } from '@/lib/api'
 import { buildPageMetadata } from '@/lib/seo/page-metadata'
-import { EditorialPage, type SectionVariant } from '@/components/content/EditorialPage'
+import {
+  EditorialPage,
+  type EditorialImage,
+  type SectionVariant,
+} from '@/components/content/EditorialPage'
 
 const WP_SLUG = 'about'
 
 const VARIANTS: Record<string, SectionVariant> = {
   'what-we-do-today': 'cards',
   facts: 'facts',
+}
+
+const IMAGES: Record<string, EditorialImage> = {
+  'what-we-do-today': {
+    src: '/images/mission/meeting.jpg',
+    alt: 'Three people in conversation at a stand at MaterialDistrict Utrecht.',
+    caption: 'MaterialDistrict Utrecht — where the platform becomes a room.',
+    credit: 'Viorica Cernica',
+  },
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -40,6 +53,7 @@ export default async function AboutPage() {
       eyebrow="About"
       html={page.contentHtml}
       variants={VARIANTS}
+      images={IMAGES}
       footer={
         <section className="ed-cta">
           <h2 className="ed-cta-title">Want to know more?</h2>

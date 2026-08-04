@@ -37,6 +37,23 @@ export interface EditorialSection {
   html: string
 }
 
+/**
+ * Beeld dat ná een sectie geplaatst wordt. De sleutel is de sectiekop via
+ * `sectionKey()`, zodat beeld en tekst aan elkaar gekoppeld zijn en niet aan
+ * een volgnummer — schuift de redactie een sectie op, dan schuift het beeld mee.
+ */
+export interface EditorialImage {
+  src: string
+  /** Alt-tekst. Leeg laten als het beeld puur decoratief is. */
+  alt: string
+  /** Bijschrift onder het beeld. Optioneel. */
+  caption?: string
+  /** Fotograaf. Wordt achter het bijschrift gezet. */
+  credit?: string
+  /** Volle breedte i.p.v. de tekstkolom. Voor overzichtsbeelden. */
+  wide?: boolean
+}
+
 /** Tekst zonder tags — voor het matchen van koppen op de variantenmap. */
 function toPlainText(html: string): string {
   return html
@@ -107,6 +124,26 @@ function extractListItems(html: string): string[] {
 /** Alles behalve de eerste lijst — de inleidende tekst boven een lijst. */
 function stripFirstList(html: string): string {
   return html.replace(/<[uo]l[^>]*>[\s\S]*?<\/[uo]l>/i, '').trim()
+}
+
+function Figure({ image }: { image: EditorialImage }) {
+  return (
+    <figure className={image.wide ? 'ed-figure ed-figure-wide' : 'ed-figure'}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={image.src} alt={image.alt} loading="lazy" />
+      {(image.caption || image.credit) && (
+        <figcaption>
+          {image.caption}
+          {image.credit && (
+            <span className="ed-figure-credit">
+              {image.caption ? ' · ' : ''}
+              Photo: {image.credit}
+            </span>
+          )}
+        </figcaption>
+      )}
+    </figure>
+  )
 }
 
 interface SectionProps {
@@ -180,6 +217,8 @@ interface EditorialPageProps {
   html: string
   /** Kop → variant. Sleutels via `sectionKey()`, dus `our-ambition-for-2030`. */
   variants?: Record<string, SectionVariant>
+  /** Kop → beeld dat ná die sectie komt. Zelfde sleutels als `variants`. */
+  images?: Record<string, EditorialImage>
   /** Extra blok direct onder de hero (bijvoorbeeld beeld). */
   afterHero?: ReactNode
   /** Extra blok onderaan de pagina (bijvoorbeeld een CTA). */
@@ -191,6 +230,7 @@ export function EditorialPage({
   eyebrow,
   html,
   variants = {},
+  images = {},
   afterHero,
   footer,
 }: EditorialPageProps) {
@@ -216,13 +256,19 @@ export function EditorialPage({
       {afterHero}
 
       <div className="ed-body">
-        {rest.map((section) => (
-          <Section
-            key={section.heading}
-            section={section}
-            variant={variants[sectionKey(section.heading)] ?? 'prose'}
-          />
-        ))}
+        {rest.map((section) => {
+          const key = sectionKey(section.heading)
+          const image = images[key]
+          return (
+            <div key={section.heading}>
+              <Section
+                section={section}
+                variant={variants[key] ?? 'prose'}
+              />
+              {image && <Figure image={image} />}
+            </div>
+          )
+        })}
       </div>
 
       {footer}

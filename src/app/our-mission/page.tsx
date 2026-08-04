@@ -5,35 +5,70 @@
  * blijft in WordPress (page-slug `our-mission`); `EditorialPage` bepaalt de
  * vormgeving per sectie.
  *
- * Twee keuzes die de moeite van het onthouden waard zijn:
+ * **Beeldkeuze (04-08-2026, besluit Jeroen).** Eerder stond hier een band met
+ * vier materiaalfoto's uit de database, onder de aanname dat een missiepagina
+ * over materiaalinnovatie materialen moet tonen. Dat was de verkeerde lezing:
+ * MaterialDistrict is een platform dat mensen verbindt, met het materiaal als
+ * matchmaker. Het beeld toont daarom mensen — gesprekken bij een stand, handen
+ * die monsters kiezen, de vloer van MaterialDistrict Utrecht.
  *
- *  - **De ambitie 2030 krijgt een eigen getint vlak.** Dat is de scherpste
- *    publieke uitspraak die MaterialDistrict doet; als alinea tussen andere
- *    alinea's verdwijnt hij. Zie `variants` hieronder.
- *  - **Illustratie komt uit de eigen materialendatabase**, niet uit stock. Een
- *    missiepagina over materiaalinnovatie met een generieke kantoorfoto maakt
- *    het verhaal ongeloofwaardiger; de materialen zelf zijn het bewijs.
+ * Beeld staat niet meer gebundeld bovenaan maar verdeeld over de pagina, één
+ * per inhoudelijk blok. Gekoppeld aan de sectiekop en niet aan een volgnummer,
+ * dus schuift de redactie een sectie op, dan schuift het beeld mee.
  *
- * Wijzigt de redactie een `<h2>`, dan valt die sectie terug op `prose`. Dat is
- * bewust: liever een sectie die er gewoon uitziet dan een pagina die breekt.
+ * Wijzigt de redactie een `<h2>`, dan valt die sectie terug op `prose` en komt
+ * het bijbehorende beeld te vervallen. Bewust: liever een pagina zonder foto
+ * dan een pagina die breekt.
  */
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { getPage, listMaterials } from '@/lib/api'
+import { getPage } from '@/lib/api'
 import { buildPageMetadata } from '@/lib/seo/page-metadata'
-import { EditorialPage, type SectionVariant } from '@/components/content/EditorialPage'
+import {
+  EditorialPage,
+  type EditorialImage,
+  type SectionVariant,
+} from '@/components/content/EditorialPage'
 
 const WP_SLUG = 'our-mission'
-
-/** Aantal materialen in de beeldband. Vier past op alle breedtes. */
-const STRIP_COUNT = 4
 
 const VARIANTS: Record<string, SectionVariant> = {
   'what-we-mean-by-sustainable': 'cards',
   'our-ambition-for-2030': 'highlight',
   'more-than-an-online-platform': 'checklist',
+}
+
+/**
+ * Beeld per sectie. Sleutel = de sectiekop via `sectionKey()`.
+ * Wil je een foto wisselen: alleen `src`, `alt` en `caption` aanpassen.
+ */
+const IMAGES: Record<string, EditorialImage> = {
+  'why-materialdistrict-exists': {
+    src: '/images/mission/conversation.jpg',
+    alt: 'A manufacturer explains a material to two visitors at MaterialDistrict Utrecht.',
+    caption: 'A material only travels as far as the conversation around it.',
+    credit: 'Viorica Cernica',
+  },
+  'from-innovation-to-application': {
+    src: '/images/mission/samples.jpg',
+    alt: 'A visitor picks up a material sample from a table of samples.',
+    caption: 'The moment that matters: a specifier choosing.',
+    credit: 'Viorica Cernica',
+  },
+  'our-ambition-for-2030': {
+    src: '/images/mission/circular.jpg',
+    alt: 'Three people discussing circular building materials at a stand marked “circulair”.',
+    caption: 'Circular materials at MaterialDistrict Utrecht.',
+    credit: 'Viorica Cernica',
+  },
+  'more-than-an-online-platform': {
+    src: '/images/mission/sample-tables.jpg',
+    alt: 'Visitors browsing long tables of material samples in the Werkspoorkathedraal.',
+    caption: 'MaterialDistrict Utrecht, Werkspoorkathedraal.',
+    wide: true,
+  },
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,70 +83,55 @@ export default async function OurMissionPage() {
   const page = await getPage(WP_SLUG)
   if (!page) notFound()
 
-  // Illustratie uit de eigen database. Faalt dit, dan valt de band gewoon weg;
-  // de pagina mag er niet op stuklopen.
-  let strip: Array<{ id: number; title: string; image: string; href: string }> = []
-  try {
-    const { items } = await listMaterials({ perPage: 12 })
-    strip = items
-      .map((m) => {
-        const image = m.hero?.sourceUrl ?? null
-        if (!image) return null
-        return {
-          id: m.id,
-          title: m.title,
-          image,
-          href: m.link || `/material/${m.slug}/`,
-        }
-      })
-      .filter((item): item is NonNullable<typeof item> => item !== null)
-      .slice(0, STRIP_COUNT)
-  } catch {
-    strip = []
-  }
-
   return (
     <EditorialPage
       title={page.title}
       eyebrow="Our mission"
       html={page.contentHtml}
       variants={VARIANTS}
+      images={IMAGES}
       afterHero={
-        strip.length > 0 ? (
-          <div className="ed-strip" aria-label="Materials from our database">
-            {strip.map((item) => (
-              <Link key={item.id} href={item.href} className="ed-strip-item">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.image} alt="" loading="lazy" />
-                <span className="ed-strip-caption">{item.title}</span>
-              </Link>
-            ))}
-          </div>
-        ) : null
+        <figure className="ed-figure ed-figure-lead">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/mission/hall.jpg"
+            alt="The exhibition floor of MaterialDistrict Utrecht in the Werkspoorkathedraal."
+            /* Eerste beeld op de pagina, dus geen lazy loading. */
+            fetchPriority="high"
+          />
+        </figure>
       }
       footer={
-        <section className="ed-cta">
-          <h2 className="ed-cta-title">Choose your route</h2>
-          <div className="ed-cta-grid">
-            <div className="ed-cta-card">
-              <h3>I am a professional</h3>
-              <p>
-                Discover relevant materials, follow the channels that matter to
-                your practice and build your own material knowledge.
+        <section className="ed-route">
+          <div className="ed-route-inner">
+            <div className="ed-route-copy">
+              <h2 className="ed-route-title">Choose your route</h2>
+              <p className="ed-route-lede">
+                Two ways in — one for the people who specify materials, one for
+                the people who make them.
               </p>
-              <Link href="/register" className="btn btn-outline">
-                Create a free account
-              </Link>
             </div>
-            <div className="ed-cta-card">
-              <h3>I am a brand</h3>
-              <p>
-                Bring your materials to the attention of architects, designers
-                and other professionals who influence specification.
-              </p>
-              <Link href="/become-a-partner" className="btn btn-outline">
-                See the options
-              </Link>
+            <div className="ed-route-grid">
+              <div className="ed-route-card ed-route-card-pro">
+                <h3>I am a professional</h3>
+                <p>
+                  Discover relevant materials, follow the channels that matter
+                  to your practice and build your own material knowledge.
+                </p>
+                <Link href="/register" className="btn btn-lg btn-on-ink">
+                  Create a free account
+                </Link>
+              </div>
+              <div className="ed-route-card ed-route-card-brand">
+                <h3>I am a brand</h3>
+                <p>
+                  Bring your materials to the attention of architects, designers
+                  and other professionals who influence specification.
+                </p>
+                <Link href="/become-a-partner" className="btn btn-lg btn-ink">
+                  See the options
+                </Link>
+              </div>
             </div>
           </div>
         </section>
