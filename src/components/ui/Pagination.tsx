@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IconChevronLeft, IconChevronRight } from './icons'
 import { cn } from '@/lib/utils/cn'
 
@@ -84,6 +84,20 @@ function getPageRange(
 // Component
 // ============================================================
 
+function useIsNarrow(query = '(max-width: 560px)') {
+  const [narrow, setNarrow] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia(query)
+    const update = () => setNarrow(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [query])
+
+  return narrow
+}
+
 /**
  * Pagination — universele pagina-navigatie voor overzichtspagina's.
  *
@@ -110,10 +124,13 @@ export function Pagination({
   ariaLabel = 'Pagination',
 }: PaginationProps) {
   const [gotoValue, setGotoValue] = useState('')
+  const isNarrow = useIsNarrow()
 
   if (totalPages <= 1) return null
 
-  const pages = getPageRange(currentPage, totalPages, siblingCount)
+  // Op smalle schermen minder siblings zodat « ‹ 1 2 … N › » op één rij blijft.
+  const effectiveSiblings = isNarrow ? Math.min(siblingCount, 1) : siblingCount
+  const pages = getPageRange(currentPage, totalPages, effectiveSiblings)
   const canPrev = currentPage > 1
   const canNext = currentPage < totalPages
 
@@ -127,67 +144,69 @@ export function Pagination({
 
   return (
     <nav className={cn('pagination', className)} aria-label={ariaLabel}>
-      <button
-        type="button"
-        className="pagination-btn pagination-btn-edge"
-        onClick={() => onPageChange(1)}
-        disabled={!canPrev}
-        aria-label="First page"
-      >
-        <IconChevronLeft size={13} strokeWidth={2.5} />
-        <IconChevronLeft size={13} strokeWidth={2.5} />
-      </button>
+      <div className="pagination-controls">
+        <button
+          type="button"
+          className="pagination-btn pagination-btn-edge"
+          onClick={() => onPageChange(1)}
+          disabled={!canPrev}
+          aria-label="First page"
+        >
+          <IconChevronLeft size={13} strokeWidth={2.5} />
+          <IconChevronLeft size={13} strokeWidth={2.5} />
+        </button>
 
-      <button
-        type="button"
-        className="pagination-btn"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={!canPrev}
-        aria-label="Previous page"
-      >
-        <IconChevronLeft size={14} strokeWidth={2.5} />
-      </button>
+        <button
+          type="button"
+          className="pagination-btn"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={!canPrev}
+          aria-label="Previous page"
+        >
+          <IconChevronLeft size={14} strokeWidth={2.5} />
+        </button>
 
-      {pages.map((p, i) =>
-        p === null ? (
-          <span key={`ellipsis-${i}`} className="pagination-ellipsis" aria-hidden="true">
-            …
-          </span>
-        ) : (
-          <button
-            key={p}
-            type="button"
-            className={cn('pagination-btn', p === currentPage && 'is-active')}
-            onClick={() => onPageChange(p)}
-            aria-label={`Page ${p}`}
-            aria-current={p === currentPage ? 'page' : undefined}
-            disabled={p === currentPage}
-          >
-            {p}
-          </button>
-        ),
-      )}
+        {pages.map((p, i) =>
+          p === null ? (
+            <span key={`ellipsis-${i}`} className="pagination-ellipsis" aria-hidden="true">
+              …
+            </span>
+          ) : (
+            <button
+              key={p}
+              type="button"
+              className={cn('pagination-btn', p === currentPage && 'is-active')}
+              onClick={() => onPageChange(p)}
+              aria-label={`Page ${p}`}
+              aria-current={p === currentPage ? 'page' : undefined}
+              disabled={p === currentPage}
+            >
+              {p}
+            </button>
+          ),
+        )}
 
-      <button
-        type="button"
-        className="pagination-btn"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={!canNext}
-        aria-label="Next page"
-      >
-        <IconChevronRight size={14} strokeWidth={2.5} />
-      </button>
+        <button
+          type="button"
+          className="pagination-btn"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={!canNext}
+          aria-label="Next page"
+        >
+          <IconChevronRight size={14} strokeWidth={2.5} />
+        </button>
 
-      <button
-        type="button"
-        className="pagination-btn pagination-btn-edge"
-        onClick={() => onPageChange(totalPages)}
-        disabled={!canNext}
-        aria-label="Last page"
-      >
-        <IconChevronRight size={13} strokeWidth={2.5} />
-        <IconChevronRight size={13} strokeWidth={2.5} />
-      </button>
+        <button
+          type="button"
+          className="pagination-btn pagination-btn-edge"
+          onClick={() => onPageChange(totalPages)}
+          disabled={!canNext}
+          aria-label="Last page"
+        >
+          <IconChevronRight size={13} strokeWidth={2.5} />
+          <IconChevronRight size={13} strokeWidth={2.5} />
+        </button>
+      </div>
 
       {showGoto && (
         <span className="pagination-goto">

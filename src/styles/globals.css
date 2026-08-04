@@ -13072,6 +13072,14 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
   flex-wrap: wrap;
   row-gap: 8px;
 }
+.pagination-controls {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
+}
 .pagination-btn-edge {
   gap: 0;
 }
@@ -13137,6 +13145,21 @@ a.mat-detail-tag--sustainability:hover { border-color: var(--green-mid, var(--gr
 }
 
 @media (max-width: 560px) {
+  .pagination {
+    flex-direction: column;
+    align-items: center;
+  }
+  .pagination-controls {
+    gap: 2px;
+  }
+  .pagination-controls .pagination-btn {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 6px;
+  }
+  .pagination-ellipsis {
+    padding: 0 2px;
+  }
   .pagination-goto {
     margin-left: 0;
     padding-left: 0;
