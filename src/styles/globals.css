@@ -18581,14 +18581,15 @@ a.mat-detail-tag:hover::after { opacity: 1; }
    één veld: elk extra veld kost meldingen. Navy i.p.v. groen — groen is
    gereserveerd voor conversie-acties, dit is er geen.
 
-   z-index blijft onder een eventuele cookiebalk: een meldknop mag nooit
-   een consent-keuze afdekken.
+   z-index onder overlays/modals (mobile nav, dialogs) én onder een
+   eventuele cookiebalk: mag nooit Logout of consent afdekken. Boven
+   sticky content zodat de knop op de pagina zelf zichtbaar blijft.
    ============================================================ */
 .fb-trigger {
   position: fixed;
   right: var(--space-5);
   bottom: var(--space-5);
-  z-index: 900;
+  z-index: calc(var(--z-overlay) - 1);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -18624,7 +18625,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   position: fixed;
   right: var(--space-5);
   bottom: var(--space-5);
-  z-index: 901;
+  z-index: calc(var(--z-overlay) - 1);
   box-sizing: border-box;
   /* Avoid 100vw — it includes the scrollbar gutter and can widen the page. */
   width: min(340px, calc(100% - 2 * var(--space-5)));
