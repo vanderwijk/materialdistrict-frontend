@@ -56,7 +56,11 @@ import { RecentlyViewedRail } from '@/components/ui'
 import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
 import { ArticlesPagination } from './_components/ArticlesPagination'
 
-const ARTICLES_PER_PAGE = 12
+/**
+ * 13 = 1 featured (volle breedte) + 12 in `.ov-grid-3`.
+ * Met 12 bleef de laatste rij op 2 kaarten steken (11 rest ÷ 3).
+ */
+const ARTICLES_PER_PAGE = 13
 
 /**
  * Staat van de backend-koppeling voor `story_type` (D1). Sinds sessie 6b
