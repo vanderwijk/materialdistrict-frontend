@@ -170,6 +170,16 @@
 - [ ] **Plausible Analytics** toevoegen (script + domain); consent-gate of bewuste cookieloze setup documenteren
 - [ ] Rooktest: Network/devtools — scripts verschijnen pas na acceptatie (of volgens gekozen Plausible-beleid)
 
+### 2.3d Error monitoring (Sentry)
+
+**Status:** ❌ nog nodig rond live — console- en scriptfouten moeten zichtbaar zijn zodat we ze snel kunnen oppikken en fixen.  
+**Account:** aanmaken op [Sentry.io](https://sentry.io) met **webmaster@material-district.com**.
+
+- [ ] Sentry.io-account aanmaken met `webmaster@material-district.com`
+- [ ] Project voor de Next.js-frontend (Vercel) aanmaken; DSN in Vercel env zetten
+- [ ] Sentry SDK inbouwen (client + server) zodat console-/scriptfouten en unhandled exceptions binnenkomen
+- [ ] Rooktest: opzettelijke testfout → event zichtbaar in Sentry; alerts/e-mail naar webmaster bevestigen
+
 ### 2.3b Users: productie → CMS (cutover)
 
 **Status:** gepland — geen blinde sync; wel eenmalige gefilterde import  
