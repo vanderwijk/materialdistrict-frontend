@@ -310,6 +310,10 @@ consent-tool is. "Cookie settings" hoort een knop te zijn die een consent-manage
 opent, geen pagina. Te beslissen welke tool (Cookiebot / Usercentrics / eigen
 banner); daarna wordt het een knop die de manager opent. Eén regel terugzetten.
 
+**Update (4-08-2026):** nog open vóór/bij live — cookie-melding/blocker + scripts
+voor **Google Analytics** en **Plausible Analytics** (achter consent). Checklist:
+[`livegang-checklist.md`](./livegang-checklist.md) §2.3c; testdraaiboek H8/H11.
+
 ### S11.7 — Vooruit-lopende footer-links
 **Eigenaar:** Claude (lost vanzelf op per sessie)
 **Besluit (29-05):** ongewijzigd laten. For specifiers / For manufacturers wijzen naar nog-niet-gebouwde routes

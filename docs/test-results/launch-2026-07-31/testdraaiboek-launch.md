@@ -197,9 +197,10 @@ Vercel-previewdomein (daar draait geen `/wp-json/`).
 | H5 | Zoek een term met meerdere pagina’s (bijv. `door` of `cork`), ga naar pagina 2 | Resultaten of een eerlijke één-pagina-telling — geen valse “No results” terwijl page 1 hits had |
 | H6 | Open een niet-bestaande URL | Nette sitebrede 404 (geen kale Next.js-default); CTAs naar materials/stories aanwezig |
 | H7 | Bekijk drie willekeurige pagina's op een telefoonformaat | Leesbaar, niets valt buiten beeld |
-| H8 | Controleer of de cookiemelding verschijnt (bij voorkeur verse sessie / gewiste cookies) | Noteer wat je ziet |
+| H8 | Controleer of de cookiemelding / consent-blocker verschijnt (verse sessie / gewiste cookies / incognito) | Banner of blocker zichtbaar. **Nog open vóór live:** er moet een echte cookie-melding/blocker komen — als die ontbreekt: noteer als open launch-punt, niet als “geslaagd zonder banner” |
 | H9 | Open `/faq/`, `/about/` (of vergelijkbare statische pagina’s uit de footer) | Pagina laadt; geen 404 |
 | H10 | Open een materiaaloverzicht, zet een filter, ga een pagina verder | Filter blijft actief; resultaten kloppen bij de selectie |
+| H11 | Network/devtools: Google Analytics (of GTM) en Plausible na consent | Scripts laden volgens consentbeleid. **Nog open:** beide tracking-scripts moeten nog worden toegevoegd; noteer afwezigheid als open launch-punt |
 
 ---
 
@@ -258,6 +259,22 @@ Anders: noteer Geblokkeerd.
 
 ---
 
+## Flow M — Bookshop testbestellingen
+
+Alleen uitvoeren als Stripe in testmode staat. **Nog open vóór live:** minstens één
+geslaagde testbestelling (kaart) en bij voorkeur ook iDEAL; gast én ingelogd.
+
+| # | Handeling | Verwacht |
+|---|---|---|
+| M1 | Open `/book/`, zet een boek in de mand | Mand-badge > 0; product zichtbaar in cart |
+| M2 | Start checkout als gast (of uitloggen) | Checkout opent; Stripe Sandbox |
+| M3 | Rond af met testkaart | Success / order confirmation; mand leeg |
+| M4 | Controleer WooCommerce-order + bevestigingsmail | Order bestaat; mail komt aan (noteer afzender) |
+| M5 | Herhaal M1–M3 met iDEAL/Wero (Sandbox) | Zelfde successpad; geen half-order |
+| M6 | Herhaal M1–M3 ingelogd (adres/prefill indien beschikbaar) | Order gekoppeld aan account; mand leeg na success |
+
+---
+
 ## Opruimen
 
 Na afloop verwijderen: aangemaakte accounts, brands, materialen, brandaanvragen in
@@ -297,3 +314,16 @@ en afvinklijst in [`docs/livegang-checklist.md`](../../livegang-checklist.md) §
 | SL-UI-2 | “Something broken”-modal: knop verbergen bij openen; geen horizontale scroll op mobiel; copy herschrijven | ✅ |
 | SL-UI-3 | Mobiel: stories-/materials-blokken met 3 items over 2 kolommen → lege ruimte; grid/aantal fixen | ✅ |
 | SL-UI-4 | Zoekpagina mobiel: toetsenbord sluiten na Enter; breadcrumb opschonen; zoekveld volle breedte | ✅ |
+
+---
+
+## Open launch-punten (bijgewerkt 4-08-2026)
+
+Canonieke checklist: [`docs/livegang-checklist.md`](../../livegang-checklist.md) §2.2, §2.3c, §5.
+
+| ID | Todo | Status |
+|----|------|--------|
+| SL-LEGAL-1 | Cookie-melding / consent-blocker (tool kiezen + inbouwen; footer Cookie settings) | ❌ open |
+| SL-ANALYTICS-1 | Google Analytics (of GTM) toevoegen achter consent | ❌ open |
+| SL-ANALYTICS-2 | Plausible Analytics toevoegen (consent of cookieloos beleid) | ❌ open |
+| SL-SHOP-1 | Testbestellingen in de bookshop (Sandbox: kaart + iDEAL; gast + ingelogd) — Flow M | ❌ open |

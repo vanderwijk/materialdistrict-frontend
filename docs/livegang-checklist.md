@@ -1,7 +1,7 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 1 augustus 2026  
+**Laatst bijgewerkt:** 4 augustus 2026  
 **Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
@@ -147,6 +147,7 @@
 - [x] Filter-architectuur beslissing: fetch-all + filter-in-JS (geen FacetWP, geen Store API params)
 - [x] Featured boek op homepage (WC `featured`-vlag) — `listFeaturedBooks()` actief
 - [ ] Verzendkosten in mand voor ingelogden met bekend adres (uitgesteld)
+- [ ] **Testbestellingen in de shop** (Stripe Sandbox): boek in mand → checkout (kaart én iDEAL) → order in WC + bevestigingsmail → mand leeg; gast én ingelogd. Zie ook testdraaiboek Flow M.
 
 ### 2.3 Auth & juridisch
 
@@ -156,6 +157,18 @@
 | Register rate-limiting beslissing (W12) | ❓ besluit | 5/uur per IP ja/nee + documenteren |
 | Terms + Privacy links op `/register` (`href="#"`) | ❌ open | `/terms` + `/privacy` of link naar canonieke PDF (footer gebruikt al externe terms-PDF) |
 | Cookie settings in footer | verborgen | consent-tool kiezen (Cookiebot/Usercentrics/…) |
+
+### 2.3c Cookie-melding / blocker + marketing-analytics (open, 4-08-2026)
+
+**Status:** ❌ nog nodig vóór/bij live — nu geen cookiebanner/-blocker; GA en Plausible staan nog niet in de Next-frontend.  
+**Context:** footer “Cookie settings” blijft verborgen tot er een consent-tool is (`open-issues.md` S11.6). Tracking mag pas laden na passende consent (of Plausible cookieloos — dan beleid/juridisch afstemmen).
+
+- [ ] Consent-tool kiezen en inbouwen (Cookiebot / Usercentrics / eigen banner + blocker)
+- [ ] Verse sessie: melding verschijnt; weigeren blokkeert niet-essentiële scripts; accepteren laadt ze
+- [ ] Footer “Cookie settings” weer tonen → opent de consent-manager
+- [ ] **Google Analytics** (of GTM) toevoegen achter consent
+- [ ] **Plausible Analytics** toevoegen (script + domain); consent-gate of bewuste cookieloze setup documenteren
+- [ ] Rooktest: Network/devtools — scripts verschijnen pas na acceptatie (of volgens gekozen Plausible-beleid)
 
 ### 2.3b Users: productie → CMS (cutover)
 
@@ -303,6 +316,19 @@ Bron: Johan, soft-launch feedback. Details: [`open-issues.md`](./open-issues.md)
 ## 5. Snelle rooktest-scripts
 
 **Checkout** (ingelogd + gast): zie test-checklist in [`handoff-claude-2026-06-15-checkout-address-ideal.md`](./handoff-claude-2026-06-15-checkout-address-ideal.md) § Test-checklist.
+
+**Bookshop testbestellingen** (Stripe Sandbox — nooit live keys):
+
+- [ ] `/book` → boek in mand → checkout afronden (kaart)
+- [ ] Zelfde pad met iDEAL/Wero
+- [ ] Order zichtbaar in WooCommerce; bevestigingsmail; mand leeg na success
+- [ ] Gast- én ingelogde flow
+
+**Cookie + analytics:**
+
+- [ ] Incognito: cookiemelding/-blocker zichtbaar
+- [ ] Weigeren: geen GA / geen Plausible (tenzij Plausible cookieloos is goedgekeurd)
+- [ ] Accepteren: beide scripts laden; Realtime/Plausible ziet een pageview
 
 **VIES**
 
