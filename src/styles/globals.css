@@ -9669,6 +9669,8 @@ mark.search-mark {
 }
 
 @media (max-width: 1024px) {
+  /* Zelfde scrollmodel als .uf-sidebar: het paneel zelf scrollt
+     (display:block + overflow-y), niet een geneste flex-child. */
   .articles-sidebar-col {
     display: none;
     position: fixed;
@@ -9676,23 +9678,26 @@ mark.search-mark {
     top: var(--header-height-mobile);
     bottom: 0;
     width: var(--filter-sidebar-mobile);
+    max-height: calc(100dvh - var(--header-height-mobile));
     z-index: var(--z-overlay);
     border-radius: 0;
     border: none;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     transform: translateX(-100%);
     transition: transform var(--transition-panel);
-    max-height: none;
     min-width: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     background: var(--surface);
-    padding: 0;
+    padding: 0 var(--space-4) calc(48px + env(safe-area-inset-bottom, 0px));
     gap: 0;
+    align-self: auto;
   }
 
   .articles-sidebar-col.articles-sidebar-drawer-open {
-    display: flex;
-    flex-direction: column;
+    display: block;
     transform: translateX(0);
   }
 
@@ -9700,13 +9705,13 @@ mark.search-mark {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex: 0 0 auto;
     min-height: 0;
-    margin: 0;
+    margin: 0 calc(-1 * var(--space-4));
     padding: 14px 12px;
     border-bottom: 1px solid var(--border);
-    background: transparent;
-    position: relative;
+    background: var(--surface);
+    position: sticky;
+    top: 0;
     z-index: 1;
   }
 
@@ -9731,12 +9736,8 @@ mark.search-mark {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    padding: var(--space-4) var(--space-4) var(--space-6);
+    padding: var(--space-4) 0 0;
+    overflow: visible;
   }
 
   .articles-sidebar-drawer-open .uf-header-close {

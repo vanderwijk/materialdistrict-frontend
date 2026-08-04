@@ -5,7 +5,8 @@
  *
  * Op desktop: kinderen (story-type-filter + CTA's) in de normale sidebar.
  * Op mobile: zelfde patroon als Materials — compacte "Filters"-knop in
- * `.ov-filter-trigger-row`, inhoud in een linker drawer.
+ * `.ov-filter-trigger-row`, inhoud in een linker drawer. De drawer wordt
+ * naar `document.body` geportald zodat geen ancestor de scroll afkapt.
  */
 
 import {
@@ -16,6 +17,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { createPortal } from 'react-dom'
 import { IconClose, IconFilter } from '@/components/ui/icons'
 import { cn } from '@/lib/utils/cn'
 
@@ -88,8 +90,19 @@ export function ArticlesFilterTrigger() {
 /** Sidebar-kolom die op mobile als drawer opent (desktop ongewijzigd). */
 export function ArticlesMobileSidebar({ children }: { children: ReactNode }) {
   const { isOpen, close, activeCount } = useArticlesMobileFilter()
+  const [mounted, setMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
-  return (
+  useEffect(() => {
+    setMounted(true)
+    const media = window.matchMedia('(max-width: 1024px)')
+    const sync = () => setIsMobile(media.matches)
+    sync()
+    media.addEventListener('change', sync)
+    return () => media.removeEventListener('change', sync)
+  }, [])
+
+  const node = (
     <>
       {isOpen && (
         <div
@@ -131,4 +144,12 @@ export function ArticlesMobileSidebar({ children }: { children: ReactNode }) {
       </aside>
     </>
   )
+
+  // Mobile: portal naar body — voorkomt dat ov-wrap/ancestors de
+  // scrollhoogte clippen. Desktop: in de grid-kolom laten.
+  if (mounted && isMobile) {
+    return createPortal(node, document.body)
+  }
+
+  return node
 }
