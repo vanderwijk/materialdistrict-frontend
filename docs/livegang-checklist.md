@@ -1,7 +1,7 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 24 juli 2026  
+**Laatst bijgewerkt:** 1 augustus 2026  
 **Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
@@ -20,16 +20,55 @@
 - [ ] Rooktest `/dashboard/profile` en `/dashboard/brands/{slug}/` (opslaan + refresh)
 - [ ] `NEXT_PUBLIC_SITE_URL` op Vercel production = `https://materialdistrict.com` (geen trailing slash)
 
-**Plugin** (`materialdistrict-plugin` → WP Engine)
+**Plugin** (`materialdistrict-plugin` → live CMS op DigitalOcean: `cms.materialdistrict.com`)
 
-- [ ] Plugin zip/deploy naar production
+- [ ] Plugin deploy naar CMS (DigitalOcean) — niet naar WP Engine als primaire API
 - [ ] REST-smoke: `GET /wp-json/md/v2/...` endpoints die de frontend gebruikt
 - [ ] WooCommerce Store API via Next-proxy (`/api/store-cart/*`)
 
 **Cross-cutting**
 
 - [ ] Preview/staging niet indexeerbaar (`robots.ts` + `X-Robots-Tag` op `*.vercel.app`)
-- [ ] DNS/cutover-plan vastgelegd (redirects, Search Console)
+- [ ] DNS/cutover-plan vastgelegd — zie **§0.1**
+- [ ] **Photo library / uploads → `media.materialdistrict.com`:** 301-redirects voor alle uploadmappen (zie §2.10)
+
+---
+
+## 0.1 Cutover-architectuur (livegang)
+
+**Besluit (1-08-2026):** live gaan met Next.js op **Vercel** + headless CMS op **DigitalOcean** (`cms.materialdistrict.com`).  
+`materialdistrict.com` wijst **niet** meer naar WP Engine, maar naar Vercel.
+
+| Rol | Host | Live bij cutover |
+|-----|------|------------------|
+| Publieke site | Vercel (`materialdistrict.com`) | ✅ primair |
+| Headless CMS / API | DigitalOcean (`cms.materialdistrict.com`) | ✅ primair |
+| Media / uploads | `media.materialdistrict.com` | ✅ primair |
+| Oude klassieke site | WP Engine | ⏸ standby (achtergrond, geen DNS) |
+
+**Rollback:** bij ernstige problemen DNS van `materialdistrict.com` weer terugzetten van Vercel → WP Engine. Oude site blijft daarom tijdelijk in de lucht op WP Engine (niet afbreken bij cutover).
+
+**Later (niet launch-week):** nadenken over terugkeer van CMS-beheer DigitalOcean → WP Engine (zij doen serverbeheer). Geen actie nu; eerst stabiele launch.
+
+### Pre-cutover DNS
+
+- [ ] Huidige TTL van `materialdistrict.com` (en www/CNAME’s) vastleggen bij de DNS-provider
+- [ ] TTL **zo laag mogelijk** zetten vóór cutover (bijv. 300s / 60s indien toegestaan) — ruim vóór switch, zodat de lage TTL al overal is gecached
+- [ ] Vercel-domein `materialdistrict.com` geconfigureerd + SSL klaar (vóór DNS-switch)
+- [ ] Notitie: welke records wijzigen (A/AAAA/CNAME apex + `www`) en wat de rollback-waarden naar WP Engine zijn
+
+### Cutover-moment
+
+- [ ] DNS `materialdistrict.com` → Vercel (niet WP Engine)
+- [ ] CMS blijft DigitalOcean; frontend production praat tegen `cms.materialdistrict.com`
+- [ ] WP Engine-site **aan laten staan** (standby), maar zonder publieke DNS
+- [ ] Rooktest productie-URL’s + auth/checkout tegen live CMS
+- [ ] Bij nood: DNS terug naar WP Engine (lage TTL = snellere rollback)
+
+### Post-cutover (pas als stabiel)
+
+- [ ] TTL weer naar een normaal/productiewaarde
+- [ ] (Later) plan CMS DO → WP Engine — buiten launch-scope
 
 ---
 
@@ -198,6 +237,17 @@ wp user meta list --keys=simplefavorites --format=count
 - [ ] Grid + telling (“913 materials”) visueel in lijn met `/materials` en brand-archief
 - [ ] Responsive check (mobiel: breadcrumb + filterbar indien van toepassing)
 - [ ] Rooktest op 2–3 categorieën (groot volume + kleine term)
+
+### 2.10 Photo library — 301 redirects naar media-host
+
+**Status:** open — nodig bij cutover (oude image-URL’s blijven in Google, e-mails, externe sites)  
+**Eigenaar:** Johan (DNS / edge / oude host)  
+**Doel:** alle photo-library / WordPress-uploadpaden blijven werken via **301** naar `media.materialdistrict.com`, zodat hotlinks en geïndexeerde afbeeldingen niet 404’en.
+
+- [ ] Inventariseer oude host-paden voor de photo library / uploads (typisch `/wp-content/uploads/…` en eventuele legacy photo-library-URL’s op `materialdistrict.com` / WP Engine)
+- [ ] 301-redirects: uploadmappen → `https://media.materialdistrict.com/…` (pad behouden waar mogelijk)
+- [ ] Steekproef: 5–10 bekende afbeeldings-URL’s (Google Images, oude artikel/materiaal-hotlinks) → **301** + juiste bytes op media-host
+- [ ] Bevestig dat nieuwe content in de frontend al `media.materialdistrict.com` gebruikt (geen regressie naar cms-/oud-domein)
 
 ---
 

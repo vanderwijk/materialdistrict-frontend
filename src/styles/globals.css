@@ -1034,14 +1034,14 @@ h4 {
 
 .mobile-nav-drawer {
   position: fixed;
-  top: var(--header-height-mobile);
-  left: 0;
+  top: 0;
+  right: 0;
   bottom: 0;
-  width: 280px;
+  width: min(280px, 100vw);
   z-index: var(--z-overlay);
   background: var(--surface);
-  border-right: 1px solid var(--border);
-  transform: translateX(-100%);
+  border-left: 1px solid var(--border);
+  transform: translateX(100%);
   transition: transform var(--transition-panel);
   overflow-y: auto;
   display: flex;
@@ -1056,7 +1056,8 @@ h4 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 18px;
+  min-height: var(--header-height-mobile);
+  padding: 0 var(--content-padding-mobile) 0 18px;
   border-bottom: 1px solid var(--border);
 }
 
