@@ -1,8 +1,8 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 4 augustus 2026  
-**Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`
+**Laatst bijgewerkt:** 5 augustus 2026  
+**Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`, `note-cms-lockdown-theme-2026-08-06.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
 > Gedetailleerde historie staat in [`open-issues.md`](./open-issues.md) — dit bestand is de **actieve** checklist.
@@ -69,6 +69,25 @@
 
 - [ ] TTL weer naar een normaal/productiewaarde
 - [ ] (Later) plan CMS DO → WP Engine — buiten launch-scope
+
+### 🔴 Morgen (6-08-2026) — CMS lockdown-theme
+
+**Notitie:** [`note-cms-lockdown-theme-2026-08-06.md`](./note-cms-lockdown-theme-2026-08-06.md)
+
+Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de site is headless.
+
+- [ ] Nieuw (minimal) thema of equivalent op CMS activeren
+- [ ] Alleen login + wp-admin voor editors; anonieme hits redirecten naar `https://materialdistrict.com`
+- [ ] wp-admin “View”- / permalink-links → Vercel-frontend (niet `cms.…`)
+- [ ] REST `/wp-json/*` blijft werken voor de Next-frontend
+
+### On-demand Vercel-cache legen bij WP-save
+
+**Status:** werkt nog niet — na save in WordPress blijven wijzigingen op de Vercel-site in de cache hangen tot de time-based revalidate verloopt (zie `src/lib/api/wordpress.ts`).
+
+- [ ] Bij bijwerken/opslaan van content in WP: de **exacte publieke URL** op Vercel uit de cache purgen/revalideren, zodat wijzigingen direct zichtbaar zijn op `materialdistrict.com`
+- [ ] Dekking minstens: materials, stories/articles, brands, pages (en andere CPT’s met een frontend-route)
+- [ ] Bij voorkeur: WP-hook (`save_post` / REST update) → frontend on-demand revalidation (`revalidatePath` / `revalidateTag` of Vercel purge API), niet alleen TTL-wacht
 
 ---
 
@@ -287,6 +306,7 @@ wp user meta list --keys=simplefavorites --format=count
 
 ### 3.3 FacetWP & legacy theme
 
+- [ ] **CMS lockdown-theme** (`cms.materialdistrict.com`) — zie §0.1 “Morgen” + [`note-cms-lockdown-theme-2026-08-06.md`](./note-cms-lockdown-theme-2026-08-06.md)
 - [ ] Legacy WP-theme uit traffic / redirects na Next-cutover
 - [ ] FacetWP plugin deactiveren op WP Engine (pas als theme + `/materials` niet meer afhankelijk zijn)
 - [ ] Favorites-plugin verwijderen — zie **§2.8** (eerst bookmark-migratie)
