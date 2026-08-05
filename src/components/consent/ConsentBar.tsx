@@ -3,34 +3,93 @@
 /**
  * ConsentBar — asks once, then gets out of the way.
  * ----------------------------------------------------------------------
- * Shown only while no choice is stored. Both buttons carry equal visual
- * weight: a refuse option that is greyed out or hidden behind "settings"
- * is not a free choice, and regulators treat it as no consent at all.
+ * Soft-launch fallback. When Ad Manager Privacy & messaging injects a
+ * Google-certified CMP (`__tcfapi`), that UI takes priority: we wait briefly
+ * for it and stay hidden if it appears, so visitors are not asked twice.
  *
- * Rendered as a bar rather than a full-screen overlay. The page stays
- * readable, which matters during a test month — a visitor who cannot see
- * the site cannot report what is wrong with it.
- *
- * Sits above the feedback button (z-index) because a consent choice must
- * never be obscured by anything else.
+ * Both buttons carry equal visual weight when we do show: a refuse option
+ * that is greyed out or hidden behind "settings" is not a free choice.
  */
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { readConsent, setConsent } from '@/lib/consent/consent'
+import {
+  isEuConsentRegion,
+  onConsentChange,
+  readConsent,
+  setConsent,
+} from '@/lib/consent/consent'
+import {
+  updateGoogleConsentMode,
+  type TcfData,
+} from '@/lib/consent/google-consent-mode'
+
+/** Give Privacy & messaging time to inject `__tcfapi` / show its UI. */
+const CMP_WAIT_MS = 2500
 
 export function ConsentBar() {
-  // Starts hidden and only appears after mount, so the server-rendered HTML
-  // never contains a banner that a returning visitor would briefly see.
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    if (readConsent() === null) setVisible(true)
+    // Soft-launch bar is EU-scope only. Google's CMP also geo-targets;
+    // Rest of World gets neither prompt (ads/events allowed via hasConsent).
+    if (!isEuConsentRegion()) return
+    if (readConsent() !== null) return
+
+    let cancelled = false
+    let cmpTookOver = false
+
+    const unsubscribe = onConsentChange(() => {
+      setVisible(false)
+    })
+
+    const hideForCmp = () => {
+      cmpTookOver = true
+      setVisible(false)
+    }
+
+    const onTcf = (tcData: TcfData, success: boolean) => {
+      if (!success) return
+      // Only yield when Google's CMP UI is (or was) the active prompt.
+      if (
+        tcData.eventStatus === 'cmpuishown' ||
+        tcData.eventStatus === 'useractioncomplete'
+      ) {
+        hideForCmp()
+      }
+    }
+
+    const tryBindTcf = () => {
+      if (typeof window.__tcfapi !== 'function') return false
+      window.__tcfapi('addEventListener', 2, onTcf)
+      return true
+    }
+
+    let poll: number | undefined
+    if (!tryBindTcf()) {
+      poll = window.setInterval(() => {
+        if (tryBindTcf() && poll) window.clearInterval(poll)
+      }, 250)
+    }
+
+    const showFallback = window.setTimeout(() => {
+      if (cancelled || cmpTookOver || readConsent() !== null) return
+      if (!isEuConsentRegion()) return
+      setVisible(true)
+    }, CMP_WAIT_MS)
+
+    return () => {
+      cancelled = true
+      unsubscribe()
+      window.clearTimeout(showFallback)
+      if (poll) window.clearInterval(poll)
+    }
   }, [])
 
   if (!visible) return null
 
   function choose(value: 'granted' | 'denied') {
+    updateGoogleConsentMode(value === 'granted' ? 'granted' : 'denied')
     setConsent(value)
     setVisible(false)
   }

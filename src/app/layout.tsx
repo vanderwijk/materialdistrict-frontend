@@ -7,6 +7,8 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
 import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import { ConsentBar } from '@/components/consent/ConsentBar'
+import { ConsentBootstrap } from '@/components/consent/ConsentBootstrap'
+import { GptLoader } from '@/components/ads/GptLoader'
 import { PlausibleAnalytics } from '@/components/analytics/PlausibleAnalytics'
 import '@/styles/globals.css'
 
@@ -82,6 +84,37 @@ const themeInitScript = `
 })();
 `
 
+/**
+ * Google Consent Mode v2 defaults — must run before any Google tag.
+ * Returning visitors with md_consent=granted get an immediate update so GPT
+ * does not fire a limited-ads request while React hydrates.
+ */
+const consentModeInitScript = `
+(function() {
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){window.dataLayer.push(arguments);}
+  window.gtag = gtag;
+  gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied',
+    wait_for_update: 500
+  });
+  try {
+    var match = document.cookie.match(/(?:^|; )md_consent=([^;]*)/);
+    if (match && match[1] === 'granted') {
+      gtag('consent', 'update', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted'
+      });
+    }
+  } catch (e) {}
+})();
+`
+
 export default function RootLayout({
   children,
 }: {
@@ -95,11 +128,14 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: consentModeInitScript }} />
       </head>
       <body className="app-shell">
         <a href="#main" className="skip-link">
           Skip to main content
         </a>
+        <ConsentBootstrap />
+        <GptLoader />
         <ThemeProvider>
           {/*
             Auth + footer in Suspense: main content can stream before cookie

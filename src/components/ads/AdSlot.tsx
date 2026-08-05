@@ -6,26 +6,24 @@
  * One reusable component for every position (billboard / leaderboard / mrec).
  * It lazily loads gpt.js the first time any slot mounts, so ad-less pages never
  * pull the tag. Each slot defines itself, applies its responsive `sizeMapping`,
- * and calls `display`. Empty (unbooked) slots collapse via `collapseEmptyDivs`,
- * so an unsold position leaves no gap on the page.
+ * and registers with `display`. Ad *requests* wait until consent is granted
+ * (`disableInitialLoad` + `refresh`), so GPT can load early for a CMP while
+ * cookies/identifiers are not used before the visitor agrees.
+ *
+ * Empty (unbooked) slots collapse via `googletag.setConfig({ collapseDiv })`.
  *
  * `theme` sets page-level targeting (the page channel) before the slot renders,
  * which is how per-channel selling will work later — no frontend change needed,
  * only GAM line-item targeting. The homepage passes no theme.
  *
- * Consent (31-07-2026): gpt.js is not injected until the visitor has agreed.
- * Advertising cookies always require permission, and the tag sets them the
- * moment it loads — so gating the render is not enough, the script itself has
- * to stay out of the page. A visitor who refuses simply sees no slot; the
- * container collapses like an unsold position.
- *
- * The component subscribes to the consent event, so accepting fills the slot
- * immediately rather than on the next page load.
+ * Consent: gpt.js may load so a Google-certified CMP (Privacy & messaging) can
+ * appear, but `refresh` only runs after `md_consent=granted` (our bar or TCF).
  */
 
 import { useEffect, useId, useRef, useState } from 'react'
 import { AD_UNITS, type AdSize, type AdSlotName } from '@/lib/ads/ad-units'
 import { hasConsent, onConsentChange } from '@/lib/consent/consent'
+import { updateGoogleConsentMode } from '@/lib/consent/google-consent-mode'
 
 interface GptSlot {
   addService(service: unknown): GptSlot
@@ -39,7 +37,8 @@ interface GptSizeMappingBuilder {
 
 interface GptPubAdsService {
   setTargeting(key: string, value: string | string[]): GptPubAdsService
-  collapseEmptyDivs(): void
+  disableInitialLoad(): void
+  refresh(slots?: GptSlot[]): void
 }
 
 interface GoogleTag {
@@ -50,6 +49,7 @@ interface GoogleTag {
   enableServices(): void
   display(divId: string): void
   destroySlots(slots?: unknown[]): boolean
+  setConfig(config: { collapseDiv?: 'DISABLED' | 'BEFORE_FETCH' | 'ON_NO_FILL' | null }): void
 }
 
 declare global {
@@ -89,6 +89,7 @@ export function AdSlot({
   const reactId = useId()
   const divId = `gpt-${name}-${reactId.replace(/[^a-zA-Z0-9]/g, '')}`
   const slotRef = useRef<GptSlot | null>(null)
+  const refreshedRef = useRef(false)
   const [allowed, setAllowed] = useState(false)
 
   // Read on mount rather than during render: the server has no cookie access,
@@ -99,10 +100,9 @@ export function AdSlot({
   }, [])
 
   useEffect(() => {
-    if (!allowed) return
-
     const gt = ensureGpt()
     const unit = AD_UNITS[name]
+    refreshedRef.current = false
 
     gt.cmd.push(() => {
       if (theme) gt.pubads().setTargeting('theme', theme)
@@ -120,12 +120,21 @@ export function AdSlot({
       slotRef.current = slot
 
       if (!servicesEnabled) {
-        gt.pubads().collapseEmptyDivs()
+        // Hold requests until consent — also lets a CMP finish before fetch.
+        gt.pubads().disableInitialLoad()
+        // Replaces deprecated pubads().collapseEmptyDivs().
+        gt.setConfig({ collapseDiv: 'BEFORE_FETCH' })
         gt.enableServices()
         servicesEnabled = true
       }
 
       gt.display(divId)
+
+      if (hasConsent() && !refreshedRef.current) {
+        refreshedRef.current = true
+        updateGoogleConsentMode('granted')
+        gt.pubads().refresh([slot])
+      }
     })
 
     return () => {
@@ -138,12 +147,25 @@ export function AdSlot({
         }
       })
     }
-  }, [allowed, name, theme, divId])
+  }, [name, theme, divId])
 
-  // No consent, no placeholder — an empty box labelled "advert" is worse than
-  // no box at all.
-  if (!allowed) return null
+  // Visitor accepted after slots were already registered — fetch now.
+  useEffect(() => {
+    if (!allowed || refreshedRef.current) return
 
+    const gt = window.googletag
+    const slot = slotRef.current
+    if (!gt || !slot) return
+
+    refreshedRef.current = true
+    updateGoogleConsentMode('granted')
+    gt.cmd.push(() => {
+      gt.pubads().refresh([slot])
+    })
+  }, [allowed])
+
+  // Keep the target div in the DOM even before consent so GPT can register
+  // the slot; collapseDiv keeps unsold / waiting slots from leaving a gap.
   return (
     <div className={`ad-unit ad-unit--${name}${className ? ` ${className}` : ''}`}>
       <div id={divId} className="ad-unit-target" />

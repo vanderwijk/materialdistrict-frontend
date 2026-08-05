@@ -22,6 +22,7 @@ import { cookies } from 'next/headers'
 import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import { getAuthCookie } from '@/lib/auth/cookies'
 import { CONSENT_COOKIE } from '@/lib/consent/consent'
+import { REGION_COOKIE } from '@/lib/consent/eu-region'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,9 +54,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const token = await getAuthCookie()
   const jar = await cookies()
 
-  // Soft-launch consent: no md_consent=granted → drop silently (client should
-  // not send either; this blocks forged beacons without a UX error).
-  if (jar.get(CONSENT_COOKIE)?.value !== 'granted') {
+  // Soft-launch consent: EU needs md_consent=granted; Rest of World may
+  // proceed without a choice (middleware sets md_region). Explicit deny wins.
+  const consent = jar.get(CONSENT_COOKIE)?.value
+  const region = jar.get(REGION_COOKIE)?.value
+  const allowed =
+    consent === 'granted' || (consent !== 'denied' && region === 'row')
+  if (!allowed) {
     return NextResponse.json({ ok: true }, { status: 202 })
   }
 

@@ -48,6 +48,7 @@ const connectSrc = [
   'https://*.doubleclick.net',
   'https://*.googlesyndication.com',
   'https://*.google.com',
+  'https://fundingchoicesmessages.google.com',
   'https://*.adtrafficquality.google',
   'https://csi.gstatic.com',
   // Plausible Analytics
@@ -60,13 +61,13 @@ if (isDevelopment) {
 
 const ContentSecurityPolicy = [
   "default-src 'self'",
-  // GPT + Stripe; 'unsafe-eval' remains required by Next/GPT tooling paths.
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://www.google.com https://pagead2.googlesyndication.com https://*.adtrafficquality.google https://plausible.io",
+  // GPT + Stripe + Funding Choices (Privacy & messaging CMP); 'unsafe-eval' remains required by Next/GPT tooling paths.
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://www.google.com https://pagead2.googlesyndication.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google https://plausible.io",
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://media.materialdistrict.com https://secure.gravatar.com https://securepubads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://*.gstatic.com`,
   "font-src 'self' data:",
   `connect-src ${connectSrc.join(' ')}`,
-  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com https://securepubads.g.doubleclick.net https://tpc.googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com https://www.google.com https://*.adtrafficquality.google",
+  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com https://securepubads.g.doubleclick.net https://tpc.googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com https://www.google.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

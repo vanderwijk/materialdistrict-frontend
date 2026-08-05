@@ -8,13 +8,19 @@
  * What the choice controls:
  *
  *   granted → the pseudonymous `md_aid` cookie is set, interaction events
- *             are sent, and Google Publisher Tags loads.
+ *             are sent, Google Consent Mode flips to granted, and GPT may
+ *             `refresh` ad slots.
  *   denied  → none of the above happens at all. Not "anonymised", not
- *             "limited" — the tag is never injected and no event leaves the
- *             browser.
- *   unset   → treated as denied until the visitor chooses. Under the ePrivacy
- *             rules silence is not consent, so nothing may fire while the
- *             banner is still showing.
+ *             "limited" — no event leaves the browser and ads are not
+ *             requested (GPT may still load so a certified CMP can appear).
+ *   unset   → in the EU consent region: treated as denied until the visitor
+ *             chooses. Outside that region (Rest of World): treated as
+ *             allowed — no banner, ads/events may run.
+ *
+ * Google Ads in the EEA also expect an IAB TCF signal from a Google-certified
+ * CMP for personalized ads. Consent Mode alone is not that signal; wire Ad
+ * Manager Privacy & messaging (or Cookiebot) for full eligibility. This bar
+ * stays the soft-launch UI and syncs with `__tcfapi` when a CMP is present.
  *
  * Strictly necessary cookies are outside this mechanism entirely: the auth
  * cookie, the cart, and the consent choice itself. Those need no permission
@@ -25,6 +31,8 @@
  * server can read it too — that matters for `/api/events`, which must be able
  * to reject a beacon that should never have been sent.
  */
+
+import { isEuConsentRegion, readConsentRegion } from '@/lib/consent/eu-region'
 
 export type ConsentValue = 'granted' | 'denied'
 
@@ -53,9 +61,16 @@ export function readConsent(): ConsentValue | null {
   return value === 'granted' || value === 'denied' ? value : null
 }
 
-/** True only for an explicit yes. Undecided counts as no. */
+/**
+ * True when ads/events may run.
+ * Explicit grant always wins; explicit deny always blocks; unset is allowed
+ * outside the EU consent region (no banner there).
+ */
 export function hasConsent(): boolean {
-  return readConsent() === 'granted'
+  const value = readConsent()
+  if (value === 'granted') return true
+  if (value === 'denied') return false
+  return !isEuConsentRegion()
 }
 
 /**
@@ -94,3 +109,5 @@ export function onConsentChange(handler: (value: ConsentValue) => void): () => v
   window.addEventListener(CONSENT_EVENT, listener)
   return () => window.removeEventListener(CONSENT_EVENT, listener)
 }
+
+export { readConsentRegion, isEuConsentRegion }
