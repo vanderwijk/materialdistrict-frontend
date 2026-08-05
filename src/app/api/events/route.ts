@@ -21,6 +21,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import { getAuthCookie } from '@/lib/auth/cookies'
+import { CONSENT_COOKIE } from '@/lib/consent/consent'
 
 export const dynamic = 'force-dynamic'
 
@@ -51,6 +52,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const token = await getAuthCookie()
   const jar = await cookies()
+
+  // Soft-launch consent: no md_consent=granted → drop silently (client should
+  // not send either; this blocks forged beacons without a UX error).
+  if (jar.get(CONSENT_COOKIE)?.value !== 'granted') {
+    return NextResponse.json({ ok: true }, { status: 202 })
+  }
+
   const anonId = jar.get(ANON_COOKIE)?.value
 
   const wpBody: Record<string, unknown> = {

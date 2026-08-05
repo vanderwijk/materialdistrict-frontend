@@ -158,17 +158,19 @@
 | Terms + Privacy links op `/register` (`href="#"`) | ❌ open | `/terms` + `/privacy` of link naar canonieke PDF (footer gebruikt al externe terms-PDF) |
 | Cookie settings in footer | verborgen | consent-tool kiezen (Cookiebot/Usercentrics/…) |
 
-### 2.3c Cookie-melding / blocker + marketing-analytics (open, 4-08-2026)
+### 2.3c Cookie-melding / blocker + marketing-analytics (4-08-2026 / 5-08-2026)
 
-**Status:** ❌ nog nodig vóór/bij live — nu geen cookiebanner/-blocker; GA en Plausible staan nog niet in de Next-frontend.  
-**Context:** footer “Cookie settings” blijft verborgen tot er een consent-tool is (`open-issues.md` S11.6). Tracking mag pas laden na passende consent (of Plausible cookieloos — dan beleid/juridisch afstemmen).
+**Status:** soft-launch balk ✅ (`consent-bar-v1`) — **geen** TCF/CMP; GA/Plausible nog open.  
+**Context:** minimale Accept/Refuse-balk gated `md_aid`, events en gpt.js. Footer “Cookie settings” blijft verborgen tot een echte CMP (`open-issues.md` S11.6). Jeroen stemt CMP commercieel af vóór september.
 
-- [ ] Consent-tool kiezen en inbouwen (Cookiebot / Usercentrics / eigen banner + blocker)
-- [ ] Verse sessie: melding verschijnt; weigeren blokkeert niet-essentiële scripts; accepteren laadt ze
+- [x] Soft-launch consent-bar (Accept/Refuse; undecided = deny)
+- [x] Events + `md_aid` + gpt.js alleen na `md_consent=granted` (client + `/api/events`)
+- [ ] Echte CMP (Cookiebot / Usercentrics / Google-certified) vóór commerciële start
 - [ ] Footer “Cookie settings” weer tonen → opent de consent-manager
-- [ ] **Google Analytics** (of GTM) toevoegen achter consent
-- [ ] **Plausible Analytics** toevoegen (script + domain); consent-gate of bewuste cookieloze setup documenteren
-- [ ] Rooktest: Network/devtools — scripts verschijnen pas na acceptatie (of volgens gekozen Plausible-beleid)
+- [ ] Cookieverklaring / inventarisatie (balk linkt nu naar `/privacy-statement/`)
+- [ ] **Google Analytics** (of GTM) toevoegen achter consent — bewust uit (eigen eventlaag)
+- [ ] **Plausible Analytics** toevoegen (script + domain); consent-gate of cookieloos beleid
+- [ ] Rooktest: Network/devtools — gpt/events pas na Accept; Refuse verwijdert `md_aid`
 
 ### 2.3b Users: productie → CMS (cutover)
 

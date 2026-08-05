@@ -314,6 +314,10 @@ banner); daarna wordt het een knop die de manager opent. Eén regel terugzetten.
 voor **Google Analytics** en **Plausible Analytics** (achter consent). Checklist:
 [`livegang-checklist.md`](./livegang-checklist.md) §2.3c; testdraaiboek H8/H11.
 
+**Update (5-08-2026):** soft-launch `consent-bar-v1` live — minimale Accept/Refuse
+balk (geen TCF/CMP). GA blijft bewust uit; CMP + cookieverklaring blijven open
+richting september.
+
 ### S11.7 — Vooruit-lopende footer-links
 **Eigenaar:** Claude (lost vanzelf op per sessie)
 **Besluit (29-05):** ongewijzigd laten. For specifiers / For manufacturers wijzen naar nog-niet-gebouwde routes

@@ -6,6 +6,7 @@ import { AuthenticatedAppShell } from '@/components/layout/AuthenticatedAppShell
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
 import { FeedbackButton } from '@/components/feedback/FeedbackButton'
+import { ConsentBar } from '@/components/consent/ConsentBar'
 import '@/styles/globals.css'
 
 /**
@@ -120,6 +121,8 @@ export default function RootLayout({
         {/* Soft-launch reporter — visible to everyone, signed in or not.
             Remove this line when the test month ends. */}
         <FeedbackButton />
+        {/* Consent bar — renders only until the visitor has chosen. */}
+        <ConsentBar />
       </body>
     </html>
   )

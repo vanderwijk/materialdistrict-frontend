@@ -12,9 +12,18 @@
  * de client hoeft 'm niet expliciet mee te geven. Bij login stitcht WordPress
  * het anonieme id aan het user_id.
  *
+ * Toestemming (31-07-2026): `md_aid` en het versturen van events gebeuren
+ * alleen na expliciete toestemming. Het is een pseudonieme identifier met een
+ * looptijd van ruim een jaar waarmee gedrag over bezoeken heen te volgen is —
+ * dat is precies waar de ePrivacy-regels toestemming voor eisen, en het is
+ * geen strikt noodzakelijke cookie. Zonder toestemming wordt er dus niets
+ * gezet en niets verstuurd; zwijgen telt niet als ja.
+ *
  * Best-effort: een mislukte log mag de UI NOOIT hinderen — fouten worden stil
  * geslikt, `keepalive` laat de beacon een navigatie overleven.
  */
+
+import { hasConsent } from '@/lib/consent/consent'
 
 const ANON_COOKIE = 'md_aid'
 /** ~13 maanden, genoeg voor jaar-op-jaar herkenning. */
@@ -33,9 +42,13 @@ export interface EventInput {
   attributes?: Record<string, unknown>
 }
 
-/** Zet de anonieme-id-cookie als die er nog niet is. No-op server-side. */
+/**
+ * Zet de anonieme-id-cookie als die er nog niet is. No-op server-side, en
+ * no-op zonder toestemming.
+ */
 export function ensureAnonymousId(): void {
   if (typeof document === 'undefined') return
+  if (!hasConsent()) return
   const has = document.cookie
     .split('; ')
     .some((c) => c.startsWith(`${ANON_COOKIE}=`))
@@ -48,6 +61,9 @@ export function ensureAnonymousId(): void {
 }
 
 export async function logEvent(input: EventInput): Promise<void> {
+  // Geen toestemming = geen event. Stil stoppen, niet loggen dat we stoppen.
+  if (!hasConsent()) return
+
   try {
     ensureAnonymousId()
     await fetch('/api/events', {

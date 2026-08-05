@@ -197,7 +197,7 @@ Vercel-previewdomein (daar draait geen `/wp-json/`).
 | H5 | Zoek een term met meerdere pagina’s (bijv. `door` of `cork`), ga naar pagina 2 | Resultaten of een eerlijke één-pagina-telling — geen valse “No results” terwijl page 1 hits had |
 | H6 | Open een niet-bestaande URL | Nette sitebrede 404 (geen kale Next.js-default); CTAs naar materials/stories aanwezig |
 | H7 | Bekijk drie willekeurige pagina's op een telefoonformaat | Leesbaar, niets valt buiten beeld |
-| H8 | Controleer of de cookiemelding / consent-blocker verschijnt (verse sessie / gewiste cookies / incognito) | Banner of blocker zichtbaar. **Nog open vóór live:** er moet een echte cookie-melding/blocker komen — als die ontbreekt: noteer als open launch-punt, niet als “geslaagd zonder banner” |
+| H8 | Controleer of de cookiemelding / consent-blocker verschijnt (verse sessie / gewiste cookies / incognito) | Soft-launch balk zichtbaar tot Accept/Refuse. Refuse: geen gpt.js, geen events, `md_aid` weg. Accept: ads/events mogen. **Nog open richting sept.:** echte CMP + cookieverklaring |
 | H9 | Open `/faq/`, `/about/` (of vergelijkbare statische pagina’s uit de footer) | Pagina laadt; geen 404 |
 | H10 | Open een materiaaloverzicht, zet een filter, ga een pagina verder | Filter blijft actief; resultaten kloppen bij de selectie |
 | H11 | Network/devtools: Google Analytics (of GTM) en Plausible na consent | Scripts laden volgens consentbeleid. **Nog open:** beide tracking-scripts moeten nog worden toegevoegd; noteer afwezigheid als open launch-punt |
@@ -323,7 +323,8 @@ Canonieke checklist: [`docs/livegang-checklist.md`](../../livegang-checklist.md)
 
 | ID | Todo | Status |
 |----|------|--------|
-| SL-LEGAL-1 | Cookie-melding / consent-blocker (tool kiezen + inbouwen; footer Cookie settings) | ❌ open |
-| SL-ANALYTICS-1 | Google Analytics (of GTM) toevoegen achter consent | ❌ open |
+| SL-LEGAL-1 | Soft-launch consent-bar (Accept/Refuse; gated md_aid/events/gpt) | ✅ soft-launch |
+| SL-LEGAL-2 | Echte CMP + footer Cookie settings + cookieverklaring (vóór sept.) | ❌ open |
+| SL-ANALYTICS-1 | Google Analytics (of GTM) toevoegen achter consent | ❌ open (bewust uit) |
 | SL-ANALYTICS-2 | Plausible Analytics toevoegen (consent of cookieloos beleid) | ❌ open |
 | SL-SHOP-1 | Testbestellingen in de bookshop (Sandbox: kaart + iDEAL; gast + ingelogd) — Flow M | ❌ open |

@@ -19537,3 +19537,78 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .ed-route-card { padding: 22px 20px; }
 }
 /* ======================== einde §EDITORIAL-MEDIA ======================== */
+
+/* ============================================================
+   §CONSENT-BAR — cookietoestemming (soft launch)             31-07-2026
+   ------------------------------------------------------------
+   Balk onderaan, geen schermvullende overlay: de pagina blijft leesbaar.
+   Tijdens een testmaand telt dat — wie de site niet ziet, kan niet melden
+   wat eraan mankeert.
+
+   Beide knoppen hebben gelijk gewicht. Een weiger-optie die grijs is of
+   achter "instellingen" verdwijnt geldt juridisch niet als vrije keuze.
+
+   z-index 950: boven de meldknop (900), zodat een consentkeuze nooit door
+   iets anders wordt afgedekt.
+   ============================================================ */
+.cc-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 950;
+  background: var(--navy);
+  color: #fff;
+  padding: var(--space-4) var(--space-5);
+  box-shadow: 0 -2px 16px rgba(13, 31, 45, 0.2);
+}
+.cc-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.cc-text {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+}
+.cc-link {
+  color: #fff;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.cc-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+/* Op de donkere balk moet de outline-knop wit zijn, niet navy-op-navy. */
+.cc-actions .btn-outline {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+  background: transparent;
+}
+.cc-actions .btn-outline:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.cc-actions .btn-primary {
+  background: #fff;
+  color: var(--navy);
+}
+.cc-actions .btn-primary:hover { background: rgba(255, 255, 255, 0.88); }
+
+/* Meldknop opschuiven zolang de balk er staat, anders overlappen ze. */
+.cc-bar ~ .fb-trigger { bottom: calc(var(--space-5) + 76px); }
+
+@media (max-width: 700px) {
+  .cc-inner { flex-direction: column; align-items: stretch; gap: var(--space-4); }
+  .cc-actions { justify-content: stretch; }
+  .cc-actions .btn { flex: 1; }
+}
+@media print { .cc-bar { display: none; } }
+/* ======================== einde §CONSENT-BAR ======================== */
