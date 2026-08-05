@@ -22,7 +22,7 @@
  *   plain      geen kop tonen (kop staat er alleen voor de indeling)
  */
 
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 
 export type SectionVariant =
   | 'prose'
@@ -260,13 +260,20 @@ export function EditorialPage({
           const key = sectionKey(section.heading)
           const image = images[key]
           return (
-            <div key={section.heading}>
+            /*
+             * Fragment, geen <div>. Een omhulsel maakte de secties elkaars
+             * neven-niet-meer, waardoor `.ed-section + .ed-section` niet meer
+             * aansloeg en alle tussenruimte op de pagina wegviel (04-08-2026).
+             * Sectie en bijbehorend beeld staan nu als directe kinderen van
+             * `.ed-body`, zodat de afstandsregels blijven werken.
+             */
+            <Fragment key={section.heading}>
               <Section
                 section={section}
                 variant={variants[key] ?? 'prose'}
               />
               {image && <Figure image={image} />}
-            </div>
+            </Fragment>
           )
         })}
       </div>

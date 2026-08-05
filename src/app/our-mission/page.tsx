@@ -112,23 +112,29 @@ export default async function OurMissionPage() {
               </p>
             </div>
             <div className="ed-route-grid">
-              <div className="ed-route-card ed-route-card-pro">
+              <div
+                className="ed-route-card ed-route-card-pro"
+                data-audience="For specifiers"
+              >
                 <h3>I am a professional</h3>
                 <p>
                   Discover relevant materials, follow the channels that matter
                   to your practice and build your own material knowledge.
                 </p>
-                <Link href="/register" className="btn btn-lg btn-on-ink">
+                <Link href="/register" className="btn btn-lg">
                   Create a free account
                 </Link>
               </div>
-              <div className="ed-route-card ed-route-card-brand">
+              <div
+                className="ed-route-card ed-route-card-brand"
+                data-audience="For manufacturers"
+              >
                 <h3>I am a brand</h3>
                 <p>
                   Bring your materials to the attention of architects, designers
                   and other professionals who influence specification.
                 </p>
-                <Link href="/become-a-partner" className="btn btn-lg btn-ink">
+                <Link href="/become-a-partner" className="btn btn-lg">
                   See the options
                 </Link>
               </div>

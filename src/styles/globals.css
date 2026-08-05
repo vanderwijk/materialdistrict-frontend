@@ -19612,3 +19612,161 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 @media print { .cc-bar { display: none; } }
 /* ======================== einde §CONSENT-BAR ======================== */
+
+/* ============================================================
+   §EDITORIAL-RHYTHM-CTA — ruimte + routekeuze        04-08-2026
+   ------------------------------------------------------------
+   Twee dingen, beide uit de live-controle op /our-mission:
+
+   1. RUIMTE. Alle tussenruimte op de pagina was weggevallen.
+      Oorzaak zat in de TSX: sectie + beeld stonden in een
+      omhulsel, waardoor `.ed-section + .ed-section` uit
+      §EDITORIAL-PAGES niet meer aansloeg. De TSX is gerepareerd
+      (Fragment i.p.v. div); hieronder staan de afstandsregels
+      die óók moeten gelden wanneer er een beeld tussen twee
+      secties staat — die situatie bestond nog niet toen
+      §EDITORIAL-PAGES geschreven werd.
+
+   2. ROUTEKEUZE. De donkere band viel niet op: hij grensde
+      direct aan de footer en las daardoor als paginameubilair
+      i.p.v. als keuze. Nu een los paneel met lucht eromheen,
+      zodat er licht tussen het blok en de footer zit, en met
+      twee gelijkwaardige kaarten in plaats van één die vrijwel
+      onzichtbaar was op de donkere ondergrond.
+
+   Append-only: niets uit eerdere blokken gewijzigd, alleen
+   later in de cascade overschreven.
+   ============================================================ */
+
+/* --- 1. ritme ------------------------------------------------ */
+
+/* Beeld staat tussen twee secties in, dus de afstand hoort aan
+   beide kanten geregeld te worden — niet alleen tussen secties. */
+.ed-body > .ed-section + .ed-section,
+.ed-body > .ed-figure + .ed-section {
+  margin-top: 56px;
+}
+.ed-body > .ed-figure {
+  margin-top: 32px;
+  margin-bottom: 0;
+}
+
+/* Bijschrift kleefde aan de volgende kop. Meer lucht eronder en
+   iets meer leesbaarheid: 13px i.p.v. 11px. */
+.ed-figure figcaption {
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+
+/* Kaartenrijen en het uitgelichte blok kregen te weinig aanloop. */
+.ed-cards { margin-top: 22px; }
+.ed-section-highlight { padding: 30px 32px; }
+
+/* Openingsbeeld: iets meer lucht naar de eerste sectie. */
+.ed-figure-lead { margin-bottom: 52px; }
+
+/* --- 2. routekeuze ------------------------------------------- */
+
+.ed-route {
+  /* Geen volle breedte meer tegen de footer aan, maar een paneel
+     met marge — daardoor blijft er licht zichtbaar rondom en
+     leest het als een blok waar je iets moet kiezen. */
+  background: transparent;
+  margin: 72px auto 72px;
+  padding: 0 var(--content-padding-desktop);
+  max-width: var(--max-width);
+}
+.ed-route-inner {
+  background: var(--ink);
+  border-radius: 18px;
+  padding: 44px 40px;
+  box-shadow: var(--shadow-lg);
+}
+.ed-route-copy {
+  margin-bottom: 30px;
+}
+.ed-route-title {
+  font-size: clamp(1.75rem, 3.2vw, 2.375rem);
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+.ed-route-lede {
+  font-size: 1.125rem;
+}
+.ed-route-grid { gap: 22px; }
+
+/* Beide routes zijn nu een licht vlak op donker: gelijkwaardig en
+   allebei goed leesbaar. Het onderscheid zit in de accentkleur en
+   de knop, niet in zichtbaarheid — eerder was de linkerkaart een
+   8%-transparant vlak en daardoor nauwelijks te zien. */
+.ed-route-card-pro,
+.ed-route-card-brand {
+  background: var(--on-ink);
+  border: 1px solid var(--on-ink);
+  border-top: 4px solid var(--green);
+  padding: 28px 26px;
+}
+.ed-route-card-brand { border-top-color: var(--navy); }
+
+.ed-route-card-pro h3,
+.ed-route-card-brand h3 {
+  color: var(--ink);
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+}
+.ed-route-card-pro p,
+.ed-route-card-brand p {
+  color: var(--text-muted);
+  font-size: 0.9688rem;
+  margin-bottom: 22px;
+}
+
+/* Kleine eyebrow boven de kop, zodat in één oogopslag duidelijk is
+   welke deur voor wie is. */
+.ed-route-card::before {
+  content: attr(data-audience);
+  display: block;
+  font-size: 0.7188rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.ed-route-card-pro::before { color: var(--green); }
+.ed-route-card-brand::before { color: var(--navy); }
+
+/* De knoppen dragen de keuze — vol gevuld, in de accentkleur van
+   de kaart, i.p.v. de omgekeerde ink-knoppen die op een lichte
+   kaart juist wegvielen. */
+.ed-route-card .btn {
+  margin-top: auto;
+}
+.ed-route-card-pro .btn {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.ed-route-card-pro .btn:hover:not(:disabled) { opacity: 0.92; }
+.ed-route-card-brand .btn {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+.ed-route-card-brand .btn:hover:not(:disabled) { opacity: 0.92; }
+
+@media (max-width: 768px) {
+  .ed-body > .ed-section + .ed-section,
+  .ed-body > .ed-figure + .ed-section { margin-top: 40px; }
+  .ed-body > .ed-figure { margin-top: 24px; }
+  .ed-figure-lead { margin-bottom: 32px; }
+  .ed-route {
+    margin: 48px auto;
+    padding: 0 var(--content-padding-mobile);
+  }
+  .ed-route-inner { padding: 28px 22px; border-radius: 14px; }
+  .ed-route-copy { margin-bottom: 22px; }
+  .ed-route-card-pro,
+  .ed-route-card-brand { padding: 24px 20px; }
+}
+/* ================== einde §EDITORIAL-RHYTHM-CTA ================== */
