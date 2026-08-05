@@ -11,10 +11,9 @@ import { ScrollToTop } from '@/components/layout/ScrollToTop'
 /**
  * App shell — providers, header, main, footer.
  *
- * Split from the root layout so auth hydration can run inside a Suspense
- * boundary (Vercel cold-start / PPR guidance: keep the static shell fast).
- * Footer is separately suspended so main content can stream before the
- * channel-catalog fetch completes.
+ * Auth is hydrated by AuthenticatedAppShell (no Suspense around page
+ * children — that caused soft-404). Footer is separately suspended so
+ * main content is not blocked on the channel-catalog fetch.
  */
 export function AppChrome({
   initialUser,

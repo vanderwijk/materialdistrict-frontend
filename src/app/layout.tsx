@@ -1,7 +1,5 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 import { Schibsted_Grotesk } from 'next/font/google'
-import { AppChrome } from '@/components/layout/AppChrome'
 import { AuthenticatedAppShell } from '@/components/layout/AuthenticatedAppShell'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
@@ -138,18 +136,14 @@ export default function RootLayout({
         <GptLoader />
         <ThemeProvider>
           {/*
-            Auth + footer in Suspense: main content can stream before cookie
-            hydration and footer channel-catalog (Vercel cold-start guidance).
-            Fallback renders logged-out chrome — no flash for anonymous users.
+            Auth shell is NOT wrapped in Suspense. A Suspense fallback around
+            `{children}` commits HTTP 200 before `notFound()` can set 404
+            (soft-404) — e.g. `/wp-login.php` and unknown `/[pageSlug]` URLs
+            showed the 404 UI with status 200. Anonymous auth is cheap
+            (cookie miss → null, no WP call); footer still has its own
+            Suspense inside AppChrome.
           */}
-          {/*
-            Fallback mag géén {children} bevatten — anders streamt Next.js de
-            pagina-inhoud dubbel (fallback-shell + opgeloste shell) en zie je
-            op o.a. /channel/[slug] hero + strips twee keer in de HTML.
-          */}
-          <Suspense fallback={<AppChrome initialUser={null} />}>
-            <AuthenticatedAppShell>{children}</AuthenticatedAppShell>
-          </Suspense>
+          <AuthenticatedAppShell>{children}</AuthenticatedAppShell>
         </ThemeProvider>
         {/* Global structured data — Organization + WebSite on every page.
             Per-page entities (Product/Article/Event/Book) live in the
