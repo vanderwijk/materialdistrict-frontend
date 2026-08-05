@@ -169,8 +169,8 @@
 - [ ] Footer “Cookie settings” weer tonen → opent de consent-manager
 - [ ] Cookieverklaring / inventarisatie (balk linkt nu naar `/privacy-statement/`)
 - [ ] **Google Analytics** (of GTM) toevoegen achter consent — bewust uit (eigen eventlaag)
-- [ ] **Plausible Analytics** toevoegen (script + domain); consent-gate of cookieloos beleid
-- [ ] Rooktest: Network/devtools — gpt/events pas na Accept; Refuse verwijdert `md_aid`
+- [x] **Plausible Analytics** — altijd aan, cookieless / AVG (`PlausibleAnalytics`)
+- [ ] Rooktest: Network/devtools — gpt/events pas na Accept; Plausible altijd; Refuse verwijdert `md_aid`
 
 ### 2.3b Users: productie → CMS (cutover)
 

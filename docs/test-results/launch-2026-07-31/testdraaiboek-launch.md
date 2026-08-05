@@ -200,7 +200,7 @@ Vercel-previewdomein (daar draait geen `/wp-json/`).
 | H8 | Controleer of de cookiemelding / consent-blocker verschijnt (verse sessie / gewiste cookies / incognito) | Soft-launch balk zichtbaar tot Accept/Refuse. Refuse: geen gpt.js, geen events, `md_aid` weg. Accept: ads/events mogen. **Nog open richting sept.:** echte CMP + cookieverklaring |
 | H9 | Open `/faq/`, `/about/` (of vergelijkbare statische pagina’s uit de footer) | Pagina laadt; geen 404 |
 | H10 | Open een materiaaloverzicht, zet een filter, ga een pagina verder | Filter blijft actief; resultaten kloppen bij de selectie |
-| H11 | Network/devtools: Google Analytics (of GTM) en Plausible na consent | Scripts laden volgens consentbeleid. **Nog open:** beide tracking-scripts moeten nog worden toegevoegd; noteer afwezigheid als open launch-punt |
+| H11 | Network/devtools: Plausible altijd; geen GA | Plausible (`pa-KQRC-…` / `plausible.io/api/event`) laadt ook zonder Accept. GA bewust niet |
 
 ---
 
@@ -326,5 +326,5 @@ Canonieke checklist: [`docs/livegang-checklist.md`](../../livegang-checklist.md)
 | SL-LEGAL-1 | Soft-launch consent-bar (Accept/Refuse; gated md_aid/events/gpt) | ✅ soft-launch |
 | SL-LEGAL-2 | Echte CMP + footer Cookie settings + cookieverklaring (vóór sept.) | ❌ open |
 | SL-ANALYTICS-1 | Google Analytics (of GTM) toevoegen achter consent | ❌ open (bewust uit) |
-| SL-ANALYTICS-2 | Plausible Analytics toevoegen (consent of cookieloos beleid) | ❌ open |
+| SL-ANALYTICS-2 | Plausible Analytics (`pa-KQRC-…`) altijd aan (cookieless/AVG) | ✅ |
 | SL-SHOP-1 | Testbestellingen in de bookshop (Sandbox: kaart + iDEAL; gast + ingelogd) — Flow M | ❌ open |

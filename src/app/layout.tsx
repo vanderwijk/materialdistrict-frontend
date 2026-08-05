@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
 import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import { ConsentBar } from '@/components/consent/ConsentBar'
+import { PlausibleAnalytics } from '@/components/analytics/PlausibleAnalytics'
 import '@/styles/globals.css'
 
 /**
@@ -123,6 +124,8 @@ export default function RootLayout({
         <FeedbackButton />
         {/* Consent bar — renders only until the visitor has chosen. */}
         <ConsentBar />
+        {/* Plausible — always on (cookieless / AVG-compliant). */}
+        <PlausibleAnalytics />
       </body>
     </html>
   )
