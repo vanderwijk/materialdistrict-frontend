@@ -89,6 +89,15 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 - [ ] Dekking minstens: materials, stories/articles, brands, pages (en andere CPT’s met een frontend-route)
 - [ ] Bij voorkeur: WP-hook (`save_post` / REST update) → frontend on-demand revalidation (`revalidatePath` / `revalidateTag` of Vercel purge API), niet alleen TTL-wacht
 
+### Product feeds — Google Merchant Center + Meta (Facebook/Instagram)
+
+**Doel:** WooCommerce-boekassortiment op [`/book/`](https://materialdistrict.com/book/) synchroon houden met shopping-kanalen.
+
+- [ ] Google Merchant Center-integratie: productfeed vanuit WooCommerce (CMS) voor de store op `https://materialdistrict.com/book/`
+- [ ] Feed-URL’s / productlinks wijzen naar de **Vercel-frontend** (`materialdistrict.com/book/...`), niet naar `cms.…`
+- [ ] Zelfde (of afgeleide) catalogus koppelen als **Meta product feed** (Facebook / Instagram Shop / Catalog)
+- [ ] Rooktest: items in GMC + Meta matchen titel/prijs/voorraad/URL met de live books-pagina
+
 ---
 
 ## 1. 🔴 Launch-gates (teamvoorkeur / harde risico’s)
