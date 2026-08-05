@@ -1751,6 +1751,52 @@ export async function createInsiderCheckout(
 }
 
 /**
+ * Bevestig een afgeronde Insider Checkout Session en activeer membership
+ * (webhook-fallback). Zie POST /md/v2/checkout/insider/confirm.
+ */
+export async function confirmInsiderCheckout(
+  token: string,
+  sessionId: string,
+): Promise<{ activated: boolean; membership: Record<string, unknown> }> {
+  return wpAuthFetch('/md/v2/checkout/insider/confirm', {
+    method: 'POST',
+    bearer: token,
+    body: { session_id: sessionId },
+  })
+}
+
+/**
+ * Bevestig een afgeronde brand Checkout Session en activeer brand-tier
+ * (webhook-fallback). Zie POST /md/v2/checkout/brand/confirm.
+ */
+export async function confirmBrandCheckout(
+  token: string,
+  args: { sessionId: string; brandId: number },
+): Promise<{
+  activated: boolean
+  membership: Record<string, unknown>
+  brandId: number
+}> {
+  const raw = await wpAuthFetch<{
+    activated: boolean
+    membership: Record<string, unknown>
+    brand_id: number
+  }>('/md/v2/checkout/brand/confirm', {
+    method: 'POST',
+    bearer: token,
+    body: {
+      session_id: args.sessionId,
+      brand_id: args.brandId,
+    },
+  })
+  return {
+    activated: raw.activated,
+    membership: raw.membership,
+    brandId: raw.brand_id,
+  }
+}
+
+/**
  * Start een Stripe-checkout voor een brand tier (Basis / Plus / Partner).
  *
  * @throws WordPressAuthError / WordPressError:

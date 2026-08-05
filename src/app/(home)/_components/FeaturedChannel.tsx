@@ -14,8 +14,11 @@
  * Niets te tonen (geen kanaal of geen materialen) → de sectie verdwijnt.
  */
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
+import { pickCardImageUrl } from '@/lib/utils/pick-card-image-url'
 import type { MaterialListItem } from '@/types/material'
 
 export interface FeaturedChannelVM {
@@ -37,6 +40,9 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
   if (!channel || materials.length === 0) return null
 
   const channelHref = `/channel/${channel.slug}`
+  const heroSrc = channel.thumbnailUrl
+    ? normalizeMediaUrl(channel.thumbnailUrl) ?? channel.thumbnailUrl
+    : null
 
   return (
     <section className="hp-section hp-featured-channel" aria-label="Featured channel">
@@ -47,14 +53,16 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
         </Link>
       </div>
 
-      <div
-        className="hp-channel-hero"
-        style={
-          channel.thumbnailUrl
-            ? { backgroundImage: `url(${channel.thumbnailUrl})` }
-            : undefined
-        }
-      >
+      <div className="hp-channel-hero">
+        {heroSrc && (
+          <Image
+            src={heroSrc}
+            alt=""
+            fill
+            sizes="(max-width: 900px) 100vw, 70vw"
+            className="hp-channel-hero-img"
+          />
+        )}
         <Link
           href={channelHref}
           className="hp-channel-hero-link"
@@ -78,18 +86,23 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
         <ul className="hp-channel-thumbs">
           {materials.slice(0, 8).map((m) => {
             const label = [m.brandName, m.title].filter(Boolean).join(' — ')
+            const thumbSrc = pickCardImageUrl(m.hero, 'thumb')
             return (
               <li key={m.id}>
                 <Link
                   href={`/material/${m.slug}`}
                   className="hp-channel-thumb"
                   aria-label={label}
-                  style={
-                    m.hero?.sourceUrl
-                      ? { backgroundImage: `url(${m.hero.sourceUrl})` }
-                      : undefined
-                  }
                 >
+                  {thumbSrc && (
+                    <Image
+                      src={thumbSrc}
+                      alt=""
+                      fill
+                      sizes="52px"
+                      className="hp-channel-thumb-img"
+                    />
+                  )}
                   <span className="hp-channel-thumb-tip" aria-hidden="true">
                     {m.brandName && (
                       <span className="hp-channel-thumb-brand">{m.brandName}</span>

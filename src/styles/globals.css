@@ -10869,17 +10869,18 @@ mark.search-mark {
   transform: translateY(-2px);
   background: var(--surface2);
 }
-/* Thumb-beeld per record via --story-thumb (toegestane data-injectie,
-   hier geconsumeerd). Fallback-vlak als er geen beeld is. */
+/* Thumb-beeld per record via next/image (fill). Fallback-vlak als er geen beeld is. */
 .story-thumb {
+  position: relative;
   width: 76px;
   height: 50px;
   flex-shrink: 0;
   border-radius: var(--radius);
+  overflow: hidden;
   background-color: var(--surface2);
-  background-image: var(--story-thumb, none);
-  background-size: cover;
-  background-position: center;
+}
+.story-thumb-img {
+  object-fit: cover;
 }
 .story-text {
   display: flex;
@@ -12372,7 +12373,8 @@ mark.search-mark {
 .insider-cta .btn-insider-solid:hover:not(:disabled){opacity:.92}
 
 /* ---- Featured-talk: grote beeld-band ---- */
-.feature-band{position:relative; display:block; border-radius:var(--radius-lg); overflow:hidden; min-height:380px; background-size:cover; background-position:center; background-color:var(--ink); box-shadow:var(--shadow)}
+.feature-band{position:relative; display:block; border-radius:var(--radius-lg); overflow:hidden; min-height:380px; background-color:var(--ink); box-shadow:var(--shadow)}
+.feature-band-img{object-fit:cover; z-index:0}
 .feature-band::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(13,31,45,0) 30%, rgba(13,31,45,.9) 100%); z-index:1}
 .feature-band-inner{position:absolute; left:0; right:0; bottom:0; z-index:2; padding:36px 40px; color:#fff; max-width:66%}
 .feature-band-eyebrow{font-size: var(--text-eyebrow); font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#fff; opacity:.85; margin:0 0 12px}
@@ -12422,7 +12424,8 @@ mark.search-mark {
 .stories-list{display:flex; flex-direction:column}
 .story-item{display:flex; gap:12px; padding: 12px 8px; border-radius:var(--radius-md); align-items:center}
 .story-item:hover{background:var(--surface2)}
-.story-thumb{width:56px; height:44px; border-radius:var(--radius-md); background-image:var(--story-thumb); background-size:cover; background-position:center; flex-shrink:0; background-color:var(--surface2)}
+.story-thumb{position:relative; width:56px; height:44px; border-radius:var(--radius-md); overflow:hidden; flex-shrink:0; background-color:var(--surface2)}
+.story-thumb-img{object-fit:cover}
 .story-text{display:flex; flex-direction:column; gap: 4px; min-width:0}
 .story-label{font-size: var(--text-2xs); font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--text-hint)}
 .story-title{font-size: var(--text-sm); font-weight:700; line-height:1.3; color:var(--text)}
@@ -15215,16 +15218,18 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   border-radius: var(--radius-lg);
   overflow: hidden;
   background-color: var(--ink);
-  background-size: cover;
-  background-position: center;
   text-decoration: none;
   isolation: isolate;
+}
+.hp-channel-hero-img {
+  object-fit: cover;
+  z-index: 0;
 }
 .hp-channel-hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   background: linear-gradient(
     180deg,
     rgba(13, 31, 45, 0) 8%,
@@ -15233,7 +15238,7 @@ a.mat-detail-tag:hover::after { opacity: 1; }
 }
 .hp-channel-hero-inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 640px;
   color: #fff;
 }
@@ -15348,10 +15353,12 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   height: 52px;
   border-radius: var(--radius);
   border: 2px solid #fff;
+  overflow: hidden;
   background-color: var(--surface2);
-  background-size: cover;
-  background-position: center;
   box-shadow: var(--shadow-md);
+}
+.hp-channel-thumb-img {
+  object-fit: cover;
 }
 .hp-channel-thumb-tip {
   position: absolute;
@@ -15413,10 +15420,15 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background-color: var(--surface);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
   transition: border-color 0.15s, box-shadow 0.15s;
+}
+.hp-brand-logo-media {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.hp-brand-logo-img {
+  object-fit: contain;
 }
 .hp-brand-logo:hover {
   border-color: var(--navy);
@@ -16859,14 +16871,17 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   text-decoration: none;
 }
 .hp-sidebar-book-cover {
+  position: relative;
   flex-shrink: 0;
   width: 44px;
   height: 60px;
   border-radius: var(--radius-sm);
+  overflow: hidden;
   background-color: var(--surface2);
-  background-size: cover;
-  background-position: center;
   box-shadow: var(--shadow);
+}
+.hp-sidebar-book-cover-img {
+  object-fit: cover;
 }
 .hp-sidebar-book-body {
   min-width: 0;

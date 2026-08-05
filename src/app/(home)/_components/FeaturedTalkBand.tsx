@@ -8,8 +8,10 @@
  * datalaag zit (losse follow-up). Rendert niets als er geen talk is.
  */
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { InsiderMark } from '@/components/ui'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 
 export interface FeaturedTalkVM {
   href: string
@@ -28,6 +30,10 @@ interface FeaturedTalkBandProps {
 export function FeaturedTalkBand({ talk }: FeaturedTalkBandProps) {
   if (!talk) return null
 
+  const thumbSrc = talk.thumbUrl
+    ? normalizeMediaUrl(talk.thumbUrl) ?? talk.thumbUrl
+    : undefined
+
   return (
     <section className="hp-section" aria-label="Featured talk">
       <div className="section-hd">
@@ -37,15 +43,16 @@ export function FeaturedTalkBand({ talk }: FeaturedTalkBandProps) {
         </Link>
       </div>
 
-      <Link
-        href={talk.href}
-        className="feature-band"
-        style={
-          talk.thumbUrl
-            ? ({ backgroundImage: `url(${talk.thumbUrl})` } as React.CSSProperties)
-            : undefined
-        }
-      >
+      <Link href={talk.href} className="feature-band">
+        {thumbSrc && (
+          <Image
+            src={thumbSrc}
+            alt=""
+            fill
+            sizes="(max-width: 900px) 100vw, 70vw"
+            className="feature-band-img"
+          />
+        )}
         <span className="play" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />

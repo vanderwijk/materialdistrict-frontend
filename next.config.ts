@@ -150,6 +150,39 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // ------------------------------------------------------------------
+      // 0a. Production Vercel alias → canonical apex.
+      //     Keeps hashed preview/deployment URLs (*.vercel.app) usable for
+      //     testing; those stay noindex via vercel.json X-Robots-Tag.
+      // ------------------------------------------------------------------
+      {
+        source: '/',
+        has: [
+          { type: 'host', value: 'materialdistrict-frontend.vercel.app' },
+        ],
+        destination: 'https://materialdistrict.com/',
+        permanent: true,
+      },
+      {
+        source: '/:path+/',
+        has: [
+          { type: 'host', value: 'materialdistrict-frontend.vercel.app' },
+        ],
+        destination: 'https://materialdistrict.com/:path+/',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 0. Media / uploads — after apex DNS → Vercel, old image URLs
+      //    (Google Images, e-mails, hotlinks) must 301 to the CDN.
+      // ------------------------------------------------------------------
+      {
+        source: '/wp-content/uploads/:path*',
+        destination:
+          'https://media.materialdistrict.com/wp-content/uploads/:path*',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
       // 1. Books — WooCommerce products moved to /book/
       //    31 URLs. Verified: all 31 slugs resolve 1-on-1.
       // ------------------------------------------------------------------

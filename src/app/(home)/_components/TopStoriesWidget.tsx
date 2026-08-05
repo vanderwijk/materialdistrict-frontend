@@ -9,7 +9,9 @@
  */
 
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 
 export interface StoryListItem {
   href: string
@@ -55,23 +57,30 @@ export function TopStoriesWidget({ articles, materials }: TopStoriesWidgetProps)
 
       <div className="sw-body">
         <div className="stories-list">
-          {items.map((it) => (
-            <Link key={it.href} href={it.href} className="story-item">
-              <span
-                className="story-thumb"
-                style={
-                  it.thumbUrl
-                    ? ({ '--story-thumb': `url(${it.thumbUrl})` } as React.CSSProperties)
-                    : undefined
-                }
-                aria-hidden="true"
-              />
-              <span className="story-text">
-                <span className="story-label">{it.label}</span>
-                <span className="story-title">{it.title}</span>
-              </span>
-            </Link>
-          ))}
+          {items.map((it) => {
+            const thumbSrc = it.thumbUrl
+              ? normalizeMediaUrl(it.thumbUrl) ?? it.thumbUrl
+              : undefined
+            return (
+              <Link key={it.href} href={it.href} className="story-item">
+                <span className="story-thumb" aria-hidden="true">
+                  {thumbSrc && (
+                    <Image
+                      src={thumbSrc}
+                      alt=""
+                      fill
+                      sizes="56px"
+                      className="story-thumb-img"
+                    />
+                  )}
+                </span>
+                <span className="story-text">
+                  <span className="story-label">{it.label}</span>
+                  <span className="story-title">{it.title}</span>
+                </span>
+              </Link>
+            )
+          })}
         </div>
       </div>
 

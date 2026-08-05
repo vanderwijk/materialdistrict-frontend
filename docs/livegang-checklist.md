@@ -255,14 +255,14 @@ wp user meta list --keys=simplefavorites --format=count
 
 ### 2.10 Photo library — 301 redirects naar media-host
 
-**Status:** open — nodig bij cutover (oude image-URL’s blijven in Google, e-mails, externe sites)  
-**Eigenaar:** Johan (DNS / edge / oude host)  
+**Status:** ✅ redirects in `next.config.ts` (5-08-2026) — actief zodra apex DNS → Vercel  
+**Eigenaar:** Johan (DNS / edge)  
 **Doel:** alle photo-library / WordPress-uploadpaden blijven werken via **301** naar `media.materialdistrict.com`, zodat hotlinks en geïndexeerde afbeeldingen niet 404’en.
 
-- [ ] Inventariseer oude host-paden voor de photo library / uploads (typisch `/wp-content/uploads/…` en eventuele legacy photo-library-URL’s op `materialdistrict.com` / WP Engine)
-- [ ] 301-redirects: uploadmappen → `https://media.materialdistrict.com/…` (pad behouden waar mogelijk)
-- [ ] Steekproef: 5–10 bekende afbeeldings-URL’s (Google Images, oude artikel/materiaal-hotlinks) → **301** + juiste bytes op media-host
-- [ ] Bevestig dat nieuwe content in de frontend al `media.materialdistrict.com` gebruikt (geen regressie naar cms-/oud-domein)
+- [x] 301: `/wp-content/uploads/:path*` → `https://media.materialdistrict.com/wp-content/uploads/:path*`
+- [x] Frontend herschrijft legacy hosts al via `normalizeMediaUrl()`
+- [ ] Steekproef na DNS-cutover: 5–10 oude image-URL’s → **301** + bytes op media-host
+- [ ] Eventuele legacy photo-library-paden buiten `/wp-content/uploads/` (indien nog in gebruik)
 
 ---
 

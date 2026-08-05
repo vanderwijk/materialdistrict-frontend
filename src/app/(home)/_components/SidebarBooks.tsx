@@ -10,7 +10,9 @@
  * Lege lijst → de hele sectie verdwijnt.
  */
 
+import Image from 'next/image'
 import Link from 'next/link'
+import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import type { BookListItem } from '@/types/book'
 
 export interface SidebarBooksProps {
@@ -36,18 +38,24 @@ export function SidebarBooks({ books }: SidebarBooksProps) {
       <ul className="hp-sidebar-books-list">
         {books.map((book) => {
           const price = book.priceExVat ?? book.price
+          const coverRaw = book.cover?.thumbnailUrl ?? book.cover?.url
+          const coverSrc = coverRaw
+            ? normalizeMediaUrl(coverRaw) ?? coverRaw
+            : undefined
           return (
             <li key={book.id}>
               <Link href={`/book/${book.slug}`} className="hp-sidebar-book">
-                <span
-                  className="hp-sidebar-book-cover"
-                  aria-hidden="true"
-                  style={
-                    book.cover?.url
-                      ? { backgroundImage: `url(${book.cover.url})` }
-                      : undefined
-                  }
-                />
+                <span className="hp-sidebar-book-cover" aria-hidden="true">
+                  {coverSrc && (
+                    <Image
+                      src={coverSrc}
+                      alt=""
+                      fill
+                      sizes="44px"
+                      className="hp-sidebar-book-cover-img"
+                    />
+                  )}
+                </span>
                 <span className="hp-sidebar-book-body">
                   <span className="hp-sidebar-book-title">{book.title}</span>
                   <span className="hp-sidebar-book-price">

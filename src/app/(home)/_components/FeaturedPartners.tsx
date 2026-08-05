@@ -12,7 +12,9 @@
  * Lege lijst → de hele sectie verdwijnt.
  */
 
+import Image from 'next/image'
 import Link from 'next/link'
+import { pickCardImageUrl } from '@/lib/utils/pick-card-image-url'
 import type { BrandListItem } from '@/types/brand'
 
 export interface FeaturedPartnersProps {
@@ -32,24 +34,32 @@ export function FeaturedPartners({ partners }: FeaturedPartnersProps) {
         </Link>
       </div>
       <ul className="hp-brand-logos">
-        {partners.slice(0, 6).map((brand) => (
-          <li key={brand.id}>
-            <Link
-              href={`/brand/${brand.slug}`}
-              className="hp-brand-logo"
-              aria-label={brand.name}
-              style={
-                brand.logo?.sourceUrl
-                  ? { backgroundImage: `url(${brand.logo.sourceUrl})` }
-                  : undefined
-              }
-            >
-              {!brand.logo?.sourceUrl && (
-                <span className="hp-brand-logo-fallback">{brand.name}</span>
-              )}
-            </Link>
-          </li>
-        ))}
+        {partners.slice(0, 6).map((brand) => {
+          const logoSrc = pickCardImageUrl(brand.logo, 'logo')
+          return (
+            <li key={brand.id}>
+              <Link
+                href={`/brand/${brand.slug}`}
+                className="hp-brand-logo"
+                aria-label={brand.name}
+              >
+                {logoSrc ? (
+                  <span className="hp-brand-logo-media">
+                    <Image
+                      src={logoSrc}
+                      alt=""
+                      fill
+                      sizes="(max-width: 520px) 45vw, (max-width: 900px) 30vw, 140px"
+                      className="hp-brand-logo-img"
+                    />
+                  </span>
+                ) : (
+                  <span className="hp-brand-logo-fallback">{brand.name}</span>
+                )}
+              </Link>
+            </li>
+          )
+        })}
       </ul>
     </section>
   )
