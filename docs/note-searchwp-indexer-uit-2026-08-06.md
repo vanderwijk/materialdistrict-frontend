@@ -96,3 +96,8 @@ Zie ook open vraag in [`woocommerce-migration-plan.md`](./woocommerce-migration-
 - Related-endpoint: `materialdistrict-plugin/rest-articles-related.php`
 - Frontend: `src/lib/api/search.ts`, `/search`
 - CMS: `https://cms.materialdistrict.com` (DigitalOcean; **4 vCPU / 8 GB RAM**)
+
+
+## Gerelateerd (6 aug avond)
+
+Disk-full door SearchWP Metrics UID-storm op REST — zie [`note-cms-disk-full-binlog-2026-08-06.md`](./note-cms-disk-full-binlog-2026-08-06.md). Indexer weer aan na Metrics-headless-fix.
