@@ -283,13 +283,14 @@ wp user meta list --keys=simplefavorites --format=count
 
 **Status:** open — functioneel OK, visueel onder de maat  
 **Eigenaar:** frontend (Claude)  
+**Bron:** soft-launch checklist + Johan 06-08-2026  
 **Referentie:** [`src/app/material-category/[slug]/page.tsx`](../src/app/material-category/[slug]/page.tsx)  
-**Voorbeeld:** [materialdistrict-frontend.vercel.app/material-category/plastics/](https://materialdistrict-frontend.vercel.app/material-category/plastics/) — titel/intro, breadcrumb en materiaalgrid ogen rommelig (dubbele “Plastics”, weinig hiërarchie).
+**Voorbeeld (live):** [materialdistrict.com/material-category/ceramics/](https://materialdistrict.com/material-category/ceramics/) — header/breadcrumb/titel/grid ogen rommelig (weinig hiërarchie, niet in lijn met `/material` of channel-hubs).
 
 - [ ] Hero/intro-blok: één duidelijke H1, korte categoriebeschrijving (uit WP term), geen dubbele labels
-- [ ] Grid + telling (“913 materials”) visueel in lijn met `/materials` en brand-archief
-- [ ] Responsive check (mobiel: breadcrumb + filterbar indien van toepassing)
-- [ ] Rooktest op 2–3 categorieën (groot volume + kleine term)
+- [ ] Grid + telling (“172 materials”) visueel in lijn met `/material` en brand-archief
+- [ ] Responsive check (mobiel: breadcrumb + spacing)
+- [ ] Rooktest op 2–3 categorieën (groot volume + kleine term), o.a. ceramics / plastics / concretes
 
 ### 2.10 Photo library — 301 redirects naar media-host
 
