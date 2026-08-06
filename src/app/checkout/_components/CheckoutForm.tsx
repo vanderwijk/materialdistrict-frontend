@@ -108,6 +108,28 @@ function withNormalizedPostcode(addr: StoreAddress): StoreAddress {
   return { ...addr, postcode: normalizePostcode(addr.country, addr.postcode) }
 }
 
+/** Align with WP `is_email()` — avoid email-status 400s while the user is still typing. */
+function isCompleteEmail(value: string): boolean {
+  const email = value.trim()
+  if (!email) return false
+  // Practical subset of WP's check: local@domain.tld (no trailing @ / incomplete host).
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+/**
+ * Only call Store API `update-customer` once the postcode can pass WC validation.
+ * NL rejects partial values like "1011" / "1011A" with HTTP 400.
+ */
+function isPostcodeReadyForRates(country: string, postcode: string): boolean {
+  const trimmed = postcode.trim()
+  if (!country || !trimmed) return false
+  if (country === 'NL') {
+    return /^(\d{4})\s*([A-Za-z]{2})$/.test(trimmed)
+  }
+  // Other countries: require a little substance so single keystrokes don't hammer WC.
+  return trimmed.length >= 3
+}
+
 interface CheckoutFormProps {
   prefill?: CheckoutPrefill | null
 }
@@ -162,8 +184,8 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const rates = cart?.shipping_rates?.[0]?.shipping_rates ?? []
   const selectedRate = rates.find((r) => r.selected)
 
-  // Auto-shipping: adres compleet genoeg om tarieven te berekenen?
-  const shipComplete = Boolean(shipAddr.country && shipAddr.postcode.trim())
+  // Auto-shipping: only when postcode can pass WC validation (avoids console 400s).
+  const shipComplete = isPostcodeReadyForRates(shipAddr.country, shipAddr.postcode)
   const shipKey = `${shipAddr.country}|${normalizePostcode(shipAddr.country, shipAddr.postcode)}|${shipAddr.city}|${shipAddr.address_1}`
   const ratesKey = rates.map((r) => r.rate_id).join('|')
   const selectedRateId = selectedRate?.rate_id ?? ''
@@ -201,7 +223,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
     }
 
     const trimmed = email.trim()
-    if (!trimmed || !trimmed.includes('@')) {
+    if (!isCompleteEmail(trimmed)) {
       setEmailRegistered(null)
       return
     }
