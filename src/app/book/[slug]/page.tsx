@@ -32,7 +32,7 @@ import { notFound } from 'next/navigation'
 import { getBook, listBooks } from '@/lib/api/books'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { DetailHeader } from '@/components/layout/DetailHeader'
-import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { BookBuyCard } from './_components/BookBuyCard'
 import { BookDetailActions } from './_components/BookDetailActions'
@@ -61,7 +61,13 @@ export async function generateMetadata({
     title: book.title,
     description,
     alternates: { canonical: path },
-    openGraph: { title: book.title, description, type: 'book', url: path },
+    openGraph: {
+      ...openGraphSite,
+      title: book.title,
+      description,
+      type: 'book',
+      url: path,
+    },
   }
 }
 

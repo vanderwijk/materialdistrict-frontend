@@ -40,7 +40,7 @@ import {
   listArticles,
   resolveChannelId,
 } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import {
   STORY_TYPE_META,
   isStoryType,
@@ -77,6 +77,7 @@ export const metadata: Metadata = {
     'News, people, collaborations, projects and partner stories — all connected through materials. Read the latest from MaterialDistrict.',
   alternates: { canonical: pagePath },
   openGraph: {
+    ...openGraphSite,
     title: 'Stories | MaterialDistrict',
     description:
       'News, people, collaborations, projects and partner stories — all connected through materials.',

@@ -38,7 +38,7 @@ import {
   parseBrandSlugFromSearchParams,
   parseFacetSelectionFromSearchParams,
 } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { MaterialsContextWriter } from '@/lib/hooks/useMaterialsContext'
 import {
   MaterialsFilterProvider,
@@ -59,6 +59,7 @@ export const metadata: Metadata = {
     'Browse 15,000+ innovative and sustainable materials for architects, designers and specifiers. Filter by properties, request samples, save your favourites.',
   alternates: { canonical: pagePath },
   openGraph: {
+    ...openGraphSite,
     title: 'Materials | MaterialDistrict',
     description:
       'Browse 15,000+ innovative and sustainable materials for architects, designers and specifiers.',

@@ -23,7 +23,7 @@ import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ChannelBarNav } from '@/components/ui'
 import { listEvents, getChannelCatalog } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { sortEventsByDate } from './_lib/events-order'
 import { EventsBrowser } from './_components/EventsBrowser'
 
@@ -38,6 +38,7 @@ export const metadata: Metadata = {
     'MaterialDistrict events, tradeshows, lectures and workshops worldwide — fairs, exhibitions and online sessions on materials and the built environment.',
   alternates: { canonical: pagePath },
   openGraph: {
+    ...openGraphSite,
     title: 'Events | MaterialDistrict',
     description:
       'MaterialDistrict events, tradeshows, lectures and workshops worldwide.',

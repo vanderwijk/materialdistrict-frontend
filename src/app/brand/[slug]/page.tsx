@@ -33,7 +33,7 @@ import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { MaterialGallery } from '@/components/materials'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { getBrand, listBrands, listMaterialsByBrand } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildBrandOrganization, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildBrandOrganization, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { BrandDetailActions } from './_components/BrandDetailActions'
 import { BrandDetailContactCard } from './_components/BrandDetailContactCard'
@@ -74,6 +74,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical: path },
     openGraph: {
+      ...openGraphSite,
       title: brand.name,
       description,
       type: 'profile',

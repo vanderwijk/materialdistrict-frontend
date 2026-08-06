@@ -34,7 +34,7 @@ import {
   listMaterialsWithFacets,
 } from '@/lib/api'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
-import { JsonLd, buildWebSite, buildOrganization, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildWebSite, buildOrganization, canonicalPath, openGraphSite } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { sortEventsByDate } from '@/app/event/_lib/events-order'
 import { EventCard } from '@/app/event/_components/EventCard'
@@ -75,6 +75,9 @@ export const metadata: Metadata = {
     '3,200+ innovative and sustainable materials for architecture and interior design, plus stories, events and books. Free to explore.',
   alternates: { canonical: pagePath },
   openGraph: {
+    // Next.js replaces parent `openGraph` wholesale — repeat site identity
+    // or the homepage (which Google uses for the site name) loses og:site_name.
+    ...openGraphSite,
     title: 'MaterialDistrict — Where materials meet ideas',
     description:
       '3,200+ innovative and sustainable materials for architecture and interior design.',

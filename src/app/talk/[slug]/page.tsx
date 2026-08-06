@@ -31,7 +31,7 @@ import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { ContentCard } from '@/components/ui'
 import { getTalk, listTalks } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildVideoObject, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildVideoObject, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { formatDuration } from '@/lib/utils/format-duration'
@@ -93,6 +93,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical: path },
     openGraph: {
+      ...openGraphSite,
       title: talk.title,
       description,
       type: 'video.other',

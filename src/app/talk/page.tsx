@@ -19,7 +19,7 @@ import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
 import { listTalks, getChannelCatalog, resolveChannelId } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { TalksBrowser, type TalksBrowserItem } from './_components/TalksBrowser'
 
 // De volledige matchende set wordt in één keer geladen (WP-max per page),
@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     'Lectures, panels and conversations on materials and the built environment — watch the latest talks from MaterialDistrict.',
   alternates: { canonical: pagePath },
   openGraph: {
+    ...openGraphSite,
     title: 'Talks | MaterialDistrict',
     description:
       'Lectures, panels and conversations on materials and the built environment.',

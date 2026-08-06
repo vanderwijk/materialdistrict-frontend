@@ -13,6 +13,8 @@ interface BaseThing {
   '@type': string
   '@id'?: string
   name?: string
+  /** Fallback names Google may use when the preferred `name` is not chosen. */
+  alternateName?: string | string[]
   url?: string
   image?: string | string[]
   description?: string

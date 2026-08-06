@@ -26,9 +26,8 @@ import type {
   VideoObjectSchema,
   WebSiteSchema,
 } from './types'
+import { SITE_NAME, SITE_NAME_ALTERNATES } from './site'
 import { absolutePageUrl, canonicalPath, getSiteOrigin } from './urls'
-
-const SITE_NAME = 'MaterialDistrict'
 
 /**
  * Bouwt het basis Organization-schema voor MaterialDistrict.
@@ -127,6 +126,14 @@ export function buildWebSite(): WebSiteSchema {
     '@type': 'WebSite',
     '@id': `${origin}/#website`,
     name: SITE_NAME,
+    // Google picks the site name shown in results algorithmically; WebSite
+    // structured data is the strongest signal it accepts, and `alternateName`
+    // supplies fallbacks for when the preferred name is not chosen. The
+    // spaced variant is listed on purpose: Google currently renders
+    // "Material District", so naming it as an alternate rather than the
+    // primary makes the preference explicit instead of leaving the split to
+    // a heuristic.
+    alternateName: [...SITE_NAME_ALTERNATES],
     url: `${origin}/`,
     potentialAction: {
       '@type': 'SearchAction',

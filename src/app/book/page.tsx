@@ -17,7 +17,7 @@ import type { FilterSection, FilterSelection } from '@/components/ui'
 import type { Channel } from '@/lib/api/channels'
 import { listBooks } from '@/lib/api/books'
 import type { BookListItem } from '@/types/book'
-import { JsonLd, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { BooksFilterSidebar } from './_components/BooksFilterSidebar'
 import { BooksGrid } from './_components/BooksGrid'
 import { BooksPagination } from './_components/BooksPagination'
@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     'Browse books, exhibition catalogues and publications on innovative and sustainable materials. Insider members save on every title.',
   alternates: { canonical: pagePath },
   openGraph: {
+    ...openGraphSite,
     title: 'Books | MaterialDistrict',
     description:
       'Books, exhibition catalogues and publications on innovative and sustainable materials.',

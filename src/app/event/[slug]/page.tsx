@@ -30,7 +30,7 @@ import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { Button } from '@/components/ui'
 import { getEvent, listEvents } from '@/lib/api'
-import { JsonLd, buildEvent, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildEvent, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { eventTypeLabel } from '@/lib/config/event-types'
 import type { Event } from '@/types/event'
@@ -99,6 +99,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical: path },
     openGraph: {
+      ...openGraphSite,
       title: event.title,
       description,
       type: 'website',

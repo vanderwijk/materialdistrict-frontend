@@ -50,7 +50,7 @@ import {
   getRelatedContent,
   listMaterials,
 } from '@/lib/api'
-import { JsonLd, buildArticle, buildBreadcrumbList, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildArticle, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
 import { ArticleBodyGate } from './_components/ArticleBodyGate'
@@ -112,6 +112,7 @@ export async function generateMetadata({
     description,
     alternates: { canonical: path },
     openGraph: {
+      ...openGraphSite,
       title: article.title,
       description,
       type: 'article',

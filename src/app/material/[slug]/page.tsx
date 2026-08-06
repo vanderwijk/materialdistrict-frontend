@@ -41,7 +41,7 @@ import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { MaterialGallery } from '@/components/materials'
 import { getMaterialDetail } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { materialFilterHref } from '@/lib/api/facetwp'
 import {
@@ -100,6 +100,7 @@ export async function generateMetadata({
     description: description || undefined,
     alternates: { canonical: path },
     openGraph: {
+      ...openGraphSite,
       title: material.title,
       description: description || undefined,
       type: 'article',

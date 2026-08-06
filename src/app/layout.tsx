@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Schibsted_Grotesk } from 'next/font/google'
 import { AuthenticatedAppShell } from '@/components/layout/AuthenticatedAppShell'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
-import { JsonLd, buildOrganization, buildWebSite } from '@/lib/seo'
+import { JsonLd, buildOrganization, buildWebSite, openGraphSite } from '@/lib/seo'
 import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import { ConsentBar } from '@/components/consent/ConsentBar'
 import { ConsentBootstrap } from '@/components/consent/ConsentBootstrap'
@@ -47,8 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'MaterialDistrict — discover sustainable and innovative materials, brands, articles, talks and events.',
     openGraph: {
       type: 'website',
-      siteName: 'MaterialDistrict',
-      locale: 'en_US',
+      ...openGraphSite,
     },
     twitter: {
       card: 'summary_large_image',

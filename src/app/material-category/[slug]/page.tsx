@@ -17,7 +17,7 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ContentCard, EmptyState } from '@/components/ui'
 import { getTerm, listMaterialsWithFacets } from '@/lib/api'
-import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
+import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath, openGraphSite } from '@/lib/seo'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 const PER_PAGE = 24
@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: { canonical: path },
     openGraph: {
+      ...openGraphSite,
       title: `${name} | MaterialDistrict`,
       description,
       type: 'website',

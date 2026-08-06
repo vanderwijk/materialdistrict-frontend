@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import type { Page } from '@/types/page'
+import { openGraphSite } from './site'
 import { canonicalPath } from './urls'
 
 /**
@@ -26,6 +27,7 @@ export function buildPageMetadata(page: Page, path: string): Metadata {
     alternates: { canonical },
     robots: { index: seo.index, follow: seo.follow },
     openGraph: {
+      ...openGraphSite,
       title: seo.ogTitle || title,
       description: seo.ogDescription || description,
       type: 'website',
