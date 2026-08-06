@@ -25,6 +25,14 @@
 6. **`siteurl` / `home` / `rest_url`** blijven CMS — geen blanket `home_url`-rewrite.
 7. **Cross-host redirect:** `allowed_redirect_hosts` bevat `materialdistrict.com` (anders valt `wp_safe_redirect` terug op `/wp-admin/`).
 
+## Bekende beperking — draft preview
+
+**“Preview in new tab” werkt niet voor drafts** (en is geen snelle fix).
+
+Oorzaak: de publieke site is headless (Next.js). Drafts staan niet in de anonieme REST API. Preview stuurde eerder naar `materialdistrict.com/…` of `?p=&preview=` → homepage/404. Een echte draft-preview vraagt om een apart preview-systeem (auth token / draft endpoint / Next preview route) — bewust niet gebouwd.
+
+**Werkwijze voor redactie:** opmaak en typografie beoordelen in de **block editor** (CMS block theme = Schibsted Grotesk + brand tokens). Live check na publicatie op materialdistrict.com.
+
 ## Rooktest (6 aug 2026)
 
 | Test | Resultaat |
