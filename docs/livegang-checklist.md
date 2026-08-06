@@ -45,7 +45,7 @@
 | Headless CMS / API | DigitalOcean (`cms.materialdistrict.com`) | ✅ primair |
 | Media / uploads | `media.materialdistrict.com` | ✅ primair |
 | Oude klassieke site | WP Engine | ⏸ standby (achtergrond, geen DNS) |
-| Oude books-shop | `books.materialdistrict.com` → Vercel 301 → `/book/` | ⬜ DNS-cutover OpenProvider — zie [`note-books-subdomain-redirect-2026-08-06.md`](./note-books-subdomain-redirect-2026-08-06.md) |
+| Oude books-shop | `books.materialdistrict.com` → Vercel 301/308 → `/book/` | ✅ live (6-08-2026) |
 
 **Rollback:** bij ernstige problemen DNS van `materialdistrict.com` weer terugzetten van Vercel → WP Engine. Oude site blijft daarom tijdelijk in de lucht op WP Engine (niet afbreken bij cutover).
 
@@ -105,8 +105,8 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 **Detail:** [`note-books-subdomain-redirect-2026-08-06.md`](./note-books-subdomain-redirect-2026-08-06.md)
 
 - [x] Host-based redirects in `next.config.ts` + Vercel-domein toegevoegd (6-08-2026)
-- [ ] **OpenProvider DNS:** `books` A → `76.76.21.21` (vervang CNAME naar WP Engine)
-- [ ] Rooktest: homepage, product, cart, categorie → 301 naar `materialdistrict.com/book/…`
+- [x] **OpenProvider DNS:** `books` A → `76.76.21.21` (CNAME WP Engine verwijderd)
+- [x] Rooktest: homepage, product, cart, categorie → 308 naar `materialdistrict.com/book/…`
 
 ---
 

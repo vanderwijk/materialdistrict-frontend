@@ -1,7 +1,7 @@
 # Notitie — books.materialdistrict.com → /book/ redirects
 
 **Datum:** 6 augustus 2026  
-**Status:** code + Vercel-domein klaar; **DNS-cutover bij OpenProvider nog open**  
+**Status:** live — DNS + 301/308 redirects actief (6 aug 2026)  
 **Eigenaar:** Johan (DNS / OpenProvider)
 
 ---
@@ -20,8 +20,9 @@ Aanpak: **DNS naar Vercel** + host-based redirects in `next.config.ts` (niet red
 |------|--------|
 | Host-based 301s in `next.config.ts` (host `books.materialdistrict.com`) | ✅ |
 | Domein `books.materialdistrict.com` toegevoegd aan Vercel-project `materialdistrict-frontend` | ✅ |
-| Deploy redirects naar production | via push naar `main` |
-| DNS bij OpenProvider wijzigen | ⬜ **jij** |
+| Deploy redirects naar production | ✅ |
+| DNS bij OpenProvider wijzigen | ✅ A `books` → `76.76.21.21`; CNAME WP Engine verwijderd |
+| Rooktest | ✅ 6 aug 2026 — alle paden 308 → `/book/…` |
 
 ---
 
