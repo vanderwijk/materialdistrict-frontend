@@ -275,6 +275,54 @@ const nextConfig: NextConfig = {
       },
 
       // ------------------------------------------------------------------
+      // 0c. WordPress admin / login on apex → CMS host.
+      //     After cutover, materialdistrict.com is Next.js; editors and
+      //     bookmarks still hit /wp-admin and *.php on the apex. Keep
+      //     specific root entry points first, then /wp-admin/*, then any
+      //     other root-level *.php (legacy admin deep-links without the
+      //     /wp-admin/ prefix, e.g. /options-permalink.php).
+      //     Note: Vercel system mitigations may still 403 some
+      //     /wp-admin/*.php probes before Next — firewall redirects cover
+      //     those (see vercel firewall rules).
+      // ------------------------------------------------------------------
+      {
+        source: '/wp-login.php',
+        destination: 'https://cms.materialdistrict.com/wp-login.php',
+        permanent: true,
+      },
+      {
+        source: '/wp-register.php',
+        destination:
+          'https://cms.materialdistrict.com/wp-login.php?action=register',
+        permanent: true,
+      },
+      {
+        source: '/xmlrpc.php',
+        destination: 'https://cms.materialdistrict.com/xmlrpc.php',
+        permanent: true,
+      },
+      {
+        source: '/wp-cron.php',
+        destination: 'https://cms.materialdistrict.com/wp-cron.php',
+        permanent: true,
+      },
+      {
+        source: '/wp-admin',
+        destination: 'https://cms.materialdistrict.com/wp-admin/',
+        permanent: true,
+      },
+      {
+        source: '/wp-admin/:path*',
+        destination: 'https://cms.materialdistrict.com/wp-admin/:path*',
+        permanent: true,
+      },
+      {
+        source: '/:file.php',
+        destination: 'https://cms.materialdistrict.com/wp-admin/:file.php',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
       // 1. Books — WooCommerce products moved to /book/ (apex legacy paths)
       //    31 URLs. Verified: all 31 slugs resolve 1-on-1.
       // ------------------------------------------------------------------
@@ -379,6 +427,18 @@ const nextConfig: NextConfig = {
         source:
           '/:taxonomy(glossiness|translucence|structure|texture|hardness|temperature|acoustics|odeur|fire-resistance|uv-resistance|weather-resistance|scratch-resistance|chemical-resistance|weight|renewable)',
         destination: '/material',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 2b. material_category slug aliases.
+      //     WP term slug is plural `concretes` (name “Concrete”); old/guessed
+      //     singular `/material-category/concrete/` 404s. Send to the materials
+      //     listing with the live FacetWP filter applied.
+      // ------------------------------------------------------------------
+      {
+        source: '/material-category/concrete',
+        destination: '/material/?material_category=concretes',
         permanent: true,
       },
 
