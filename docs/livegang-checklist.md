@@ -1,8 +1,8 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 5 augustus 2026  
-**Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`, `note-cms-lockdown-theme-2026-08-06.md`
+**Laatst bijgewerkt:** 6 augustus 2026  
+**Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`, `note-cms-lockdown-theme-2026-08-06.md`, `note-books-subdomain-redirect-2026-08-06.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
 > Gedetailleerde historie staat in [`open-issues.md`](./open-issues.md) — dit bestand is de **actieve** checklist.
@@ -45,6 +45,7 @@
 | Headless CMS / API | DigitalOcean (`cms.materialdistrict.com`) | ✅ primair |
 | Media / uploads | `media.materialdistrict.com` | ✅ primair |
 | Oude klassieke site | WP Engine | ⏸ standby (achtergrond, geen DNS) |
+| Oude books-shop | `books.materialdistrict.com` → Vercel 301 → `/book/` | ⬜ DNS-cutover OpenProvider — zie [`note-books-subdomain-redirect-2026-08-06.md`](./note-books-subdomain-redirect-2026-08-06.md) |
 
 **Rollback:** bij ernstige problemen DNS van `materialdistrict.com` weer terugzetten van Vercel → WP Engine. Oude site blijft daarom tijdelijk in de lucht op WP Engine (niet afbreken bij cutover).
 
@@ -97,6 +98,15 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 - [ ] Feed-URL’s / productlinks wijzen naar de **Vercel-frontend** (`materialdistrict.com/book/...`), niet naar `cms.…`
 - [ ] Zelfde (of afgeleide) catalogus koppelen als **Meta product feed** (Facebook / Instagram Shop / Catalog)
 - [ ] Rooktest: items in GMC + Meta matchen titel/prijs/voorraad/URL met de live books-pagina
+
+### Books subdomain — `books.materialdistrict.com`
+
+**Doel:** oude WP Engine-shop uitschakelen; alle URLs 301 → `/book/`.  
+**Detail:** [`note-books-subdomain-redirect-2026-08-06.md`](./note-books-subdomain-redirect-2026-08-06.md)
+
+- [x] Host-based redirects in `next.config.ts` + Vercel-domein toegevoegd (6-08-2026)
+- [ ] **OpenProvider DNS:** `books` A → `76.76.21.21` (vervang CNAME naar WP Engine)
+- [ ] Rooktest: homepage, product, cart, categorie → 301 naar `materialdistrict.com/book/…`
 
 ---
 

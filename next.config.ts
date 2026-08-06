@@ -174,6 +174,96 @@ const nextConfig: NextConfig = {
       },
 
       // ------------------------------------------------------------------
+      // 0b. books.materialdistrict.com → materialdistrict.com/book/
+      //     Old WP Engine bookstore decommissioned; DNS points here after
+      //     cutover. Slug remaps first, then 1:1 product, then catch-all.
+      // ------------------------------------------------------------------
+      {
+        source: '/product/mx2014-exhibition-catalogue',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/mx2014-show-catalogue',
+        permanent: true,
+      },
+      {
+        source: '/product/mx2015-exhibition-catalogue',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/mx2015-show-catalogue',
+        permanent: true,
+      },
+      {
+        source: '/product/mx2016-exhibition-catalogue',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/mx2016-show-catalogue',
+        permanent: true,
+      },
+      {
+        source: '/product/mx2017-exhibition-catalogue',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/mx2017-show-catalogue',
+        permanent: true,
+      },
+      {
+        source: '/product/material-revolution-2',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/material-revolution-ii',
+        permanent: true,
+      },
+      {
+        source: '/product/tomorrows-timber-booming-bamboo',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/product/:slug',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/:slug',
+        permanent: true,
+      },
+      {
+        source: '/product-category/:path*',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/shop',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/cart',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/checkout',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/my-account',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'books.materialdistrict.com' }],
+        destination: 'https://materialdistrict.com/book/',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
       // 0. Media / uploads — after apex DNS → Vercel, old image URLs
       //    (Google Images, e-mails, hotlinks) must 301 to the CDN.
       // ------------------------------------------------------------------
@@ -185,7 +275,7 @@ const nextConfig: NextConfig = {
       },
 
       // ------------------------------------------------------------------
-      // 1. Books — WooCommerce products moved to /book/
+      // 1. Books — WooCommerce products moved to /book/ (apex legacy paths)
       //    31 URLs. Verified: all 31 slugs resolve 1-on-1.
       // ------------------------------------------------------------------
       {

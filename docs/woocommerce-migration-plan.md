@@ -178,8 +178,8 @@ The standard headless pattern, and what I recommend:
 ```
 materialdistrict.com        →  Vercel (NextJS)         A 76.76.21.21 (apex)
 www.materialdistrict.com    →  Vercel                  CNAME cname.vercel-dns.com
-cms.materialdistrict.com     →  WP Engine (WordPress)   CNAME <env>.wpengine.com
-books.materialdistrict.com  →  WP Engine (redirects)   unchanged, until decommission
+cms.materialdistrict.com     →  DigitalOcean (WordPress)
+books.materialdistrict.com  →  Vercel (301 → /book/)   A 76.76.21.21  ✅ 2026-08-06 (DNS cutover OpenProvider)
 ```
 
 - **WordPress doesn't disappear — it moves to a subdomain.** `cms.materialdistrict.com` (or `cms.`/`admin.`) serves wp-admin, the REST/Store API, and all media (`/wp-content/uploads/...`). Add the domain in the WP Engine portal (SSL is auto-provisioned), and in Vercel add the apex + www domains to the project.
@@ -206,7 +206,7 @@ Rehearse end-to-end on staging first. On the day:
 4. Switch blog 1 gateways to live mode; place one real Stripe and one real PayPal test order against the wp backend (refund after).
 5. Change WordPress primary domain to `cms.materialdistrict.com` (wp-config + DB, per Phase 5). WP Engine still serves the old domain at this moment, so nothing is down.
 6. Point apex + www DNS to Vercel. Disable Coming-soon mode flags as needed. NextJS goes live.
-7. Activate the 301 redirect map on books.materialdistrict.com (subsite becomes redirect/archive host); end freeze.
+7. ~~Activate the 301 redirect map on books.materialdistrict.com~~ ✅ **2026-08-06** — host-based redirects in `next.config.ts` + domain on Vercel; DNS OpenProvider: set `books` A → `76.76.21.21` (zie [`note-books-subdomain-redirect-2026-08-06.md`](./note-books-subdomain-redirect-2026-08-06.md)).
 8. Post-flip connections: connect Mailchimp for WooCommerce on blog 1 (and disconnect on books); point Google Merchant Center at the new feed URLs.
 9. Smoke tests: live purchase on the new site (Stripe + PayPal + iDEAL if offered), webhook delivery logs in Stripe/PayPal dashboards, SendCloud label creation for a test order, PDF invoice numbering, transactional emails (Postmark), image loading, top-20 URL redirects, Search Console.
 10. Monitor for 1–2 weeks: 404 logs (Vercel + WP Engine), failed webhooks, order emails, Merchant Center feed status.
