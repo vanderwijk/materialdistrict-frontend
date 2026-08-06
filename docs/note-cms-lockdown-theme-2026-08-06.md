@@ -8,7 +8,7 @@
 
 | Item | Waarde |
 |------|--------|
-| Theme | `materialdistrict-cms-theme` (actief) |
+| Theme | `materialdistrict-cms-theme` **v2 block theme** (actief; Schibsted Grotesk in editor) |
 | Repo | https://github.com/vanderwijk/materialdistrict-cms-theme |
 | Plugin | `includes/md-cms-frontend-links.php` + `md_frontend_permalink_for_post()` |
 | Redirect | 301 `https://materialdistrict.com{path}` |
