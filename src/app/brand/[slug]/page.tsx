@@ -63,7 +63,7 @@ export async function generateMetadata({
   const brand = await getBrand(slug, { resolve: { gallery: false } })
 
   if (!brand) {
-    return { title: 'Brand not found', robots: { index: false, follow: false } }
+    notFound()
   }
 
   const description = stripHtml(brand.excerptHtml) || undefined

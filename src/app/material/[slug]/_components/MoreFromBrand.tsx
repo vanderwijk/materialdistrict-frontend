@@ -10,27 +10,23 @@ import { MaterialCard } from '@/components/ui/MaterialCard'
  *
  * Server-component. Sessie 5 (27-05-2026): de oude FacetWP-query is
  * vervangen door de genormaliseerde REST-relatie-query `?brand_id=<id>`
- * (Johan-handoff). FacetWP herkende geen `brand`-facet — daardoor toonde
- * deze sectie eerder willekeurige materials (zie S7.1). De nieuwe query
- * is production-verified en levert betrouwbaar brand-specifieke materials.
+ * (Johan-handoff).
  *
- * Dit raakt ALLEEN MoreFromBrand. FacetWP blijft de filter-mechaniek voor
- * het hoofdoverzicht /materials.
+ * "View all →" linkt alleen naar `/brand/[slug]` wanneer `brandSlug` gezet
+ * is (brand is publish). Draft/niet-publieke brands mogen wél als naam +
+ * "More from"-grid tonen, maar zonder link (Claude 07-08-2026: geen
+ * `/material?brand=`-fallback — die filter bestaat niet).
  *
  * Faalbestendig:
  *  - brand_id null → component rendert niets
  *  - REST-fout → component rendert niets (geen kapotte page)
  *  - Resultaat 0 items → niets renderen
- *
- * "View all →" linkt naar het brand-overzicht. We gebruiken de brand-slug
- * wanneer beschikbaar (directe brand-page); anders fallback op de
- * materials-overview gefilterd op brand-id.
  */
 
 export interface MoreFromBrandProps {
   brandId: number | null
   brandName: string | null
-  /** Brand-slug voor de "View all"-link naar /brands/[slug]. Optioneel. */
+  /** Alleen gezet als de brand publish is — dan "View all" → /brand/[slug]. */
   brandSlug?: string | null
   currentMaterialId: number
 }
@@ -63,9 +59,7 @@ export async function MoreFromBrand({
 
   if (filtered.length === 0) return null
 
-  const viewAllHref = brandSlug
-    ? `/brand/${brandSlug}`
-    : `/material?brand=${encodeURIComponent(String(brandId))}`
+  const viewAllHref = brandSlug ? `/brand/${brandSlug}` : null
 
   return (
     <section
@@ -79,9 +73,11 @@ export async function MoreFromBrand({
         >
           More from {brandName}
         </h2>
-        <Link href={viewAllHref} className="mat-morefrombrand-viewall">
-          View all <span aria-hidden="true">→</span>
-        </Link>
+        {viewAllHref ? (
+          <Link href={viewAllHref} className="mat-morefrombrand-viewall">
+            View all <span aria-hidden="true">→</span>
+          </Link>
+        ) : null}
       </header>
 
       <div className="mat-morefrombrand-grid">
@@ -97,3 +93,4 @@ export async function MoreFromBrand({
     </section>
   )
 }
+

@@ -125,9 +125,16 @@ export interface MaterialMeta {
   brand_id?: number
   /**
    * Slug van het gekoppelde brand (Johan-handoff 27-05-2026). Voor directe
-   * links naar `/brand/[slug]` zonder extra resolve. Null als geen brand.
+   * links naar `/brand/[slug]` zonder extra resolve. Null als geen brand
+   * óf als de brand niet publish is (`brand_public: false`).
    */
   brand_slug?: string | null
+  /**
+   * Of de gekoppelde brand een publieke brandpagina heeft (post_status=publish).
+   * Claude 07-08-2026: draft brands mogen als naam op materials blijven,
+   * maar zonder slug/link.
+   */
+  brand_public?: boolean
   /**
    * Land van het gekoppelde brand als { code, label } (Johan-handoff).
    * Voor de country-regel onder de material-titel. Null als onbekend.

@@ -1,11 +1,12 @@
 # Livegang-checklist — MaterialDistrict Next.js
 
 **Doel:** bekende openstaande punten afvinken vóór (en kort na) productie-cutover.  
-**Laatst bijgewerkt:** 6 augustus 2026  
-**Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`, `note-cms-lockdown-theme-2026-08-06.md`, `note-books-subdomain-redirect-2026-08-06.md`
+**Laatst bijgewerkt:** 7 augustus 2026  
+**Bronnen:** `open-issues.md`, recente handoffs (checkout, books, VIES), `seo-migratieplan.md`, `note-go-live-facetwp-uitfaseren.md`, `note-cms-lockdown-theme-2026-08-06.md`, `note-books-subdomain-redirect-2026-08-06.md`, `note-cms-disk-full-binlog-2026-08-06.md`
 
 > **Gebruik:** werk per sectie van boven naar beneden. Items met 🔴 zijn launch-risico’s; 🟡 zijn belangrijk maar niet per se dag-1 blockers; 🟢 kan na live.  
-> Gedetailleerde historie staat in [`open-issues.md`](./open-issues.md) — dit bestand is de **actieve** checklist.
+> Gedetailleerde historie staat in [`open-issues.md`](./open-issues.md) — dit bestand is de **actieve** checklist.  
+> **Cutover-status:** productie is live op Vercel + CMS DigitalOcean (aug 2026). Onderstaande secties die nog open stonden rond DNS/cutover/FacetWP/CMP/Sentry/lockdown zijn hieronder bijgewerkt.
 
 ---
 
@@ -28,9 +29,9 @@
 
 **Cross-cutting**
 
-- [ ] Preview/staging niet indexeerbaar (`robots.ts` + `X-Robots-Tag` op `*.vercel.app`)
-- [ ] DNS/cutover-plan vastgelegd — zie **§0.1**
-- [ ] **Photo library / uploads → `media.materialdistrict.com`:** 301-redirects voor alle uploadmappen (zie §2.10)
+- [x] Preview/staging niet indexeerbaar (`robots.ts` + `X-Robots-Tag` op `*.vercel.app`)
+- [x] DNS/cutover-plan vastgelegd — zie **§0.1** (cutover uitgevoerd)
+- [x] **Photo library / uploads → `media.materialdistrict.com`:** 301-redirects voor alle uploadmappen (zie §2.10)
 
 ---
 
@@ -53,34 +54,33 @@
 
 ### Pre-cutover DNS
 
-- [ ] Huidige TTL van `materialdistrict.com` (en www/CNAME’s) vastleggen bij de DNS-provider
-- [ ] TTL **zo laag mogelijk** zetten vóór cutover (bijv. 300s / 60s indien toegestaan) — ruim vóór switch, zodat de lage TTL al overal is gecached
-- [ ] Vercel-domein `materialdistrict.com` geconfigureerd + SSL klaar (vóór DNS-switch)
-- [ ] Notitie: welke records wijzigen (A/AAAA/CNAME apex + `www`) en wat de rollback-waarden naar WP Engine zijn
+- [x] Huidige TTL van `materialdistrict.com` (en www/CNAME’s) vastleggen bij de DNS-provider
+- [x] TTL **zo laag mogelijk** zetten vóór cutover (bijv. 300s / 60s indien toegestaan) — ruim vóór switch, zodat de lage TTL al overal is gecached
+- [x] Vercel-domein `materialdistrict.com` geconfigureerd + SSL klaar (vóór DNS-switch)
+- [x] Notitie: welke records wijzigen (A/AAAA/CNAME apex + `www`) en wat de rollback-waarden naar WP Engine zijn
 
 ### Cutover-moment
 
-- [ ] DNS `materialdistrict.com` → Vercel (niet WP Engine)
-- [ ] CMS blijft DigitalOcean; frontend production praat tegen `cms.materialdistrict.com`
-- [ ] WP Engine-site **aan laten staan** (standby), maar zonder publieke DNS
-- [ ] Rooktest productie-URL’s + auth/checkout tegen live CMS
-- [ ] Bij nood: DNS terug naar WP Engine (lage TTL = snellere rollback)
+- [x] DNS `materialdistrict.com` → Vercel (niet WP Engine)
+- [x] CMS blijft DigitalOcean; frontend production praat tegen `cms.materialdistrict.com`
+- [x] WP Engine-site **aan laten staan** (standby), maar zonder publieke DNS
+- [x] Rooktest productie-URL’s + auth/checkout tegen live CMS
+- [x] Bij nood: DNS terug naar WP Engine (lage TTL = snellere rollback) — pad blijft beschikbaar
 
 ### Post-cutover (pas als stabiel)
 
-- [ ] TTL weer naar een normaal/productiewaarde
+- [ ] TTL weer naar een normaal/productiewaarde (indien nog op lage cutover-TTL)
 - [ ] (Later) plan CMS DO → WP Engine — buiten launch-scope
 
-### 🔴 Morgen (6-08-2026) — CMS lockdown-theme
+### ✅ CMS lockdown-theme (6-08-2026)
 
-**Notitie:** [`note-cms-lockdown-theme-2026-08-06.md`](./note-cms-lockdown-theme-2026-08-06.md)
+**Notitie:** [`note-cms-lockdown-theme-2026-08-06.md`](./note-cms-lockdown-theme-2026-08-06.md)  
+**Status:** live — actief thema `materialdistrict-cms-theme` op `cms.materialdistrict.com`.
 
-Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de site is headless.
-
-- [ ] Nieuw (minimal) thema of equivalent op CMS activeren
-- [ ] Alleen login + wp-admin voor editors; anonieme hits redirecten naar `https://materialdistrict.com`
-- [ ] wp-admin “View”- / permalink-links → Vercel-frontend (niet `cms.…`)
-- [ ] REST `/wp-json/*` blijft werken voor de Next-frontend
+- [x] Nieuw (minimal) thema of equivalent op CMS activeren
+- [x] Alleen login + wp-admin voor editors; anonieme hits redirecten naar `https://materialdistrict.com`
+- [x] wp-admin “View”- / permalink-links → Vercel-frontend (niet `cms.…`) — plugin `md-cms-frontend-links.php`
+- [x] REST `/wp-json/*` blijft werken voor de Next-frontend
 
 ### On-demand Vercel-cache legen bij WP-save
 
@@ -114,15 +114,16 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 
 ### 1.1 FacetWP-afhankelijkheid op `/materials`
 
-**Status:** nog actief — `listMaterialsWithFacets()` + `POST /facetwp/v1/fetch`  
+**Status:** ✅ afgerond — FacetWP-plugin verwijderd van CMS; filters via eigen REST  
 **Eigenaar:** Johan (plugin endpoints) + frontend (orchestrator)  
-**Referentie:** [`note-go-live-facetwp-uitfaseren.md`](./note-go-live-facetwp-uitfaseren.md)
+**Referentie:** [`note-go-live-facetwp-uitfaseren.md`](./note-go-live-facetwp-uitfaseren.md)  
+**Live pad:** `POST /md/v2/materials/facet-query` (frontend-module heet historisch nog `facetwp.ts`)
 
-- [ ] Property-filters + facet-counts via eigen REST (patroon: `rest-brand-facets.php`)
-- [ ] Channel op materials via `?theme=<term_id>` i.p.v. FacetWP-facet
-- [ ] `/materials` werkt volledig zonder `facetwp/v1/fetch`
-- [ ] Performance-baseline gemeten (TTFB p95) — zie [`performance-load-time-analysis.md`](./performance-load-time-analysis.md)
-- [ ] Expliciete uitzondering vastgelegd **als** go-live eerder moet (wie/wanneer/tech debt)
+- [x] Property-filters + facet-counts via eigen REST (`rest-material-facets.php` / facet-query)
+- [x] Channel op materials via theme/taxonomie i.p.v. FacetWP-facet
+- [x] `/materials` werkt volledig zonder `facetwp/v1/fetch` / zonder FacetWP-plugin
+- [ ] Performance-baseline gemeten (TTFB p95) — zie [`performance-load-time-analysis.md`](./performance-load-time-analysis.md) (optioneel na live)
+- [x] FacetWP-plugin verwijderd van CMS (bevestigd 7-08-2026)
 
 ### 1.2 Offline materialen zichtbaar op publieke pagina’s
 
@@ -136,7 +137,7 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 
 ### 1.3 SEO — sitemap & metadata
 
-**Status:** `robots.ts` ✅; pre-DNS items ✅; post-DNS items open  
+**Status:** `robots.ts` ✅; DNS live; Search Console / Bing nog bevestigen  
 **Referentie:** [`seo-migratieplan.md`](./seo-migratieplan.md)
 
 - [x] Sitemap-index + per-type child-sitemaps (materials, articles, brands, events, talks, books)
@@ -144,7 +145,7 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 - [x] OG-image op material-detail `generateMetadata`
 - [x] Twitter cards op root layout + detailpagina’s
 - [x] Soft 404: `notFound()` bij lege taxonomy-pagina (pagina 1) — material-category + tag
-- [ ] Na DNS: sitemap in Google Search Console + Bing Webmaster Tools
+- [ ] Sitemap in Google Search Console + Bing Webmaster Tools (post-cutover)
 - [ ] `site:materialdistrict-frontend.vercel.app` → 0 resultaten in Google
 
 ### 1.4 Plugin security (open plan)
@@ -192,33 +193,33 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 | Item | Status | Actie |
 |------|--------|-------|
 | `POST /md/v2/auth/register` | ✅ in plugin | rooktest productie |
-| Register rate-limiting beslissing (W12) | ❓ besluit | 5/uur per IP ja/nee + documenteren |
-| Terms + Privacy links op `/register` (`href="#"`) | ❌ open | `/terms` + `/privacy` of link naar canonieke PDF (footer gebruikt al externe terms-PDF) |
-| Cookie settings in footer | verborgen | consent-tool kiezen (Cookiebot/Usercentrics/…) |
+| Register rate-limiting (W12) | ✅ live | gedeelde `md_auth_rate_limit_*` (default 10/15 min, ook op register) |
+| Terms + Privacy links op `/register` (`href="#"`) | ❌ open | `/terms` + `/privacy` of canonieke PDF / `/privacy-statement` |
+| Cookie settings in footer | verborgen | optioneel: knop die GAM Privacy & messaging heropent |
 
 ### 2.3c Cookie-melding / blocker + marketing-analytics (4-08-2026 / 5-08-2026)
 
-**Status:** soft-launch balk ✅ (`consent-bar-v1`) — **geen** TCF/CMP; GA/Plausible nog open.  
-**Context:** minimale Accept/Refuse-balk gated `md_aid`, events en gpt.js. Footer “Cookie settings” blijft verborgen tot een echte CMP (`open-issues.md` S11.6). Jeroen stemt CMP commercieel af vóór september.
+**Status:** ✅ CMP via **Google Ad Manager Privacy & messaging** (`__tcfapi`); soft-launch `ConsentBar` als fallback als CMP niet injecteert. Plausible altijd aan.  
+**Context:** `ConsentBootstrap` koppelt TCF → `md_consent` (events / `md_aid` / Consent Mode). Soft-launch balk blijft EU-fallback (`ConsentBar`).
 
-- [x] Soft-launch consent-bar (Accept/Refuse; undecided = deny)
+- [x] Soft-launch consent-bar (Accept/Refuse; undecided = deny) — fallback
 - [x] Events + `md_aid` + gpt.js alleen na `md_consent=granted` (client + `/api/events`)
-- [ ] Echte CMP (Cookiebot / Usercentrics / Google-certified) vóór commerciële start
-- [ ] Footer “Cookie settings” weer tonen → opent de consent-manager
-- [ ] Cookieverklaring / inventarisatie (balk linkt nu naar `/privacy-statement/`)
+- [x] Echte CMP: Google Ad Manager Privacy & messaging (Google-certified / TCF)
+- [ ] Footer “Cookie settings” weer tonen → heropent GAM consent-UI (nu nog uitgecommentarieerd in `Footer.tsx`)
+- [ ] Cookieverklaring / inventarisatie (balk/footer linken naar `/privacy-statement/`)
 - [ ] **Google Analytics** (of GTM) toevoegen achter consent — bewust uit (eigen eventlaag)
 - [x] **Plausible Analytics** — altijd aan, cookieless / AVG (`PlausibleAnalytics`)
-- [ ] Rooktest: Network/devtools — gpt/events pas na Accept; Plausible altijd; Refuse verwijdert `md_aid`
+- [ ] Rooktest: Network/devtools — gpt/events pas na Accept/CMP-grant; Plausible altijd; Refuse verwijdert `md_aid`
 
 ### 2.3d Error monitoring (Sentry)
 
-**Status:** ❌ nog nodig rond live — console- en scriptfouten moeten zichtbaar zijn zodat we ze snel kunnen oppikken en fixen.  
-**Account:** aanmaken op [Sentry.io](https://sentry.io) met **webmaster@material-district.com**.
+**Status:** ✅ live op productie (org `materialdistrict`, project `javascript-nextjs`)  
+**Eerste wins (7-08-2026):** JSON-LD `@graph`-fix (NEXTJS-3); dashboard auth-redirect i.p.v. `DashboardApiError` (NEXTJS-5).
 
-- [ ] Sentry.io-account aanmaken met `webmaster@material-district.com`
-- [ ] Project voor de Next.js-frontend (Vercel) aanmaken; DSN in Vercel env zetten
-- [ ] Sentry SDK inbouwen (client + server) zodat console-/scriptfouten en unhandled exceptions binnenkomen
-- [ ] Rooktest: opzettelijke testfout → event zichtbaar in Sentry; alerts/e-mail naar webmaster bevestigen
+- [x] Sentry.io-account / org voor MaterialDistrict
+- [x] Project voor de Next.js-frontend (Vercel); DSN in Vercel env
+- [x] Sentry SDK inbouwen (client + server) — `@sentry/nextjs`
+- [x] Rooktest / echte events zichtbaar; alerts naar team bevestigen (ongoing)
 
 ### 2.3b Users: productie → CMS (cutover)
 
@@ -255,6 +256,7 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 - [ ] Insider-only material gate (hele pagina gated) — wacht op WP `insider_only` op materials — H11
 - [ ] Homepage resterend: duurzaamheids-/channel-pills op materialtegels (theme-ID → label)
 - [ ] Responsive-pass homepage + site-wide font-schaal (H9)
+- [x] **Draft brands → geen 404-links** (Claude 07-08-2026) — API `brand_public` / `brand_slug:null`; frontend geen link zonder slug; admin-notice; soft-404 via verwijderen detail-`loading.tsx`. Triage: [`note-draft-brands-decision-2026-08-07.md`](./note-draft-brands-decision-2026-08-07.md) + Excel in `docs/data/`. Redactie: tabblad Controleren (23 brands).
 
 ### 2.6 Toegankelijkheid (a11y)
 
@@ -268,9 +270,9 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 
 ### 2.8 Favorites-plugin → dashboard bookmarks (security)
 
-**Status:** open — migratie vereist vóór verwijderen  
+**Status:** plugin weg van CMS; usermeta-migratie kan nog open  
 **Eigenaar:** Johan  
-**Motivatie:** Simple Favorites-plugin bevat een security issue; na livegang zo snel mogelijk deactiveren en verwijderen. De Next.js-site gebruikt **niet** deze plugin — bookmarks lopen via `_md_dashboard_bookmarks` (`GET/POST/DELETE /md/v2/dashboard/bookmarks`). Oude favorieten staan nog in usermeta `simplefavorites` (serialized post-ID’s) en worden niet automatisch overgezet.
+**Motivatie:** Simple Favorites-plugin bevatte een security issue. Op CMS (DigitalOcean) staat de plugin **niet** meer. Bookmarks lopen via `_md_dashboard_bookmarks` (`GET/POST/DELETE /md/v2/dashboard/bookmarks`). Oude favorieten kunnen nog in usermeta `simplefavorites` staan en worden niet automatisch overgezet.
 
 **Pre-check (productie):**
 
@@ -282,10 +284,11 @@ wp user meta list --keys=simplefavorites --format=count
 - [ ] Aantal users met `simplefavorites`-data vastleggen (besluit: migreren ja/nee bij laag volume)
 - [ ] Eenmalig migratiescript: `simplefavorites` → `_md_dashboard_bookmarks` (post type → bookmark `type`: `material`, `article`, `brand`, `talk`, `event`, `product` → `books`; alleen gepubliceerde posts; idempotent)
 - [ ] Migratie op staging + spot-check (login als gemigreerde user → `/dashboard/bookmarks`)
-- [ ] Migratie op productie
+- [ ] Migratie op productie (CMS)
 - [ ] Rooktest Next.js: Save-knop + bookmarks-panel na migratie
-- [ ] Favorites-plugin deactiveren en verwijderen van WP Engine
-- [ ] `wp cache flush --url=materialdistrict.com`
+- [x] Favorites-plugin deactiveren/verwijderen op CMS (bevestigd 7-08-2026 — niet geïnstalleerd)
+- [ ] Favorites-plugin opruimen op WP Engine-standby indien daar nog actief
+- [ ] `wp cache flush` na migratie indien van toepassing
 
 **Niet migreren:** anonieme favorieten (cookie/sessie) — vervallen bij cutover; nieuwe site vereist login voor bookmarks.
 
@@ -304,13 +307,13 @@ wp user meta list --keys=simplefavorites --format=count
 
 ### 2.10 Photo library — 301 redirects naar media-host
 
-**Status:** ✅ redirects in `next.config.ts` (5-08-2026) — actief zodra apex DNS → Vercel  
+**Status:** ✅ redirects in `next.config.ts` (5-08-2026) — actief op productie (apex → Vercel)  
 **Eigenaar:** Johan (DNS / edge)  
 **Doel:** alle photo-library / WordPress-uploadpaden blijven werken via **301** naar `media.materialdistrict.com`, zodat hotlinks en geïndexeerde afbeeldingen niet 404’en.
 
 - [x] 301: `/wp-content/uploads/:path*` → `https://media.materialdistrict.com/wp-content/uploads/:path*`
 - [x] Frontend herschrijft legacy hosts al via `normalizeMediaUrl()`
-- [ ] Steekproef na DNS-cutover: 5–10 oude image-URL’s → **301** + bytes op media-host
+- [ ] Steekproef: 5–10 oude image-URL’s → **301** + bytes op media-host (post-cutover smoke)
 - [ ] Eventuele legacy photo-library-paden buiten `/wp-content/uploads/` (indien nog in gebruik)
 
 ---
@@ -336,10 +339,11 @@ wp user meta list --keys=simplefavorites --format=count
 
 ### 3.3 FacetWP & legacy theme
 
-- [ ] **CMS lockdown-theme** (`cms.materialdistrict.com`) — zie §0.1 “Morgen” + [`note-cms-lockdown-theme-2026-08-06.md`](./note-cms-lockdown-theme-2026-08-06.md)
-- [ ] Legacy WP-theme uit traffic / redirects na Next-cutover
-- [ ] FacetWP plugin deactiveren op WP Engine (pas als theme + `/materials` niet meer afhankelijk zijn)
-- [ ] Favorites-plugin verwijderen — zie **§2.8** (eerst bookmark-migratie)
+- [x] **CMS lockdown-theme** (`cms.materialdistrict.com`) — live; zie §0.1 + [`note-cms-lockdown-theme-2026-08-06.md`](./note-cms-lockdown-theme-2026-08-06.md)
+- [x] Legacy WP-theme uit publieke traffic (DNS → Vercel; CMS redirect naar frontend)
+- [x] FacetWP-plugin verwijderd van CMS (7-08-2026 bevestigd; geen plugin-dir meer)
+- [ ] FacetWP / Favorites ook van WP Engine-standby opruimen indien daar nog geïnstalleerd
+- [ ] Favorites-plugin + bookmark-migratie — zie **§2.8** (CMS: geen favorites-plugin meer; usermeta-migratie kan nog open)
 
 ### 3.4 Soft-launch UI-polish (31-07-2026)
 
@@ -356,6 +360,12 @@ Bron: Johan, soft-launch feedback. Details: [`open-issues.md`](./open-issues.md)
 
 | Datum | Onderwerp | Commit/context |
 |-------|-----------|----------------|
+| 07-08 | Sentry live + JsonLd `@graph` + dashboard auth-redirect | frontend `247c0cc` / `cd6498b` |
+| 06–07-08 | CMS lockdown-theme + frontend-links | theme `materialdistrict-cms-theme`; plugin `md-cms-frontend-links.php` |
+| 06-08 | CMS disk-full: SearchWP Metrics headless-fix + binlog | [`note-cms-disk-full-binlog-2026-08-06.md`](./note-cms-disk-full-binlog-2026-08-06.md) |
+| 06-08 | `books.materialdistrict.com` → `/book/` 301/308 | DNS + `next.config.ts` |
+| 07-08 | FacetWP-plugin weg; materials via `/md/v2/materials/facet-query` | CMS + `facetwp.ts` (eigen REST) |
+| 07-08 | CMP via Google Ad Manager Privacy & messaging | `ConsentBootstrap` / `__tcfapi` |
 | 16-06 | VIES op persoonlijk profiel (UI + server) | frontend `0d7f258` / `4873add`, plugin `3996646` |
 | 16-06 | VIES op brand profiel (`_brand_vat_number`) | frontend `a4b9196`, plugin `6f84c83` |
 | 16-06 | A11y fixes brand profile (logo label, channel chips) | frontend `2213c38` |
@@ -378,9 +388,9 @@ Bron: Johan, soft-launch feedback. Details: [`open-issues.md`](./open-issues.md)
 
 **Cookie + analytics:**
 
-- [ ] Incognito: cookiemelding/-blocker zichtbaar
-- [ ] Weigeren: geen GA / geen Plausible (tenzij Plausible cookieloos is goedgekeurd)
-- [ ] Accepteren: beide scripts laden; Realtime/Plausible ziet een pageview
+- [ ] Incognito (EU): GAM Privacy & messaging of soft-launch balk zichtbaar
+- [ ] Weigeren / deny: geen gpt/events/`md_aid`; Plausible blijft (cookieless)
+- [ ] Accepteren / TCF grant: gpt + events; Plausible pageview
 
 **VIES**
 

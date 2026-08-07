@@ -1,14 +1,16 @@
 # Notitie — FacetWP uitfaseren vóór go-live Next.js frontend
 
 **Datum:** juni 2026  
-**Status:** teambesluit / richting  
+**Status:** ✅ afgerond — FacetWP is uitgefaseerd voor de Next.js-site  
+**Datum update:** 7 augustus 2026  
 **Eigenaar:** Johan (plugin + hosting), afstemming met Next.js-developer en Jeroen
 
 ---
 
 ## Kern
 
-**Voordat we de nieuwe Next.js frontend productie-wide live zetten** (cutover van het huidige WordPress-thema naar Vercel), willen we **FacetWP uitgefaseerd** hebben op het materials-filterpad.
+~~**Voordat we de nieuwe Next.js frontend productie-wide live zetten** … FacetWP uitgefaseerd …~~  
+**Update:** cutover is gedaan; FacetWP-plugin is van het CMS verwijderd. Materials-filters lopen via `POST /md/v2/materials/facet-query` (native WP). Historische context hieronder blijft als naslag.
 
 **Motief:**
 

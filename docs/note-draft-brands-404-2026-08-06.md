@@ -3,7 +3,7 @@
 **Datum:** 6 augustus 2026  
 **Van:** Johan  
 **Aan:** Claude  
-**Status:** wacht op beslissing  
+**Status:** besloten + implementatie 7-08-2026 — zie [`note-draft-brands-decision-2026-08-07.md`](./note-draft-brands-decision-2026-08-07.md)  
 **Productie-voorbeeld:** [Rivets](https://materialdistrict.com/material/rivets/) → [architectural-textiles-ltd](https://materialdistrict.com/brand/architectural-textiles-ltd/) (Brand not found)
 
 ---
