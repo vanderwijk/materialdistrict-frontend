@@ -37,6 +37,7 @@ import type {
   FeaturedSlotState,
   BrandCandidate,
 } from '@/types/dashboard'
+import { redirect } from 'next/navigation'
 import { getAuthCookie } from '@/lib/auth/cookies'
 import { getInitialUser } from '@/lib/auth/get-current-user'
 import { findBrandMembership } from '@/lib/auth/user-helpers'
@@ -82,10 +83,20 @@ async function resolveBrandId(slug: string): Promise<number | null> {
   return brand ? brand.id : null
 }
 
-/** Read the JWT from the cookie or throw a clean 401 (caller is gated). */
+/**
+ * Read the JWT from the cookie, or send the visitor to sign-in.
+ *
+ * Important: dashboard layout + page render in parallel in the App Router.
+ * Throwing `DashboardApiError` here races the layout's auth redirect and
+ * surfaces as an unhandled request error in Sentry (e.g. anonymous GET
+ * `/dashboard/bookmarks`). `redirect()` is the intended control flow and is
+ * not reported as an application error.
+ */
 async function requireToken(): Promise<string> {
   const token = await getAuthCookie()
-  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
+  if (!token) {
+    redirect('/sign-in?next=/dashboard')
+  }
   return token
 }
 
@@ -95,11 +106,9 @@ async function requireToken(): Promise<string> {
 
 /** GET /md/v2/dashboard/profile (batch 1 — live) */
 export async function getProfile(): Promise<UserProfile> {
-  const token = await getAuthCookie()
-  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
   const raw = await wpDashboardFetch<Parameters<typeof mapUserProfile>[0]>(
     '/md/v2/dashboard/profile',
-    { method: 'GET', bearer: token },
+    { method: 'GET', bearer: await requireToken() },
   )
   return mapUserProfile(raw)
 }
@@ -223,12 +232,10 @@ export async function getUserInvoices(): Promise<Invoice[]> {
 export async function getBrandProfile(slug: string): Promise<BrandProfile | null> {
   const brandId = await resolveBrandId(slug)
   if (brandId === null) return null
-  const token = await getAuthCookie()
-  if (!token) throw new DashboardApiError('md_auth_unauthenticated', 'Not signed in', 401)
   try {
     const raw = await wpDashboardFetch<Parameters<typeof mapBrandProfile>[0]>(
       `/md/v2/dashboard/brands/${brandId}/profile`,
-      { method: 'GET', bearer: token },
+      { method: 'GET', bearer: await requireToken() },
     )
     return mapBrandProfile(raw)
   } catch (err) {

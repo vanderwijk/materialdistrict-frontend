@@ -2,6 +2,7 @@
  * Server-side checkout billing prefill loader.
  */
 
+import { isRedirectError } from 'next/dist/client/components/redirect-error'
 import { getInitialUser } from '@/lib/auth/get-current-user'
 import { resolveCountryCode } from '@/lib/config/countries'
 import { getProfile } from '@/lib/dashboard/data'
@@ -47,7 +48,9 @@ export async function getCheckoutPrefill(): Promise<CheckoutPrefill | null> {
   try {
     const profile = await getProfile()
     return profileToCheckoutPrefill(profile)
-  } catch {
+  } catch (err) {
+    // getProfile may redirect when the auth cookie is missing; never swallow that.
+    if (isRedirectError(err)) throw err
     return userToCheckoutPrefill(user)
   }
 }
