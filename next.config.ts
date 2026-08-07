@@ -54,7 +54,8 @@ const connectSrc = [
   'https://csi.gstatic.com',
   // Plausible Analytics
   'https://plausible.io',
-  // Sentry (tunnel `/monitoring` is same-origin; ingest as fallback)
+  // Sentry ingest (fallback if tunnel unavailable; primary path is
+  // same-origin POST /api/sentry-tunnel/)
   'https://*.ingest.sentry.io',
   'https://*.ingest.de.sentry.io',
 ]
@@ -497,9 +498,9 @@ export default withSentryConfig(nextConfig, {
   // Wider client file set → better production stack traces
   widenClientFileUpload: true,
 
-  // Do NOT use tunnelRoute while trailingSlash:true — Next 308s /monitoring →
-  // /monitoring/, which 404s via [pageSlug] and drops all browser events.
-  // Client posts go to *.ingest.de.sentry.io (allowed in CSP connect-src).
+  // Do NOT use tunnelRoute while trailingSlash:true — Next 308s the path and
+  // the rewrite 404s. Client tunnel is set in instrumentation-client.ts to
+  // `/api/sentry-tunnel/` (custom App Router proxy).
 
   silent: !process.env.CI,
 })
