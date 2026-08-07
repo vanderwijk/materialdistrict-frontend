@@ -497,8 +497,9 @@ export default withSentryConfig(nextConfig, {
   // Wider client file set → better production stack traces
   widenClientFileUpload: true,
 
-  // Proxy browser envelopes through Next to bypass ad-blockers
-  tunnelRoute: '/monitoring',
+  // Do NOT use tunnelRoute while trailingSlash:true — Next 308s /monitoring →
+  // /monitoring/, which 404s via [pageSlug] and drops all browser events.
+  // Client posts go to *.ingest.de.sentry.io (allowed in CSP connect-src).
 
   silent: !process.env.CI,
 })
