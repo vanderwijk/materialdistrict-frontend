@@ -29,8 +29,9 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     /*
-     * Skip static assets and Next internals. Keep ads.txt / API / pages.
+     * Skip static assets, Next internals, and the Sentry tunnel.
+     * Keep ads.txt / API / pages.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+    '/((?!monitoring|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
   ],
 }

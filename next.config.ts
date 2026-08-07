@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import { withSentryConfig } from '@sentry/nextjs'
 
 /**
  * MaterialDistrict — Next.js configuratie
@@ -53,6 +54,9 @@ const connectSrc = [
   'https://csi.gstatic.com',
   // Plausible Analytics
   'https://plausible.io',
+  // Sentry (tunnel `/monitoring` is same-origin; ingest as fallback)
+  'https://*.ingest.sentry.io',
+  'https://*.ingest.de.sentry.io',
 ]
 
 if (isDevelopment) {
@@ -68,6 +72,8 @@ const ContentSecurityPolicy = [
   `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://media.materialdistrict.com https://secure.gravatar.com https://securepubads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://*.gstatic.com https://*.googleusercontent.com`,
   "font-src 'self' data: https://fonts.gstatic.com",
   `connect-src ${connectSrc.join(' ')}`,
+  // Session Replay uses a web worker from a blob URL
+  "worker-src 'self' blob:",
   "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com https://securepubads.g.doubleclick.net https://tpc.googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com https://www.google.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google",
   "frame-ancestors 'none'",
   "base-uri 'self'",
@@ -482,4 +488,17 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withSentryConfig(nextConfig, {
+  // Sentry SaaS project: materialdistrict / javascript-nextjs
+  org: process.env.SENTRY_ORG ?? 'materialdistrict',
+  project: process.env.SENTRY_PROJECT ?? 'javascript-nextjs',
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+
+  // Wider client file set → better production stack traces
+  widenClientFileUpload: true,
+
+  // Proxy browser envelopes through Next to bypass ad-blockers
+  tunnelRoute: '/monitoring',
+
+  silent: !process.env.CI,
+})
