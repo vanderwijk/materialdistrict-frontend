@@ -212,13 +212,13 @@ Op `cms.materialdistrict.com` mag geen publieke content meer zichtbaar zijn; de 
 
 ### 2.3d Error monitoring (Sentry)
 
-**Status:** ❌ nog nodig rond live — console- en scriptfouten moeten zichtbaar zijn zodat we ze snel kunnen oppikken en fixen.  
-**Account:** aanmaken op [Sentry.io](https://sentry.io) met **webmaster@material-district.com**.
+**Status:** SDK live (`@sentry/nextjs`, project `materialdistrict` / `javascript-nextjs`, EU ingest). Client events gaan via same-origin tunnel `POST /api/sentry-tunnel/` (ad-blocker bypass; `trailingSlash`-safe).  
+**Let op:** fouten getypt in de browserconsole (DevTools) zijn gesandboxed en bereiken Sentry **niet** — test met `/sentry-debug/?token=…` of een knop die `throw`/`captureException` doet.
 
-- [ ] Sentry.io-account aanmaken met `webmaster@material-district.com`
-- [ ] Project voor de Next.js-frontend (Vercel) aanmaken; DSN in Vercel env zetten
-- [ ] Sentry SDK inbouwen (client + server) zodat console-/scriptfouten en unhandled exceptions binnenkomen
-- [ ] Rooktest: opzettelijke testfout → event zichtbaar in Sentry; alerts/e-mail naar webmaster bevestigen
+- [x] Sentry.io-account / project voor de Next.js-frontend; DSN in Vercel env
+- [x] Sentry SDK inbouwen (client + server + edge + `global-error`)
+- [ ] Rooktest: knop op `/sentry-debug/?token=<SENTRY_TEST_TOKEN>` → event in Issues; daarna debug-routes verwijderen
+- [ ] Alerts/e-mail naar webmaster bevestigen
 
 ### 2.3b Users: productie → CMS (cutover)
 

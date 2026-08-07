@@ -32,6 +32,6 @@ export const config = {
      * Skip static assets, Next internals, and the Sentry tunnel.
      * Keep ads.txt / API / pages.
      */
-    '/((?!monitoring|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+    '/((?!api/sentry-tunnel|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
   ],
 }
