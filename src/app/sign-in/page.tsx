@@ -39,10 +39,11 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
   // hydration logic: read the cookie, ask WP if it's still valid.
   const token = await getAuthCookie()
   if (token) {
+    let sessionValid = false
     try {
       await getCurrentUser(token)
       // Cookie is valid → user is already signed in. Skip the form.
-      redirect(safeNext)
+      sessionValid = true
     } catch (err) {
       // Cookie present but rejected — let the form render. The layout's
       // hydration will already have cleared the bad cookie on this
@@ -53,6 +54,10 @@ export default async function SignInPage({ searchParams }: SignInPageProps) {
         console.error('[sign-in] session check failed', err)
       }
     }
+
+    // Outside the try on purpose — `redirect()` throws, and the catch above
+    // would swallow it (showing the form again + logging a false failure).
+    if (sessionValid) redirect(safeNext)
   }
 
   return (

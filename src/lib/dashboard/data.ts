@@ -41,7 +41,9 @@ import { redirect } from 'next/navigation'
 import { getAuthCookie } from '@/lib/auth/cookies'
 import { getInitialUser } from '@/lib/auth/get-current-user'
 import { findBrandMembership } from '@/lib/auth/user-helpers'
+import { signInHrefForCurrentPath } from '@/lib/auth/request-path'
 import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
+import { isNextControlFlowError } from '@/lib/utils/next-errors'
 import {
   mapUserProfile,
   mapProfileFieldOptions,
@@ -91,11 +93,14 @@ async function resolveBrandId(slug: string): Promise<number | null> {
  * surfaces as an unhandled request error in Sentry (e.g. anonymous GET
  * `/dashboard/bookmarks`). `redirect()` is the intended control flow and is
  * not reported as an application error.
+ *
+ * Note for callers: `redirect()` throws. Any `catch` around a call into this
+ * module must rethrow control-flow errors first — see `isNextControlFlowError`.
  */
 async function requireToken(): Promise<string> {
   const token = await getAuthCookie()
   if (!token) {
-    redirect('/sign-in?next=/dashboard')
+    redirect(await signInHrefForCurrentPath('/dashboard'))
   }
   return token
 }
@@ -341,7 +346,11 @@ export async function getMaterialPropertyOptions(): Promise<MaterialPropertyOpti
   try {
     const baseline = await fetchMaterialFacetsBaseline()
     return buildMaterialPropertyOptions(baseline)
-  } catch {
+  } catch (err) {
+    // The baseline is public today, so this catch only sees network failures.
+    // Guard anyway: if it ever moves behind auth, a bare catch would swallow
+    // the sign-in redirect and silently serve static options instead.
+    if (isNextControlFlowError(err)) throw err
     return buildMaterialPropertyOptions(null)
   }
 }
@@ -467,6 +476,9 @@ export async function getFeaturedSlots(slug: string): Promise<FeaturedSlotsData>
       slots: Array.isArray(raw.slots) ? raw.slots.map(mapFeaturedSlot) : [],
     }
   } catch (err) {
+    // `requireToken()` redirects anonymous visitors; that navigation must not
+    // be rewritten into `md_dashboard_unavailable` by the catch-all below.
+    if (isNextControlFlowError(err)) throw err
     if (err instanceof DashboardApiError && (err.status === 403 || err.status === 404)) {
       return EMPTY_FEATURED_SLOTS
     }

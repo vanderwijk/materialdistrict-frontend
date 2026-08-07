@@ -22,6 +22,11 @@ const NAMED_ENTITIES: Record<string, string> = {
   '&quot;': '"',
   '&apos;': "'",
   '&nbsp;': ' ',
+  // WP's wptexturize zet rechte quotes standaard om naar deze vier.
+  '&lsquo;': '‘',
+  '&rsquo;': '’',
+  '&ldquo;': '“',
+  '&rdquo;': '”',
   '&hellip;': '…',
   '&ndash;': '–',
   '&mdash;': '—',

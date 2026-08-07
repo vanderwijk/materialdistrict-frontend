@@ -165,6 +165,23 @@ export interface WebSiteSchema extends BaseThing {
   }
 }
 
+/**
+ * FAQPage — vraag/antwoord-paren die Google uitgeklapt in het resultaat
+ * kan tonen. Antwoorden zijn platte tekst: Google accepteert beperkte
+ * HTML, maar tags in JSON-LD leveren vooral parse-risico op.
+ */
+export interface FaqPageSchema extends BaseThing {
+  '@type': 'FAQPage'
+  mainEntity: Array<{
+    '@type': 'Question'
+    name: string
+    acceptedAnswer: {
+      '@type': 'Answer'
+      text: string
+    }
+  }>
+}
+
 export type StructuredData =
   | OrganizationSchema
   | ProductSchema
@@ -174,5 +191,6 @@ export type StructuredData =
   | BookSchema
   | BreadcrumbListSchema
   | CollectionPageSchema
+  | FaqPageSchema
   | WebSiteSchema
   | PersonSchema

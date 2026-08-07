@@ -28,14 +28,19 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
   const token = await getAuthCookie()
   if (token) {
+    let sessionValid = false
     try {
       await getCurrentUser(token)
-      redirect(safeNext)
+      sessionValid = true
     } catch (err) {
       if (!(err instanceof WordPressAuthError)) {
         console.error('[register] session check failed', err)
       }
     }
+
+    // Outside the try on purpose — `redirect()` throws, and the catch above
+    // would swallow it. See the same note on /sign-in.
+    if (sessionValid) redirect(safeNext)
   }
 
   return (

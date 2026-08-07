@@ -15,8 +15,9 @@ export function isSafeInternalPath(path: string): boolean {
 }
 
 function isAuthPage(pathname: string): boolean {
-  if (AUTH_PATHS.has(pathname)) return true
-  if (pathname.startsWith('/reset-password')) return true
+  const pathOnly = pathname.split(/[?#]/)[0] || pathname
+  if (AUTH_PATHS.has(pathOnly)) return true
+  if (pathOnly.startsWith('/reset-password')) return true
   return false
 }
 

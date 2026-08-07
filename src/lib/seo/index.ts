@@ -13,6 +13,7 @@ export {
   buildBook,
   buildBreadcrumbList,
   buildCollectionPage,
+  buildFaqPage,
 } from './structured-data'
 export type {
   StructuredData,
@@ -25,5 +26,6 @@ export type {
   BookSchema,
   BreadcrumbListSchema,
   CollectionPageSchema,
+  FaqPageSchema,
   PersonSchema,
 } from './types'

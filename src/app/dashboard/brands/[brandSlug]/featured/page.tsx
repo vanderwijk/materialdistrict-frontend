@@ -1,6 +1,7 @@
 import { requireManagedBrand } from '@/lib/dashboard/brand-access'
 import { getFeaturedSlots, getBrandMaterials } from '@/lib/dashboard/data'
 import { DashboardApiError } from '@/lib/api/dashboard'
+import { isNextControlFlowError } from '@/lib/utils/next-errors'
 import { canManufacturerAccess } from '@/lib/config/membership'
 import { DashboardPageHeader } from '@/components/dashboard'
 import { BrandTierGate } from '@/components/ui/BrandTierGate'
@@ -53,6 +54,10 @@ export default async function BrandFeaturedPage({
       getBrandMaterials(brandSlug),
     ])
   } catch (err) {
+    // A missing auth cookie makes the loaders redirect to sign-in. That is a
+    // navigation, not a load failure — swallowing it would show "Could not
+    // load featured weeks" to an anonymous visitor instead of the login page.
+    if (isNextControlFlowError(err)) throw err
     console.error('[featured] load failed', err)
     if (err instanceof DashboardApiError) {
       loadError = `${err.message} (${err.code}, HTTP ${err.status})`

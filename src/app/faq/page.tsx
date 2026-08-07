@@ -9,7 +9,11 @@
  *     toegankelijk en heeft geen client-component nodig.
  *  2. **`FAQPage`-structured data.** Levert uitgeklapte antwoorden in de
  *     Google-resultaten. Kan alleen als we de vraag/antwoord-paren kennen,
- *     dus moet de HTML uit elkaar getrokken worden.
+ *     dus moet de HTML uit elkaar getrokken worden. Het schema zelf komt
+ *     uit `buildFaqPage()` en gaat door `JsonLd` — deze pagina schreef
+ *     lang een eigen `<script type="application/ld+json">`, wat de
+ *     XSS-escaping van `JsonLd` omzeilde: `toPlainText()` zet `&lt;` juist
+ *     terug naar `<`, dus een `</script>` in een WP-antwoord brak de tag.
  *
  * De inhoud blijft in WordPress (page-slug `faq`) — de redactie schrijft,
  * deze route rendert. Verwachte structuur, zoals het importscript hem
@@ -24,7 +28,9 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getPage } from '@/lib/api'
+import { JsonLd, buildBreadcrumbList, buildFaqPage } from '@/lib/seo'
 import { buildPageMetadata } from '@/lib/seo/page-metadata'
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 
 const WP_SLUG = 'faq'
@@ -41,16 +47,16 @@ interface FaqSection {
   items: FaqItem[]
 }
 
-/** Verwijdert tags en zet entiteiten om — voor JSON-LD en `<summary>`. */
+/**
+ * Verwijdert tags en zet entiteiten om — voor JSON-LD en `<summary>`.
+ *
+ * Het decoderen gaat via de gedeelde `decodeHtmlEntities`: de eigen lijst
+ * die hier stond dekte `&amp;` en `&quot;` wel, maar niet de krulquotes
+ * (`&ldquo;`/`&rdquo;`) die WP's wptexturize er standaard in zet — die
+ * belandden letterlijk in de vraagtekst én in het FAQPage-schema.
+ */
 function toPlainText(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#0?39;|&apos;|&#x27;/g, "'")
+  return decodeHtmlEntities(html.replace(/<[^>]+>/g, ' '))
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -119,23 +125,20 @@ export default async function FaqPage() {
   const sections = parseFaq(page.contentHtml)
   const allItems = sections.flatMap((section) => section.items)
 
-  // FAQPage-schema. Alleen wegschrijven als er echt vraag/antwoord-paren
-  // zijn — een leeg schema is erger dan geen schema.
-  const jsonLd =
-    allItems.length > 0
-      ? {
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: allItems.map((item) => ({
-            '@type': 'Question',
-            name: item.question,
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: toPlainText(item.answerHtml),
-            },
-          })),
-        }
-      : null
+  // FAQPage + breadcrumb. De builders geven `null` terug als er te weinig
+  // data is; `JsonLd` filtert die eruit en rendert de rest als één `@graph`.
+  const faqSchema = buildFaqPage(
+    allItems.map((item) => ({
+      question: item.question,
+      answer: toPlainText(item.answerHtml),
+    })),
+    { name: page.title, url: '/faq' },
+  )
+
+  const breadcrumbSchema = buildBreadcrumbList([
+    { label: 'Home', url: '/' },
+    { label: page.title, url: '/faq' },
+  ])
 
   return (
     <main className="ov-wrap-single">
@@ -182,12 +185,7 @@ export default async function FaqPage() {
         </div>
       )}
 
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
+      <JsonLd data={[faqSchema, breadcrumbSchema]} />
     </main>
   )
 }

@@ -21,6 +21,7 @@ import type {
   BreadcrumbListSchema,
   CollectionPageSchema,
   EventSchema,
+  FaqPageSchema,
   OrganizationSchema,
   ProductSchema,
   VideoObjectSchema,
@@ -497,6 +498,67 @@ export function buildCollectionPage(input: CollectionPageInput): CollectionPageS
         ...(item.name ? { name: item.name } : {}),
       })),
     }
+  }
+
+  return schema
+}
+
+/**
+ * FAQPage — vraag/antwoord-paren van `/faq`.
+ *
+ * Google kan hiermee antwoorden uitgeklapt in het resultaat tonen. Twee
+ * regels die het schema geldig houden:
+ *
+ *  - **Alleen platte tekst in het antwoord.** De aanroeper strípt de HTML;
+ *    hier normaliseren we alleen nog witruimte. Tags in JSON-LD leveren
+ *    vooral parse-risico op en geen extra rich-result-winst.
+ *  - **Geen leeg schema.** Zonder paren geeft de builder `null` terug, zoals
+ *    alle builders hier — een lege `mainEntity` is erger dan geen schema.
+ *
+ * De vraag is de sleutel: dubbele vragen worden ontdubbeld (eerste wint),
+ * want Google negeert een FAQPage met herhaalde `Question`-namen.
+ */
+interface FaqEntryInput {
+  question: string
+  answer: string
+}
+
+export function buildFaqPage(
+  entries: FaqEntryInput[],
+  input?: { name?: string; url?: string },
+): FaqPageSchema | null {
+  const seen = new Set<string>()
+  const mainEntity: FaqPageSchema['mainEntity'] = []
+
+  for (const entry of entries) {
+    const question = entry.question.replace(/\s+/g, ' ').trim()
+    const answer = entry.answer.replace(/\s+/g, ' ').trim()
+    if (!question || !answer) continue
+
+    const key = question.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+
+    mainEntity.push({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: answer },
+    })
+  }
+
+  if (mainEntity.length === 0) return null
+
+  const schema: FaqPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity,
+  }
+
+  if (input?.name) schema.name = input.name
+  if (input?.url) {
+    schema.url = absolutePageUrl(
+      input.url.startsWith('http') ? input.url : canonicalPath(input.url),
+    )
   }
 
   return schema

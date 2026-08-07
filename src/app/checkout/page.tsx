@@ -79,7 +79,7 @@ async function startBrandCheckout(args: {
 }): Promise<never> {
   const membershipPath = args.brandSlug
     ? `/dashboard/brands/${encodeURIComponent(args.brandSlug)}/membership`
-    : '/dashboard/brands'
+    : '/dashboard'
   const selfHref =
     `/checkout?plan=brand` +
     `&brandId=${encodeURIComponent(String(args.brandId))}` +
@@ -143,7 +143,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
       : null
     const brandSlug = (rawSlug ?? '').trim()
     if (!Number.isFinite(brandId) || brandId <= 0 || !tier || !brandSlug) {
-      redirect('/dashboard/brands')
+      redirect('/dashboard')
     }
     await startBrandCheckout({ brandId, tier, brandSlug })
   }
