@@ -489,8 +489,9 @@ const nextConfig: NextConfig = {
 }
 
 export default withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
+  // Sentry SaaS project: materialdistrict / javascript-nextjs
+  org: process.env.SENTRY_ORG ?? 'materialdistrict',
+  project: process.env.SENTRY_PROJECT ?? 'javascript-nextjs',
   authToken: process.env.SENTRY_AUTH_TOKEN,
 
   // Wider client file set → better production stack traces
