@@ -1,11 +1,8 @@
 import * as Sentry from '@sentry/nextjs'
 
-/**
- * Drop browser-extension / in-app-webview / bot noise that is not actionable
- * in our app code. Keep this list specific — do not blanket-ignore React DOM
- * errors without a third-party fingerprint.
- */
-function isThirdPartyNoise(event: {
+type NoiseEvent = {
+  request?: { url?: string }
+  tags?: Record<string, unknown> | Array<{ key?: string; value?: unknown }>
   exception?: {
     values?: Array<{
       type?: string
@@ -15,11 +12,38 @@ function isThirdPartyNoise(event: {
       }
     }>
   }
-}): boolean {
+}
+
+function eventPageUrl(event: NoiseEvent): string {
+  if (typeof event.request?.url === 'string') return event.request.url
+  const tags = event.tags
+  if (Array.isArray(tags)) {
+    const hit = tags.find((t) => t.key === 'url')
+    return typeof hit?.value === 'string' ? hit.value : ''
+  }
+  if (tags && typeof tags === 'object' && typeof tags.url === 'string') {
+    return tags.url
+  }
+  return ''
+}
+
+/**
+ * Drop browser-extension / in-app-webview / bot noise that is not actionable
+ * in our app code. Keep this list specific — do not blanket-ignore React DOM
+ * errors without a third-party fingerprint.
+ */
+function isThirdPartyNoise(event: NoiseEvent): boolean {
   const values = event.exception?.values ?? []
   const message = values
     .map((v) => `${v.type ?? ''} ${v.value ?? ''}`)
     .join('\n')
+  const pageUrl = eventPageUrl(event)
+
+  // Google Translate proxy / in-page translator rewrites the DOM and breaks
+  // React hydration; stack frames live under translate_http, not our app.
+  if (/translate\.goog|translate_http/i.test(pageUrl)) {
+    return true
+  }
 
   if (
     /MetaMask|Java object is gone|Failed to connect to MetaMask/i.test(message)
@@ -48,7 +72,7 @@ function isThirdPartyNoise(event: {
   const frames = values.flatMap((v) => v.stacktrace?.frames ?? [])
   const filenames = frames.map((f) => f.filename ?? '').join('\n')
   if (
-    /chrome-extension:|moz-extension:|safari-extension:|webkit-masked-url:|scripts\/inpage\.js|navigation_performance_logger/i.test(
+    /chrome-extension:|moz-extension:|safari-extension:|webkit-masked-url:|scripts\/inpage\.js|navigation_performance_logger|translate_http|translate\.goog/i.test(
       filenames,
     )
   ) {
@@ -85,6 +109,8 @@ Sentry.init({
     /^chrome-extension:\/\//i,
     /^moz-extension:\/\//i,
     /scripts\/inpage\.js/i,
+    /translate\.goog/i,
+    /translate_http/i,
   ],
 
   beforeSend(event) {
