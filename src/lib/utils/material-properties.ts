@@ -186,6 +186,7 @@ export function humanizeValue(value: string): string {
 export function humanizeFacet(facet: MaterialPropertyKey): string {
   // Speciale gevallen waar de auto-titlecase te kort komt
   const overrides: Partial<Record<MaterialPropertyKey, string>> = {
+    odeur: 'Odour',
     uv_resistance: 'UV resistance',
     reduces_energy_use: 'Reduces energy-use',
     reduces_water_use: 'Reduces water-use',
