@@ -89,8 +89,13 @@ Sentry.init({
 
   beforeSend(event) {
     // Headless browsers / synthetic monitors — not real user sessions.
-    const browser = event.contexts?.browser?.name ?? ''
-    if (/HeadlessChrome/i.test(browser)) return null
+    const browserName = event.contexts?.browser?.name
+    if (
+      typeof browserName === 'string' &&
+      /HeadlessChrome/i.test(browserName)
+    ) {
+      return null
+    }
 
     if (isThirdPartyNoise(event)) return null
     return event
