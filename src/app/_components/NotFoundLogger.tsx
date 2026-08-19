@@ -74,9 +74,13 @@ export function NotFoundLogger() {
       },
     })
 
-    if (typeof window.plausible === 'function') {
-      window.plausible('404', { props: { path: pathname } })
-    }
+    const p: { (...a: unknown[]): void; q?: unknown[] } =
+      window.plausible ||
+      function (...a: unknown[]) {
+        ;(p.q = p.q || []).push(a)
+      }
+    window.plausible = p
+    p('404', { props: { path: pathname } })
   }, [pathname])
 
   return null
