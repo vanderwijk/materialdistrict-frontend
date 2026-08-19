@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
+import { shouldDropRequestError } from '@/lib/sentry/noise-filters'
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
@@ -10,5 +11,13 @@ export async function register() {
   }
 }
 
-// Captures unhandled server-side request errors (App Router)
-export const onRequestError = Sentry.captureRequestError
+// Captures unhandled server-side request errors (App Router).
+// Drop CMS upstream saturation (503/502) — tracked in infra, not app bugs.
+export const onRequestError: typeof Sentry.captureRequestError = (
+  error,
+  request,
+  context,
+) => {
+  if (shouldDropRequestError(error)) return
+  return Sentry.captureRequestError(error, request, context)
+}

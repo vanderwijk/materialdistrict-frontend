@@ -161,6 +161,17 @@ export class WordPressError extends Error {
     super(message)
     this.name = 'WordPressError'
   }
+
+  /** Safe for Sentry / logging — avoids circular JSON on Response-like bodies. */
+  toJSON(): Record<string, unknown> {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      endpoint: this.endpoint,
+      body: this.body,
+    }
+  }
 }
 
 export class WordPressNotFoundError extends WordPressError {

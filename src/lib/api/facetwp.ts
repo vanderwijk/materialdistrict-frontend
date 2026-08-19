@@ -70,6 +70,15 @@ export class FacetWPError extends Error {
     super(message)
     this.name = 'FacetWPError'
   }
+
+  toJSON(): Record<string, unknown> {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      body: this.body,
+    }
+  }
 }
 
 // --------------------------------------------------------------------
