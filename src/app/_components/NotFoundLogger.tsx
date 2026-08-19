@@ -73,6 +73,10 @@ export function NotFoundLogger() {
         referrer: safeReferrer(referrer),
       },
     })
+
+    if (typeof window.plausible === 'function') {
+      window.plausible('404', { props: { path: pathname } })
+    }
   }, [pathname])
 
   return null
