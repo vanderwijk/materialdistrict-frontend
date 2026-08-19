@@ -22,7 +22,7 @@ import { cookies } from 'next/headers'
 import { wpDashboardFetch, DashboardApiError } from '@/lib/api/dashboard'
 import { getAuthCookie } from '@/lib/auth/cookies'
 import { CONSENT_COOKIE } from '@/lib/consent/consent'
-import { REGION_COOKIE } from '@/lib/consent/eu-region'
+import { REGION_COOKIE, regionFromCountry } from '@/lib/consent/eu-region'
 
 export const dynamic = 'force-dynamic'
 
@@ -55,9 +55,17 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const jar = await cookies()
 
   // Soft-launch consent: EU needs md_consent=granted; Rest of World may
-  // proceed without a choice (middleware sets md_region). Explicit deny wins.
+  // proceed without a choice. Explicit deny wins.
+  //
+  // The region cookie is no longer stamped by middleware (that made every
+  // HTML response uncacheable); it is written by /api/consent/region on the
+  // client's first visit. So it can legitimately be missing on the very
+  // first events of a session — we resolve the geo header directly rather
+  // than let a race decide whether a Rest-of-World event is logged.
   const consent = jar.get(CONSENT_COOKIE)?.value
-  const region = jar.get(REGION_COOKIE)?.value
+  const region =
+    jar.get(REGION_COOKIE)?.value ??
+    regionFromCountry(request.headers.get('x-vercel-ip-country'))
   const allowed =
     consent === 'granted' || (consent !== 'denied' && region === 'row')
   if (!allowed) {

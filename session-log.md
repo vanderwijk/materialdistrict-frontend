@@ -12,6 +12,14 @@
 ---
 
 ## Laatste update
+Datum: 19-08-2026 — Edge-caching hersteld (§CACHE-19-08): auth client-hydratie,
+regio-cookie uit de middleware, detailroutes expliciet statisch, sitemap
+parallel, og:description-fallback, `?s=`-redirect. Zie sectie
+"§CACHE-19-08 — edge-caching" onderaan. Nog niet gedeployed.
+
+----
+
+## Laatste update (vorige)
 Datum: 21-06-2026 — Feedback-fixes batch 21-06 (compare-pagina, account-menu,
 generiek follow-blok, channel-hero, homepage/events/books). Zie sectie
 "feedback-fixes 21-06-2026" onderaan. Deployed via git.
@@ -3671,3 +3679,76 @@ en soft-launch feedback/404). **Niet blind geplaatst.**
 1. `our-mission` gebruikte `m.thumbnail` — `MaterialListItem` heeft `hero.sourceUrl`
 2. `/contact?subject=membership&tier=…` werd genegeerd; nu highlight + mailto-onderwerp
 
+
+
+---
+
+# §CACHE-19-08 — edge-caching hersteld
+
+**Aanleiding.** Johan mat ~79.000 function invocations per zes uur tegen ~1.200
+echte pageviews per dag: meer dan 99% bot-verkeer, bijna alles cache MISS. De
+conclusie "het zijn bots" klopte, maar verklaarde de MISS niet. Meting op
+productie: *elke* HTML-respons kwam terug met
+`cache-control: private, no-cache, no-store` en `x-vercel-cache: MISS` —
+homepage, materiaaldetail, alles. Statische assets cachten wél (HIT). De
+caching was dus niet stuk door het verkeer; ze stond uit.
+
+**Drie oorzaken, gestapeld.**
+
+1. **Middleware zette `md_region` op de respons van elke navigatie.** Een
+   respons met `Set-Cookie` wordt nooit door de CDN bewaard. Bots dragen geen
+   cookies, dus elke bot-request raakte die tak — 100% MISS by design.
+2. **De root layout las de auth-cookie tijdens render**
+   (`AuthenticatedAppShell` → `getInitialUser()`). Een `cookies()`-read haalt
+   een route uit statische rendering; omdat het in de *root* layout zat, gold
+   dat voor de hele site. De `revalidate`-waarden op de contentpagina's
+   (material 6 u, channel 1 u, home 10 m) waren correct geconfigureerd en
+   werden nooit toegepast.
+3. **Detailroutes met een lege `generateStaticParams()`** worden door Next 16
+   als on-demand dynamisch behandeld, ook zonder dynamische API in de keten.
+
+**Wat er is veranderd.**
+
+- `src/middleware.ts` — stempelt alleen nog het request-pad. De regio komt van
+  de nieuwe route `GET /api/consent/region`, die `RegionBootstrap` één keer
+  aanroept als de cookie ontbreekt. Bots draaien geen JS en raken hem nooit.
+- `src/app/api/events/route.ts` — valt terug op de Vercel geo-header als de
+  regio-cookie nog niet gezet is, zodat de consent-gate niet van timing afhangt.
+- `src/components/providers/AuthContext.tsx` — hydrateert client-side via
+  `/api/auth/me`, alleen wanneer de hint-cookie zegt dat er een sessie is.
+  Anonieme bezoekers (het gros) doen geen enkele extra call. Revalidatie bij
+  tab-focus vervangt de oude per-server-render sync.
+- `src/lib/auth/auth-hint.ts` (nieuw) + `cookies.ts` — `md_signed_in`, een
+  leesbare vlag zonder identiteit erin, gezet en gewist samen met het JWT.
+  Puur een render-hint; alle autorisatie loopt onveranderd via het HttpOnly-token.
+- `src/components/layout/HeaderShell.tsx` — toont de ingelogde header al
+  tijdens `isAuthPending`, met "Account" tot de naam binnen is. Voorkomt dat
+  een lid een Login-knop in zijn avatar ziet veranderen.
+- `src/app/layout.tsx` + `AppChrome.tsx` — layout awaits niets meer en leest
+  niets meer. `AuthenticatedAppShell.tsx` is daarmee overbodig en **moet
+  verwijderd worden**.
+- Detailroutes (material, article, brand, event, book, talk, channel) —
+  `export const dynamic = 'force-static'` plus een expliciete `revalidate`
+  waar die ontbrak. Tevens vangrail: een toekomstige `cookies()`-read in die
+  subtree degradeert naar leeg in plaats van de caching stil uit te zetten.
+- `src/lib/seo/sitemap/fetch.ts` — pagina's parallel in batches van 8 in
+  plaats van 33 sequentiële round trips.
+- `src/lib/seo/page-metadata.ts` — description/og:description valt terug op de
+  paginatekst als het Yoast-veld leeg is (aanleiding: Our Mission).
+- `next.config.ts` — `/?s=term` → `/search/?q=term`, zodat oude WP-zoeklinks
+  landen waar ze horen. Het herschrijven van de links in de 2.547 artikelteksten
+  zelf blijft een apart WP-CLI-klusje.
+
+**Geverifieerd.** `tsc --noEmit` schoon; `next build` slaagt. Detailroutes staan
+in de buildtabel nu als ○ in plaats van ƒ. Lokaal tegen de productiebuild:
+`/` → `s-maxage=60`, `/material/<slug>/` → `s-maxage=3600,
+stale-while-revalidate` (was `private, no-cache, no-store`).
+
+**Niet opgelost — soft-404 op detailroutes.** Een niet-bestaande material-URL
+geeft de 404-UI met statuscode **200**. Geïsoleerd: een kale route die direct
+`notFound()` aanroept geeft wél 404, dus het ligt niet in de app-shell maar in
+de detailpagina's zelf. Het verplaatsen van de `ScrollToTop`-Suspense (die vóór
+`{children}` stond en de stream vroeg kon committen) is meegegaan als
+waarschijnlijke deeloorzaak, maar loste het niet op. Blijft open; los dit op
+vóór de september-push, want bij een upstream-storing leest Google 3.244
+materiaal-URL's als geldige pagina's zonder inhoud.

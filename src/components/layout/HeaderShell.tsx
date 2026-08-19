@@ -45,7 +45,22 @@ export function HeaderShell() {
   const router = useRouter()
   const pathname = usePathname()
   const { theme, toggleTheme } = useTheme()
-  const { isLoggedIn, isMember, user, signOut } = useAuth()
+  const { isLoggedIn, isMember, user, isAuthPending, signOut } = useAuth()
+
+  /**
+   * Paint the signed-in header while auth is still resolving.
+   *
+   * The HTML now comes from the edge cache and is identical for everyone,
+   * so it always renders logged-out. For a member that would mean watching
+   * a "Login" button turn into their avatar a moment later. `isAuthPending`
+   * is only true when the hint cookie says a session exists, so we show the
+   * signed-in shape straight away; `userFirstName` falls back to "Account"
+   * until the real name arrives.
+   *
+   * This is presentation only. Nothing is unlocked by it: the dashboard
+   * re-checks auth server-side and every gated call carries the token.
+   */
+  const showSignedIn = isLoggedIn || isAuthPending
   const { itemCount } = useCart()
 
   function handleLoginClick() {
@@ -67,7 +82,7 @@ export function HeaderShell() {
   return (
     <Header
       currentSection={getCurrentSection(pathname)}
-      isLoggedIn={isLoggedIn}
+      isLoggedIn={showSignedIn}
       isMember={isMember}
       userFirstName={user?.firstName || user?.displayName || 'Account'}
       userAvatarUrl={user?.avatarUrl}

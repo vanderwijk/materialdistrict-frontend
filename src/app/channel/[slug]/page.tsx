@@ -30,6 +30,20 @@ import type { EventListItem } from '@/types/event'
 import { ChannelHero } from './_components/ChannelHero'
 import { ChannelStrip } from './_components/ChannelStrip'
 
+/**
+ * Statically rendered, revalidated on a timer.
+ *
+ * Spelling this out is the point. Without it Next treats a detail route
+ * with an empty `generateStaticParams()` as on-demand dynamic, answers
+ * `private, no-cache, no-store`, and no CDN ever stores the page — every
+ * crawler hit re-renders and re-queries WordPress. `force-static` also
+ * acts as a guard rail: a future `cookies()` or `headers()` read in this
+ * subtree degrades to empty instead of silently switching caching off for
+ * the whole route again.
+ */
+export const dynamic = 'force-static'
+
+
 const STRIP_LIMIT = 8
 
 /**

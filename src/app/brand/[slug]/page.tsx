@@ -46,6 +46,23 @@ import { getDigestChannels } from '@/lib/api/digest-channels'
 import { FollowToggle } from '@/components/ui/FollowToggle'
 import { DownloadsCard } from '@/app/material/[slug]/_components/DownloadsCard'
 
+/**
+ * Statically rendered, revalidated on a timer.
+ *
+ * Spelling this out is the point. Without it Next treats a detail route
+ * with an empty `generateStaticParams()` as on-demand dynamic, answers
+ * `private, no-cache, no-store`, and no CDN ever stores the page — every
+ * crawler hit re-renders and re-queries WordPress. `force-static` also
+ * acts as a guard rail: a future `cookies()` or `headers()` read in this
+ * subtree degrades to empty instead of silently switching caching off for
+ * the whole route again.
+ */
+export const dynamic = 'force-static'
+
+/** ISR — mirrors the fetch-level revalidate for this type (24 h). */
+export const revalidate = 86400
+
+
 const MATERIALS_PER_BRAND = 4
 
 interface BrandDetailPageProps {

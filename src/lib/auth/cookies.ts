@@ -20,11 +20,12 @@
  *  - These functions only work inside a Server Component, Route Handler,
  *    or Server Action (anywhere the Next.js `cookies()` API is available).
  *  - For client components that need to know whether the user is logged
- *    in, read from `useAuth()` instead — the AuthContext is hydrated
- *    server-side from `getAuthCookie()` + `getCurrentUser()`.
+ *    in, read from `useAuth()` instead — the AuthContext hydrates itself
+ *    from `/api/auth/me`, guided by the readable hint cookie below.
  */
 
 import { cookies } from 'next/headers'
+import { AUTH_HINT_COOKIE_NAME } from '@/lib/auth/auth-hint'
 
 // --------------------------------------------------------------------
 // Constants
@@ -36,6 +37,13 @@ import { cookies } from 'next/headers'
  * apex domain (e.g. when both systems run under `materialdistrict.com`).
  */
 export const AUTH_COOKIE_NAME = 'md_auth_token'
+
+/**
+ * Readable companion flag to the HttpOnly token. Defined in its own
+ * isomorphic module (this file is server-only) and re-exported here so
+ * server callers have one import for both cookies.
+ */
+export { AUTH_HINT_COOKIE_NAME } from '@/lib/auth/auth-hint'
 
 /**
  * `Secure` is required in production but blocks the cookie in plain-HTTP
@@ -96,6 +104,18 @@ export async function setAuthCookie(
     // No `domain` attribute — defaults to the exact host that set it,
     // which is safer than scoping to the apex domain.
   })
+
+  // Readable hint with the same lifetime as the token. Not HttpOnly on
+  // purpose — the client reads it to decide which header to paint first.
+  store.set({
+    name: AUTH_HINT_COOKIE_NAME,
+    value: '1',
+    httpOnly: false,
+    secure: IS_PRODUCTION,
+    sameSite: 'lax',
+    path: '/',
+    ...(persistent ? { expires: new Date(expiresAt * 1000) } : {}),
+  })
 }
 
 // --------------------------------------------------------------------
@@ -134,4 +154,7 @@ export async function getAuthCookie(): Promise<string | null> {
 export async function clearAuthCookie(): Promise<void> {
   const store = await cookies()
   store.delete(AUTH_COOKIE_NAME)
+  // Clear the hint in the same breath, or the client keeps painting a
+  // signed-in header for a session that no longer exists.
+  store.delete(AUTH_HINT_COOKIE_NAME)
 }

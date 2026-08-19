@@ -158,6 +158,24 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       // ------------------------------------------------------------------
+      // 0. Legacy WordPress search links inside article bodies.
+      //     2.547 published articles contain keyword links pointing at
+      //     cms.materialdistrict.com/?s=term. Those redirect to our home
+      //     page carrying a `?s=` the new site does not use, so the reader
+      //     lands on the homepage instead of a result list. The article
+      //     bodies get rewritten in WordPress separately (one-off WP-CLI);
+      //     this catches the parameter wherever it still arrives — old
+      //     bookmarks, external links, cached pages.
+      //
+      //     `s` is captured with :query so the term survives the hop.
+      // ------------------------------------------------------------------
+      {
+        source: '/',
+        has: [{ type: 'query', key: 's', value: '(?<term>.*)' }],
+        destination: '/search/?q=:term',
+        permanent: false,
+      },
+      // ------------------------------------------------------------------
       // 0a. Production Vercel alias → canonical apex.
       //     Keeps hashed preview/deployment URLs (*.vercel.app) usable for
       //     testing; those stay noindex via vercel.json X-Robots-Tag.

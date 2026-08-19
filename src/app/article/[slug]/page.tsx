@@ -64,6 +64,23 @@ import { ArticlePrevNext } from './_components/ArticlePrevNext'
 import { ArticleRelated } from './_components/ArticleRelated'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
+/**
+ * Statically rendered, revalidated on a timer.
+ *
+ * Spelling this out is the point. Without it Next treats a detail route
+ * with an empty `generateStaticParams()` as on-demand dynamic, answers
+ * `private, no-cache, no-store`, and no CDN ever stores the page — every
+ * crawler hit re-renders and re-queries WordPress. `force-static` also
+ * acts as a guard rail: a future `cookies()` or `headers()` read in this
+ * subtree degrades to empty instead of silently switching caching off for
+ * the whole route again.
+ */
+export const dynamic = 'force-static'
+
+/** ISR — mirrors the fetch-level revalidate for this type (1 h). */
+export const revalidate = 3600
+
+
 const SIDEBAR_MATERIALS = 3
 const NEIGHBOUR_SCAN = 100
 const WORDS_PER_MINUTE = 200

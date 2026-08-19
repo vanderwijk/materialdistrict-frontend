@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { Schibsted_Grotesk } from 'next/font/google'
-import { AuthenticatedAppShell } from '@/components/layout/AuthenticatedAppShell'
+import { AppChrome } from '@/components/layout/AppChrome'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite, openGraphSite } from '@/lib/seo'
 import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import { ConsentBar } from '@/components/consent/ConsentBar'
 import { ConsentBootstrap } from '@/components/consent/ConsentBootstrap'
+import { RegionBootstrap } from '@/components/consent/RegionBootstrap'
 import { GptLoader } from '@/components/ads/GptLoader'
 import { PlausibleAnalytics } from '@/components/analytics/PlausibleAnalytics'
 import '@/styles/globals.css'
@@ -132,17 +133,22 @@ export default function RootLayout({
           Skip to main content
         </a>
         <ConsentBootstrap />
+        <RegionBootstrap />
         <GptLoader />
         <ThemeProvider>
           {/*
-            Auth shell is NOT wrapped in Suspense. A Suspense fallback around
-            `{children}` commits HTTP 200 before `notFound()` can set 404
-            (soft-404) — e.g. `/wp-login.php` and unknown `/[pageSlug]` URLs
-            showed the 404 UI with status 200. Anonymous auth is cheap
-            (cookie miss → null, no WP call); footer still has its own
-            Suspense inside AppChrome.
+            No Suspense around `{children}`: a fallback there commits HTTP
+            200 before `notFound()` can set 404 (soft-404) — e.g.
+            `/wp-login.php` and unknown `/[pageSlug]` URLs showed the 404 UI
+            with status 200. Footer still has its own Suspense inside
+            AppChrome.
+
+            This layout deliberately awaits nothing and reads no cookies or
+            headers. That is what keeps every route below it statically
+            renderable and cacheable at the edge; auth is resolved in the
+            browser (see AuthContext).
           */}
-          <AuthenticatedAppShell>{children}</AuthenticatedAppShell>
+          <AppChrome>{children}</AppChrome>
         </ThemeProvider>
         {/* Global structured data — Organization + WebSite on every page.
             Per-page entities (Product/Article/Event/Book) live in the
