@@ -74,13 +74,13 @@ export function NotFoundLogger() {
       },
     })
 
-    const p: { (...a: unknown[]): void; q?: unknown[] } =
-      window.plausible ||
-      function (...a: unknown[]) {
-        ;(p.q = p.q || []).push(a)
+    // Plausible custom event — use a small delay to ensure the Plausible
+    // script has initialised (it loads async via PlausibleAnalytics).
+    setTimeout(() => {
+      if (typeof window.plausible === 'function') {
+        window.plausible('404', { props: { path: pathname } })
       }
-    window.plausible = p
-    p('404', { props: { path: pathname } })
+    }, 500)
   }, [pathname])
 
   return null
