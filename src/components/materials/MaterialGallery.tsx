@@ -32,6 +32,8 @@ export interface MaterialGalleryProps {
   title: string
   /** Max aantal thumbs zichtbaar in compacte filmstrip. Default 5. */
   maxThumbsVisible?: number
+  /** LCP: zet true wanneer dit de primaire hero op de pagina is. */
+  priority?: boolean
   className?: string
 }
 
@@ -43,6 +45,7 @@ export function MaterialGallery({
   gallery,
   title,
   maxThumbsVisible = 5,
+  priority = false,
   className,
 }: MaterialGalleryProps) {
   // Hero + thumbs gecombineerd, hero = index 0
@@ -126,7 +129,13 @@ export function MaterialGallery({
           onClick={handleHeroClick}
           aria-label={`Open ${heroAlt} in fullscreen viewer`}
         >
-          <MdImage image={activeImage} role="gallery-main" alt={heroAlt} />
+          <MdImage
+            image={activeImage}
+            role="gallery-main"
+            alt={heroAlt}
+            fill
+            priority={priority}
+          />
         </button>
 
         {allImages.length > 1 && (
@@ -161,6 +170,7 @@ export function MaterialGallery({
                     image={image}
                     role="gallery-thumb"
                     alt={altFor(image, title)}
+                    fill
                   />
                   {showOverflow && (
                     <span className="mat-gallery-thumb-more" aria-hidden="true">

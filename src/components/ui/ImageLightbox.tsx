@@ -204,7 +204,7 @@ export function ImageLightbox({
           role="lightbox"
           alt={current.alt}
           className="lightbox-image"
-          loading="eager"
+          priority
         />
       </div>
 

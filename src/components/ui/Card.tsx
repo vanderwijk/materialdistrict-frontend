@@ -150,6 +150,8 @@ interface CardThumbProps {
   /** Context voor size-picking; default listing-card. */
   imageRole?: ImageRole
   alt?: string
+  /** Alleen true voor het waarschijnlijke LCP-beeld op de pagina. */
+  priority?: boolean
   /** Vaste achtergrond-kleur of gradient als fallback / placeholder. */
   background?: string
   /** Overlays (badges, action-knoppen) — gepositioneerd binnen de thumb. */
@@ -174,6 +176,7 @@ function CardThumb({
   image,
   imageRole = 'listing-card',
   alt = '',
+  priority = false,
   background,
   children,
   className,
@@ -192,6 +195,7 @@ function CardThumb({
           role={imageRole}
           alt={alt}
           fill
+          priority={priority}
         />
       )}
       {children}

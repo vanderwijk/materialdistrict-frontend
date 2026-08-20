@@ -86,6 +86,7 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
                       role="listing-mini"
                       alt=""
                       fill
+                      sizes="52px"
                       className="hp-channel-thumb-img"
                     />
                   )}

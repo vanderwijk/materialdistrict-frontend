@@ -1,10 +1,16 @@
 /**
  * MdImage — enige render-pad voor content-media op de site.
- * Serveert WP-rendities direct van CDN (geen Vercel /_next/image).
+ * Uniforme pipeline: WP-renditie als bron → next/image → Vercel WebP.
  */
 
+import Image from 'next/image'
 import { cn } from '@/lib/utils/cn'
-import { resolveImageUrl, type ImageLike } from '@/lib/images'
+import {
+  IMAGE_POLICY,
+  resolveImageUrl,
+  shouldSkipOptimization,
+  type ImageLike,
+} from '@/lib/images'
 import type { ImageRole } from '@/lib/images/image-policy'
 
 export type MdImageSource = ImageLike | string | null | undefined
@@ -20,7 +26,13 @@ export interface MdImageProps {
   width?: number
   height?: number
   className?: string
-  loading?: 'lazy' | 'eager'
+  /**
+   * Alleen true voor het waarschijnlijke LCP-beeld op de pagina.
+   * Maximaal één per pagina.
+   */
+  priority?: boolean
+  /** Override policy sizes (zeldzaam — bv. listing-mini 44px vs 56px). */
+  sizes?: string
 }
 
 export function MdImage({
@@ -32,7 +44,8 @@ export function MdImage({
   width,
   height,
   className,
-  loading = 'lazy',
+  priority = false,
+  sizes: sizesOverride,
 }: MdImageProps) {
   const resolved =
     image != null && image !== ''
@@ -43,37 +56,41 @@ export function MdImage({
 
   if (!resolved?.url) return null
 
+  const policy = IMAGE_POLICY[role]
+  const sizes = sizesOverride ?? policy.sizes
+  const quality = policy.quality ?? 75
+  const unoptimized =
+    policy.unoptimized === true || shouldSkipOptimization(resolved.url)
+
   if (fill) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={resolved.url}
         alt={alt}
-        loading={loading}
-        decoding="async"
-        width={resolved.width}
-        height={resolved.height}
+        fill
+        sizes={sizes}
+        quality={quality}
+        priority={priority}
+        unoptimized={unoptimized}
         className={cn(className)}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-        }}
+        style={{ objectFit: 'cover' }}
       />
     )
   }
 
+  const w = width ?? resolved.width ?? 1
+  const h = height ?? resolved.height ?? 1
+
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       src={resolved.url}
       alt={alt}
-      loading={loading}
-      decoding="async"
-      width={width ?? resolved.width}
-      height={height ?? resolved.height}
+      width={w}
+      height={h}
+      sizes={sizes}
+      quality={quality}
+      priority={priority}
+      unoptimized={unoptimized}
       className={cn(className)}
     />
   )

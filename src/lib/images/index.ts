@@ -1,4 +1,9 @@
-export { IMAGE_POLICY, type ImageRole, type ImageRolePolicy } from './image-policy'
+export {
+  IMAGE_POLICY,
+  shouldSkipOptimization,
+  type ImageRole,
+  type ImageRolePolicy,
+} from './image-policy'
 export {
   resolveImageUrl,
   type ImageLike,

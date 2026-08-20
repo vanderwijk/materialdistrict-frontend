@@ -40,6 +40,7 @@ export function SidebarBooks({ books }: SidebarBooksProps) {
                       role="listing-mini"
                       alt=""
                       fill
+                      sizes="44px"
                       className="hp-sidebar-book-cover-img"
                     />
                   )}

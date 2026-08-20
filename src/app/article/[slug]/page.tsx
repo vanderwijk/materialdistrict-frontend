@@ -233,13 +233,20 @@ export default async function ArticleDetailPage({
             {/* §F2.8 punt 4: gallery (thumbs + lightbox) zoals materials;
                 valt terug op losse hero/placeholder als er geen set is. */}
             {article.gallery.total > 0 ? (
-              <MaterialGallery gallery={article.gallery} title={article.title} />
+              <MaterialGallery
+                gallery={article.gallery}
+                title={article.title}
+                priority
+              />
             ) : article.hero ? (
               <MdImage
                 image={article.hero}
                 role="detail-hero"
                 alt={article.hero.alt || article.title}
                 className="article-detail-hero"
+                width={article.hero.width || 1600}
+                height={article.hero.height || 700}
+                priority
               />
             ) : (
               <div className="article-detail-hero is-placeholder" aria-hidden="true" />

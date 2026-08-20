@@ -97,7 +97,7 @@ export default async function OurMissionPage() {
             src="/images/mission/hall.jpg"
             role="detail-hero"
             alt="The exhibition floor of MaterialDistrict Utrecht in the Werkspoorkathedraal."
-            loading="eager"
+            priority
           />
         </figure>
       }

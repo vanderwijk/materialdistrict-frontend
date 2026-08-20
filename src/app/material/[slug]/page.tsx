@@ -333,7 +333,11 @@ export default async function MaterialDetailPage({
 
           {/* Main column */}
           <div className="mat-main">
-            <MaterialGallery gallery={material.gallery} title={material.title} />
+            <MaterialGallery
+              gallery={material.gallery}
+              title={material.title}
+              priority
+            />
 
             {/* §F2.9 P1: leeshulp links boven de body. */}
             <DetailReadingTools />

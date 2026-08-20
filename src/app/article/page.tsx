@@ -240,6 +240,8 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         color: STORY_TYPE_META[featured.type].color,
                       }}
                       thumbImage={featured.hero}
+                      thumbRole="listing-wide-full"
+                      thumbPriority
                       thumbAlt={featured.hero?.alt ?? featured.title}
                       thumbRatio="landscape"
                       eyebrow={formatDate(featured.date)}

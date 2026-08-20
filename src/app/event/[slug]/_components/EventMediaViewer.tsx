@@ -60,6 +60,7 @@ export function EventMediaViewer({ images, videos, title }: EventMediaViewerProp
               image={current.image}
               role="gallery-main"
               alt={current.image.alt || title}
+              fill
             />
             {hasMultiple && (
               <>
@@ -104,7 +105,7 @@ export function EventMediaViewer({ images, videos, title }: EventMediaViewerProp
                   className={`event-media-thumb${isActive ? ' is-active' : ''}`}
                   onClick={() => select(i, false)}
                 >
-                  <MdImage image={item.image} role="gallery-thumb" alt="" />
+                  <MdImage image={item.image} role="gallery-thumb" alt="" fill />
                 </button>
               )
             }

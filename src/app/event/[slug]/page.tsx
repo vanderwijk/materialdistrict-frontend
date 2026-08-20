@@ -233,7 +233,11 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
           <div>
             {/* §F2.8 punt 4: zelfde gallery als materials + losse video's */}
             {eventGallery.total > 0 && (
-              <MaterialGallery gallery={eventGallery} title={event.title} />
+              <MaterialGallery
+              gallery={eventGallery}
+              title={event.title}
+              priority
+            />
             )}
             {event.videos.length > 0 && (
               <section className="event-videos">

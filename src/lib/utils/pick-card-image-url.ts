@@ -19,10 +19,10 @@ const PREFER_TO_ROLE: Record<CardImagePrefer, ImageRole> = {
 
 /**
  * @param prefer
- * - `card` — medium_large → large → medium (lijsttegels)
- * - `thumb` — medium → thumbnail (sidebar / strip)
- * - `hero` — large → 1536 → medium_large (brede bands)
- * - `logo` — medium → thumbnail (merklogo's)
+ * - `card` — listing-card rendities
+ * - `thumb` — listing-mini
+ * - `hero` — listing-wide
+ * - `logo` — logo
  */
 export function pickCardImageUrl(
   image: ImageLike,

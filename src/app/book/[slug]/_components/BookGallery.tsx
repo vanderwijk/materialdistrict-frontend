@@ -75,6 +75,7 @@ export function BookGallery({
             src={activeImage.url}
             role="gallery-main"
             alt={heroAlt}
+            fill
           />
         </button>
 
@@ -106,6 +107,7 @@ export function BookGallery({
                     src={image.thumbnailUrl ?? image.url}
                     role="gallery-thumb"
                     alt={image.alt || title}
+                    fill
                   />
                   {showOverflow && (
                     <span className="mat-gallery-thumb-more" aria-hidden="true">

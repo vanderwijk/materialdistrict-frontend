@@ -238,6 +238,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
                   src={book.cover.url}
                   role="detail-hero"
                   alt={book.cover.alt || book.title}
+                  priority
                 />
               </div>
             )}

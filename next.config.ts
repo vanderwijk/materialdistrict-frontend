@@ -135,8 +135,12 @@ const nextConfig: NextConfig = {
         hostname: 'secure.gravatar.com',
       },
     ],
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    // WebP only — faster cold transforms than AVIF (~50% less encode time).
+    formats: ['image/webp'],
+    // 30 days — WP media URLs are stable; longer TTL cuts repeated transforms.
+    minimumCacheTTL: 2592000,
+    // No 2048 — cards never need it; heroes stop at 1920 via sizes.
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
 

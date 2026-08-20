@@ -31,6 +31,7 @@ export function FeaturedArticleHero({ article }: FeaturedArticleHeroProps) {
       contentType="article"
       thumbImage={article.hero}
       thumbRole="listing-wide"
+      thumbPriority
       thumbAlt={article.title}
       thumbRatio="landscape"
       featured

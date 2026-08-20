@@ -28,6 +28,8 @@ interface ContentCardProps {
   thumbImage?: MdImageSource
   /** Image role voor size-picking; default listing-card. */
   thumbRole?: ImageRole
+  /** Alleen true voor het waarschijnlijke LCP-beeld op de pagina. */
+  thumbPriority?: boolean
   /** Alt-tekst voor de thumb-image. Verplicht als `thumbSrc` is gezet. */
   thumbAlt?: string
   /** CSS-background als alternatief voor afbeelding (kleur, gradient). */
@@ -189,6 +191,7 @@ export function ContentCard({
   thumbSrc,
   thumbImage,
   thumbRole,
+  thumbPriority = false,
   thumbAlt,
   thumbBackground,
   thumbRatio = 'default',
@@ -253,6 +256,7 @@ export function ContentCard({
         src={thumbImage ? undefined : thumbSrc}
         image={thumbImage}
         imageRole={thumbRole}
+        priority={thumbPriority}
         alt={thumbAlt ?? ''}
         background={thumbBackground}
         className={thumbRatioClass}
