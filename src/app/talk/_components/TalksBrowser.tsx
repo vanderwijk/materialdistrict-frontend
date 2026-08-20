@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
+import type { MediaImage } from '@/types/media'
 import {
   EmptyState,
   Button,
@@ -37,7 +38,7 @@ export interface TalksBrowserItem {
   slug: string
   title: string
   date: string
-  heroUrl?: string
+  hero?: MediaImage | null
   heroAlt: string
   speakerNames: string[]
   insiderOnly: boolean
@@ -169,7 +170,7 @@ export function TalksBrowser({ talks }: TalksBrowserProps) {
                   href={`/talk/${t.slug}`}
                   contentType="talk"
                   showTypeBadge={false}
-                  thumbSrc={t.heroUrl}
+                  thumbImage={t.hero}
                   thumbAlt={t.heroAlt}
                   eyebrow={formatDate(t.date)}
                   title={t.title}

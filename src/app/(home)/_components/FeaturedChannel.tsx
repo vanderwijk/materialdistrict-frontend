@@ -1,24 +1,11 @@
 /**
  * FeaturedChannel — homepage-blok "Featured channel".
- *
- * Build-order stap 10, S10.2. Server-component, presentational: krijgt het
- * (featured-first gesorteerde) kanaal + een reeks recente materialen. Toont
- * één grote hero-afbeelding met naam + korte omschrijving + deeplink, en —
- * óver de foto, onderin — een compacte strip vierkante thumbnails (wit
- * kadertje) van recente materialen, zodat die zichtbaar bij het kanaal horen.
- * Merk + titel verschijnen in een hover-tooltip.
- *
- * De hero is bewust géén <Link>-wrapper: de thumbnails zijn zelf links, en
- * geneste anchors zijn ongeldig. Titel + knop linken expliciet door.
- *
- * Niets te tonen (geen kanaal of geen materialen) → de sectie verdwijnt.
  */
 
-import Image from 'next/image'
 import Link from 'next/link'
+import { MdImage } from '@/components/ui'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
-import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
-import { pickCardImageUrl } from '@/lib/utils/pick-card-image-url'
+import { resolveImageUrl } from '@/lib/images'
 import type { MaterialListItem } from '@/types/material'
 
 export interface FeaturedChannelVM {
@@ -41,7 +28,7 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
 
   const channelHref = `/channel/${channel.slug}`
   const heroSrc = channel.thumbnailUrl
-    ? normalizeMediaUrl(channel.thumbnailUrl) ?? channel.thumbnailUrl
+    ? resolveImageUrl(channel.thumbnailUrl, 'listing-wide')?.url
     : null
 
   return (
@@ -55,11 +42,11 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
 
       <div className="hp-channel-hero">
         {heroSrc && (
-          <Image
+          <MdImage
             src={heroSrc}
+            role="listing-wide"
             alt=""
             fill
-            sizes="(max-width: 900px) 100vw, 70vw"
             className="hp-channel-hero-img"
           />
         )}
@@ -86,7 +73,6 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
         <ul className="hp-channel-thumbs">
           {materials.slice(0, 8).map((m) => {
             const label = [m.brandName, m.title].filter(Boolean).join(' — ')
-            const thumbSrc = pickCardImageUrl(m.hero, 'thumb')
             return (
               <li key={m.id}>
                 <Link
@@ -94,12 +80,12 @@ export function FeaturedChannel({ channel, materials }: FeaturedChannelProps) {
                   className="hp-channel-thumb"
                   aria-label={label}
                 >
-                  {thumbSrc && (
-                    <Image
-                      src={thumbSrc}
+                  {m.hero && (
+                    <MdImage
+                      image={m.hero}
+                      role="listing-mini"
                       alt=""
                       fill
-                      sizes="52px"
                       className="hp-channel-thumb-img"
                     />
                   )}

@@ -31,6 +31,7 @@ import {
   type EditorialImage,
   type SectionVariant,
 } from '@/components/content/EditorialPage'
+import { MdImage } from '@/components/ui/MdImage'
 
 const WP_SLUG = 'our-mission'
 
@@ -92,12 +93,11 @@ export default async function OurMissionPage() {
       images={IMAGES}
       afterHero={
         <figure className="ed-figure ed-figure-lead">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <MdImage
             src="/images/mission/hall.jpg"
+            role="detail-hero"
             alt="The exhibition floor of MaterialDistrict Utrecht in the Werkspoorkathedraal."
-            /* Eerste beeld op de pagina, dus geen lazy loading. */
-            fetchPriority="high"
+            loading="eager"
           />
         </figure>
       }

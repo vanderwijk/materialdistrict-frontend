@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import type { ReactNode, MouseEventHandler, KeyboardEvent } from 'react'
 import { cn } from '@/lib/utils/cn'
-import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
+import type { ImageRole } from '@/lib/images/image-policy'
+import { MdImage, type MdImageSource } from './MdImage'
 import { HoverPrefetchLink } from './HoverPrefetchLink'
 
 // ============================================================
@@ -143,7 +143,12 @@ function CardRoot(props: CardProps) {
 // ============================================================
 
 interface CardThumbProps {
+  /** Pre-resolved URL (legacy). Prefer `image`. */
   src?: string
+  /** WP-media of URL-string — resolved via image-policy. */
+  image?: MdImageSource
+  /** Context voor size-picking; default listing-card. */
+  imageRole?: ImageRole
   alt?: string
   /** Vaste achtergrond-kleur of gradient als fallback / placeholder. */
   background?: string
@@ -166,24 +171,27 @@ interface CardThumbProps {
  */
 function CardThumb({
   src,
+  image,
+  imageRole = 'listing-card',
   alt = '',
   background,
   children,
   className,
 }: CardThumbProps) {
-  const normalizedSrc = src ? normalizeMediaUrl(src) ?? src : undefined
+  const hasMedia = Boolean(image) || Boolean(src)
 
   return (
     <div
       className={cn('card-thumb', className)}
       style={background ? { background } : undefined}
     >
-      {normalizedSrc && (
-        <Image
-          src={normalizedSrc}
+      {hasMedia && (
+        <MdImage
+          image={image}
+          src={src}
+          role={imageRole}
           alt={alt}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
       )}
       {children}

@@ -18,6 +18,8 @@
 
 import { useMemo, useState } from 'react'
 import { ImageLightbox, type LightboxImage } from '@/components/ui/ImageLightbox'
+import { MdImage } from '@/components/ui/MdImage'
+import { resolveImageUrl } from '@/lib/images'
 import type { Gallery, MediaImage } from '@/types/media'
 
 // --------------------------------------------------------------------
@@ -61,9 +63,7 @@ export function MaterialGallery({
     () =>
       allImages.map((img) => ({
         src:
-          img.sizes?.full?.url ??
-          img.sizes?.['1536x1536']?.url ??
-          img.sizes?.large?.url ??
+          resolveImageUrl(img, 'lightbox')?.url ??
           img.sourceUrl,
         alt: altFor(img, title),
       })),
@@ -87,10 +87,6 @@ export function MaterialGallery({
   }
 
   const activeImage = allImages[activeIndex] ?? allImages[0]
-  const heroSrc =
-    activeImage.sizes?.large?.url ??
-    activeImage.sizes?.medium_large?.url ??
-    activeImage.sourceUrl
   const heroAlt = altFor(activeImage, title)
 
   const hasOverflow = allImages.length > maxThumbsVisible
@@ -130,8 +126,7 @@ export function MaterialGallery({
           onClick={handleHeroClick}
           aria-label={`Open ${heroAlt} in fullscreen viewer`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={heroSrc} alt={heroAlt} />
+          <MdImage image={activeImage} role="gallery-main" alt={heroAlt} />
         </button>
 
         {allImages.length > 1 && (
@@ -140,10 +135,6 @@ export function MaterialGallery({
               const isActive = index === activeIndex
               const isLastVisible = index === visibleCount - 1
               const showOverflow = overflowCount > 0 && isLastVisible
-              const thumbSrc =
-                image.sizes?.thumbnail?.url ??
-                image.sizes?.medium?.url ??
-                image.sourceUrl
 
               return (
                 <button
@@ -166,8 +157,11 @@ export function MaterialGallery({
                   aria-current={isActive && !showOverflow ? 'true' : undefined}
                   role="listitem"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={thumbSrc} alt={altFor(image, title)} />
+                  <MdImage
+                    image={image}
+                    role="gallery-thumb"
+                    alt={altFor(image, title)}
+                  />
                   {showOverflow && (
                     <span className="mat-gallery-thumb-more" aria-hidden="true">
                       +{overflowCount}

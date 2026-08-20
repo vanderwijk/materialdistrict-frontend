@@ -41,6 +41,7 @@ import Link from 'next/link'
 import type { MaterialListItem } from '@/types/material'
 import { useCompare, MAX_COMPARE } from '@/lib/hooks/useCompare'
 import { Button } from './Button'
+import { MdImage } from './MdImage'
 import { IconClose, IconCompare } from './icons'
 
 // --------------------------------------------------------------------
@@ -128,20 +129,14 @@ export function CompareBar({
             const { id, material } = slot
             const title = material?.title ?? `Material #${id}`
             const brand = material?.brandName ?? null
-            const thumbSrc =
-              material?.hero?.sizes?.thumbnail?.url ??
-              material?.hero?.sizes?.medium?.url ??
-              material?.hero?.sourceUrl
-
             return (
               <div key={id} className="compare-bar-slot">
                 <div className="compare-bar-slot-thumb">
-                  {thumbSrc ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={thumbSrc}
-                      alt={material?.hero?.alt?.trim() || title}
-                      loading="lazy"
+                  {material?.hero ? (
+                    <MdImage
+                      image={material.hero}
+                      role="nav-thumb"
+                      alt={material.hero.alt?.trim() || title}
                     />
                   ) : null}
                 </div>

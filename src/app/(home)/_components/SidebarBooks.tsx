@@ -1,18 +1,9 @@
 /**
  * SidebarBooks — compact "Books"-blok voor de homepage-rechterkolom.
- *
- * Build-order stap 10, S10.2. Presentational server-component: krijgt de
- * nieuwste boeken (al opgehaald door de homepage-server-component) en toont
- * een korte lijst met cover + titel + prijs (ex. btw), met een deeplink naar
- * het volledige boeken-overzicht. Vult de rechterkolom onder de bestaande
- * sidebar-widgets (zoals in de demo).
- *
- * Lege lijst → de hele sectie verdwijnt.
  */
 
-import Image from 'next/image'
 import Link from 'next/link'
-import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
+import { MdImage } from '@/components/ui'
 import type { BookListItem } from '@/types/book'
 
 export interface SidebarBooksProps {
@@ -38,20 +29,17 @@ export function SidebarBooks({ books }: SidebarBooksProps) {
       <ul className="hp-sidebar-books-list">
         {books.map((book) => {
           const price = book.priceExVat ?? book.price
-          const coverRaw = book.cover?.thumbnailUrl ?? book.cover?.url
-          const coverSrc = coverRaw
-            ? normalizeMediaUrl(coverRaw) ?? coverRaw
-            : undefined
+          const coverSrc = book.cover?.thumbnailUrl ?? book.cover?.url
           return (
             <li key={book.id}>
               <Link href={`/book/${book.slug}`} className="hp-sidebar-book">
                 <span className="hp-sidebar-book-cover" aria-hidden="true">
                   {coverSrc && (
-                    <Image
+                    <MdImage
                       src={coverSrc}
+                      role="listing-mini"
                       alt=""
                       fill
-                      sizes="44px"
                       className="hp-sidebar-book-cover-img"
                     />
                   )}

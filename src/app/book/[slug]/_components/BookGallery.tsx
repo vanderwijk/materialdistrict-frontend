@@ -2,16 +2,11 @@
 
 /**
  * BookGallery — cover + binnenwerk-spreads voor de book-detailpagina.
- *
- * Spiegelt `MaterialGallery` (zelfde `mat-gallery*`-klassen, hero + filmstrip +
- * lightbox), zodat de book-detail één familie is met de material-detail. Gevoed
- * door `cover` (hero, index 0) + `gallery` (spreads). De boek-cover-shape
- * (`BookCover`) is lichter dan `MediaImage`, daarom een eigen — maar
- * markup-identieke — component i.p.v. een geforceerde adapter.
  */
 
 import { useMemo, useState } from 'react'
 import { ImageLightbox, type LightboxImage } from '@/components/ui/ImageLightbox'
+import { MdImage } from '@/components/ui/MdImage'
 import type { BookCover } from '@/types/book'
 
 export interface BookGalleryProps {
@@ -57,7 +52,6 @@ export function BookGallery({
   }
 
   const activeImage = allImages[activeIndex] ?? allImages[0]
-  const heroSrc = activeImage.url
   const heroAlt = activeImage.alt || title
 
   const hasOverflow = allImages.length > maxThumbsVisible
@@ -77,8 +71,11 @@ export function BookGallery({
           }}
           aria-label={`Open ${heroAlt} in fullscreen viewer`}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={heroSrc} alt={heroAlt} />
+          <MdImage
+            src={activeImage.url}
+            role="gallery-main"
+            alt={heroAlt}
+          />
         </button>
 
         {allImages.length > 1 && (
@@ -87,7 +84,6 @@ export function BookGallery({
               const isActive = index === activeIndex
               const isLastVisible = index === visibleCount - 1
               const showOverflow = overflowCount > 0 && isLastVisible
-              const thumbSrc = image.thumbnailUrl ?? image.url
 
               return (
                 <button
@@ -106,8 +102,11 @@ export function BookGallery({
                   aria-current={isActive && !showOverflow ? 'true' : undefined}
                   role="listitem"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={thumbSrc} alt={image.alt || title} />
+                  <MdImage
+                    src={image.thumbnailUrl ?? image.url}
+                    role="gallery-thumb"
+                    alt={image.alt || title}
+                  />
                   {showOverflow && (
                     <span className="mat-gallery-thumb-more" aria-hidden="true">
                       +{overflowCount}

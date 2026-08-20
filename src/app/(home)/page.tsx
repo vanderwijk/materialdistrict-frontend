@@ -22,7 +22,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ContentCard, CardBookmarkButton, CardCompareButton } from '@/components/ui'
-import { pickCardImageUrl } from '@/lib/utils/pick-card-image-url'
 import {
   listMaterials,
   listArticles,
@@ -266,7 +265,7 @@ export default async function HomePage() {
     ? {
         href: `/article/${lead.slug}`,
         title: lead.title,
-        thumbUrl: pickCardImageUrl(lead.hero, 'hero'),
+        hero: lead.hero,
         meta: `${formatDate(lead.date)} · Article`,
       }
     : null
@@ -285,7 +284,7 @@ export default async function HomePage() {
     ? {
         href: `/talk/${talkLead.slug}`,
         title: talkLead.title,
-        thumbUrl: pickCardImageUrl(talkLead.hero, 'hero'),
+        hero: talkLead.hero,
         meta: [
           talkLead.speakers[0]?.name,
           talkLead.durationSeconds
@@ -301,13 +300,13 @@ export default async function HomePage() {
   // --- Sidebar (Top stories): articles + materials, al gemapt ------------
   const sidebarArticles: StoryListItem[] = artRes.items.slice(0, 5).map((a) => ({
     href: `/article/${a.slug}`,
-    thumbUrl: pickCardImageUrl(a.hero, 'thumb'),
+    hero: a.hero,
     label: `${formatDate(a.date)} — ${STORY_TYPE_META[a.type].label}`,
     title: a.title,
   }))
   const sidebarMaterials: StoryListItem[] = onlineMaterials.slice(0, 4).map((m) => ({
     href: `/material/${m.slug}`,
-    thumbUrl: pickCardImageUrl(m.hero, 'thumb'),
+    hero: m.hero,
     label: m.brandName ?? 'Material',
     title: m.title,
   }))
@@ -353,7 +352,7 @@ export default async function HomePage() {
                     href={`/material/${m.slug}`}
                     contentType="material"
                     showTypeBadge={false}
-                    thumbSrc={pickCardImageUrl(m.hero)}
+                    thumbImage={m.hero}
                     thumbAlt={m.hero?.alt ?? m.title}
                     eyebrow={m.brandName ?? undefined}
                     title={m.title}
@@ -383,7 +382,7 @@ export default async function HomePage() {
                     key={a.id}
                     href={`/article/${a.slug}`}
                     contentType="article"
-                    thumbSrc={pickCardImageUrl(a.hero)}
+                    thumbImage={a.hero}
                     thumbAlt={a.hero?.alt ?? a.title}
                     eyebrow={formatDate(a.date)}
                     title={a.title}
@@ -419,7 +418,7 @@ export default async function HomePage() {
                       href={`/material/${m.slug}`}
                       contentType="material"
                       showTypeBadge={false}
-                      thumbSrc={pickCardImageUrl(m.hero)}
+                      thumbImage={m.hero}
                       thumbAlt={m.hero?.alt ?? m.title}
                       eyebrow={m.brandName ?? undefined}
                       title={m.title}

@@ -173,7 +173,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 href={`/material/${m.slug}`}
                 contentType="material"
                 showTypeBadge={false}
-                thumbSrc={m.hero?.sourceUrl}
+                thumbImage={m.hero}
                 thumbAlt={m.hero?.alt ?? m.title}
                 eyebrow={m.brandName ?? undefined}
                 title={m.title}
@@ -194,7 +194,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 href={`/article/${a.slug}`}
                 contentType="article"
                 showTypeBadge={false}
-                thumbSrc={a.hero?.sourceUrl}
+                thumbImage={a.hero}
                 thumbAlt={a.hero?.alt ?? a.title}
                 eyebrow={formatDate(a.date)}
                 title={a.title}
@@ -231,7 +231,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 href={`/event/${e.slug}`}
                 contentType="event"
                 showTypeBadge={false}
-                thumbSrc={e.hero?.sourceUrl}
+                thumbImage={e.hero}
                 thumbAlt={e.hero?.alt ?? e.title}
                 eyebrow={eventDateLabel(e)}
                 title={e.title}
@@ -255,7 +255,7 @@ export default async function ChannelHubPage({ params }: ChannelHubPageProps) {
                 href={`/talk/${t.slug}`}
                 contentType="talk"
                 showTypeBadge={false}
-                thumbSrc={t.hero?.sourceUrl}
+                thumbImage={t.hero}
                 thumbAlt={t.hero?.alt ?? t.title}
                 eyebrow={t.speakers.length > 0 ? t.speakers[0].name : undefined}
                 title={t.title}

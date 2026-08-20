@@ -239,7 +239,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                         label: STORY_TYPE_META[featured.type].label,
                         color: STORY_TYPE_META[featured.type].color,
                       }}
-                      thumbSrc={featured.hero?.sourceUrl}
+                      thumbImage={featured.hero}
                       thumbAlt={featured.hero?.alt ?? featured.title}
                       thumbRatio="landscape"
                       eyebrow={formatDate(featured.date)}
@@ -266,7 +266,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                           label: STORY_TYPE_META[article.type].label,
                           color: STORY_TYPE_META[article.type].color,
                         }}
-                        thumbSrc={article.hero?.sourceUrl}
+                        thumbImage={article.hero}
                         thumbAlt={article.hero?.alt ?? article.title}
                         eyebrow={formatDate(article.date)}
                         title={article.title}

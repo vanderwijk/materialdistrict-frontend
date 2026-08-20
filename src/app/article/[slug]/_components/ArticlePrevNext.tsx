@@ -2,19 +2,10 @@
  * ArticlePrevNext
  * ----------------------------------------------------------------------
  * "Vorige / volgende article"-navigatie op de article-detail-page.
- * Server-vriendelijk en stateless — de page berekent de buren uit de
- * (datum-gesorteerde) article-lijst en geeft ze (incl. thumbnail) als
- * props mee. Geen client-fetch, geen context.
- *
- * §F2.12 P2: zelfde thumbnail-kaartstijl als material-detail
- * (PrevNextNavigation) — hergebruikt de gedeelde `.mat-prevnext-*`-CSS,
- * zodat article/material identiek ogen. Toont een placeholder-tile als
- * een buur geen hero heeft.
- *
- * Rendert niets als er geen enkele buur is.
  */
 
 import Link from 'next/link'
+import { MdImage } from '@/components/ui/MdImage'
 
 export interface ArticlePrevNextNeighbour {
   slug: string
@@ -39,8 +30,7 @@ export function ArticlePrevNext({ prev, next }: ArticlePrevNextProps) {
           </span>
           <span className="mat-prevnext-thumb" aria-hidden="true">
             {prev.thumbnailUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={prev.thumbnailUrl} alt="" />
+              <MdImage src={prev.thumbnailUrl} role="nav-thumb" alt="" />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}
@@ -65,8 +55,7 @@ export function ArticlePrevNext({ prev, next }: ArticlePrevNextProps) {
           </span>
           <span className="mat-prevnext-thumb" aria-hidden="true">
             {next.thumbnailUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={next.thumbnailUrl} alt="" />
+              <MdImage src={next.thumbnailUrl} role="nav-thumb" alt="" />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}

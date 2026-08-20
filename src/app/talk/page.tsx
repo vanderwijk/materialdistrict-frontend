@@ -75,7 +75,7 @@ export default async function TalksPage({ searchParams }: TalksPageProps) {
     slug: talk.slug,
     title: talk.title,
     date: talk.date,
-    heroUrl: talk.hero?.sourceUrl,
+    hero: talk.hero,
     heroAlt: talk.hero?.alt ?? talk.title,
     speakerNames: talk.speakers.map((s) => s.name),
     insiderOnly: talk.insiderOnly,

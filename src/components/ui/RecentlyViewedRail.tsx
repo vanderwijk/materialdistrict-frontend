@@ -16,7 +16,7 @@
  */
 
 import Link from 'next/link'
-import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
+import { MdImage } from './MdImage'
 import { IconDelete } from './icons'
 import {
   useRecentlyViewed,
@@ -66,8 +66,11 @@ export function RecentlyViewedRail({
                     {getInitials(item.title)}
                   </span>
                 ) : item.thumbnailUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={normalizeMediaUrl(item.thumbnailUrl) ?? item.thumbnailUrl} alt="" />
+                  <MdImage
+                    src={item.thumbnailUrl}
+                    role="nav-thumb"
+                    alt=""
+                  />
                 ) : (
                   <span
                     className="recently-viewed-thumb-placeholder"

@@ -138,7 +138,7 @@ export default async function TagPage({ params, searchParams }: Props) {
                   key={m.id}
                   href={`/material/${m.slug}`}
                   contentType="material"
-                  thumbSrc={m.hero?.sourceUrl}
+                  thumbImage={m.hero}
                   thumbAlt={m.hero?.alt ?? m.title}
                   eyebrow={m.brandName ?? undefined}
                   title={m.title}

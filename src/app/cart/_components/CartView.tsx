@@ -23,9 +23,8 @@ import { useState } from 'react'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber } from '@/lib/api/cart'
 import { formatEur } from '@/lib/utils/format-price'
-import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 import { freeShippingRemaining } from '@/lib/config/shipping-thresholds'
-import { Button, EmptyState } from '@/components/ui'
+import { Button, EmptyState, MdImage } from '@/components/ui'
 
 function slugFromPermalink(permalink: string): string {
   return permalink.replace(/\/+$/, '').split('/').pop() ?? ''
@@ -145,13 +144,9 @@ export function CartView() {
               <div key={item.key} className="cart-item">
                 <div className="cart-item-thumb">
                   {img ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={
-                        normalizeMediaUrl(img.thumbnail ?? img.src) ??
-                        img.thumbnail ??
-                        img.src
-                      }
+                    <MdImage
+                      src={img.thumbnail ?? img.src}
+                      role="listing-mini"
                       alt={img.alt || item.name}
                     />
                   ) : null}

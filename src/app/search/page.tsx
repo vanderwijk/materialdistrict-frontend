@@ -12,7 +12,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { SearchForm } from '@/components/search/SearchForm'
-import { Button, EmptyState, Tag } from '@/components/ui'
+import { Button, EmptyState, Tag, MdImage } from '@/components/ui'
 import {
   searchSite,
   type SearchResultItem,
@@ -194,8 +194,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                       aria-hidden="true"
                     >
                       {item.thumbnail && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={item.thumbnail} alt="" loading="lazy" />
+                        <MdImage src={item.thumbnail} role="nav-thumb" alt="" />
                       )}
                     </span>
                     <span className="srch-body">

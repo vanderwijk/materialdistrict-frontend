@@ -23,6 +23,7 @@
  */
 
 import { Fragment, type ReactNode } from 'react'
+import { MdImage } from '@/components/ui/MdImage'
 
 export type SectionVariant =
   | 'prose'
@@ -129,8 +130,7 @@ function stripFirstList(html: string): string {
 function Figure({ image }: { image: EditorialImage }) {
   return (
     <figure className={image.wide ? 'ed-figure ed-figure-wide' : 'ed-figure'}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={image.src} alt={image.alt} loading="lazy" />
+      <MdImage src={image.src} role="detail-hero" alt={image.alt} />
       {(image.caption || image.credit) && (
         <figcaption>
           {image.caption}

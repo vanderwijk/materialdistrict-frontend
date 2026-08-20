@@ -102,19 +102,13 @@ export function EventCard({
   const detailHref = `/event/${event.slug}`
   const cardLabel = `${event.title} — ${eventTypeLabel(event.type)}, ${location}`
 
-  // Hero: zelfde size-fallback als MaterialCard. Card.Thumb (Next.js Image)
-  // levert daarna AVIF/webp + responsive sizes per viewport.
-  const thumbSrc = event.hero
-    ? (event.hero.sizes?.medium_large?.url ??
-      event.hero.sizes?.large?.url ??
-      event.hero.sizes?.medium?.url ??
-      event.hero.sourceUrl)
-    : undefined
+  // Hero via centrale image-policy (listing-card).
+  const thumbImage = event.hero ?? undefined
 
   const band = (
     <Card.Thumb
       className="event-card-band"
-      src={thumbSrc}
+      image={thumbImage}
       alt={event.hero?.alt?.trim() || event.title}
     >
       {event.isPast && <span className="event-card-past">Past</span>}

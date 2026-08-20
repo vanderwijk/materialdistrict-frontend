@@ -190,22 +190,8 @@ export function MaterialCard({
     ],
   )
 
-  // Image-fallback (W4): MediaImage.alt is leeg op gemiddelde OBRO-attachments,
-  // dus material-titel als fallback. De derde laag (generieke "Material image")
-  // niet nodig — als hero ontbreekt rendert ContentCard een lege thumb met
-  // alleen de Tag-overlay, geen img-element met een alt-tekst.
+  // Image: policy layer kiest medium_large voor listing-cards.
   const thumbAlt = material.hero?.alt?.trim() || material.title
-
-  // Hero source: middle-grootte voor cards is meest economisch.
-  // Image-sizes (zie session-log sessie 2):
-  //   medium     600×400
-  //   medium_large 768×512  ← gekozen: scherp genoeg voor retina-cards
-  //   large      960×640
-  const thumbSrc =
-    material.hero?.sizes?.medium_large?.url ??
-    material.hero?.sizes?.large?.url ??
-    material.hero?.sizes?.medium?.url ??
-    material.hero?.sourceUrl
 
   // Eyebrow: alleen de brand-naam. De materiaalcode is bewust van het
   // overzicht gehaald (voegt weinig toe bij scannen; staat op de detailpagina).
@@ -240,7 +226,7 @@ export function MaterialCard({
       featured={material.featured}
       showTypeBadge={false}
       sustainabilityBadges={sustainabilityBadges}
-      thumbSrc={thumbSrc}
+      thumbImage={material.hero}
       thumbAlt={thumbAlt}
       eyebrow={eyebrowNode}
       title={titleNode}

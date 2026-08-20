@@ -19,6 +19,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { MdImage } from '@/components/ui/MdImage'
 import { useAuth } from '@/components/providers/AuthContext'
 import {
   getAllPropertyGroups,
@@ -151,9 +152,12 @@ export function CompareView({
               ×
             </button>
             <div className="compare-mat-thumb">
-              {m.hero?.sourceUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={m.hero.sourceUrl} alt={m.hero.alt || m.title} />
+              {m.hero ? (
+                <MdImage
+                  image={m.hero}
+                  role="listing-card"
+                  alt={m.hero.alt || m.title}
+                />
               ) : (
                 <span className="compare-mat-thumb-empty" aria-hidden="true" />
               )}

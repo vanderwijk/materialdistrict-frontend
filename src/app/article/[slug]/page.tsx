@@ -44,6 +44,7 @@ import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { MaterialGallery } from '@/components/materials'
+import { MdImage } from '@/components/ui/MdImage'
 import {
   getArticle,
   getArticleNeighbours,
@@ -233,11 +234,12 @@ export default async function ArticleDetailPage({
                 valt terug op losse hero/placeholder als er geen set is. */}
             {article.gallery.total > 0 ? (
               <MaterialGallery gallery={article.gallery} title={article.title} />
-            ) : article.hero?.sourceUrl ? (
-              <img
-                className="article-detail-hero"
-                src={article.hero.sizes?.large?.url ?? article.hero.sourceUrl}
+            ) : article.hero ? (
+              <MdImage
+                image={article.hero}
+                role="detail-hero"
                 alt={article.hero.alt || article.title}
+                className="article-detail-hero"
               />
             ) : (
               <div className="article-detail-hero is-placeholder" aria-hidden="true" />

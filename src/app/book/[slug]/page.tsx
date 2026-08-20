@@ -39,6 +39,7 @@ import { BookDetailActions } from './_components/BookDetailActions'
 import { BookCard } from '../_components/BookCard'
 import type { BookListItem } from '@/types/book'
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
+import { MdImage } from '@/components/ui/MdImage'
 
 /**
  * Statically rendered, revalidated on a timer.
@@ -233,8 +234,11 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
 
             {book.cover && (
               <div className="book-detail-cover-hero">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={book.cover.url} alt={book.cover.alt || book.title} />
+                <MdImage
+                  src={book.cover.url}
+                  role="detail-hero"
+                  alt={book.cover.alt || book.title}
+                />
               </div>
             )}
 
@@ -255,12 +259,11 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
             {book.gallery.length > 0 && (
               <div className="book-detail-spreads">
                 {book.gallery.map((img, i) => (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
+                  <MdImage
                     key={`${img.url}-${i}`}
                     src={img.url}
+                    role="gallery-main"
                     alt={img.alt || `${book.title} — spread ${i + 1}`}
-                    loading="lazy"
                   />
                 ))}
               </div>
@@ -389,8 +392,11 @@ function BookPrevNext({
           <span className="mat-prevnext-arrow" aria-hidden="true">←</span>
           <span className="mat-prevnext-thumb" aria-hidden="true">
             {(prev.cover?.thumbnailUrl ?? prev.cover?.url) ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={prev.cover?.thumbnailUrl ?? prev.cover?.url} alt="" />
+              <MdImage
+                src={prev.cover?.thumbnailUrl ?? prev.cover?.url}
+                role="nav-thumb"
+                alt=""
+              />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}
@@ -415,8 +421,11 @@ function BookPrevNext({
           </span>
           <span className="mat-prevnext-thumb" aria-hidden="true">
             {(next.cover?.thumbnailUrl ?? next.cover?.url) ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={next.cover?.thumbnailUrl ?? next.cover?.url} alt="" />
+              <MdImage
+                src={next.cover?.thumbnailUrl ?? next.cover?.url}
+                role="nav-thumb"
+                alt=""
+              />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}

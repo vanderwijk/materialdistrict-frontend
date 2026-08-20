@@ -39,6 +39,10 @@ export type { SkeletonVariant } from './Skeleton'
 
 export { EmptyState } from './EmptyState'
 
+// --- Images ---
+export { MdImage } from './MdImage'
+export type { MdImageProps, MdImageSource } from './MdImage'
+
 // --- Cards & content ---
 export { Card } from './Card'
 export type { CardProps } from './Card'

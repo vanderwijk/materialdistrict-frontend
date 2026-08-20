@@ -35,6 +35,7 @@
 
 import { HoverPrefetchLink } from './HoverPrefetchLink'
 import { CardBookmarkButton } from './CardBookmarkButton'
+import { MdImage } from './MdImage'
 import type { BrandListItem } from '@/types/brand'
 
 export interface BrandTileProps {
@@ -73,11 +74,6 @@ export function BrandTile({ brand }: BrandTileProps) {
   const location = locationLine(brand.city, brand.country)
   const thumbs = brand.materialThumbnails ?? []
   const hasLogo = Boolean(brand.logo)
-  const logoUrl =
-    brand.logo?.sizes?.thumbnail?.url ??
-    brand.logo?.sizes?.medium?.url ??
-    brand.logo?.sourceUrl ??
-    null
   const logoAlt = brand.logo?.alt?.trim() || `${brand.name} logo`
 
   const materialLabel = `${brand.materialCount} material${brand.materialCount === 1 ? '' : 's'}`
@@ -92,13 +88,12 @@ export function BrandTile({ brand }: BrandTileProps) {
         {thumbs.length > 0 ? (
           <span className="brand-tile-montage" aria-hidden="true">
             {thumbs.map((url, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <MdImage
                 key={i}
                 src={url}
+                role="listing-mini"
                 alt=""
                 className="brand-tile-montage-img"
-                loading="lazy"
               />
             ))}
           </span>
@@ -109,9 +104,13 @@ export function BrandTile({ brand }: BrandTileProps) {
         ) : null}
         <CardBookmarkButton type="brands" itemId={brand.id} withOverlay />
         <span className="brand-tile-logo">
-          {logoUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoUrl} alt={logoAlt} className="brand-tile-logo-img" />
+          {brand.logo ? (
+            <MdImage
+              image={brand.logo}
+              role="logo"
+              alt={logoAlt}
+              className="brand-tile-logo-img"
+            />
           ) : (
             <span className="brand-tile-logo-initials">
               {getInitials(brand.name)}

@@ -2,20 +2,16 @@
 
 /**
  * TopStoriesWidget — sidebar-widget met een Articles/Materials-tab (sessie 10).
- *
- * Client-component vanwege de tab-toggle. Krijgt twee al-gemapte, serializeer-
- * bare lijsten van de server-page; doet zelf geen data-fetch. Hergebruikt de
- * `sw-card` + `story-item`-stijlen.
  */
 
 import { useState } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
-import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
+import { MdImage } from '@/components/ui'
+import type { MediaImage } from '@/types/media'
 
 export interface StoryListItem {
   href: string
-  thumbUrl?: string
+  hero?: MediaImage | null
   label: string
   title: string
 }
@@ -57,30 +53,25 @@ export function TopStoriesWidget({ articles, materials }: TopStoriesWidgetProps)
 
       <div className="sw-body">
         <div className="stories-list">
-          {items.map((it) => {
-            const thumbSrc = it.thumbUrl
-              ? normalizeMediaUrl(it.thumbUrl) ?? it.thumbUrl
-              : undefined
-            return (
-              <Link key={it.href} href={it.href} className="story-item">
-                <span className="story-thumb" aria-hidden="true">
-                  {thumbSrc && (
-                    <Image
-                      src={thumbSrc}
-                      alt=""
-                      fill
-                      sizes="56px"
-                      className="story-thumb-img"
-                    />
-                  )}
-                </span>
-                <span className="story-text">
-                  <span className="story-label">{it.label}</span>
-                  <span className="story-title">{it.title}</span>
-                </span>
-              </Link>
-            )
-          })}
+          {items.map((it) => (
+            <Link key={it.href} href={it.href} className="story-item">
+              <span className="story-thumb" aria-hidden="true">
+                {it.hero && (
+                  <MdImage
+                    image={it.hero}
+                    role="listing-mini"
+                    alt=""
+                    fill
+                    className="story-thumb-img"
+                  />
+                )}
+              </span>
+              <span className="story-text">
+                <span className="story-label">{it.label}</span>
+                <span className="story-title">{it.title}</span>
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
 

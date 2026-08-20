@@ -26,6 +26,7 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import type { MediaImage } from '@/types/media'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
@@ -74,7 +75,7 @@ interface MoreTalk {
   slug: string
   title: string
   date: string
-  heroUrl?: string
+  hero?: MediaImage | null
   heroAlt: string
   speakerNames: string[]
   insiderOnly: boolean
@@ -148,7 +149,7 @@ async function getTalkContext(currentSlug: string): Promise<{
         slug: t.slug,
         title: t.title,
         date: t.date,
-        heroUrl: t.hero?.sourceUrl,
+        hero: t.hero,
         heroAlt: t.hero?.alt ?? t.title,
         speakerNames: t.speakers.map((s) => s.name),
         insiderOnly: t.insiderOnly,
@@ -267,7 +268,7 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
                       key={t.id}
                       href={`/talk/${t.slug}`}
                       contentType="talk"
-                      thumbSrc={t.heroUrl}
+                      thumbImage={t.hero}
                       thumbAlt={t.heroAlt}
                       eyebrow={formatDate(t.date)}
                       title={t.title}

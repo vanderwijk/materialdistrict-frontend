@@ -33,6 +33,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { MdImage } from '@/components/ui/MdImage'
 import {
   useMaterialsContext,
   PREV_NEXT_MAX_ITEMS,
@@ -142,8 +143,7 @@ export function PrevNextNavigation({ currentSlug }: PrevNextNavigationProps) {
               de prev/next-rij intact. */}
           <span className="mat-prevnext-thumb" aria-hidden="true">
             {prev.thumbnailUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={prev.thumbnailUrl} alt="" />
+              <MdImage src={prev.thumbnailUrl} role="nav-thumb" alt="" />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}
@@ -170,8 +170,7 @@ export function PrevNextNavigation({ currentSlug }: PrevNextNavigationProps) {
               hierboven. */}
           <span className="mat-prevnext-thumb" aria-hidden="true">
             {next.thumbnailUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={next.thumbnailUrl} alt="" />
+              <MdImage src={next.thumbnailUrl} role="nav-thumb" alt="" />
             ) : (
               <span className="mat-prevnext-thumb-placeholder" />
             )}

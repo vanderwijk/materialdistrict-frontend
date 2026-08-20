@@ -2,20 +2,11 @@
 
 /**
  * EventMediaViewer — media-gallery op de event-detailpagina.
- *
- * Sessie 8.
- *
- * Voegt gallery-foto's en videos samen in één 16:7-viewer met een thumbnail-
- * strip (mockup-patroon `renderEventDetail`). De actieve tegel bepaalt wat de
- * hoofd-viewer toont: een foto, of de `VideoEmbed`-player. Autoplay alleen na
- * een expliciete klik op de video-tegel (user-gesture).
- *
- * Video-thumbnail: bij voorkeur de meegeleverde `thumbnail` uit het contract,
- * anders de voorspelbare YouTube-thumbnail, anders een donkere fallback-tegel.
  */
 
 import { useState } from 'react'
 import { VideoEmbed } from '@/components/ui'
+import { MdImage } from '@/components/ui/MdImage'
 import { parseVideoUrl } from '@/lib/utils/video-embed'
 import type { MediaImage } from '@/types/media'
 import type { EventVideo } from '@/types/event'
@@ -64,9 +55,10 @@ export function EventMediaViewer({ images, videos, title }: EventMediaViewerProp
       <div className="event-media-main">
         {current.kind === 'image' ? (
           <>
-            <img
+            <MdImage
               className="event-media-img"
-              src={current.image.sizes?.large?.url ?? current.image.sourceUrl}
+              image={current.image}
+              role="gallery-main"
               alt={current.image.alt || title}
             />
             {hasMultiple && (
@@ -112,10 +104,7 @@ export function EventMediaViewer({ images, videos, title }: EventMediaViewerProp
                   className={`event-media-thumb${isActive ? ' is-active' : ''}`}
                   onClick={() => select(i, false)}
                 >
-                  <img
-                    src={item.image.sizes?.thumbnail?.url ?? item.image.sourceUrl}
-                    alt=""
-                  />
+                  <MdImage image={item.image} role="gallery-thumb" alt="" />
                 </button>
               )
             }
@@ -130,7 +119,7 @@ export function EventMediaViewer({ images, videos, title }: EventMediaViewerProp
                 onClick={() => select(i, true)}
                 title={item.video.title ?? 'Video'}
               >
-                {thumb && <img src={thumb} alt="" />}
+                {thumb && <MdImage src={thumb} role="gallery-thumb" alt="" />}
                 <span className="event-media-thumb-play" aria-hidden="true">▶</span>
               </button>
             )

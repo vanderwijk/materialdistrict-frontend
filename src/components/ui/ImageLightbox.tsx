@@ -24,6 +24,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { MdImage } from '@/components/ui/MdImage'
 import { useFocusTrap } from '@/lib/hooks/useFocusTrap'
 
 // --------------------------------------------------------------------
@@ -198,11 +199,12 @@ export function ImageLightbox({
       )}
 
       <div className="lightbox-image-wrap" onClick={(e) => e.stopPropagation()}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <MdImage
           src={current.src}
+          role="lightbox"
           alt={current.alt}
           className="lightbox-image"
+          loading="eager"
         />
       </div>
 

@@ -19,6 +19,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { User as UserIcon, CreditCard, Sparkles, LogOut } from 'lucide-react'
 import { InsiderIcon } from '@/components/ui/icons/InsiderIcon'
+import { MdImage } from '@/components/ui/MdImage'
 import { cn } from '@/lib/utils/cn'
 
 function initials(name: string): string {
@@ -81,8 +82,7 @@ export function AccountMenu({
   const avatar = (
     <span className={cn('account-avatar', isMember && 'is-insider')}>
       {avatarUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={avatarUrl} alt="" />
+        <MdImage src={avatarUrl} role="avatar" alt="" />
       ) : (
         initials(firstName)
       )}

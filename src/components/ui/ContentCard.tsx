@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils/cn'
+import type { ImageRole } from '@/lib/images/image-policy'
 import { Card } from './Card'
+import type { MdImageSource } from './MdImage'
 import { Tag, type ContentType } from './Tag'
 import { InsiderMark } from './InsiderMark'
 
@@ -22,6 +24,10 @@ interface ContentCardProps {
   contentType: ContentType
   /** Image src voor thumb. Niet meegegeven? Dan wordt `thumbBackground` gebruikt. */
   thumbSrc?: string
+  /** WP-media voor thumb — preferred over `thumbSrc`. */
+  thumbImage?: MdImageSource
+  /** Image role voor size-picking; default listing-card. */
+  thumbRole?: ImageRole
   /** Alt-tekst voor de thumb-image. Verplicht als `thumbSrc` is gezet. */
   thumbAlt?: string
   /** CSS-background als alternatief voor afbeelding (kleur, gradient). */
@@ -181,6 +187,8 @@ export function ContentCard({
   href,
   contentType,
   thumbSrc,
+  thumbImage,
+  thumbRole,
   thumbAlt,
   thumbBackground,
   thumbRatio = 'default',
@@ -242,7 +250,9 @@ export function ContentCard({
       prefetchOn={prefetchOn}
     >
       <Card.Thumb
-        src={thumbSrc}
+        src={thumbImage ? undefined : thumbSrc}
+        image={thumbImage}
+        imageRole={thumbRole}
         alt={thumbAlt ?? ''}
         background={thumbBackground}
         className={thumbRatioClass}
