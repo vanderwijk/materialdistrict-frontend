@@ -35,6 +35,24 @@ export interface MdImageProps {
   sizes?: string
 }
 
+/**
+ * Fallback aspect when WP/WooCommerce geeft geen width/height mee
+ * (bv. Store API product images). Nooit 1×1 — dat maakt beelden onzichtbaar.
+ */
+const ROLE_FALLBACK_SIZE: Record<ImageRole, { width: number; height: number }> = {
+  'listing-card': { width: 768, height: 512 },
+  'listing-wide': { width: 1200, height: 675 },
+  'listing-wide-full': { width: 1600, height: 700 },
+  'listing-mini': { width: 96, height: 96 },
+  'detail-hero': { width: 800, height: 1100 },
+  'gallery-main': { width: 1200, height: 800 },
+  'gallery-thumb': { width: 160, height: 160 },
+  logo: { width: 200, height: 120 },
+  avatar: { width: 64, height: 64 },
+  'nav-thumb': { width: 96, height: 96 },
+  lightbox: { width: 1600, height: 1200 },
+}
+
 export function MdImage({
   image,
   src,
@@ -78,8 +96,9 @@ export function MdImage({
     )
   }
 
-  const w = width ?? resolved.width ?? 1
-  const h = height ?? resolved.height ?? 1
+  const fallback = ROLE_FALLBACK_SIZE[role]
+  const w = width ?? resolved.width ?? fallback.width
+  const h = height ?? resolved.height ?? fallback.height
 
   return (
     <Image
