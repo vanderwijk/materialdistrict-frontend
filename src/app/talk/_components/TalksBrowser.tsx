@@ -135,6 +135,7 @@ export function TalksBrowser({ talks }: TalksBrowserProps) {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, totalPages)
   const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  const priorityImageIndex = pageItems.findIndex((talk) => Boolean(talk.hero))
   const hasActiveFilters = Object.values(selected).some((v) => v.length > 0)
 
   function clearFilters() {
@@ -164,13 +165,14 @@ export function TalksBrowser({ talks }: TalksBrowserProps) {
         ) : (
           <>
             <div className="ov-grid-3">
-              {pageItems.map((t) => (
+              {pageItems.map((t, index) => (
                 <ContentCard
                   key={t.id}
                   href={`/talk/${t.slug}`}
                   contentType="talk"
                   showTypeBadge={false}
                   thumbImage={t.hero}
+                  thumbPriority={index === priorityImageIndex}
                   thumbAlt={t.heroAlt}
                   eyebrow={formatDate(t.date)}
                   title={t.title}

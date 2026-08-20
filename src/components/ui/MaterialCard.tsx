@@ -114,6 +114,8 @@ export interface MaterialCardProps {
   searchTerm?: string
   /** Optionele extra className op de card-wrapper. */
   className?: string
+  /** Alleen true voor het eerste, waarschijnlijke LCP-item in een overzicht. */
+  imagePriority?: boolean
 }
 
 // --------------------------------------------------------------------
@@ -131,6 +133,7 @@ export function MaterialCard({
   onCompareLimitReached,
   searchTerm,
   className,
+  imagePriority = false,
 }: MaterialCardProps) {
   const { isInCompare, toggleCompare } = useCompare()
   const inCompare = isInCompare(material.id)
@@ -227,6 +230,7 @@ export function MaterialCard({
       showTypeBadge={false}
       sustainabilityBadges={sustainabilityBadges}
       thumbImage={material.hero}
+      thumbPriority={imagePriority}
       thumbAlt={thumbAlt}
       eyebrow={eyebrowNode}
       title={titleNode}

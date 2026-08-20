@@ -174,6 +174,7 @@ export function EventsBrowser({ events, channelSlug, search }: EventsBrowserProp
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safePage = Math.min(page, totalPages)
   const pageItems = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+  const priorityImageIndex = pageItems.findIndex((event) => Boolean(event.hero))
 
   function clearFilters() {
     setSelected({})
@@ -214,8 +215,12 @@ export function EventsBrowser({ events, channelSlug, search }: EventsBrowserProp
         ) : (
           <>
             <div className="ov-grid-3">
-              {pageItems.map((event) => (
-                <EventCard key={event.id} event={event} />
+              {pageItems.map((event, index) => (
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  imagePriority={index === priorityImageIndex}
+                />
               ))}
             </div>
 

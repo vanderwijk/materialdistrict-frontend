@@ -137,6 +137,9 @@ const nextConfig: NextConfig = {
     ],
     // WebP only — faster cold transforms than AVIF (~50% less encode time).
     formats: ['image/webp'],
+    // Eén quality houdt het aantal cachekeys/transforms klein en voorkomt
+    // Next.js 16 400-responses voor niet-geallowliste q-waarden.
+    qualities: [75],
     // 30 days — WP media URLs are stable; longer TTL cuts repeated transforms.
     minimumCacheTTL: 2592000,
     // No 2048 — cards never need it; heroes stop at 1920 via sizes.

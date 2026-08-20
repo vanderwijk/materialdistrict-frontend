@@ -90,12 +90,15 @@ interface EventCardProps {
   variant?: 'default' | 'home'
   /** Externe ticket-/event-URL (alleen home-variant; toont "Get tickets"). */
   ticketUrl?: string | null
+  /** Alleen true voor het eerste, waarschijnlijke LCP-item in een overzicht. */
+  imagePriority?: boolean
 }
 
 export function EventCard({
   event,
   variant = 'default',
   ticketUrl,
+  imagePriority = false,
 }: EventCardProps) {
   const badge = dateBadge(event.startDate, event.endDate)
   const location = locationLabel(event)
@@ -110,6 +113,7 @@ export function EventCard({
       className="event-card-band"
       image={thumbImage}
       alt={event.hero?.alt?.trim() || event.title}
+      priority={imagePriority}
     >
       {event.isPast && <span className="event-card-past">Past</span>}
 

@@ -56,6 +56,7 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
   const { isSaved, toggleBookmark } = useBookmarks()
   const { notifyLogin, notifySaved } = useGateNotice()
   const { compareIds, registerCompareMaterial } = useCompare()
+  const priorityImageIndex = items.findIndex((item) => Boolean(item.hero))
 
   // Modal-state: één gate voor de hele grid
   const [insiderGateOpen, setInsiderGateOpen] = useState(false)
@@ -121,10 +122,11 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
       )}
 
       <div className="ov-grid-3">
-        {items.map((material) => (
+        {items.map((material, index) => (
           <MaterialCard
             key={material.id}
             material={material}
+            imagePriority={index === priorityImageIndex}
             isLoggedIn={isLoggedIn}
             isMember={isMember}
             isSaved={isSaved('materials', material.id)}

@@ -37,17 +37,20 @@ export interface ImageRolePolicy {
 
 export const IMAGE_POLICY: Record<ImageRole, ImageRolePolicy> = {
   'listing-card': {
-    wpSizes: ['listing-article', 'medium_large', 'medium', 'thumbnail'],
-    sizes: '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw',
+    // De generieke card is 16:9; `listing-article` is een al gecropte 11:5-
+    // rendition en is daarom ongeschikt voor materials, talks en events.
+    wpSizes: ['large', 'medium_large', 'medium', 'thumbnail'],
+    sizes:
+      '(max-width: 480px) calc(100vw - 32px), (max-width: 1024px) calc(50vw - 22px), (max-width: 1280px) 25vw, 308px',
     quality: 75,
   },
   'listing-wide': {
-    wpSizes: ['large', 'medium_large', '1536x1536', 'medium'],
+    wpSizes: ['1536x1536', 'large', 'medium_large', 'medium'],
     sizes: '(max-width: 900px) 100vw, 70vw',
     quality: 75,
   },
   'listing-wide-full': {
-    wpSizes: ['large', 'medium_large', '1536x1536', 'medium'],
+    wpSizes: ['1536x1536', 'large', 'medium_large', 'medium'],
     sizes: '100vw',
     quality: 75,
   },
@@ -59,52 +62,49 @@ export const IMAGE_POLICY: Record<ImageRole, ImageRolePolicy> = {
   'detail-hero': {
     wpSizes: ['1536x1536', 'large', 'medium_large', 'medium'],
     sizes: '(max-width: 768px) 100vw, 960px',
-    quality: 80,
+    quality: 75,
   },
   'gallery-main': {
-    wpSizes: ['large', '1536x1536', 'medium_large', 'medium'],
+    wpSizes: ['1536x1536', 'large', 'medium_large', 'medium'],
     sizes: '(max-width: 768px) 100vw, 800px',
-    quality: 80,
+    quality: 75,
   },
   'gallery-thumb': {
     wpSizes: ['thumbnail', 'medium', 'medium_large'],
     sizes: '80px',
-    quality: 70,
+    quality: 75,
   },
   logo: {
     wpSizes: ['medium', 'thumbnail', 'medium_large'],
     sizes: '(max-width: 520px) 45vw, (max-width: 900px) 30vw, 140px',
-    quality: 80,
+    quality: 75,
   },
   avatar: {
     wpSizes: ['thumbnail', 'medium'],
     sizes: '32px',
-    quality: 70,
+    quality: 75,
   },
   'nav-thumb': {
     wpSizes: ['thumbnail', 'medium', 'medium_large'],
     sizes: '72px',
-    quality: 70,
+    quality: 75,
   },
   lightbox: {
     wpSizes: ['full', '1536x1536', 'large', 'medium_large'],
     sizes: '100vw',
-    quality: 85,
+    quality: 75,
   },
 }
 
 /**
- * Asset-based: skip Vercel optimizer for formats that don't benefit
- * (or already are next-gen / tiny / static).
+ * Asset-based: alleen formats/hosts overslaan die de optimizer niet zinvol
+ * kan verwerken. WebP/AVIF en lokale rasterbeelden blijven geoptimaliseerd:
+ * ook daarbij zijn responsive resizing en srcsets nodig.
  */
 export function shouldSkipOptimization(url: string): boolean {
   const path = url.split('?')[0]?.toLowerCase() ?? ''
   if (path.endsWith('.svg')) return true
   if (path.endsWith('.gif')) return true
-  if (path.endsWith('.webp')) return true
-  if (path.endsWith('.avif')) return true
-  // Local static assets under /images/ (mission page, etc.)
-  if (path.startsWith('/images/')) return true
   // External video thumbs (YouTube) — not on our remotePatterns for transforms
   if (path.includes('img.youtube.com') || path.includes('i.ytimg.com')) return true
   return false
