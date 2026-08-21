@@ -662,6 +662,31 @@ export async function getMaterialBySlug(
   return matches[0] ?? null
 }
 
+/** Response of GET /md/v2/materials/by-code/{code} (QR / label lookup). */
+export interface WPMaterialByCodeResponse {
+  id: number
+  slug: string
+  code: string
+}
+
+/**
+ * Resolve a spoken material code (e.g. ONA1223) to id + slug.
+ * Used by `/qr/[code]` so archive labels keep working after slug changes.
+ */
+export async function getMaterialByCode(
+  code: string,
+): Promise<WPMaterialByCodeResponse | null> {
+  const normalized = code.trim().toUpperCase()
+  if (!normalized || !/^[A-Z0-9]+$/.test(normalized)) {
+    return null
+  }
+
+  return wpFetchOrNull<WPMaterialByCodeResponse>(
+    `/md/v2/materials/by-code/${normalized}`,
+    { revalidate: MATERIAL_REVALIDATE },
+  )
+}
+
 // --------------------------------------------------------------------
 // Attachments — gallery via /wp/v2/media?parent=<post_id>
 // --------------------------------------------------------------------

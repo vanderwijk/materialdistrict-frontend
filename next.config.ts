@@ -183,6 +183,18 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       // ------------------------------------------------------------------
+      // 0+. Legacy material QR labels (`print-label.php`).
+      //     Labels encode materialdistrict.com/?p={post_id}. Without this
+      //     hop the apex homepage swallows `?p=` and the scan is a dead end.
+      //     `/qr/[code]` resolves ID (or material code) → /material/{slug}/.
+      // ------------------------------------------------------------------
+      {
+        source: '/',
+        has: [{ type: 'query', key: 'p', value: '(?<id>\\d+)' }],
+        destination: '/qr/:id/',
+        permanent: true,
+      },
+      // ------------------------------------------------------------------
       // 0a. Production Vercel alias → canonical apex.
       //     Keeps hashed preview/deployment URLs (*.vercel.app) usable for
       //     testing; those stay noindex via vercel.json X-Robots-Tag.
