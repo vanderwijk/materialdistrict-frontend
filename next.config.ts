@@ -306,7 +306,37 @@ const nextConfig: NextConfig = {
       },
 
       // ------------------------------------------------------------------
-      // 0c. WordPress admin / login on apex → CMS host.
+      // 0c. Marketing short links (legacy WP Redirection plugin).
+      //     Mediakit PDFs hosted on materiahost; keep both slash variants
+      //     because trailingSlash:true and external bookmarks differ.
+      // ------------------------------------------------------------------
+      {
+        source: '/mediakit-nl',
+        destination:
+          'https://materiahost.nl/assets/Downloads/Mediakit2026_NL.pdf',
+        permanent: true,
+      },
+      {
+        source: '/mediakit-nl/',
+        destination:
+          'https://materiahost.nl/assets/Downloads/Mediakit2026_NL.pdf',
+        permanent: true,
+      },
+      {
+        source: '/mediakit-en',
+        destination:
+          'https://materiahost.nl/assets/Downloads/Mediakit2026_EN.pdf',
+        permanent: true,
+      },
+      {
+        source: '/mediakit-en/',
+        destination:
+          'https://materiahost.nl/assets/Downloads/Mediakit2026_EN.pdf',
+        permanent: true,
+      },
+
+      // ------------------------------------------------------------------
+      // 0d. WordPress admin / login on apex → CMS host.
       //     After cutover, materialdistrict.com is Next.js; editors and
       //     bookmarks still hit /wp-admin and *.php on the apex. Keep
       //     specific root entry points first, then /wp-admin/*, then any
