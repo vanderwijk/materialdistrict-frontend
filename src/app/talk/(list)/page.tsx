@@ -1,4 +1,18 @@
 /**
+ * §BETA-FIX-24-08 (X1) — deze pagina staat in route-groep `(list)`.
+ *
+ * De route-groep verandert de URL niet: dit blijft `/talk`. Wat 'ie wél doet
+ * is de `loading.tsx` ernaast beperken tot dít overzicht, in plaats van tot het
+ * hele segment inclusief `[slug]`.
+ *
+ * Waarom dat moest: een loading-boundary streamt meteen een Suspense-shell als
+ * HTTP 200. Een `notFound()` die daarná volgt kan de status niet meer op 404
+ * zetten — de kop is al verstuurd. Daardoor beantwoordde elke onbestaande
+ * detail-slug de 404-pagina met status 200 (soft-404), en las Google die als
+ * een geldige pagina. Dit is hetzelfde patroon dat de homepage al gebruikt met
+ * route-groep `(home)`.
+ */
+/**
  * `/talk` — talks-overzichtspagina met channel/zoek (server) + een LINKER
  * filter-sidebar voor jaar/spreker/insider (client) en client-side paginatie.
  *
@@ -20,7 +34,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button, ChannelBarNav, EmptyState } from '@/components/ui'
 import { listTalks, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
-import { TalksBrowser, type TalksBrowserItem } from './_components/TalksBrowser'
+import { TalksBrowser, type TalksBrowserItem } from '../_components/TalksBrowser'
 
 // De volledige matchende set wordt in één keer geladen (WP-max per page),
 // daarna client-side gefilterd/gepagineerd. Talks is een bescheiden,

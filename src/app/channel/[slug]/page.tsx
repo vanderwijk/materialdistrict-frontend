@@ -31,17 +31,30 @@ import { ChannelHero } from './_components/ChannelHero'
 import { ChannelStrip } from './_components/ChannelStrip'
 
 /**
- * Statically rendered, revalidated on a timer.
+ * §BETA-FIX-24-08 (X1) — zelfde soft-404-fix als de detailroutes.
  *
- * Spelling this out is the point. Without it Next treats a detail route
- * with an empty `generateStaticParams()` as on-demand dynamic, answers
- * `private, no-cache, no-store`, and no CDN ever stores the page — every
- * crawler hit re-renders and re-queries WordPress. `force-static` also
- * acts as a guard rail: a future `cookies()` or `headers()` read in this
- * subtree degrades to empty instead of silently switching caching off for
- * the whole route again.
+ * `force-static` bakte ook de niet-gevonden-uitkomst voor, waardoor een
+ * onbekend of leeg channel de 404-pagina toonde met status 200. Met
+ * `dynamicParams` + `revalidate` blijft de ISR-caching intact en levert
+ * `notFound()` weer een echte 404. Lees in deze subtree geen request-data
+ * server-side; dat zou de route alsnog dynamisch maken.
  */
-export const dynamic = 'force-static'
+export const dynamicParams = true
+
+/**
+ * Leeg, maar noodzakelijk. Samen met `dynamicParams` markeert dit de route als
+ * statisch-met-ISR: pagina's worden op verzoek gebouwd, daarna op het CDN
+ * bewaard en op de timer ververst. Zónder deze functie behandelt Next de route
+ * als volledig dynamisch — dan rendert élke bezoeker (en élke crawler) de
+ * pagina opnieuw en bevraagt WordPress opnieuw. Dat was de reden voor het
+ * eerdere `force-static`; deze regel neemt die taak over, maar laat
+ * `notFound()` wél een echte 404 geven. Geen build-time prerender: de lijst is
+ * bewust leeg om een request-storm tijdens de Vercel-build te voorkomen.
+ */
+export async function generateStaticParams() {
+  return []
+}
+
 
 
 const STRIP_LIMIT = 8

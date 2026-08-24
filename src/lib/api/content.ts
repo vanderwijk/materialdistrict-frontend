@@ -974,19 +974,49 @@ export const getEvent = cache(async function getEvent(
   if (!raw) return null
 
   const heroId = raw.featured_media > 0 ? raw.featured_media : null
-  // Events leveren een expliciete gallery als attachment-ID's in `meta.gallery`
-  // (anders dan material/brand, die `?parent=` gebruiken). Resolve hero +
-  // gallery in één media-map en bouw de Gallery met `splitGallery`.
-  const galleryIds = (raw.meta?.gallery ?? []).filter((id) => id > 0)
-  const mediaIds = unique([...(heroId ? [heroId] : []), ...galleryIds])
-  const mediaMap = await fetchMediaMap(mediaIds)
 
-  const hero = heroId ? mediaMap.get(heroId) ?? null : null
-  const galleryImages = galleryIds.flatMap((id) => {
-    const img = mediaMap.get(id)
+  // §BETA-FIX-24-08 (D3) — twee bronnen in plaats van één.
+  //
+  // Events lazen hun galerij alleen uit `meta.gallery` (attachment-ID's).
+  // Dat veld blijkt in de praktijk nergens gevuld: bij een meting op
+  // 24-08-2026 stond het op de eerste honderd gepubliceerde events zonder
+  // uitzondering leeg. Gevolg: de detailpagina toonde altijd één beeld, ook
+  // wanneer de redactie meerdere foto's had geüpload — die belanden namelijk
+  // als bijlage áán het event (`?parent=`), precies zoals bij artikelen.
+  //
+  // De galerij leest nu beide: `meta.gallery` blijft leidend (expliciete
+  // redactionele volgorde), aangevuld met de bijlagen die daar nog niet in
+  // staan. Zo werkt een event-upload voortaan hetzelfde als een artikel-upload
+  // en hoeft de redactie niets anders te doen dan foto's toevoegen.
+  const metaGalleryIds = (raw.meta?.gallery ?? []).filter((id) => id > 0)
+
+  const [mediaMapExplicit, attachmentsRaw] = await Promise.all([
+    fetchMediaMap(unique([...(heroId ? [heroId] : []), ...metaGalleryIds])),
+    getAttachmentsForPost(raw.id),
+  ])
+
+  const attachments = attachmentsRaw
+    .filter((a) => a.media_type === 'image')
+    .map(mapMedia)
+
+  const hero = heroId ? mediaMapExplicit.get(heroId) ?? null : null
+
+  const explicitImages = metaGalleryIds.flatMap((id) => {
+    const img = mediaMapExplicit.get(id)
     return img ? [img] : []
   })
-  const gallery = splitGallery(galleryImages, heroId ?? undefined)
+
+  const seen = new Set(explicitImages.map((img) => img.id))
+  const attachmentImages = attachments.filter((img) => {
+    if (seen.has(img.id)) return false
+    seen.add(img.id)
+    return true
+  })
+
+  const gallery = splitGallery(
+    [...explicitImages, ...attachmentImages],
+    heroId ?? undefined,
+  )
 
   return mapEvent(raw, hero, gallery)
 })

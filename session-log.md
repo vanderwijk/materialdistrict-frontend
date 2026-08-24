@@ -12,6 +12,14 @@
 ---
 
 ## Laatste update
+Datum: 24-08-2026 — Betafeedback-ronde (§BETA-FIX-24-08): elf UI-punten uit twee
+weken beta, plus de cache-klacht ("publiceren is niet meteen zichtbaar") en de
+soft-404. Zie sectie "§BETA-FIX-24-08 — betafeedback-ronde" onderaan. Nog niet
+gedeployed.
+
+----
+
+## Laatste update (vorige)
 Datum: 19-08-2026 — Edge-caching hersteld (§CACHE-19-08): auth client-hydratie,
 regio-cookie uit de middleware, detailroutes expliciet statisch, sitemap
 parallel, og:description-fallback, `?s=`-redirect. Zie sectie
@@ -3752,3 +3760,99 @@ de detailpagina's zelf. Het verplaatsen van de `ScrollToTop`-Suspense (die vóó
 waarschijnlijke deeloorzaak, maar loste het niet op. Blijft open; los dit op
 vóór de september-push, want bij een upstream-storing leest Google 3.244
 materiaal-URL's als geldige pagina's zonder inhoud.
+
+---
+
+## §BETA-FIX-24-08 — betafeedback-ronde (24-08-2026)
+
+Eerste ronde na twee weken beta. Jeroen liep de pagina's langs; elf punten,
+plus twee dingen die dieper zaten dan ze leken.
+
+### Wat er veranderd is
+
+| # | Punt | Oplossing |
+|---|---|---|
+| H1 | Channel-bar homepage liep over de volle vensterbreedte | `.channel-bar.is-nav .channel-bar-inner` terug op `--max-width` + gutters; §HOME-1 zette 'm op 100% |
+| H2 | Publiceren was niet meteen zichtbaar (site-wide) | Cache-tags + `/api/revalidate` + PHP-hook; zie hieronder |
+| H3 | Dubbel gat tussen Latest materials en Latest stories | Was een ingeklapte leaderboard die zijn flex-plek hield; AdSlot verbergt zich nu bij een lege positie |
+| H4 | Channel-pills in de story-tegels op de homepage | Weg; lost meteen de losse "+1"-regel op die één tegel hoger maakte |
+| H5 | Tekstlaag over de featured-talk-thumbnail | Weg; titel blijft via `sr-only`-h3 + aria-label |
+| H6 | "Get tickets" plakte tegen de kaartranden | Zelfde inset/hoogte/radius als "View book" |
+| H7 | Footer-knop brak over twee regels | `align-self` + `white-space: nowrap` |
+| D1 | Volgblok ontbrak op book-detail | Toegevoegd |
+| D2 | Rectangle-banner op de detailpagina's | Boven het volgblok, alle zes de types |
+| D3 | Event toonde één foto | Galerij leest nu ook de bijlagen, zoals artikelen |
+| L1 | Leaderboard op de overzichten | Onder de eerste rij, alle zes |
+| X1 | Soft-404 op detailroutes | Opgelost — zie hieronder |
+
+### H2 — waarom het misging, en hoe het nu werkt
+
+De fetches worden op tijd gecachet (materials 6 u, brands 24 u, redactioneel
+1 u) en de pagina's worden voorgebakken. Snel en DDOS-bestendig, maar de
+redactie zag een nieuw materiaal wél op het overzicht en niet op de homepage:
+twee pagina's, twee termijnen. En een vervangen thumbnail bleef hangen omdat
+die in de media-cache zit, niet in die van de post.
+
+Drie ingrepen:
+
+1. **Cache-tags.** `wpFetch` hangt automatisch een tag aan elke gecachete fetch,
+   afgeleid uit het pad (`wp:material`, `wp:media`, …). Centraal, dus geen
+   aanroeper hoeft iets te doen. `wpFetch` ondersteunde `tags` al — er gebruikte
+   alleen niemand ze.
+2. **`/api/revalidate`.** WordPress belt bij opslaan; het endpoint verklaart de
+   tags ongeldig en laat de detailpagina, het overzicht en de homepage opnieuw
+   bakken. Geheim via `REVALIDATE_SECRET` (constante-tijd-vergelijking).
+   `revalidateTag` heeft in Next 16 een verplicht tweede argument (`'max'`).
+3. **Beeld-versies.** Media-URL's krijgen `?v=<modified_gmt>` mee. Zelfde
+   bestandsnaam, nieuwe inhoud → nieuwe URL → meteen zichtbaar. Eenmalig
+   gevolg: alle beelden worden na deploy één keer opnieuw geoptimaliseerd.
+
+PHP-kant: `rest-revalidate.php`, in de bestaande plugin. Niet-blokkerend, dus
+een opslag kan er nooit op stuklopen; gededupliceerd omdat WP `save_post`
+meermaals afvuurt; drafts overgeslagen, trash/delete juist niet.
+
+### X1 — de soft-404 zat ergens anders dan gedacht
+
+`/material/<onbekend>/` gaf de 404-pagina te zien met status 200. Aanname was
+`force-static`. Dat bleek fout: na het weghalen bleef de status 200, en vijf
+routes werden bovendien volledig dynamisch (in de build zichtbaar als `ƒ`) —
+precies het risico waar de oude comment voor waarschuwde. Hersteld met
+`generateStaticParams` + `dynamicParams`.
+
+De echte oorzaak stond al beschreven in `[pageSlug]/page.tsx`: een `loading.tsx`
+streamt direct een Suspense-shell als HTTP 200, waarna `notFound()` de status
+niet meer kan zetten. De `loading.tsx` stond op segmentniveau (`/article`) en
+gold daardoor óók voor `/article/[slug]`.
+
+Opgelost met het patroon dat de homepage al gebruikt: de overzichtspagina in
+route-groep `(list)`, zodat de loading-boundary bij het overzicht blijft. De URL
+verandert niet. `channel/[slug]/loading.tsx` is verwijderd — die zat direct op de
+detailroute; die pagina heeft nu geen skeleton meer.
+
+Geverifieerd op een draaiende productiebuild: zeven onbestaande slugs geven 404,
+overzichten en echte detailpagina's 200.
+
+### D3 — geen bug maar een datagat
+
+De event-detailpagina gebruikte al dezelfde galerij als artikelen. Verschil zat
+in de bron: artikelen lezen bijlagen (`?parent=`), events alleen `meta.gallery`.
+Meting op 24-08: van de eerste honderd gepubliceerde events had **geen enkele**
+dat veld gevuld. Events lezen nu beide, met `meta.gallery` leidend.
+
+**Let op voor de redactie:** dit tovert geen foto's tevoorschijn. Aan
+MaterialDistrict Utrecht 2027 hangt er één. Extra foto's op het event uploaden
+werkt vanaf nu hetzelfde als bij een artikel.
+
+### Open
+
+- GAM-inventaris: de nieuwe posities (`md_leaderboard` op de overzichten,
+  `md_medium_rectangle` op de detailpagina's) moeten in Ad Manager geboekt
+  worden. Ongeboekt = onzichtbaar, dus geen lege vakken.
+- TCF/CMP blijft nodig vóór september voor gepersonaliseerde advertenties in de
+  EER; de nieuwe posities volgen de bestaande consent-status.
+
+### Bestanden
+
+Zie `MANIFEST-beta-fix-24-08.md` in de zip. Let op de lijst met te verwijderen
+bestanden — de verplaatste overzichtspagina's moeten weg, anders bestaat de
+route dubbel.

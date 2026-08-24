@@ -88,13 +88,37 @@ function wpRenderedHtml(
 // Media
 // --------------------------------------------------------------------
 
+/**
+ * §BETA-FIX-24-08 (H2) — vervangen afbeelding meteen zichtbaar.
+ *
+ * Wordt een bestaande afbeelding in WordPress vervangen (zelfde bestandsnaam,
+ * nieuwe inhoud), dan blijft de URL identiek. Browsers, het CDN en de
+ * beeld-optimalisatie serveren daardoor dagenlang de oude versie door — dat is
+ * de klacht "een aangepaste thumbnail duurt heel lang".
+ *
+ * De WP-media-API geeft per bestand een `modified_gmt` mee. Die hangen we als
+ * versie achter de URL: verandert het bestand, dan verandert de URL, en is het
+ * nieuwe beeld direct zichtbaar. Blijft het bestand gelijk, dan blijft de URL
+ * gelijk en blijft alles gewoon gecachet — geen extra verkeer.
+ */
+function withMediaVersion(url: string, modified?: string): string {
+  if (!url || !modified) return url
+  // Compacte, URL-veilige versie: 20260330100026
+  const version = modified.replace(/[^0-9]/g, '')
+  if (!version) return url
+  return `${url}${url.includes('?') ? '&' : '?'}v=${version}`
+}
+
 export function mapMedia(raw: WPMediaResponse): MediaImage {
   const sizes: Partial<Record<ImageSizeKey, MediaSize>> = {}
 
   if (raw.media_details.sizes) {
     for (const [key, size] of Object.entries(raw.media_details.sizes)) {
       sizes[key as ImageSizeKey] = {
-        url: normalizeMediaUrl(size.source_url) ?? size.source_url,
+        url: withMediaVersion(
+          normalizeMediaUrl(size.source_url) ?? size.source_url,
+          raw.modified_gmt,
+        ),
         width: size.width,
         height: size.height,
         filesize: size.filesize,
@@ -107,7 +131,10 @@ export function mapMedia(raw: WPMediaResponse): MediaImage {
   // in de sizes-array maar gebruiken alleen `source_url` op het top-level.
   if (!sizes.full) {
     sizes.full = {
-      url: normalizeMediaUrl(raw.source_url) ?? raw.source_url,
+      url: withMediaVersion(
+        normalizeMediaUrl(raw.source_url) ?? raw.source_url,
+        raw.modified_gmt,
+      ),
       width: raw.media_details.width,
       height: raw.media_details.height,
       mimeType: raw.mime_type,
@@ -120,7 +147,10 @@ export function mapMedia(raw: WPMediaResponse): MediaImage {
     caption: raw.caption?.rendered ?? '',
     description: raw.description?.rendered ?? '',
     mimeType: raw.mime_type,
-    sourceUrl: normalizeMediaUrl(raw.source_url) ?? raw.source_url,
+    sourceUrl: withMediaVersion(
+      normalizeMediaUrl(raw.source_url) ?? raw.source_url,
+      raw.modified_gmt,
+    ),
     width: raw.media_details.width,
     height: raw.media_details.height,
     sizes,

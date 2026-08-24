@@ -35,10 +35,23 @@ interface GptSizeMappingBuilder {
   build(): unknown
 }
 
+interface GptSlotRenderEndedEvent {
+  slot: GptSlot
+  isEmpty: boolean
+}
+
 interface GptPubAdsService {
   setTargeting(key: string, value: string | string[]): GptPubAdsService
   disableInitialLoad(): void
   refresh(slots?: GptSlot[]): void
+  addEventListener(
+    type: 'slotRenderEnded',
+    listener: (event: GptSlotRenderEndedEvent) => void,
+  ): void
+  removeEventListener(
+    type: 'slotRenderEnded',
+    listener: (event: GptSlotRenderEndedEvent) => void,
+  ): void
 }
 
 interface GoogleTag {
@@ -91,6 +104,9 @@ export function AdSlot({
   const slotRef = useRef<GptSlot | null>(null)
   const refreshedRef = useRef(false)
   const [allowed, setAllowed] = useState(false)
+  // `null` = nog niets teruggehoord van GPT (geen consent, niet geladen, of nog
+  // onderweg). `false` = GPT meldde expliciet een lege (onverkochte) positie.
+  const [filled, setFilled] = useState<boolean | null>(null)
 
   // Read on mount rather than during render: the server has no cookie access,
   // so deciding at render time would produce a hydration mismatch.
@@ -104,11 +120,23 @@ export function AdSlot({
     const unit = AD_UNITS[name]
     refreshedRef.current = false
 
+    // Onthouden zodat de cleanup exact deze listener kan afmelden.
+    let renderListener: ((event: GptSlotRenderEndedEvent) => void) | null = null
+
     gt.cmd.push(() => {
       if (theme) gt.pubads().setTargeting('theme', theme)
 
       const slot = gt.defineSlot(unit.path, unit.sizes, divId)
       if (!slot) return
+
+      // GPT meldt per slot of er een creative geladen is. Een onverkochte
+      // positie levert `isEmpty: true` — dan verdwijnt de hele wrapper, zodat
+      // er geen lege rij (of dubbele sectie-marge) overblijft.
+      renderListener = (event) => {
+        if (event.slot !== slot) return
+        setFilled(!event.isEmpty)
+      }
+      gt.pubads().addEventListener('slotRenderEnded', renderListener)
 
       if (unit.mapping) {
         const builder = gt.sizeMapping()
@@ -141,6 +169,10 @@ export function AdSlot({
       const gtag = window.googletag
       if (!gtag) return
       gtag.cmd.push(() => {
+        if (renderListener) {
+          gtag.pubads().removeEventListener('slotRenderEnded', renderListener)
+          renderListener = null
+        }
         if (slotRef.current) {
           gtag.destroySlots([slotRef.current])
           slotRef.current = null
@@ -166,8 +198,17 @@ export function AdSlot({
 
   // Keep the target div in the DOM even before consent so GPT can register
   // the slot; collapseDiv keeps unsold / waiting slots from leaving a gap.
+  //
+  // `data-ad-filled` stuurt de CSS aan: zolang GPT niets geleverd heeft (geen
+  // consent, niet geboekt, of nog onderweg) staat 'ie op "false" en verbergt de
+  // stylesheet de hele positie — inclusief de omliggende container. Zonder dat
+  // houdt een ingeklapte banner zijn plek in een flex-/grid-rij en ontstaat er
+  // een dubbel gat tussen de secties eromheen.
   return (
-    <div className={`ad-unit ad-unit--${name}${className ? ` ${className}` : ''}`}>
+    <div
+      className={`ad-unit ad-unit--${name}${className ? ` ${className}` : ''}`}
+      data-ad-filled={filled === true ? 'true' : 'false'}
+    >
       <div id={divId} className="ad-unit-target" />
     </div>
   )

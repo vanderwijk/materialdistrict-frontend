@@ -19,6 +19,8 @@
  *   WP-developer ze in REST exposeert
  */
 
+import { resourceCacheTag } from './cache-tags'
+
 // --------------------------------------------------------------------
 // Configuratie
 // --------------------------------------------------------------------
@@ -244,9 +246,15 @@ export async function wpFetch<T>(
   if (options.noCache || CACHE_DISABLED) {
     fetchOptions.cache = 'no-store'
   } else {
+    // §BETA-FIX-24-08 (H2): elke gecachete WP-fetch krijgt automatisch een
+    // cache-tag op basis van de resource die 'ie opvraagt (zie
+    // `resourceCacheTag`). Daardoor kan WordPress bij het opslaan van een post
+    // gericht ontcachen, zonder dat elke aanroeper zelf tags meegeeft.
+    const autoTag = resourceCacheTag(path)
+    const tags = [...(options.tags ?? []), ...(autoTag ? [autoTag] : [])]
     fetchOptions.next = {
       revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
-      ...(options.tags ? { tags: options.tags } : {}),
+      ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
     }
   }
 
@@ -314,9 +322,15 @@ export async function wpFetchPaginated<T>(
   if (options.noCache || CACHE_DISABLED) {
     fetchOptions.cache = 'no-store'
   } else {
+    // §BETA-FIX-24-08 (H2): elke gecachete WP-fetch krijgt automatisch een
+    // cache-tag op basis van de resource die 'ie opvraagt (zie
+    // `resourceCacheTag`). Daardoor kan WordPress bij het opslaan van een post
+    // gericht ontcachen, zonder dat elke aanroeper zelf tags meegeeft.
+    const autoTag = resourceCacheTag(path)
+    const tags = [...(options.tags ?? []), ...(autoTag ? [autoTag] : [])]
     fetchOptions.next = {
       revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
-      ...(options.tags ? { tags: options.tags } : {}),
+      ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
     }
   }
 
@@ -429,6 +443,13 @@ export async function getTerm(
 export interface WPMediaResponse {
   id: number
   date: string
+  /**
+   * Laatste wijziging van het bestand. Gebruikt als versie achter de media-URL
+   * zodat een vervangen afbeelding (zelfde bestandsnaam) meteen doorkomt —
+   * zie `withMediaVersion` in mappers.ts. Optioneel: oudere WP-installs of
+   * afgeslankte `_fields`-responses leveren 'm niet altijd.
+   */
+  modified_gmt?: string
   slug: string
   type: 'attachment'
   status: 'inherit' | 'publish' | 'draft' | 'private'

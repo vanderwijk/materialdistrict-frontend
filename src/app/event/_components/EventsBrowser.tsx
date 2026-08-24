@@ -37,6 +37,8 @@ import {
 import { EVENT_TYPES, eventTypeLabel } from '@/lib/config/event-types'
 import type { EventCardVM } from '../_lib/events-order'
 import { EventCard } from './EventCard'
+import { Fragment } from 'react'
+import { GridAdRow, GRID_AD_AFTER } from '@/components/ads/GridAdRow'
 
 const PAGE_SIZE = 20
 
@@ -216,11 +218,14 @@ export function EventsBrowser({ events, channelSlug, search }: EventsBrowserProp
           <>
             <div className="ov-grid-3">
               {pageItems.map((event, index) => (
-                <EventCard
-                  key={event.id}
-                  event={event}
-                  imagePriority={index === priorityImageIndex}
-                />
+                <Fragment key={event.id}>
+                  <EventCard
+                    event={event}
+                    imagePriority={index === priorityImageIndex}
+                  />
+                  {/* §BETA-FIX-24-08 (L1) — leaderboard onder de eerste rij. */}
+                  {index === GRID_AD_AFTER - 1 && <GridAdRow />}
+                </Fragment>
               ))}
             </div>
 

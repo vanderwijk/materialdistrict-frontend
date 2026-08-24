@@ -19785,3 +19785,123 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .ed-route-card-brand { padding: 24px 20px; }
 }
 /* ================== einde §EDITORIAL-RHYTHM-CTA ================== */
+
+/* ============================================================================
+   §BETA-FIX-24-08 — betafeedback-ronde 24-08-2026, append-only.
+   ----------------------------------------------------------------------------
+   Losse punten uit twee weken beta. Alleen nieuwe regels en gerichte
+   overrides; geen bestaande regel gewijzigd. Uitsluitend bestaande tokens.
+
+   H1  channel-bar op de homepage even breed als op de overzichten
+   H3  dubbele sectie-marge rond een onverkochte banner
+   H6  event-tegel volgt het knoppatroon van de book-tegel
+   H7  footer-knop "Follow the Transition" op één regel
+   D2  medium rectangle boven het volgblok in de detail-sidebars
+   L1  leaderboard onder de eerste rij van de overzichten
+   ============================================================================ */
+
+/* --- H1 · Channel-bar homepage op contentbreedte ---------------------------
+   §HOME-1 zette bar én binnenkant op max-width:100% om horizontale overflow
+   te voorkomen. Daardoor liep de balk over de volle vensterbreedte, terwijl de
+   content (hero + rechterkolom) op 1280 staat. De band mag full-bleed blijven;
+   de bínnenkant lijnt weer uit op het contentraster, exact zoals de
+   overzichtspagina's. `min-width:0` + `box-sizing` blijven staan — dáár zat de
+   overflow-bescherming, niet in de breedte. */
+.channel-bar.is-nav .channel-bar-inner {
+  max-width: var(--max-width);
+  padding-left: var(--content-padding-desktop);
+  padding-right: var(--content-padding-desktop);
+}
+@media (max-width: 1000px) {
+  .channel-bar.is-nav .channel-bar-inner {
+    padding-left: var(--content-padding-tablet);
+    padding-right: var(--content-padding-tablet);
+  }
+}
+@media (max-width: 768px) {
+  .channel-bar.is-nav .channel-bar-inner {
+    padding-left: var(--content-padding-mobile);
+    padding-right: var(--content-padding-mobile);
+  }
+}
+
+/* --- H3 · Onverkochte banner mag geen ruimte innemen ------------------------
+   GPT klapt de creative-div in bij een lege positie, maar de wrapper blijft een
+   flex-/grid-kind. In `.hp-content` (flex-kolom, gap 48) leverde dat 96px
+   tussen "Latest materials" en "Latest stories" op, tegen 48 elders. AdSlot zet
+   nu `data-ad-filled`; zolang GPT niets geleverd heeft verdwijnt de positie
+   volledig, inclusief de container eromheen. Geldt meteen voor alle nieuwe
+   posities (detail-sidebars, overzichten). */
+.ad-unit[data-ad-filled='false'] { display: none; }
+.ad-billboard:has(> .ad-unit[data-ad-filled='false']),
+.ad-leaderboard:has(> .ad-unit[data-ad-filled='false']),
+.ad-holder:has(> .ad-unit[data-ad-filled='false']) { display: none; }
+
+/* Gedeelde container voor de nieuwe posities (detail + overzicht). */
+.ad-holder { display: flex; justify-content: center; width: 100%; }
+
+/* --- D2 · Medium rectangle in de detail-sidebars ---------------------------
+   Staat boven het volgblok op alle detailpagina's. De sidebars zijn flex-
+   kolommen met een eigen gap; de holder heeft daarom zelf geen marge nodig. */
+.ad-holder--sidebar { margin: 0; }
+
+/* --- L1 · Leaderboard onder de eerste rij van een overzicht -----------------
+   In het tegelraster geplaatst als volle-breedte-rij die expliciet op rij 2
+   staat. Daardoor vult de auto-plaatsing eerst rij 1 met zoveel tegels als er
+   in die breedte passen (3, 2 of 1) en gaat daarna verder ónder de banner —
+   zonder gaten, bij elke kolombreedte. */
+.ov-grid-3 > .ad-holder--grid,
+.ov-grid-2 > .ad-holder--grid {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 4px 0 12px;
+}
+/* Op /stories staat de featured tegel los boven het raster; daar is de banner
+   een gewone blokrij tussen de twee. */
+.ad-holder--between {
+  margin: 0 0 24px;
+}
+
+/* --- H5 · Featured talk zonder tekstlaag over het beeld --------------------
+   De thumbnail draagt titel + spreker al in het beeld. Wat overblijft is de
+   "Watch talk"-knop (plus de Insider-markering wanneer die geldt). De donkere
+   verloop-overlay blijft: die geeft de witte knop zijn contrast. */
+.feature-band-inner--cta-only {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: none;
+  padding: 28px 32px;
+}
+
+/* --- H6 · Event-tegel volgt het knoppatroon van de book-tegel ---------------
+   "Get tickets" was een balk die door `overflow:hidden` tegen de onder- en
+   zijranden van de kaart plakte, terwijl "View book" ernaast ingesloten in de
+   kaartpadding staat met een radius. De event-CTA krijgt nu dezelfde inset,
+   hoogte en radius, zodat de twee tegels naast elkaar één patroon vormen.
+   Alleen binnen de homepage-split; de default-variant blijft ongemoeid. */
+.hp-events-books .event-card--home .event-card-cta {
+  /* 14px = de padding van .event-card-body, zodat de knop met de tekst
+     erboven uitlijnt (zoals "View book" met de prijs erboven). */
+  margin: 10px 14px 14px;
+  padding: 0;
+  height: 40px;
+  line-height: 40px;
+  border-radius: var(--radius);
+}
+
+/* --- H7 · Footer-knop op één regel -----------------------------------------
+   De knop was een blok-element in de smalste footerkolom en brak daardoor af
+   ("Follow the / Transition"). Hij schikt zich nu naar de tekst in plaats van
+   naar de kolom en breekt niet meer; de pijl blijft achter het woord staan. */
+.follow-transition-trigger {
+  align-self: flex-start;
+  max-width: 100%;
+  white-space: nowrap;
+}
+.follow-transition-arrow { flex: 0 0 auto; }
+/* Zeer smalle schermen: liever een iets krappere knop dan een afbreking. */
+@media (max-width: 380px) {
+  .follow-transition-trigger { padding-left: 14px; padding-right: 14px; }
+}
+/* ======================== einde §BETA-FIX-24-08 ======================== */

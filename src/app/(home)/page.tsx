@@ -391,7 +391,11 @@ export default async function HomePage() {
                       label: STORY_TYPE_META[a.type].label,
                       color: STORY_TYPE_META[a.type].color,
                     }}
-                    channelTags={a.channels.map((c) => c.label)}
+                    /* §BETA-FIX-24-08 (H4): geen channel-pills op de homepage.
+                       Ze voegden op deze plek niets toe en een tegel met twee
+                       channels kreeg een extra "+1"-regel, waardoor die tegel
+                       hoger werd dan de andere twee. Op /stories en de
+                       channelpagina's blijven de pills wél staan. */
                     isInsiderOnly={a.insiderOnly}
                     actions={<CardBookmarkButton type="articles" itemId={a.id} />}
                   />

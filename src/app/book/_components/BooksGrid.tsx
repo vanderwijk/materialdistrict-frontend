@@ -7,14 +7,20 @@
  * gebruikt.
  */
 
+import { Fragment } from 'react'
 import { BookCard } from './BookCard'
+import { GridAdRow, GRID_AD_AFTER } from '@/components/ads/GridAdRow'
 import type { BookListItem } from '@/types/book'
 
 export function BooksGrid({ items }: { items: BookListItem[] }) {
   return (
     <div className="ov-grid-3">
-      {items.map((book) => (
-        <BookCard key={book.id} book={book} />
+      {items.map((book, i) => (
+        <Fragment key={book.id}>
+          <BookCard book={book} />
+          {/* §BETA-FIX-24-08 (L1) — leaderboard onder de eerste rij. */}
+          {i === GRID_AD_AFTER - 1 && <GridAdRow />}
+        </Fragment>
       ))}
     </div>
   )

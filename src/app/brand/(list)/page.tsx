@@ -1,4 +1,18 @@
 /**
+ * §BETA-FIX-24-08 (X1) — deze pagina staat in route-groep `(list)`.
+ *
+ * De route-groep verandert de URL niet: dit blijft `/brand`. Wat 'ie wél doet
+ * is de `loading.tsx` ernaast beperken tot dít overzicht, in plaats van tot het
+ * hele segment inclusief `[slug]`.
+ *
+ * Waarom dat moest: een loading-boundary streamt meteen een Suspense-shell als
+ * HTTP 200. Een `notFound()` die daarná volgt kan de status niet meer op 404
+ * zetten — de kop is al verstuurd. Daardoor beantwoordde elke onbestaande
+ * detail-slug de 404-pagina met status 200 (soft-404), en las Google die als
+ * een geldige pagina. Dit is hetzelfde patroon dat de homepage al gebruikt met
+ * route-groep `(home)`.
+ */
+/**
  * `/brand` — brand-overzichtspagina met search, Country-filter, grid en
  * paginatie.
  *
@@ -30,8 +44,10 @@ import { Button, ChannelBarNav, EmptyState, BrandTile } from '@/components/ui'
 import { getBrandCountryOptions, listBrands, getChannelCatalog, resolveChannelId } from '@/lib/api'
 import { RecentlyViewedRail } from '@/components/ui'
 import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
-import { BrandsFilterSidebar } from './_components/BrandsFilterSidebar'
-import { BrandsPagination } from './_components/BrandsPagination'
+import { BrandsFilterSidebar } from '../_components/BrandsFilterSidebar'
+import { BrandsPagination } from '../_components/BrandsPagination'
+import { Fragment } from 'react'
+import { GridAdRow, GRID_AD_AFTER } from '@/components/ads/GridAdRow'
 
 const BRANDS_PER_PAGE = 24
 
@@ -149,8 +165,12 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
             <>
               <Suspense fallback={null}>
                 <div className="ov-grid-brands">
-                  {result.items.map((brand) => (
-                    <BrandTile key={brand.id} brand={brand} />
+                  {result.items.map((brand, index) => (
+                    <Fragment key={brand.id}>
+                      <BrandTile brand={brand} />
+                      {/* §BETA-FIX-24-08 (L1) — leaderboard onder de eerste rij. */}
+                      {index === GRID_AD_AFTER - 1 && <GridAdRow />}
+                    </Fragment>
                   ))}
                 </div>
               </Suspense>

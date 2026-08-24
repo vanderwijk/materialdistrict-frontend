@@ -1,4 +1,18 @@
 /**
+ * §BETA-FIX-24-08 (X1) — deze pagina staat in route-groep `(list)`.
+ *
+ * De route-groep verandert de URL niet: dit blijft `/article`. Wat 'ie wél doet
+ * is de `loading.tsx` ernaast beperken tot dít overzicht, in plaats van tot het
+ * hele segment inclusief `[slug]`.
+ *
+ * Waarom dat moest: een loading-boundary streamt meteen een Suspense-shell als
+ * HTTP 200. Een `notFound()` die daarná volgt kan de status niet meer op 404
+ * zetten — de kop is al verstuurd. Daardoor beantwoordde elke onbestaande
+ * detail-slug de 404-pagina met status 200 (soft-404), en las Google die als
+ * een geldige pagina. Dit is hetzelfde patroon dat de homepage al gebruikt met
+ * route-groep `(home)`.
+ */
+/**
  * `/article` — articles/stories-overzichtspagina met story-type-filter,
  * search, grid en paginatie.
  *
@@ -46,15 +60,16 @@ import {
   isStoryType,
   type StoryType,
 } from '@/lib/config/story-types'
-import { ArticlesTypeFilter } from './_components/ArticlesTypeFilter'
+import { ArticlesTypeFilter } from '../_components/ArticlesTypeFilter'
 import {
   ArticlesFilterTrigger,
   ArticlesMobileFilterProvider,
   ArticlesMobileSidebar,
-} from './_components/ArticlesMobileFilters'
+} from '../_components/ArticlesMobileFilters'
 import { RecentlyViewedRail } from '@/components/ui'
 import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
-import { ArticlesPagination } from './_components/ArticlesPagination'
+import { ArticlesPagination } from '../_components/ArticlesPagination'
+import { AdSlot } from '@/components/ads/AdSlot'
 
 /**
  * 13 = 1 featured (volle breedte) + 12 in `.ov-grid-3`.
@@ -255,6 +270,13 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                     />
                   </div>
                 )}
+
+                {/* §BETA-FIX-24-08 (L1): op /stories staat de featured tegel
+                    los boven het raster, dus de banner is hier een gewone rij
+                    tussen die tegel en de rest — "onder de eerste tegel". */}
+                <div className="ad-holder ad-holder--between">
+                  <AdSlot name="leaderboard" />
+                </div>
 
                 {rest.length > 0 && (
                   <div className="ov-grid-3">

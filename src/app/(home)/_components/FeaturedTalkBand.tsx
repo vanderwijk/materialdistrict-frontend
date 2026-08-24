@@ -34,7 +34,19 @@ export function FeaturedTalkBand({ talk }: FeaturedTalkBandProps) {
         </Link>
       </div>
 
-      <Link href={talk.href} className="feature-band">
+      {/* §BETA-FIX-24-08 (H5): geen tekstlaag meer over het beeld. De talk-
+          thumbnails dragen de titel en de sprekersnaam al in het beeld zelf
+          (vast format), waardoor de overlay er dwars doorheen liep en beide
+          onleesbaar werden. De titel blijft bestaan voor schermlezers en zoek-
+          machines via het aria-label op de link en de visueel verborgen h3 —
+          alleen de zichtbare dubbeling verdwijnt. */}
+      <Link
+        href={talk.href}
+        className="feature-band"
+        aria-label={
+          talk.meta ? `${talk.title} — ${talk.meta}` : talk.title
+        }
+      >
         {talk.hero && (
           <MdImage
             image={talk.hero}
@@ -49,17 +61,15 @@ export function FeaturedTalkBand({ talk }: FeaturedTalkBandProps) {
             <path d="M8 5v14l11-7z" />
           </svg>
         </span>
-        <div className="feature-band-inner">
-          <p className="feature-band-eyebrow">Featured talk</p>
-          <h3 className="feature-band-title">
-            {talk.insiderOnly && (
-              <span className="content-card-insider" title="Insider">
-                <InsiderMark size="md" ariaLabel="Insider" />
-              </span>
-            )}
-            {talk.title}
-          </h3>
-          {talk.meta && <p className="feature-band-meta">{talk.meta}</p>}
+        <h3 className="sr-only">
+          {talk.insiderOnly ? `Insider — ${talk.title}` : talk.title}
+        </h3>
+        <div className="feature-band-inner feature-band-inner--cta-only">
+          {talk.insiderOnly && (
+            <span className="content-card-insider" title="Insider">
+              <InsiderMark size="md" ariaLabel="Insider" />
+            </span>
+          )}
           <span className="btn btn-lg btn-on-photo">Watch talk →</span>
         </div>
       </Link>

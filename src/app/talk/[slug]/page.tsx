@@ -47,17 +47,43 @@ import {
 import { PreferredSourceEndBlock } from '@/components/ui/PreferredSourceEndBlock'
 
 /**
- * Statically rendered, revalidated on a timer.
+ * §BETA-FIX-24-08 (X1) — soft-404 opgelost.
  *
- * Spelling this out is the point. Without it Next treats a detail route
- * with an empty `generateStaticParams()` as on-demand dynamic, answers
- * `private, no-cache, no-store`, and no CDN ever stores the page — every
- * crawler hit re-renders and re-queries WordPress. `force-static` also
- * acts as a guard rail: a future `cookies()` or `headers()` read in this
- * subtree degrades to empty instead of silently switching caching off for
- * the whole route again.
+ * Deze route stond op `force-static`. Dat hield de pagina's op het CDN, maar
+ * had een bijwerking die pas op de beta zichtbaar werd: een onbekende slug
+ * kreeg wél de 404-pagina te zien, maar het antwoord was HTTP 200. Ook de
+ * niet-gevonden-uitkomst werd namelijk voorgebakken, en een voorgebakken
+ * antwoord kan geen 404-status meer meegeven. Voor Google is zo'n pagina een
+ * geldige pagina — bij een migratie met veel oude inbound links precies wat je
+ * niet wilt.
+ *
+ * `dynamicParams` + `revalidate` doen hetzelfde werk zonder die bijwerking:
+ * onbekende slugs worden op verzoek gerenderd, daarna gecachet en op een timer
+ * ververst (ISR), maar `notFound()` levert nu een echte 404. Het CDN blijft de
+ * gevonden pagina's dus gewoon bewaren.
+ *
+ * Let op bij toekomstig werk: `force-static` was óók een vangnet tegen een
+ * `cookies()`- of `headers()`-aanroep die de hele route stilletjes dynamisch
+ * zou maken. Dat vangnet is hier weg — lees in deze subtree geen request-data
+ * server-side; wat per bezoeker verschilt hoort in een client-component
+ * (zoals de auth-hydratie nu al doet).
  */
-export const dynamic = 'force-static'
+export const dynamicParams = true
+
+/**
+ * Leeg, maar noodzakelijk. Samen met `dynamicParams` markeert dit de route als
+ * statisch-met-ISR: pagina's worden op verzoek gebouwd, daarna op het CDN
+ * bewaard en op de timer ververst. Zónder deze functie behandelt Next de route
+ * als volledig dynamisch — dan rendert élke bezoeker (en élke crawler) de
+ * pagina opnieuw en bevraagt WordPress opnieuw. Dat was de reden voor het
+ * eerdere `force-static`; deze regel neemt die taak over, maar laat
+ * `notFound()` wél een echte 404 geven. Geen build-time prerender: de lijst is
+ * bewust leeg om een request-storm tijdens de Vercel-build te voorkomen.
+ */
+export async function generateStaticParams() {
+  return []
+}
+
 
 /** ISR — mirrors the fetch-level revalidate for this type (1 h). */
 export const revalidate = 3600

@@ -30,6 +30,8 @@ import {
   type FilterSelection,
 } from '@/components/ui/FilterSidebar'
 import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
+import { Fragment } from 'react'
+import { GridAdRow, GRID_AD_AFTER } from '@/components/ads/GridAdRow'
 
 const PAGE_SIZE = 12
 
@@ -166,8 +168,8 @@ export function TalksBrowser({ talks }: TalksBrowserProps) {
           <>
             <div className="ov-grid-3">
               {pageItems.map((t, index) => (
+                <Fragment key={t.id}>
                 <ContentCard
-                  key={t.id}
                   href={`/talk/${t.slug}`}
                   contentType="talk"
                   showTypeBadge={false}
@@ -180,6 +182,9 @@ export function TalksBrowser({ talks }: TalksBrowserProps) {
                   isInsiderOnly={t.insiderOnly}
                   actions={<CardBookmarkButton type="talks" itemId={t.id} />}
                 />
+                {/* §BETA-FIX-24-08 (L1) — leaderboard onder de eerste rij. */}
+                {index === GRID_AD_AFTER - 1 && <GridAdRow />}
+                </Fragment>
               ))}
             </div>
 

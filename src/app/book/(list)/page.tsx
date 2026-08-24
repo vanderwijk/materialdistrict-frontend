@@ -1,4 +1,18 @@
 /**
+ * §BETA-FIX-24-08 (X1) — deze pagina staat in route-groep `(list)`.
+ *
+ * De route-groep verandert de URL niet: dit blijft `/book`. Wat 'ie wél doet
+ * is de `loading.tsx` ernaast beperken tot dít overzicht, in plaats van tot het
+ * hele segment inclusief `[slug]`.
+ *
+ * Waarom dat moest: een loading-boundary streamt meteen een Suspense-shell als
+ * HTTP 200. Een `notFound()` die daarná volgt kan de status niet meer op 404
+ * zetten — de kop is al verstuurd. Daardoor beantwoordde elke onbestaande
+ * detail-slug de 404-pagina met status 200 (soft-404), en las Google die als
+ * een geldige pagina. Dit is hetzelfde patroon dat de homepage al gebruikt met
+ * route-groep `(home)`.
+ */
+/**
  * `/book` — boekenoverzicht.
  *
  * Spiegelt de materials-overzichtsshell (channelbalk + filter-sidebar + grid).
@@ -18,9 +32,9 @@ import type { Channel } from '@/lib/api/channels'
 import { listBooks } from '@/lib/api/books'
 import type { BookListItem } from '@/types/book'
 import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
-import { BooksFilterSidebar } from './_components/BooksFilterSidebar'
-import { BooksGrid } from './_components/BooksGrid'
-import { BooksPagination } from './_components/BooksPagination'
+import { BooksFilterSidebar } from '../_components/BooksFilterSidebar'
+import { BooksGrid } from '../_components/BooksGrid'
+import { BooksPagination } from '../_components/BooksPagination'
 
 const pagePath = canonicalPath('/book')
 const PER_PAGE = 24

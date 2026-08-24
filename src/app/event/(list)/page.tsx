@@ -1,4 +1,18 @@
 /**
+ * §BETA-FIX-24-08 (X1) — deze pagina staat in route-groep `(list)`.
+ *
+ * De route-groep verandert de URL niet: dit blijft `/event`. Wat 'ie wél doet
+ * is de `loading.tsx` ernaast beperken tot dít overzicht, in plaats van tot het
+ * hele segment inclusief `[slug]`.
+ *
+ * Waarom dat moest: een loading-boundary streamt meteen een Suspense-shell als
+ * HTTP 200. Een `notFound()` die daarná volgt kan de status niet meer op 404
+ * zetten — de kop is al verstuurd. Daardoor beantwoordde elke onbestaande
+ * detail-slug de 404-pagina met status 200 (soft-404), en las Google die als
+ * een geldige pagina. Dit is hetzelfde patroon dat de homepage al gebruikt met
+ * route-groep `(home)`.
+ */
+/**
  * `/event` — events-overzichtspagina.
  *
  * Sessie 8.
@@ -24,8 +38,8 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { ChannelBarNav } from '@/components/ui'
 import { listEvents, getChannelCatalog } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
-import { sortEventsByDate } from './_lib/events-order'
-import { EventsBrowser } from './_components/EventsBrowser'
+import { sortEventsByDate } from '../_lib/events-order'
+import { EventsBrowser } from '../_components/EventsBrowser'
 
 /** Ruime bovengrens voor de enkele fetch. Events zijn een bescheiden set. */
 const EVENTS_FETCH_LIMIT = 100

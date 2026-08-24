@@ -37,6 +37,8 @@ import { useBookmarks } from '@/lib/hooks/useBookmarks'
 import { useGateNotice } from '@/components/ui'
 import { useCompare } from '@/lib/hooks/useCompare'
 import type { MaterialListItem } from '@/types/material'
+import { Fragment } from 'react'
+import { GridAdRow, GRID_AD_AFTER } from '@/components/ads/GridAdRow'
 
 // --------------------------------------------------------------------
 // Props
@@ -123,8 +125,8 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
 
       <div className="ov-grid-3">
         {items.map((material, index) => (
+          <Fragment key={material.id}>
           <MaterialCard
-            key={material.id}
             material={material}
             imagePriority={index === priorityImageIndex}
             isLoggedIn={isLoggedIn}
@@ -140,6 +142,9 @@ export function MaterialsGrid({ items, searchTerm }: MaterialsGridProps) {
             onCompareLimitReached={handleCompareLimitReached}
             searchTerm={searchTerm}
           />
+          {/* §BETA-FIX-24-08 (L1) — leaderboard onder de eerste rij. */}
+          {index === GRID_AD_AFTER - 1 && <GridAdRow />}
+          </Fragment>
         ))}
       </div>
 

@@ -1,4 +1,18 @@
 /**
+ * §BETA-FIX-24-08 (X1) — deze pagina staat in route-groep `(list)`.
+ *
+ * De route-groep verandert de URL niet: dit blijft `/channel`. Wat 'ie wél doet
+ * is de `loading.tsx` ernaast beperken tot dít overzicht, in plaats van tot het
+ * hele segment inclusief `[slug]`.
+ *
+ * Waarom dat moest: een loading-boundary streamt meteen een Suspense-shell als
+ * HTTP 200. Een `notFound()` die daarná volgt kan de status niet meer op 404
+ * zetten — de kop is al verstuurd. Daardoor beantwoordde elke onbestaande
+ * detail-slug de 404-pagina met status 200 (soft-404), en las Google die als
+ * een geldige pagina. Dit is hetzelfde patroon dat de homepage al gebruikt met
+ * route-groep `(home)`.
+ */
+/**
  * `/channel` — index van alle channels (stap 12).
  *
  * Server Component. Haalt de channel-index op (`getChannelsIndex`: catalogus +
@@ -18,7 +32,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { EmptyState } from '@/components/ui'
 import { getChannelsIndex } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
-import { ChannelsHub } from './_components/ChannelsHub'
+import { ChannelsHub } from '../_components/ChannelsHub'
 
 const PAGE_DESCRIPTION =
   'Explore MaterialDistrict by channel — topic hubs that bring together materials, stories, brands, events and talks around themes like biobased, circular and acoustic.'

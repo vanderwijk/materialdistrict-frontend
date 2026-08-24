@@ -27,6 +27,7 @@
 import { useAuth } from '@/components/providers/AuthContext'
 import { Button } from '@/components/ui'
 import { FollowDigestBlock, type DigestChannel } from '@/components/layout/FollowDigestBlock'
+import { AdSlot } from '@/components/ads/AdSlot'
 
 export interface ArticleSidebarMaterial {
   id: number
@@ -88,6 +89,12 @@ export function ArticleDetailSidebar({
       )}
 
       {/* §VISUAL-ROUND-18-06 punt 8: digest-blok i.p.v. het oude e-mailveld. */}
+      {/* §BETA-FIX-24-08 (D2): medium rectangle boven het volgblok —
+          dezelfde plek op elke detailpagina. */}
+      <div className="ad-holder ad-holder--sidebar">
+        <AdSlot name="mrec" />
+      </div>
+
       <FollowDigestBlock channels={channels} compact />
 
       {/* Insider upsell — alleen voor niet-members */}
