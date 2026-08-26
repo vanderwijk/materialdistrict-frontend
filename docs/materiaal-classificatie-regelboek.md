@@ -5,6 +5,9 @@
 > getoetst — ongeacht of dat voorstel machinaal of met de hand tot stand komt. Wijzigt de
 > norm, dan wijzigt dit bestand en wordt de ronde opnieuw gedaan — niet omgekeerd.
 >
+> Versie 2.0 · 25-08-2026 · voegt §3.12 toe (HPL), §3.13 (Living Materials) en §4.6
+> (Sense & Sensibility). Drie patroonbesluiten van 25-08-2026, alle drie genomen na de
+> volledige doorloop van 3.244 materialen.
 > Versie 1.9 · 19-08-2026 · legt de telwijze van de audit vast (§3.6c) en hermeet de vangregels
 > ná de write-back van ronde 1 (§3.6a-ter). Geen grensregel gewijzigd.
 > Versie 1.8 · 19-08-2026 · verwerkt de zes patroonbesluiten van ronde 1 en scherpt §3.1 aan op
@@ -652,6 +655,40 @@ is en alleen aan het oppervlak steenpoeder draagt, is geen steen.
 Dit is de reden dat §2 de woorden *in gewonnen vorm* niet meer draagt: gefabriceerd kwarts is
 geen gewonnen steen, maar het hoort wel in het filter waar de doelgroep het zoekt.
 
+### 3.12 HPL en compact laminaat · *nieuw in 2.0, besluit 25-08-2026*
+
+HPL is papier, geïmpregneerd met melaminehars en onder druk geperst. Twee families,
+geen dominantie, dus §3.2 geldt: **Composites**. De propositie van HPL — hardheid,
+slijtvastheid, een decor dat niet slijt — komt uit de hars en het procedé, niet uit
+het papier.
+
+- Duropal, Resopal, Polyrey, de Formica-reeks, Trespa Meteon → **Composites**
+- Metaalfolie op een HPL-kern (Dekorial, Metal Laminate, DigitalPrint Serie Metalli) → **Composites**
+- Compact laminaat en massief HPL, ongeacht het decor → **Composites**
+
+**Uitzondering, via §3.2c.** Draagt een biobased vezel de propositie in plaats van het
+kraftpapier, dan wint dat type. Barkcloth blijft barkcloth, ook geperst.
+
+- Bark Cloth, Barkcloth HPL, Abacá, ECO-HPL → **Bio-based (excl. Wood)**
+- Washi HPL → **Bio-based (excl. Wood)** (het Japanse papier is de propositie)
+
+**Niet te verwarren met een HPL-toplaag op een houten kern.** Daar geldt §3.1: de kern
+telt. Melaminegecoate spaanplaat en HDF met een HPL-deklaag blijven **Wood**.
+
+- Eurodekor, CompacMel Plus, SuperPan, Duho-Tex → **Wood**
+
+### 3.13 Living Materials · *nieuw in 2.0, besluit 25-08-2026*
+
+Sinds 25-08-2026 bestaat er een apart channel voor materialen waarin het organisme het
+materiaal zélf vormt. Dat raakt ook het type niet, maar wel de afbakening: **gekweekt is
+iets anders dan geteeld.** Een gewas dat wordt verbouwd, geoogst en daarna verwerkt is
+gewoon biobased. Groeit het organisme dóór het materiaal heen en maakt het daarmee de
+structuur, dan is het een levend materiaal.
+
+- Mycelium dat landbouwafval samenbindt, bacteriecellulose uit fermentatie, microalgen
+  die silica vormen, mos dat op beton groeit → **Living Materials**
+- Biologisch geteelde katoen, hennep uit Frankrijk, duurzaam geoogst teak → **niet**
+
 ### 3.10 Ongebakken klei — open
 
 Ceramics is in §2 gedefinieerd als *gebakken* keramiek. Ongebakken kleimaterialen (Claytec,
@@ -779,6 +816,26 @@ en die meting is voor geen van de drie gedaan.
 rust en niet op indruk.
 
 ---
+
+### 4.6 Sense & Sensibility · *nieuw in 2.0, besluit 25-08-2026*
+
+Het ontwerpchannel. Voor materialen waarvan de tekst zélf een uitgesproken zintuiglijke
+eigenschap benoemt: reliëf, textuur, diepte, lichtwerking, tactiliteit, geur, klank, of
+kleur die met de kijkhoek verandert.
+
+**Niet:** een gewone afwerkingsomschrijving (mat, glanzend, glad), een kleurenreeks, een
+decor of print, of woorden als mooi, elegant of tijdloos. Vrijwel elk materiaal in de
+collectie zou daaronder vallen.
+
+**Niet:** een eigenschap die al een eigen channel heeft. Akoestische prestatie is Acoustic,
+reageren op een prikkel is Smart & Responsive.
+
+**Niet:** doorschijnendheid of een driedimensionale structuur als technische eigenschap.
+Een drainagemat met een 3D-structuur van monofilamenten en doorschijnend plaatmateriaal
+vallen erbuiten; het gaat om de zintuiglijke ervaring, niet om de constructie.
+
+Het is een ontwerpchannel: het komt naast een functioneel channel te staan, nooit in
+plaats daarvan. Toegekend aan 200 van de 341 kandidaten na de doorloop van 25-08-2026.
 
 ## 5. Afgeleide eigenschappen
 
