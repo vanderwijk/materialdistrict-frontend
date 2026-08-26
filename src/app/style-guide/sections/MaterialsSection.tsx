@@ -103,6 +103,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
     brandCountry: 'Belgium',
     materialCode: null,
     featured: false,
+    insiderOnly: false,
     date: '2024-08-12T10:00:00',
     modified: '2024-08-12T10:00:00',
     publication: {
@@ -146,6 +147,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
     brandCountry: 'Netherlands',
     materialCode: null,
     featured: true,
+    insiderOnly: false,
     date: '2024-09-01T10:00:00',
     modified: '2024-09-01T10:00:00',
     publication: {
@@ -189,6 +191,7 @@ const MOCK_MATERIALS: MaterialListItem[] = [
     brandCountry: 'Netherlands',
     materialCode: null,
     featured: false,
+    insiderOnly: false,
     date: '2024-07-20T10:00:00',
     modified: '2024-07-20T10:00:00',
     publication: {
