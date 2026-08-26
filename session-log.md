@@ -12,7 +12,17 @@
 ---
 
 ## Laatste update
-Datum: 25-08-2026 — Documentatiefundament (§DOC-25-08): besluitenregister (57 besluiten),
+Datum: 25-08-2026 — Importprotocol getest tegen echte bestanden (§IMPORT-TEST-25-08):
+`importprotocol.md` naar v4.8 (toelatingsladder, vier stappen, kandidaatstap), acht besluiten
+B80–B87 in het besluitenregister, waarvan B80 B37 regel 6 en B48 herziet. Vijf testrondes op vijf
+bronbestanden. Plus `schema-import.md` en het migratiescript dat de importvelden bouwt — inclusief
+de bevindingentabel waarmee dezelfde scan ook Sample.Store-kandidaten oplevert. Niets naar de
+database geschreven.
+
+----
+
+## Laatste update (vorige)
+Datum: 25-08-2026 — Documentatiefundament (§DOC-25-08): besluitenregister (58 besluiten),
 begrippenlijst, mutatieprotocol en importprotocol als nieuwe normdocumenten in `docs/`;
 `roadmap.md` samengevoegd na divergentie en uitgebreid met §10 (Data, relaties & imports). Zie sectie "§DOC-25-08 — documentatiefundament" onderaan. Geen code gewijzigd.
 
@@ -3908,11 +3918,17 @@ Campaigns, de gedeployde redactie-rechten); de andere kopie miste alles van ná 
 visualizer 25-06, dual write live 30-06, mailtool-keuze 24-07). Samengevoegd, met een
 statusparagraaf die vastlegt wat waar vandaan komt.
 
-### Bevindingen — status 26-08-2026
+### Bevindingen — nog op te lossen
 
-1. **Regelboek — opgelost.** Canoniek: `docs/materiaal-classificatie-regelboek.md`.
-   Cms-plugin-kopie + v1.3 weg. Zie besluitenregister B22 HERZIEN.
-2. **Twee session-logs — opgelost.** `docs/session-log-mission-beeld-04-08-v2.md` verwijderd.
+1. **Regelboek staat twee keer in de frontend-repo**, en de twee kopieën spreken elkaar tegen
+   over welke canoniek is. `docs/materiaal-classificatie-regelboek.md` zegt "houd deze
+   frontend-kopie als bron van waarheid"; `docs/cms-plugin/docs/materiaal-classificatie-regelboek.md`
+   zegt "één repository, niet twee — de verouderde kopie wordt verwijderd". Beide dragen nu
+   inhoudelijk versie 1.9, dus nog geen schade. Commit `a6fd49c` verwijderde de stale kopie;
+   `0df2dc4` (de plugin-mirror) zette 'm terug.
+2. **Twee session-logs.** `session-log.md` (root, 219 KB) en
+   `docs/session-log-mission-beeld-04-08-v2.md` (207 KB, 04-08). De tweede is een sessiekopie
+   die is blijven staan.
 3. **Channel-catalogus.** Gemeten op de live API: achttien channels, niet twintig zoals het
    commentaar in `src/lib/api/channels.ts` zegt. Zes channels dragen tien of minder materialen
    (Sense & Sensibility 0, Recycling 1, Regenerative 1, Timber 10, Leisure & Hospitality 10,
@@ -4124,3 +4140,135 @@ overtreden de harde limiet.
 alles inlezen; een sessie van 200 kB volledig lezen kost zoveel context dat er na drie sessies
 niets over is. De structurele oplossing is niet opnieuw sweepen maar het register voeden — zie
 `START-HIER.md`, sectie Normdocumenten.
+
+### datamodel.md — vijfde normdocument
+
+Aanleiding: in een nieuwe importtestsessie werd gerapporteerd dat brands geen btw, telefoon, e-mail
+of KvK hebben. Jeroen wist zeker dat dat niet klopte, en had gelijk. Die velden bestaan wel —
+`email`, `phone`, `vatNumber` en `chamberNumber` staan in `BrandProfile` en lopen via
+`GET/POST /md/v2/dashboard/brands/{brandId}/profile`. De sessie had gemeten tegen `wp/v2/brand`,
+de publieke endpoint, die contactgegevens van bedrijven niet teruggeeft — en concludeerde uit
+"niet in de respons" dat het veld niet bestaat.
+
+**Dezelfde fout als eerder die dag met `vimeo_id`.** Twee keer op één dag, beide keren met een
+levering eraan vast. De negatieve regel die na de eerste keer in de begrippenlijst werd gezet was
+te algemeen om de tweede te voorkomen.
+
+**`docs/datamodel.md` legt daarom drie lagen vast:** publiek (`wp/v2`), gated
+(`md/v2/talks/{id}/embed` e.d.) en dashboard (`md/v2/dashboard/…`), met daaronder de
+WordPress-database die ook velden bevat die geen enkele endpoint teruggeeft. Per entiteit staat er
+welk veld in welke laag zit. Plus acht meetregels (§7), waarvan de kern: een veld dat niet in
+`wp/v2` staat, bestaat níét niet — en "niet meetbaar via de publieke API" is een geldige uitkomst,
+"leeg" niet.
+
+**Vastgelegd als B57.**
+
+**Vier gaten expliciet gemarkeerd in plaats van ingevuld:** de exacte meta-sleutels achter de
+dashboardvelden, mogelijke velden die door geen endpoint worden teruggegeven, de waardenlijst van
+`record_status`, en of `brand.primary_user_id` is gebouwd. Alle vier vragen een blik op de database
+of de plugin-broncode, die niet in de frontend-kloon zit. Zolang ze openstaan schrijft geen
+importscript naar die velden.
+
+
+---
+
+## §IMPORT-TEST-25-08 — importprotocol getest tegen echte bestanden
+
+**Opzet.** Geen document aan tafel bedacht: vijf rondes waarin het geldende protocol tegen echte
+bronbestanden is gehouden, met de opdracht om te kijken waar het kraakt. Wat brak is regel geworden.
+
+| Ronde | Bestand | Omvang |
+|---|---|---|
+| 0 | `terugdraaien-merken-lijst.csv` | 287 regels |
+| 1 | MDU2023 exposanten (Mailchimp-export) | 125 rijen × 43 kolommen |
+| 2 | MDU2025 beurscatalogus (Word, geen tabel) | 135 records |
+| 3 | MDU2023 bezoekers, show/no-show | 4.327 rijen |
+| 4 | Insightly CRM-export | 9 tabellen, 7.519 organisaties, 28.725 notities |
+
+**Wat elke ronde brak.**
+
+- **Ronde 0** — de terugdraailijst kon de vraag niet beantwoorden: geen factuurregels, dus 278 van
+  de 287 regels landden op "niet vast te stellen". Daaruit volgde de toets *kan dit bestand de vraag
+  beantwoorden* vóór de kolom-kwitantie. Ook: 287 regels, 284 unieke namen — dat verklaart waarom
+  Johan op 268 verwijderde records uitkwam en niet op 270.
+- **Ronde 1** — `Company Website` leeg op alle 125 rijen; het enige matchveld dat het protocol kende
+  bestond in dat bestand niet. Exact matchen op domein zou vier duplicaten hebben gemaakt (Arpa,
+  Rubio Monocoat, VeroMetal, Novacolor). Eén domeinmatch wees aantoonbaar het verkeerde merk aan
+  (`i-did.nl` → "Sylvia Calvo").
+- **Ronde 2** — de reparatie uit ronde 1 brak meteen: `ioanacaramiciu.wixsite.com` en
+  `manueljouvin.wixsite.com` delen de stam "wixsite". Platformlijst toegevoegd. 25 bedrijven staan
+  in beide edities → deelname is een gedateerd feit, geen nieuw record.
+- **Ronde 3** — 2.557 bedrijfsnamen waarvan 2.465 als nieuw merk zouden binnenkomen, inclusief
+  Saxion, TU Delft en Windesheim. Daaruit: de bedrijfspoort staat open of dicht **per persoon**, niet
+  per bronsoort. En: 4.327 rijen op 4.317 personen — de rij is een ticket, en tien mensen kregen twee
+  tegenstrijdige oordelen.
+- **Ronde 4** — `EmailOptedOut` op `False` bij alle 5.445 contacten: een veld dat nooit is gebruikt.
+  Daaruit B86. 5.369 notities met persoonlijke opmerkingen over met naam genoemde mensen → B87.
+
+**De reparatie die vier keer brak.** De domeinstam-regel is in vier rondes vier keer stuk gegaan:
+platformdomeinen (wixsite), samengestelde landextensies (`aub.ac.uk` tegenover `uibk.ac.at` op de
+stam "ac"), stammen die elkaar bevatten (`moso.eu` tegenover `moso-bamboo.com`), en tot slot het feit
+dat een bedrijf van domein wisselt terwijl de naam blijft. Dat laatste leidde tot B84: naam als derde
+ingang, maar uitsluitend als kandidaatgenerator.
+
+**Wat de eindronde deed met het bezoekersbestand** (4.317 personen, protocol v4.8):
+
+| Uitkomst | Aantal |
+|---|---|
+| Gekoppeld aan een bestaand merk | 233 personen over 118 merken |
+| — waarvan alleen via de domeinstam gevonden | 37 |
+| — waarvan alleen via de bedrijfsnaam gevonden | 70 |
+| Merk herkend maar géén relatie gelegd | 32 (schooladres of vrije provider) |
+| Nieuwe merken aanmaken als prospect | 46 bedrijven |
+| Aan Jeroen voorleggen (productuitzondering) | 12 bedrijven |
+| Rol blijft leeg, wordt niet gemaild | 50 bedrijven / 64 personen |
+| Specifier | 3.954 personen |
+
+Onder het oude protocol: 2.465 nieuwe merken. Onder v4.8: 46, als prospect, elk met de zin uit de
+eigen site waarop het oordeel steunt.
+
+**Sitescan.** 319 onbekende domeinen opgehaald, 262 met bruikbare tekst, 38 onbereikbaar, 19 leeg.
+Van de zelfgerapporteerde "Productie"-vinkjes bleek ruwweg de helft niet te kloppen. `rofa.nl` gaf
+een lege pagina terwijl de site gewoon werkt — dat werd B85.
+
+**Correctie op een eerdere aanname.** De notitie `NU-DOEN-twee-blokkades-25-08.md` stelde dat
+`terugdraai-merken.php` nooit is uitgevoerd en dat 287 lege records nog in de database staan. Dat is
+onjuist: Johan heeft het op 05-08-2026 gedraaid en 268 records verwijderd, vóór de live-gang.
+Geverifieerd tegen de live API. Vervangen door `NU-DOEN-blokkades-25-08-v2.md`. Wat wél openstaat is
+de **herimport**, niet een terugdraaiactie.
+
+**Twee eigen fouten, genoteerd omdat ze het documentatiesysteem raken.** Er is eerst geconcludeerd
+dat `email`, `phone`, `vatNumber` en `chamberNumber` niet op brand bestaan — gemeten tegen
+`wp/v2/brand`, terwijl `datamodel.md` §2b zegt dat ze achter het dashboard-endpoint zitten. Het
+normdocument was niet opgevraagd. En de eerste versie van dit protocol droeg versienummer 4.0 en
+claimde v3.0 te vervangen, terwijl het bestand in `docs/` op v4.7 stond. Beide zijn hetzelfde
+verzuim: niet toetsen tegen de bron.
+
+**Geleverd.**
+
+- `docs/importprotocol.md` — v4.8
+- `docs/besluitenregister.md` — B80 t/m B87, plus `HERZIEN DOOR B80` op B37 en B48
+- `docs/schema-import.md` — bouwspecificatie voor de velden die de import nodig heeft
+- `md-import-schema-migratie.php` — idempotent migratiescript, begint met een inventarisatie
+- `brand-velden-uitdraai-v2.php` — read-only diagnose voor Johan
+- `NU-DOEN-blokkades-25-08-v2.md` — gecorrigeerde blokkadenotitie
+- Twee werkboeken uit de testrondes (niet voor de moedermap, wel voor de beoordeling)
+
+**Open, en bewust niet ingevuld met een aanname.** De enum van `account_type` (snoeien is een
+besluit; of het veld wordt uitgelezen een opzoekvraag) · de `wp_postmeta`-sleutels achter
+`vatNumber` en `chamberNumber` met hun vulgraad · de waardenlijst van `record_status` · of
+`brand.primary_user_id` is gebouwd. De laatste drie rollen uit het uitdraai-script.
+
+**Nog te doen met de CRM-export.** 6.465 organisaties zonder bestaand merk, waarvan 117 met hard
+koopbewijs en 714 met contact in 2021 of later. Voorstel: in drie porties, koopbewijs eerst. En de
+24.266 gedateerde gespreksnotities als Activity-tijdlijn, intern zichtbaar (B87), gekoppeld ná de
+kandidaatstap van B84 en nooit op naam.
+
+
+---
+
+## §STAP-D — importschema-migratie (26-08-2026, Johan)
+
+`md-importschema-v1-25-08` verwerkt: `importprotocol.md` v4.8, besluitenregister B80–B87,
+`schema-import.md`, `NU-DOEN-blokkades-25-08-v2.md`. Migratiescript dry-run daarna execute op CMS
+(idempotent; bestaande waarden niet overschreven). Zie mail Johan → Claude van 26-08.

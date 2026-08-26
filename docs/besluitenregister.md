@@ -16,9 +16,8 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.6 · 26-08-2026 · B22 herzien (frontend-canon); bevindingen 2 en 5 gesloten bij merge
-> van documentatiefundament-v8. v1.5 · 25-08-2026 · §9 en §10 toegevoegd na een sweep over alle
-> sessies in dit project. Gereconstrueerd uit `docs/`, `session-log.md`,
+> Versie 1.14 · 25-08-2026 · B75–B79: Activity, één logboek, zichtbaarheid, Events. B74: "event" betekent drie dingen; interactie vervangt interactie.
+> Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
 
 ---
@@ -267,8 +266,7 @@ blijft nieuwbouw en valt buiten deze patch.
 
 ## 5. Classificatie
 
-> De inhoudelijke norm staat in `docs/materiaal-classificatie-regelboek.md` in de
-> **frontend-repo** (publiek, zodat Claude en Jeroen erbij kunnen). De plugin-repo is privé.
+> De inhoudelijke norm staat in `docs/materiaal-classificatie-regelboek.md` in de **frontend-repo**.
 > Hieronder alleen de besluiten die daarbuiten doorwerken.
 
 ### B22 · Het regelboek in de frontend-repo is de enige canonieke versie
@@ -278,11 +276,11 @@ parallelle normtekst.
 **Grond.** Twee bestanden met dezelfde naam lopen uiteen (19-08: frontend nog op 1.1). De
 plugin-repo is privé; de frontend-repo is de gedeelde werkruimte voor Claude/Jeroen — daarom
 woont de norm daar, niet omgekeerd.
-**Bron.** 19-08-2026 regelboek §Werkwijze; bevestigd 26-08-2026 (Johan): cms-plugin-kopie en
-v1.3 verwijderd; Claude’s klaring 26-08: root-pad houden, cms-plugin-kopie weg.
+**Bron.** 19-08-2026 regelboek §Werkwijze; bevestigd 26-08-2026 (Johan); Claude-klaring 26-08.
 **Raakt.** `START-HIER.md` (bronhiërarchie), elke classificatiesessie.
-**HERZIEN 26-08-2026.** Eerdere formulering (“alleen in de plugin-repo” / “NIET UITGEVOERD”)
-botste met de toegangsreden en is uitgevoerd.
+**HERZIEN 26-08-2026.** Eerdere formulering (“alleen in de plugin-repo”) botste met de
+toegangsreden; cms-plugin-kopie en v1.3 zijn verwijderd.
+
 
 ### B23 · Certificaten zijn geen channel-bewijs
 **Besluit.** C2C, FSC en PEFC tellen op zichzelf niet als bewijs voor een channel. De
@@ -439,7 +437,8 @@ verloren door een ontbrekende kopregel.
 **Bron.** `datastrategie-specificatie.docx`, augustus 2026, na externe review.
 **Raakt.** Elke importronde. Uitgewerkt in `importprotocol.md`.
 **HERZIEN DOOR B46 (25-08-2026)** op regel 2: een domein is een *sterk signaal*, geen bewijs.
-De rest van de acht regels blijft ongewijzigd geldig.
+**HERZIEN DOOR B80 (25-08-2026)** op regel 6: terugdraaien mág records verwijderen wanneer de import
+ze zelf heeft aangemaakt. De overige regels blijven ongewijzigd geldig.
 
 ### B38 · Domeinkoppeling legt een verwachting vast, geen account
 **Besluit.** Geen accounts vooraf aanmaken voor bekende contacten. Sla alleen de verwachting op
@@ -513,7 +512,7 @@ transactionele mail.
 **Bron.** 25-08-2026, sessie documentatiefundament; bouwt op B39.
 **Raakt.** Schema-uitbreiding bij Johan; elke campagne op geïmporteerde data.
 
-### B44 · Deelnamefeiten hebben een vaste woordenlijst
+### B44 · Interactieen hebben een vaste woordenlijst
 **Besluit.** Een bronregel levert gedateerde feiten op uit een gesloten lijst: `exposant` ·
 `standbemanning` · `bezoeker_geregistreerd` · `bezoeker_aanwezig` · `no_show` · `spreker` ·
 `boekkoper` · `abonnee`. Elk feit draagt editie of datum, bronbestand en importdatum. Geen vrije
@@ -572,6 +571,10 @@ Het importscript draait in een **transactie**: alles of niets.
 **Bron.** 25-08-2026, parallelle importsessie; scherpt B37 regel 5 en 6 aan met een concrete vorm.
 **Raakt.** Schema-uitbreiding bij Johan.
 
+**HERZIEN DOOR B80 (25-08-2026)**: terugdraaien herstelt veldwaarden bij records die al bestonden,
+maar mág records verwijderen die de import zelf heeft aangemaakt. De grens langs het batch-ID blijft
+ongewijzigd geldig.
+
 ### B49 · "Recent" is het moment van geldigheid, niet van aanlevering
 **Besluit.** Bij gelijke bronautoriteit wint de recentste **bevestigde** waarde: het moment waarop
 de waarde geldig of geverifieerd was, niet het moment waarop het bestand werd aangeleverd.
@@ -589,6 +592,415 @@ geleverd. Er komt geen importplatform. Johan draait alleen het script.
 **Grond.** Een mens beoordeelt elke bron vóór verwerking. Daardoor is zware machinerie —
 idempotency, retry-logica, bescherming tegen parallelle schrijfacties — niet nodig.
 **Bron.** 25-08-2026, parallelle importsessie.
+
+### B58 · Verrijking is een stap ín de import, niet erna
+**Besluit.** Levert een bron geen KvK, btw of domein, dan zoekt Claude die zelf op vóórdat er een
+besluit valt. Afleidingsvolgorde: corroboratie in de eigen database → andere bron in dezelfde
+levering → e-maildomein → KvK-handelsregister → VIES → bedrijfswebsite → zoekmachines. Verrijkte
+waarden dragen bronlabel `research`, zijn de zwakste bron, vullen alleen lege velden en
+overschrijven nooit. Per aanvulling wordt bron, zoekopdracht, resultaat en datum gelogd. Levert het
+niets op, dan blijft het veld leeg mét reden.
+**Grond.** Een bron die zichzelf niet kan identificeren is geen reden om het oordeel bij Jeroen te
+leggen, maar een reden om te zoeken.
+**Bron.** 25-08-2026, na de droogloop op MDU 2022.
+**Raakt.** `importprotocol.md` §4b. Verrijking is een aparte batchronde met eigen batch-ID.
+
+### B59 · Een naam-match is een onderzoeksopdracht, geen besluit
+**Besluit.** Bij naamgelijkenis verifieert Claude zelf voordat er iets wordt voorgelegd. De
+goedkoopste toets is domeincorroboratie: draagt het bestaande merk een website waarvan het domein
+de genormaliseerde bronnaam bevat, dan is naam + domein samen wél bewijs. Pas wat daarna onzeker
+blijft gaat naar de review-lijst.
+**Grond.** In de droogloop op MDU 2022 leverde de oude regel 48 review-regels op 141 bedrijven —
+`MOGELIJK_DUBBEL` werd de hoofdmoot in plaats van de uitzondering, en dat verschuift werk naar
+Jeroen. Domeincorroboratie alleen bracht het terug naar 2. "Plexwood" tegenover een merk met
+`plexwood.com` is geen twijfelgeval.
+**Bron.** 25-08-2026.
+**Wat níét verandert.** Samenvoegen mag nog steeds alleen op bewijs (B46). Naam alleen blijft
+verboden; wat verandert is dat Claude het bewijs zelf gaat halen.
+
+### B60 · Normaliseren gebeurt bij de import, met één standaard per veld
+**Besluit.** Een import gebruikt alles wat de bron biedt en zet het meteen in de vastgelegde
+notatie. De standaard: e-mail in kleine letters; website als `https://` zonder `www.` en zonder
+afsluitende slash; telefoon in E.164 (`+31631968244`); land in ISO 3166-1 alpha-2; NL-postcode als
+`1017 CE`; btw-nummer met landcode-prefix zonder punten of spaties, VIES-gevalideerd; KvK als acht
+cijfers met voorloopnul; socials als volledige URL.
+**Grond.** Normaliseren kost tijdens een import vrijwel niets en achteraf een hele mutatieronde.
+**Bron.** 25-08-2026, Jeroen.
+**Raakt.** `importprotocol.md` §2b. Normalisatie gebeurt **vóór** het matchen — een
+niet-genormaliseerd domein matcht niet.
+
+### B61 · Technische hygiëne is automatisch, presentatie is een voorstel
+**Besluit.** Objectieve fouten worden zonder oordeel rechtgezet: HTML-entiteiten, dubbele spaties,
+voor- en naspaties, hoofdletters in domeinnamen, ontbrekende protocollen. Keuzes gaan als
+**patroonvoorstel** naar de review-lijst: rechtsvorm, kapitalisatie van bedrijfsnamen en steden.
+**Grond.** Een merknaam is merkeigendom. "3M" mag niet "3m" worden omdat een script dat netter
+vindt. Maar `&amp;amp;` in een naam is geen keuze, dat is een weergavefout.
+**Bron.** 25-08-2026.
+**HERZIEN DOOR B69 (25-08-2026)** voor plaats-, straat- en persoonsnamen: die worden wél
+automatisch rechtgezet. Voor bedrijfsnamen blijft B61 onverkort gelden.
+**Voorkeursnotatie rechtsvorm (voorstel):** `BV` en `NV` zonder punten — de meest voorkomende vorm
+in de eigen database en de notatie van het KvK-handelsregister zelf. Internationale vormen
+(`GmbH`, `Ltd`, `Inc`, `S.r.l.`, `SA`) blijven zoals het land ze schrijft.
+
+### B62 · Opschonen met terugwerkende kracht is een bulkmutatie, geen import
+**Besluit.** De bestaande database uniform maken loopt langs `mutatieprotocol.md` — dry-run,
+oordeel op patroon, terugweg, verificatie — als eigen ronde met eigen batch-ID. Eerst de technische
+hygiëne, daarna de presentatievoorstellen in één patroonbesluit.
+**Nulmeting 25-08-2026** over 2.093 brands: land is al uniform (ISO alpha-2) en wordt niet
+aangeraakt; website kent negen notaties (1.194 met `www.`, 437 zonder, 331 met slash, 111 nog
+`http://`, 14 met hoofdletters); **83 bedrijfsnamen bevatten een letterlijke `&amp;amp;`**; 96 namen
+staan volledig in hoofdletters; rechtsvorm komt in vier varianten voor (`B.V.` 72, `BV` 87, `b.v.`
+3, `bv` 12); 38 steden staan volledig in hoofdletters. Telefoon is niet publiek meetbaar.
+**Bron.** 25-08-2026.
+
+### B63 · De import kent twee trappen en Jeroen doet twee handelingen
+**Besluit.** Trap 1 is filteren: Claude levert één werkboek met exact twee tabbladen, WEL en NIET.
+Trap 2 is importeren: alles op de WEL-lijst wordt aangemaakt of bijgewerkt — welk van de twee is
+werk van Claude, niet van Jeroen. Jeroen doet twee dingen: bron en brondatum opgeven, en één keer
+"ga" zeggen.
+**Grond.** De eerdere versies produceerden lijsten waarin Jeroen per bedrijf moest oordelen: eerst
+48 review-regels op 141 bedrijven, daarna 193 op 351. Dat is het omgekeerde van waar het protocol
+voor is.
+**Bron.** 25-08-2026, Jeroen.
+
+### B64 · Er is geen bak "onbeslist"
+**Besluit.** Elke bronregel krijgt een besluit. Is iets niet vast te stellen, dan gaat het naar
+**NIET** met de reden en het gevonden bewijs erbij — niet naar een derde tabblad. Jeroens
+correcties op de NIET-lijst zijn veldgesloten.
+**Grond.** Een derde bak is een wachtrij voor Jeroen. Bovendien landt er zo nooit iets in de
+database op een gok.
+**Bron.** 25-08-2026.
+
+### B65 · Koopgedrag is het eerste en sterkste bewijs
+**Besluit.** Bij het filteren begint Claude bij wat het bestand zelf zegt over gedrag.
+**Materiaalpublicatie en site membership zijn hard bewijs** van een materiaalleverancier.
+**Beursdeelname, innovatiefonds en innovation hotspot zijn géén bewijs.** Alleen boeken kopen
+evenmin; advertenties en nieuwsbrief-sponsoring maken iemand adverteerder, geen leverancier.
+**Grond.** Een indeling op "betaalde voor beursdeelname of membership" liet 46 niet-leveranciers
+binnen: vakmedia, vier onderwijsinstellingen, een cateraar, een ingenieursbureau, een
+certificeringsinstantie en drie stichtingen. Betalen bewijst een relatie, geen propositie.
+Omgekeerd bleek een factuurregel met "materiaalpublicatie" 120 bedrijven te beslissen zonder één
+website te raadplegen.
+**Bron.** 25-08-2026, droogloop op de Moneybird-export.
+
+### B66 · Een leeg websiteveld is het startsein voor opzoeken, niet om op te geven
+**Besluit.** Staat er geen website in de bron of is het domein dood, dan zoekt Claude het bedrijf
+op — KvK-register, VIES, zoekmachine. Opgeven is geen uitkomst.
+**Grond.** In de droogloop werden 164 bedrijven afgevoerd naar "nakijken" omdat het websiteveld
+leeg was. Dat is de verrijkingsstap overslaan en hem vervolgens bij Jeroen neerleggen.
+**Bron.** 25-08-2026.
+
+### B67 · Bedrijf of persoon bepaalt welke gegevens worden opgezocht
+**Besluit.** Bij een **bedrijf** wordt het algemene e-mailadres en telefoonnummer van de website
+gebruikt, plus KvK en btw uit openbare registers. Bij een **persoon** wordt niets opgezocht:
+alleen wat de bron zelf levert, en dat moet persoonsgebonden zijn — nooit een algemeen adres.
+**Grond.** Bedrijfsgegevens zijn openbaar, persoonsgegevens niet.
+**Bron.** 25-08-2026, Jeroen.
+
+### B68 · De bron wordt in vorm gebracht vóór het matchen
+**Besluit.** Claude stelt per kolom vast wát erin staat op basis van de inhoud, niet de kolomnaam.
+Bedrijf en persoon in één regel worden gesplitst in twee records met een relatie ertussen. Is de
+bedrijfsnaam gelijk aan de persoonsnaam, dan levert dat allebei op — een brand én een gekoppeld
+contact (eenmanszaak of ontwerpstudio). Een volledige naam in één veld wordt gesplitst in
+**voornaam · tussenvoegsel · achternaam**, met herkenning van Nederlandse en Belgische
+tussenvoegsels en van de omgekeerde notatie met komma. Bij twijfel gaat de volledige naam in
+`achternaam` met een notitie — een persoon verliezen is erger dan een veld verkeerd vullen.
+Dubbele records bínnen één bron worden ontdubbeld vóór het matchen tegen de database.
+**Grond.** In het MDU-bestand 2022 stond in de kolom "Organisatie" tientallen keren een
+persoonsnaam, en stond Archipoint Belgium er twee keer in met verschillende schrijfwijze — met
+twee tegengestelde oordelen als gevolg.
+**Bron.** 25-08-2026, Jeroen.
+
+### B69 · Plaats-, straat- en persoonsnamen worden automatisch rechtgezet
+**Besluit.** Kapitalisatie van plaatsnamen, straatnamen en persoonsnamen is **technische hygiëne**
+en gaat automatisch: `AMSTERDAM` → `Amsterdam`, `den haag` → `Den Haag`, `'S-HERTOGENBOSCH` →
+`'s-Hertogenbosch`, met correcte behandeling van tussenvoegsels en vormen als `MacDonald`.
+**Bedrijfsnamen blijven een voorstel.**
+**Grond.** Een plaatsnaam heeft één juiste schrijfwijze; die is geen keuze maar een feit. Een
+merknaam is merkeigendom.
+**Herziet B61** op dit punt: daar vielen plaatsnamen onder "presentatiekeuze". De redenering van
+B61 blijft geldig voor bedrijfsnamen; wat eronder ontbrak is dat een plaatsnaam geen eigendom is.
+**Bron.** 25-08-2026, Jeroen. Aanleiding: 38 van de 2.093 brands dragen een plaatsnaam volledig in
+hoofdletters.
+
+### B70 · Een interactie is een eigen record; rol en event zijn twee kolommen
+**Besluit.** Deelname wordt vastgelegd als losse records (`entity_type`, `entity_id`, `event_id`,
+`rol`, `datum`, `detail`, `bron`, `batch_id`), zodat één brand of persoon er onbeperkt veel kan
+dragen. **`event_id` verwijst naar het event-record, niet naar de naam.** Rol en event blijven
+gescheiden kolommen — **nooit een samengesteld label** als `exhibitor_mdu2022`.
+**Grond.** Een samengesteld label is één keer schrijven en daarna niet meer filteren: je kunt er
+niet op tellen, niet op sorteren, en elke schrijfvariant maakt een nieuwe categorie. Met twee
+kolommen zijn de gevraagde vragen wél uitvoerbaar: "personen die MDU 2022, 2023 én 2024 bezochten"
+en "exposanten met meer dan één editie".
+**Uniciteit.** `entity_id + event_id + rol`. Herimport van dezelfde bron levert geen tweede rij op.
+**Bron.** 25-08-2026, Jeroen.
+**Raakt.** Schema-uitbreiding bij Johan; het businessdashboard leunt hierop.
+**HERZIEN DOOR B72 (25-08-2026):** waar hier `event_id` stond, moet `edition_id` staan.
+
+### B71 · Een event moet bestaan vóór het interactie
+**Besluit.** Een interactie verwijst naar een bestaand event-record. Ontbreekt de editie, dan
+wordt die eerst aangemaakt — nooit als losse tekst weggeschreven.
+**Stand 25-08-2026.** Alleen MDU Utrecht **2022 t/m 2027** bestaan als event (id's 93812, 107741,
+116159, 124180, 131610, 136167). **2019, 2020 en 2021 ontbreken**, terwijl de factuurdata voor die
+jaren 72, 85 en 6 exposanten telt. Die drie moeten worden aangemaakt vóór de import.
+**Tweede bevinding.** `is_md_event` staat op `false` bij **alle 170 events**, ook bij de eigen
+MDU-edities. Het onderscheid tussen een eigen evenement en een agenda-item van derden bestaat dus
+niet in de data.
+**Bron.** 25-08-2026, meting tegen de live API.
+
+### B72 · Een editie is niet hetzelfde als een agendapagina
+**Besluit.** Interactieen hangen aan een **editie** — een intern object voor relaties en
+commercie (MDU Utrecht 2019 t/m 2026). Zij hangen **nooit** aan het post type `event`, dat de
+publieke agenda vormt en ook evenementen van derden bevat. Een editie mág verwijzen naar een
+agendapagina als die bestaat; dat is uitsluitend weergave.
+**Grond.** De 170 event-records zijn redactionele agendapagina's, waarvan 164 niets met deelname te
+maken hebben. Deelname aan die lijst koppelen vermengt een commercieel interactieengeheugen met
+publieke content, en maakt beide onbruikbaar.
+**Gevolg.** Dat MDU 2019, 2020 en 2021 geen agendapagina hebben is geen probleem: die edities
+hebben plaatsgevonden en er zijn facturen van. In v4.2 van het importprotocol stond dit ten
+onrechte als blokkade.
+**Herziet B70** (waar `event_id` stond) en **B71** (die de agendapagina als voorwaarde stelde).
+**Bron.** 25-08-2026, Jeroen.
+
+### B73 · Jeroen noemt de editie bij het aanleveren
+**Besluit.** Bij elk bronbestand hoort, naast bron en brondatum, bij welke editie het hoort. Claude
+leidt dat niet af uit bestandsnamen of datums.
+**Grond.** Een bestandsnaam is geen bron van waarheid, en een factuurdatum valt niet samen met een
+editie.
+**Bron.** 25-08-2026, Jeroen.
+
+### B74 · "Event" wordt niet gebruikt zonder bijvoeglijk naamwoord
+**Besluit.** Het woord betekent drie dingen: **agenda-item** (post type `event`, publieke content),
+**analytics-event** (`material_viewed` e.d., naar RDS) en **interactie** (gedateerd feit over de
+relatie met een brand of persoon). In documentatie, code en teamcommunicatie wordt altijd gezegd
+welke van de drie bedoeld wordt.
+**"Deelnamefeit", "relatiefeit" en "interactie" vervallen** als term. Het heet **interactie** —
+`interaction` — want die naam bestaat al live in het dashboard. Eén naam, één tabel, geen tweede
+systeem ernaast.
+**Het bestaande model wordt uitgebreid, niet gedupliceerd.** `Interaction` bewaart nu de gegevens
+van de aanvrager inline en verwijst niet naar een user- of brandrecord; daardoor is een
+sampleaanvraag van een ingelogde gebruiker niet aan die gebruiker gekoppeld. Toe te voegen:
+`subject_type`/`subject_id` (wie), `object_type`/`object_id` (waar), `edition`, `source`,
+`batch_id`. De inline-velden blijven als terugval voor anonieme aanvragers.
+**Types:** de bestaande vier (`request`, `brochure-download`, `info`, `contact`) blijven ongewijzigd
+en worden aangevuld met de beurs- en commercietypes. `sampleaanvraag` en `brochuredownload` komen er
+níét bij — dat zijn `request` en `brochure-download`.
+**Soortenlijst**, gesloten, in drie groepen. *Beurs:* `exposant` · `standbemanning` ·
+`bezoeker_geregistreerd` · `bezoeker_aanwezig` · `no_show` · `spreker`. *Commercie:*
+`boekbestelling` · `ticketbestelling` · `materiaalpublicatie` · `membership` · `advertentie` ·
+`innovatiefonds`. *Contact:* `abonnee` · `sampleaanvraag` · `brochuredownload` ·
+`contactformulier`.
+**Grens met analytics.** Een interactie is schaars en commercieel betekenisvol en staat naast de
+entiteit; hoogvolume gedrag gaat naar RDS (B9, B10). Een boekbestelling is een interactie, een
+paginaweergave niet.
+**Grond.** Op 25-08-2026 schreef Claude een protocol waarin interactieen aan het post type `event`
+werden gekoppeld — de publieke agenda, inclusief 164 items van derden. Dat vermengt een commercieel
+interactieengeheugen met redactionele content en maakt beide onbruikbaar.
+**Bron.** 25-08-2026, Jeroen.
+**Raakt.** `begrippenlijst.md`, `importprotocol.md` §2.7, de schema-uitbreiding bij Johan.
+
+### B75 · Activity is de naam; Events is de agenda
+**Besluit.** Wat een brand of persoon op het platform doet heet **Activity** — in gesprek, in
+documentatie en in het dashboard. De publieke agenda op de voorkant heet **Events**.
+**Grond.** "Activity" beschrijft wat het is: activiteit van een bedrijf of persoon op ons platform.
+"Interactie" suggereert dat iemand contact opneemt, maar een channel volgen of iets bookmarken is
+geen contactmoment. En het lost het naamconflict op in plaats van het te verplaatsen.
+**Onder de motorkap blijft alles zoals het is:** `event_type`, `object_type` en `object_id` staan
+live in de analytics-keten en worden niet hernoemd — een migratie voor een woord kost werk en
+levert de gebruiker niets op.
+**`Interaction` in het dashboard** wordt `Activity` zodra dat model tóch wordt uitgebreid met
+subject, editie en herkomst. Niet als losse migratie.
+**Herziet B74** op de naamkeuze; de driedeling per laag uit B74 blijft gelden.
+**Bron.** 25-08-2026, Jeroen.
+
+### B76 · Eén logboek, twee filters
+**Besluit.** Er is één activiteitenlogboek. Het dashboard toont er twee doorsneden van:
+- **filter op `subject`** — "wat heeft deze persoon of dit merk bij ons gedaan?" (businessdashboard)
+- **filter op `object`** — "wat is er bij mijn bedrijf gebeurd?" (memberdashboard)
+
+Dezelfde rijen, andere kant van de relatie. Daarom moeten `subject_type`/`subject_id` én
+`object_type`/`object_id` allebei in het model zitten. Nu is `page` een tekstveld en is filteren op
+object niet mogelijk.
+**Grond.** Wat een member als "Interactions" ziet, is geen apart systeem maar een filter op
+hetzelfde logboek. Twee systemen voor dezelfde vraag leveren twee tellingen op die niet kloppen.
+**Bron.** 25-08-2026, Jeroen.
+
+### B77 · Loggen is altijd volledig; zichtbaarheid is een eigenschap van het type
+**Besluit.** Elke activiteit wordt volledig vastgelegd, inclusief `subject`, óók als die naam nooit
+getoond wordt. Wat een member te zien krijgt, is een aparte laag met twee niveaus per
+activiteitentype:
+
+| Niveau | Wanneer | Wat de member ziet |
+|---|---|---|
+| **Met naam** | de persoon zocht zelf contact: sampleaanvraag, contactformulier, brochuredownload | naam en contactgegevens — dat is de bedoeling van het formulier |
+| **Geteld, zonder naam** | gedrag zonder contactintentie: websiteklik, materiaal bekeken, bookmark, follow | aantallen, eventueel verrijkt met sector, land of functiegroep |
+
+**Grond.** Volledig loggen kan later alsnog getoond worden; niet loggen is onherstelbaar. En een
+bezoeker die een materiaal bekijkt heeft geen contact gezocht — zijn naam aan het merk tonen is een
+AVG-probleem en schaadt het vertrouwen.
+**Commercieel is dat geen verlies:** "zeven mensen bewaarden dit materiaal en drie vroegen een
+sample aan" zegt een fabrikant meer over zijn trechter dan zeven losse namen.
+**Bron.** 25-08-2026, Jeroen.
+
+### B78 · De agenda wordt verbreed naar Events — richting, geen datum
+**Besluit.** De eventsectie op de voorkant wordt een echte agenda: ook beurzen, lezingen, cursussen
+en online meets van derden. Naam blijft **Events** — in de architectuur- en ontwerpwereld is dat de
+gangbare verzamelnaam (Dezeen, Archdaily, Domus gebruiken het zo). De bredere lading komt in een
+ondertitel, niet in de menunaam.
+**Overwogen en afgevallen:** *What's on* (te Brits, en het roept "wat is er vandaag?" op), *Calendar*
+(klinkt als een functie), *Programme* (verwart met het eigen programma), *Agenda* (in het Engels een
+verborgen bedoeling).
+**Gevolg.** `is_md_event` wordt daarmee functioneel — het onderscheid eigen evenement versus derden
+gaat ertoe doen. Nu staat die vlag op `false` bij alle 170 records.
+**Geen haast**, wel vastgelegd. Een eventuele hernoeming van het post type lift mee met dit werk in
+plaats van als losse migratie.
+**Bron.** 25-08-2026, Jeroen.
+
+### B79 · De route `/md/v2/interactions/events` wordt hernoemd
+**Besluit.** De route heet `/md/v2/interactions` — zonder `/events`. Dit is de enige plek waar beide
+woorden letterlijk in één pad staan.
+**Grond.** Goedkoop: het is het nieuwste stuk code, er zit geen migratie aan vast, alleen de
+frontend-call verandert mee. De rest van de naamgeving blijft ongemoeid (B75).
+**Bron.** 25-08-2026.
+**Actie voor Johan**, mee te nemen met een volgende deploy.
+
+
+### B80 · Terugdraaien kent twee vormen
+**Besluit.** Bestond het record vóór de import, dan herstelt terugdraaien de vórige veldwaarden en
+wordt het record niet verwijderd. Maakte de import het record **zelf** aan, dan mag terugdraaien het
+verwijderen — het bestond ervoor niet. De grens loopt langs het **batch-ID**, nooit langs een
+datumgrens of een namenlijst. Verwijderen gaat naar de prullenbak, niet met `force delete`, zodat de
+terugdraaiactie zelf terug te draaien is.
+**Grond.** De terugdraaiactie van 5 augustus 2026 verwijderde 268 records en had daarin gelijk: de
+schade bestond niet uit verkeerd bijgewerkte velden maar uit records die nooit hadden mogen ontstaan.
+Veldwaarden herstellen levert daar een leeg record op dat er nog steeds staat. Die uitzondering stond
+nergens opgeschreven.
+**Bron.** 25-08-2026, importsessie; mailwisseling Jeroen–Johan van 05-08-2026.
+**Raakt.** B37 regel 6 en B48, die beide zeggen dat terugdraaien nooit records verwijdert. Beide
+worden op dat punt herzien.
+**Let op.** Het script dat in augustus is gebruikt, `terugdraai-merken.php`, draagt een harde
+datumgrens van `2026-08-04` en een `force delete`. Opnieuw draaien ná een herimport wist precies wat
+er net is binnengehaald. Het hoort na gebruik uit omloop.
+
+### B81 · De entiteiten zijn rolloos, de rol staat erbovenop
+**Besluit.** Er zijn twee entiteiten: **user** (een mens) en **brand** (een bedrijf). Die woorden
+zeggen alleen wat iets *is*. **specifier** en **manufacturer** zijn rollen en gelden aan beide
+kanten: een user kan specifier of manufacturer zijn, een brand ook. De rol van een persoon volgt uit
+waar hij werkt — Peter Albertz staat aan de manufacturer-kant omdat Forbo dat is, niet omdat hij zelf
+iets fabriceert.
+**Grond.** Zolang `specifier` zowel een soort record als een kant van het platform aanduidde, botste
+het bij iedereen die bij een merk werkt. Met rol als aparte laag verdwijnt die tegenspraak, en kan
+een adviesbureau dat een membership koopt specifier blijven: rol zegt aan welke kant je staat, tier
+zegt wat je afneemt.
+**Bron.** 25-08-2026, importsessie. Sluit aan op de twee kaarten van de registratiepagina: *Discover
+materials* tegenover *List your materials*.
+**Raakt.** `account_type` op `POST /md/v2/auth/register`, de importlogica, `begrippenlijst.md`.
+**Openstaand.** De enum telt vijf waarden — `specifier` · `manufacturer` · `show` · `brand` ·
+`partner` — waar het formulier er twee aanbiedt. Snoeien vóór er iets op geschreven wordt. Of het
+veld ná registratie wordt uitgelezen is niet vastgesteld.
+
+### B82 · `brand_type` is fijnmaziger dan de rol, en nooit een drempel
+**Besluit.** Hoe een bedrijf aan het materiaal komt is voor toelating niet relevant. Fabrikant,
+producent, merkeigenaar, importeur, agent en handelaar dragen allemaal de manufacturer-rol. Het
+verschil wordt vastgelegd als `brand_type`, als eigenschap van het merk.
+**Grond.** Dit was altijd een lastig punt omdat het als toelatingsvraag werd behandeld terwijl het
+een etiketteringsvraag is. Spadon verkoopt Italiaanse tegels van Coem en Mutina en maakt zelf niets;
+Spadon heeft een account en voegt materialen toe. Als type is dat vast te leggen, als drempel moet je
+er nee op zeggen.
+**Bron.** 25-08-2026, importsessie.
+**Raakt.** De toelatingstoets, het merkprofiel, de importlogica.
+
+### B83 · De toelatingsladder en de productuitzondering
+**Besluit.** Vier lagen bepalen of een bedrijf op het platform hoort. **Grondstof** en **materiaal**:
+ja. **Dienst**: nee. **Product**: nee, tenzij de productuitzondering geldt. Over alle lagen heen ligt
+één begrenzing: het **ruimtelijke domein** — gebouwen, interieurs, buitenruimtes, decor, jachten en
+boten, alles wat het materialiseren van ruimte betreft. Daarnaast moet het een bedrijf zijn, geen
+school of stichting, met een aantoonbare identiteit.
+
+> **De productuitzondering, in één vraag:** wordt dit gekozen of voorgeschreven vanwege de *duurzame*
+> materialen waar het van gemaakt is?
+
+Het woord *duurzaam* is daar de kern van, geen bijvoeglijk naamwoord. Een fabrikant van hoogwaardig
+meubilair waar mensen voor kiezen om de kwaliteit van het leer valt af: het materiaal beïnvloedt de
+keuze, maar het is geen duurzaamheidsargument. Het materiaal moet een verkoopargument zijn, geen
+verantwoording achteraf — het staat bij het aanbod, in de collectie, op de productpagina. Staat het
+alleen op een duurzaamheidspagina onder "Over ons", dan telt het niet.
+**Grond.** De oude toets eiste dat een bedrijf "materialen maakt, levert of verwerkt" en sloot
+adviesbureaus categorisch uit. Beide zijn te smal: grondstofleveranciers maken geen materiaal, en een
+adviesbureau kan straks een membership afnemen. Zonder opgeschreven grens kon geen enkele toets
+zeggen welke bedrijven erbij horen — daardoor lieten eerdere rondes 46 niet-leveranciers binnen.
+**Bron.** 25-08-2026, importsessie. Het onderscheid grondstof–materiaal is overgenomen uit de
+begrippenlijst van SampleStore.
+**Raakt.** Elke import, de sitescan, het merkprofiel. Vervangt §1.3 van `importprotocol.md` v3.0.
+**IJkpunt.** ROFA maakt projectmeubilair — een product, dus in principe buiten. Maar drie van de zes
+blokken op de eigen homepage gaan over herstoffering, circulariteit en duurzame stoffen, bij de
+collectie. ROFA komt binnen. Bece verkoopt raamdecoratie zonder één woord over waar het van gemaakt
+is: dezelfde laag, geen materiaalverhaal, valt af.
+
+### B84 · Identiteit en relatie zijn twee besluiten; naam is een kandidaatgenerator
+**Besluit.** Kandidaten worden gezocht op alles wat de bron levert: **exact domein**, **domeinstam**
+en **bedrijfsnaam**. Een treffer op naam stelt vast *dát* het bedrijf al bestaat — genoeg om géén
+duplicaat aan te maken — maar legt **nooit** de relatie tussen persoon en merk. Daarvoor is een
+bedrijfsdomein nodig. Een schooladres of een vrije provider legt nooit een dienstverband vast.
+**Grond.** Matchen op alleen het domein miste in de testronde dertien bestaande merken mét
+materialen: Moso is verhuisd naar `moso.eu` terwijl het merk op `moso-bamboo.com` staat, Pretty
+Plastic mailt vanaf het domein van zijn websitebouwer, NPSP vanaf `basfroon.nl`. Tegelijk matchte
+"Blueblocks" op naam terwijl de persoon vanaf `student.hku.nl` mailde — een stagiair, geen
+medewerker. Een bedrijf kan van domein wisselen; de naam blijft.
+**Bron.** 25-08-2026, importsessie, ronde 5 op het MDU2023-bezoekersbestand.
+**Raakt.** De matchlogica, elke personenimport. Scherpt B46 aan met een derde ingang.
+**Uitvoering.** Werkt alleen met een strakke naamvergelijking: exact na normalisatie, of bevatting
+waarbij de kortste naam minstens acht tekens telt en het lengteverschil hooguit vier is. Ruimer
+levert JUNG–Jungbecker en Laser Whale–Hale op. En de domeinstam moet rekening houden met
+samengestelde landextensies: `aub.ac.uk` en `uibk.ac.at` delen niet de stam "ac".
+
+### B85 · Een onbekende toestand krijgt geen waarde, en wordt niet gemaild
+**Besluit.** Kan de rol van een persoon niet worden vastgesteld, dan blijft het rolveld **leeg** met
+een reden ernaast — bijvoorbeeld "site onbereikbaar" of "site leeg". Een persoon zonder rol gaat in
+**geen enkele** mailing. Een reden die een technische mislukking beschrijft wordt automatisch opnieuw
+geprobeerd met oplopende tussenpozen; pas na drie mislukte pogingen wordt het een menselijke vraag.
+**Grond.** Een timeout, bot-blokkade of lege pagina is geen bevinding maar een toestand. Wie die als
+"specifier" wegschrijft, vult het veld met een oordeel dat nooit geveld is — en omdat het veld gevuld
+is, kijkt de volgende import er niet meer naar. Dan is de vergissing permanent. In de testronde gaf
+`rofa.nl` een lege pagina terwijl de site gewoon werkt; zonder deze regel was ROFA nooit meer
+bekeken.
+**Bron.** 25-08-2026, importsessie.
+**Raakt.** De sitescan, de mailselectie, elke afgeleide status.
+
+### B86 · Toestemming reist nooit mee uit een import
+**Besluit.** Mailtoestemming wordt **nooit** overgenomen uit een bronbestand, ook niet wanneer het
+veld netjes is bijgehouden. Alleen een handeling van de persoon zelf telt: een inschrijving, een
+keuze bij registratie, een bevestigde aanmelding. Geïmporteerde contacten komen binnen met een lege
+mailstatus en gaan dus geen mailing in.
+**Grond.** In de CRM-export staat `EmailOptedOut` op `False` bij alle 5.445 contacten zonder één
+uitzondering — de handtekening van een veld dat nooit is gebruikt. Er staat ook een veld dat wél
+gebruikt is, met 419 expliciete inschrijvingen. Beide zijn onbruikbaar om dezelfde reden: ze zijn
+door medewerkers ingevuld. Een vinkje dat iemand in een CRM zet, is een aantekening *óver* een
+persoon, geen keuze *ván* die persoon.
+**Bron.** 25-08-2026, importsessie, Insightly-export.
+**Raakt.** Elke personenimport, het mailsysteem, B39.
+**Reikwijdte.** Dezelfde redenering raakt de andere door medewerkers ingevulde velden — `Prospect`,
+`Prospectwaarde`, `Hoofd Branche`, `Materiaalgroep`, `Beslissingsbevoegdheid`. Die kunnen mee als
+interne aantekening met bron en jaar, nooit als feit over het bedrijf. `Materiaalgroep` staat bij
+7.210 van de 7.519 organisaties op "Onbekend".
+
+### B87 · Zichtbaarheid in het Activity-logboek ligt vast op de soort, en begint dicht
+**Besluit.** Naast de twee bestaande zichtbaarheidsklassen uit B77 — met naam wanneer de persoon zelf
+contact zocht, geteld zonder naam bij gedrag — komt een derde: **intern commentaar**. Verkoopnotities
+en andere aantekeningen *óver* een relatie zijn nooit zichtbaar voor de member, ook niet geteld.
+Zichtbaarheid wordt vastgelegd op het **type** activiteit, nooit per record. Een nieuw type begint
+dicht en wordt alleen zichtbaar door een bewust besluit.
+**Grond.** Van de 24.266 echte notities in de CRM-export bevatten er 5.369 persoonlijke opmerkingen
+over met naam genoemde mensen: karakteriseringen, inschattingen over budget, wat een bedrijf wel of
+niet gaat doen. Het memberdashboard toont een doorsnede van hetzelfde logboek. Ligt zichtbaarheid per
+record vast, dan volstaat één verkeerd vinkje om dat naar buiten te brengen. Ligt het vast op de
+soort, dan kan het niet.
+**Bron.** 25-08-2026, importsessie.
+**Raakt.** B75–B77, het Activity-schema (`roadmap.md` §10b-3), het memberdashboard.
+**Gevolg voor imports.** Een gedateerd feit veroudert niet, een veldwaarde wel. Dat een gesprek in
+2017 plaatsvond is in 2026 nog steeds waar; dat het telefoonnummer uit 2017 klopt, is een gok.
+Notities gaan daarom altijd mee als tijdlijn, veldwaarden uit een oude bron nooit over een gevulde
+waarde heen. Notities worden aan het merk gehangen ná de kandidaatstap van B84, nooit op naam.
 
 ---
 
@@ -643,6 +1055,18 @@ tonen blijft bindend en krijgt prominente plaatsing op Our Mission. Oprichtingsj
 **Bron.** 04-08-2026, bevestigd door Jeroen.
 **Raakt.** Alle publieke copy; het jaartal in de footer (© 1998).
 
+### B57 · Meet in de juiste laag — de publieke API is een uitsnede
+**Besluit.** Voordat een veld als "leeg" of "bestaat niet" wordt gerapporteerd, wordt gecontroleerd
+in welke laag het hoort: publiek (`wp/v2`), gated (`md/v2/talks/{id}/embed` e.d.) of dashboard
+(`md/v2/dashboard/…`). Een veld dat niet in de publieke respons staat, bestaat níét niet. Is een
+veld niet bereikbaar, dan is "niet meetbaar via de publieke API" de juiste uitkomst — "leeg" niet.
+**Grond.** Twee keer op 25-08-2026 werd een bestaand veld als ontbrekend gerapporteerd: `vimeo_id`
+op talks (wordt gestript, B51) en `email`/`phone`/`vat_number`/`chamber_number` op brands (zitten
+achter het dashboard-endpoint). Beide keren ging er een levering of een mail aan een teamlid mee de
+deur uit.
+**Bron.** 25-08-2026, sessie documentatiefundament.
+**Raakt.** Elke meting, elke audit, elke importronde. Uitgewerkt in `datamodel.md` §1 en §7.
+
 ---
 
 ## 10. Openstaand uit eerdere sessies — niet eerder vastgelegd
@@ -695,10 +1119,12 @@ bijgekomen: de Material visualizer (25-06), de dual-write-status van 30-06, en d
 van 24-07. Ze zijn in beide richtingen uit elkaar gelopen. De meegeleverde `docs/roadmap.md`
 is de samenvoeging.
 
-**2. Dubbel regelboek — opgelost 26-08.** Canoniek is
-`docs/materiaal-classificatie-regelboek.md` in de frontend-repo. De kopie onder
-`docs/cms-plugin/docs/` en de v1.3 zijn verwijderd. Zie B22 HERZIEN. (Claude’s klaring van
-26-08 bevestigt dit pad; de oude mail die het omkeerde is ingetrokken.)
+**2. Het regelboek staat nog twee keer in de frontend-repo, en de twee kopieën spreken elkaar
+tegen over welke canoniek is.** Op `docs/materiaal-classificatie-regelboek.md` staat "houd deze
+frontend-kopie als bron van waarheid voor Claude"; op `docs/cms-plugin/docs/materiaal-classificatie-regelboek.md`
+staat "één repository, niet twee — de verouderde kopie wordt verwijderd, niet bijgewerkt". Beide
+dragen nu inhoudelijk versie 1.9, dus er is nog geen schade. Commit `a6fd49c` verwijderde de
+stale kopie; `0df2dc4` (de plugin-mirror) zette 'm terug. Zie B22.
 
 **3. `publication_status` is leeg op alle 3.246 gepubliceerde materialen.** Volgens B32 hoort de
 default `legacy` te zijn. Het veld bestaat en is geregistreerd, maar de backfill is nooit
@@ -714,8 +1140,9 @@ ligt is de norm daarmee alleen vindbaar door de sessie te kennen. `importprotoco
 levering brengt hem in de moedermap; het originele docx zou daarna ingetrokken moeten worden in
 plaats van ernaast blijven bestaan.
 
-**5. Dubbele session-log — opgelost 26-08.** `docs/session-log-mission-beeld-04-08-v2.md`
-verwijderd. Enige log: `session-log.md` in de repo-root.
+**5. Er zijn twee session-logs van vergelijkbare omvang.** `session-log.md` in de root (219 KB,
+bijgewerkt 24-08) en `docs/session-log-mission-beeld-04-08-v2.md` (207 KB, 04-08). De tweede is
+een sessiekopie die is blijven staan. Zolang beide bestaan is niet zichtbaar welke de log is.
 
 ---
 
@@ -751,7 +1178,7 @@ enkel materiaal draagt een `publication_status`, en geen enkele brand draagt een
 
 **v1.3 · 25-08-2026** — B41–B45 toegevoegd bij de herbouw van `importprotocol.md` tot een
 volledige beslisflow: herkomst per veld (B41), de bronautoriteit-rangorde (B42), de zes
-e-mailstatussen (B43), de vaste woordenlijst voor deelnamefeiten (B44) en de toelatingstoets
+e-mailstatussen (B43), de vaste woordenlijst voor interactieen (B44) en de toelatingstoets
 (B45). B38 is aangevuld: de spanning met account-by-default is beslist ten gunste van
 contactrecords zonder login.
 
@@ -782,10 +1209,68 @@ niet alles inlezen. Wat hier staat is wat vier gerichte zoekopdrachten en twinti
 gesprekssamenvattingen opleverden — geen volledige inventaris. De structurele oplossing is niet
 opnieuw sweepen maar het register voeden.
 
-Vijf bevindingen stonden apart genoteerd; 2 en 5 zijn op 26-08 gesloten. 3 en 4 blijven open.
+**v1.6 · 25-08-2026** — B57 toegevoegd en `datamodel.md` opgesteld als vijfde normdocument, nadat
+voor de tweede keer op één dag een bestaand veld als ontbrekend was gerapporteerd. De eerste keer
+`vimeo_id`, de tweede keer de contactvelden op brand — `email`, `phone`, `vat_number` en
+`chamber_number` bestaan wel degelijk, maar zitten achter `md/v2/dashboard/brands/{id}/profile` en
+niet in `wp/v2/brand`.
 
-**v1.6 · 26-08-2026** — documentatiefundament-v8 gemerged door Johan. B22 herzien naar
-frontend-canon (in lijn met Claude’s klaring). Regelboek-bestand zelf niet aangeraakt in deze
-stap (v2.0 volgt uit herclassificatie-levering).
+**v1.7 · 25-08-2026** — B58 en B59 toegevoegd na de eerste droogloop, op de exposantenlijst MDU
+2022. Die test legde bloot dat `MOGELIJK_DUBBEL` de hoofdmoot werd (48 van 141) in plaats van de
+uitzondering. Verrijking is nu een vaste stap in de import (B58) en een naam-match is een
+onderzoeksopdracht voor Claude in plaats van een regel voor Jeroen (B59).
 
-Opgesteld door Claude, namens Jeroen; v1.6 door Johan.
+**v1.8 · 25-08-2026** — B60 t/m B62 toegevoegd: één notatiestandaard per veld, de grens tussen
+technische hygiëne (automatisch) en presentatiekeuze (voorstel), en de regel dat opschonen met
+terugwerkende kracht een bulkmutatie is en geen import. Met de nulmeting over 2.093 brands erbij.
+
+**v1.9 · 25-08-2026** — B63 t/m B67, na een droogloop die ontspoorde doordat Claude drie keer een
+beoordelingslijst opleverde in plaats van een besluit. Het importprotocol is herschreven naar twee
+trappen (B63), de bak "onbeslist" is afgeschaft (B64), koopgedrag is het eerste bewijs geworden
+(B65), een leeg websiteveld is het startsein voor opzoeken (B66), en het onderscheid bedrijf
+versus persoon bepaalt wat er wordt opgezocht (B67).
+
+**v1.10 · 25-08-2026** — B68 (de bron in vorm brengen: splitsen van bedrijf en persoon, splitsen
+van volledige namen, ontdubbelen binnen de bron) en B69 (kapitalisatie van plaats-, straat- en
+persoonsnamen automatisch). B69 herziet B61 op dat ene punt; het oude besluit blijft staan met een
+`HERZIEN DOOR`-regel.
+
+**v1.11 · 25-08-2026** — B70 (interactie als eigen record, rol en event als twee kolommen) en
+B71 (het event moet bestaan vóór het feit), met de constatering dat de MDU-edities 2019–2021 niet
+als event-record bestaan en dat `is_md_event` op alle 170 events `false` staat.
+
+**v1.12 · 25-08-2026** — B72 en B73. B72 herziet B70 en B71: interactieen hangen aan een
+**editie**, niet aan het post type `event` dat de publieke agenda vormt. Dat onderscheid was in
+v4.2 van het importprotocol fout gelegd, met als gevolg dat het ontbreken van agendapagina's voor
+2019–2021 ten onrechte als blokkade werd opgevoerd.
+
+**v1.13 · 25-08-2026** — B74. Het woord "event" dekt op dit platform drie verschillende dingen en
+wordt daarom niet meer zonder toevoeging gebruikt. Wat eerder "interactie" heette, heet nu
+**interactie** — breder, want een boekbestelling is geen deelname — met een soortenlijst van
+zestien in drie groepen, en een expliciete grens met de analytics-laag.
+
+**v1.14 · 25-08-2026** — B75 t/m B79. De naam is **Activity** geworden (B75, herziet B74 op de
+naamkeuze): dat beschrijft wat het is en lost het conflict met de agenda op in plaats van het te
+verplaatsen. Eén logboek met twee filters — op subject voor het businessdashboard, op object voor
+wat een member ziet (B76). Loggen is altijd volledig, zichtbaarheid is een eigenschap van het type
+met twee niveaus (B77). De agenda wordt verbreed naar **Events** met evenementen van derden (B78),
+en de route `/md/v2/interactions/events` verliest zijn `/events` (B79).
+
+**v1.15 · 25-08-2026** — B80 t/m B87, uit de importsessie waarin het protocol tegen vijf echte
+bestanden is gehouden: twee exposantenbestanden, een bezoekerslijst van 4.327 rijen, een
+terugdraailijst en een CRM-export van 7.519 organisaties. Elke ronde brak iets; wat brak is regel
+geworden. B80 herziet B37 regel 6 en B48 (terugdraaien mág verwijderen wat de import zelf aanmaakte).
+B81 t/m B83 leggen de rollenscheiding, `brand_type` en de toelatingsladder met de productuitzondering
+vast. B84 voegt naam toe als kandidaatgenerator en scheidt identiteit van relatie. B85 t/m B87 gaan
+over wat je *niet* mag invullen: een onbekende toestand krijgt geen waarde, toestemming reist niet
+mee uit een import, en zichtbaarheid ligt vast op het type en begint dicht.
+
+Vier punten blijven expliciet open en worden niet ingevuld met een aanname: de enum van
+`account_type` (snoeien is een besluit, of het veld wordt uitgelezen een opzoekvraag), de
+`wp_postmeta`-sleutels achter `vatNumber` en `chamberNumber` met hun vulgraad, de waardenlijst van
+`record_status`, en of `brand.primary_user_id` is gebouwd.
+
+Vijf bevindingen staan apart genoteerd (§Bevindingen).
+Opgesteld door Claude, namens Jeroen.
+
+**v1.16 · 26-08-2026** — Johan: importschema-v1 gemerged; B22 frontend-canon behouden; schema-migratie dry-run/execute op CMS.
