@@ -19,7 +19,7 @@
  *   WP-developer ze in REST exposeert
  */
 
-import { resourceCacheTag } from './cache-tags'
+import { resourceCacheTags } from './cache-tags'
 
 // --------------------------------------------------------------------
 // Configuratie
@@ -246,12 +246,14 @@ export async function wpFetch<T>(
   if (options.noCache || CACHE_DISABLED) {
     fetchOptions.cache = 'no-store'
   } else {
-    // §BETA-FIX-24-08 (H2): elke gecachete WP-fetch krijgt automatisch een
-    // cache-tag op basis van de resource die 'ie opvraagt (zie
-    // `resourceCacheTag`). Daardoor kan WordPress bij het opslaan van een post
-    // gericht ontcachen, zonder dat elke aanroeper zelf tags meegeeft.
-    const autoTag = resourceCacheTag(path)
-    const tags = [...(options.tags ?? []), ...(autoTag ? [autoTag] : [])]
+    // §BETA-FIX-24-08 (H2) / §CACHE-FIX-26-08: elke gecachete WP-fetch krijgt
+    // automatisch cache-tags op basis van wát hij opvraagt (zie
+    // `resourceCacheTags`). Een fetch van één record draagt de tag van dát
+    // record, een lijst-fetch de lijst-tag. Daardoor kan WordPress bij het
+    // opslaan gericht ontcachen zonder de rest van de site mee te nemen, en
+    // zonder dat elke aanroeper zelf tags hoeft mee te geven.
+    const autoTags = resourceCacheTags(path, options.params)
+    const tags = [...(options.tags ?? []), ...autoTags]
     fetchOptions.next = {
       revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
       ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
@@ -322,12 +324,14 @@ export async function wpFetchPaginated<T>(
   if (options.noCache || CACHE_DISABLED) {
     fetchOptions.cache = 'no-store'
   } else {
-    // §BETA-FIX-24-08 (H2): elke gecachete WP-fetch krijgt automatisch een
-    // cache-tag op basis van de resource die 'ie opvraagt (zie
-    // `resourceCacheTag`). Daardoor kan WordPress bij het opslaan van een post
-    // gericht ontcachen, zonder dat elke aanroeper zelf tags meegeeft.
-    const autoTag = resourceCacheTag(path)
-    const tags = [...(options.tags ?? []), ...(autoTag ? [autoTag] : [])]
+    // §BETA-FIX-24-08 (H2) / §CACHE-FIX-26-08: elke gecachete WP-fetch krijgt
+    // automatisch cache-tags op basis van wát hij opvraagt (zie
+    // `resourceCacheTags`). Een fetch van één record draagt de tag van dát
+    // record, een lijst-fetch de lijst-tag. Daardoor kan WordPress bij het
+    // opslaan gericht ontcachen zonder de rest van de site mee te nemen, en
+    // zonder dat elke aanroeper zelf tags hoeft mee te geven.
+    const autoTags = resourceCacheTags(path, options.params)
+    const tags = [...(options.tags ?? []), ...autoTags]
     fetchOptions.next = {
       revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
       ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
