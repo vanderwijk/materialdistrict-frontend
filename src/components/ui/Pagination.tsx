@@ -38,44 +38,58 @@ interface PaginationProps {
  *
  * Voorbeeld output bij currentPage=5, totalPages=10, siblingCount=2:
  *   [1, null, 3, 4, 5, 6, 7, null, 10]
+ *
+ * §BETA-FIX-24-08 (P1) — herschreven; gaf dubbele paginanummers.
+ *
+ * De oude opzet plakte de lijst in stukken aan elkaar: eerst een 1, dan
+ * eventueel een handmatige "2" om de breedte constant te houden, dan de
+ * schuifvensterlus, dan hetzelfde kunstje aan de rechterkant. Zodra het
+ * schuifvenster zélf bij 2 begon (currentPage 4 met twee buren), voegden die
+ * twee takken hetzelfde nummer toe: `1 2 2 3 4 5 6 … 271`. Spiegelbeeldig
+ * gebeurde het aan het einde bij pagina 268 (`… 270 270 271`). Op smalle
+ * schermen, waar het venster één buur telt, schoof het probleem naar pagina 3
+ * en 269. Omdat de React-key het paginanummer zélf was, kregen twee knoppen
+ * bovendien dezelfde sleutel — wat de weergave bij een herrender verder kon
+ * verstoren.
+ *
+ * Nu wordt de verzameling eerst opgebouwd (eerste, laatste, en het venster
+ * rond de huidige pagina), daarna gesorteerd, en pas dan wordt er een ellipsis
+ * gezet waar een echt gat zit. Een nummer kan zo per definitie maar één keer
+ * voorkomen, ongeacht waar het venster valt. De handmatige breedte-correcties
+ * zijn overbodig geworden: waar het venster tegen de rand aan ligt, is het gat
+ * nul en verschijnt er vanzelf geen "…".
  */
 function getPageRange(
   currentPage: number,
   totalPages: number,
   siblingCount: number,
 ): Array<number | null> {
+  if (totalPages < 1) return []
+
   const totalPageNumbers = siblingCount * 2 + 5
   if (totalPages <= totalPageNumbers) {
     return Array.from({ length: totalPages }, (_, i) => i + 1)
   }
 
-  const leftSibling = Math.max(currentPage - siblingCount, 1)
-  const rightSibling = Math.min(currentPage + siblingCount, totalPages)
+  // Huidige pagina binnen bereik houden, zodat een rare `?page=` in de URL
+  // geen scheve lijst oplevert.
+  const safeCurrent = Math.min(Math.max(currentPage, 1), totalPages)
 
-  const showLeftEllipsis = leftSibling > 2
-  const showRightEllipsis = rightSibling < totalPages - 1
+  const visible = new Set<number>([1, totalPages])
+  const left = Math.max(safeCurrent - siblingCount, 1)
+  const right = Math.min(safeCurrent + siblingCount, totalPages)
+  for (let p = left; p <= right; p += 1) visible.add(p)
 
+  const sorted = Array.from(visible).sort((a, b) => a - b)
+
+  // Ellipsis alleen waar er daadwerkelijk pagina's tussen wegvallen.
   const result: Array<number | null> = []
-
-  result.push(1)
-
-  if (showLeftEllipsis) {
-    result.push(null)
-  } else if (leftSibling === 2) {
-    result.push(2)
+  let previous: number | null = null
+  for (const page of sorted) {
+    if (previous !== null && page - previous > 1) result.push(null)
+    result.push(page)
+    previous = page
   }
-
-  for (let p = leftSibling; p <= rightSibling; p++) {
-    if (p !== 1 && p !== totalPages) result.push(p)
-  }
-
-  if (showRightEllipsis) {
-    result.push(null)
-  } else if (rightSibling === totalPages - 1) {
-    result.push(totalPages - 1)
-  }
-
-  result.push(totalPages)
 
   return result
 }
@@ -173,7 +187,7 @@ export function Pagination({
             </span>
           ) : (
             <button
-              key={p}
+              key={`page-${p}`}
               type="button"
               className={cn('pagination-btn', p === currentPage && 'is-active')}
               onClick={() => onPageChange(p)}

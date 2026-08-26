@@ -37,6 +37,7 @@ import {
 } from '@/types/facetwp'
 
 import { WP_API_URL, isCacheDisabled } from './wordpress'
+import { allTag, listTag } from './cache-tags'
 
 // --------------------------------------------------------------------
 // Endpoint + constants
@@ -118,7 +119,7 @@ export async function facetwpFetch(
   options?: { revalidate?: number; signal?: AbortSignal },
 ): Promise<FacetWPFetchResponse> {
   const fetchOptions: RequestInit & {
-    next?: { revalidate?: number }
+    next?: { revalidate?: number; tags?: string[] }
   } = {
     method: 'POST',
     headers: {
@@ -136,6 +137,12 @@ export async function facetwpFetch(
   } else {
     fetchOptions.next = {
       revalidate: options?.revalidate ?? DEFAULT_REVALIDATE_FILTERED,
+      // §BETA-FIX-25-08: dit is een eigen POST buiten `wpFetch`, dus geen
+      // automatische tags. Zelfde tags als een materialen-lijstfetch
+      // (`wp:material:list` + `:all`), zodat een materiaal-opslag het
+      // overzicht meeneemt zonder de grofmazige `wp:materials`-tag uit
+      // Claude's 25-08-zip (die de scoped cache van 26-08 zou regresseren).
+      tags: [listTag('material'), allTag('material')],
     }
   }
 

@@ -282,6 +282,11 @@ export function tagsForTarget(target: RevalidateTarget): string[] {
     tags.add(recordTagBySlug('brand', brandSlug))
   }
 
+  // Channel-tellingen (eigen REST-resource) veranderen mee met materialen.
+  if (type === 'material') {
+    tags.add(listTag('material-channels'))
+  }
+
   // Een thema verandert de samenstelling van de channel-hubs. Die lezen
   // materials en articles via lijst-fetches, dus de lijst-tags volstaan.
   if (type === 'theme') {
