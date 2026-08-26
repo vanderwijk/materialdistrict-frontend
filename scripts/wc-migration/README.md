@@ -17,7 +17,7 @@ dry-run; nothing is written without the `apply` argument.
 ## Run order
 
 ```bash
-cd ~/sites/materia          # WP install root
+cd "$WPE_ROOT"              # WP install root (password manager)
 SCRIPTS=~/wc-migration
 
 # 1. Config tables: tax, attributes, shipping classes/zones, table rates

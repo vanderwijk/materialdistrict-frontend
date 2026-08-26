@@ -1,7 +1,7 @@
 # WPE → CMS delta migratie — runbook
 
 Cutoff: **`2026-06-22 12:10:39`** (lokaal WP Engine tijd / `post_date`).  
-Bron: `materia@materia.ssh.wpengine.net` (`/sites/materia`).  
+Bron: WP Engine productie — SSH-host en installpad staan in de password manager (niet in git).  
 Doel: `cms-materialdistrict` (`/var/www/html`).  
 Bundle (deze run): `docs/data/2026-08-05-delta/`.
 
@@ -29,16 +29,16 @@ Alles onder `docs/delta-migrate/`:
 | `md-delta-diff-report.php` | CMS | Modified-old diff |
 
 **Let op WPE `/tmp`:** ephemeral tussen SSH-sessies. Export bewaren onder  
-`/sites/materia/wp-content/uploads/_md-delta-YYYY-MM-DD/` of direct naar laptop pullen.
+`wp-content/uploads/_md-delta-YYYY-MM-DD/` op de WPE-install, of direct naar laptop pullen.
 
 ## Volgorde
 
 ### 1. Inventarisatie
 
 ```bash
-# WPE
-ssh materia@materia.ssh.wpengine.net
-cd /sites/materia
+# WPE — $WPE_SSH en installroot uit password manager
+ssh "$WPE_SSH"
+cd "$WPE_ROOT"   # typisch /sites/<install>
 wp eval-file wp-content/plugins/materialdistrict-plugin/docs/delta-migrate/md-delta-inventory.php -- '2026-06-22 12:10:39'
 
 # CMS
@@ -50,7 +50,7 @@ wp eval-file wp-content/plugins/materialdistrict-plugin/docs/delta-migrate/md-de
 ### 2. Export (WPE)
 
 ```bash
-OUT=/sites/materia/wp-content/uploads/_md-delta-2026-08-05
+OUT="$WPE_ROOT/wp-content/uploads/_md-delta-2026-08-05"
 mkdir -p "$OUT"
 wp eval-file wp-content/plugins/materialdistrict-plugin/docs/delta-migrate/md-delta-export.php -- "$OUT" '2026-06-22 12:10:39'
 # Pull naar laptop → docs/data/2026-08-05-delta/

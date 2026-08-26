@@ -7,7 +7,7 @@ material type en channels. Bevat geen doorgevoerde wijzigingen.
 
 | Pad | Wat |
 |---|---|
-| `docs/materiaal-classificatie-regelboek.md` | De norm. Grensregels voor de elf types, criteria per channel, de duurzaamheidslimiet, en wat wel/niet uit tekst afgeleid mag worden. |
+| `docs/materiaal-classificatie-regelboek.md` (repo-root `docs/`, niet onder `cms-plugin/`) | De norm. Grensregels voor de elf types, criteria per channel, de duurzaamheidslimiet, en wat wel/niet uit tekst afgeleid mag worden. |
 | `docs/kalibratieset-68.csv` | 68 handmatig beoordeelde grensgevallen met motivering. Gouden standaard waartegen de run getoetst wordt. |
 | `scripts/classify-materials.py` | Haalt de export langs het regelboek via de Claude API. Levert een reviewlijst met zekerheidsscores, laagste zekerheid bovenaan. Schrijft nooit naar WordPress. |
 | `scripts/wp-migrate-material-types.php` | WP-CLI. Stap `structure` = mechanische termmigratie. Stap `apply` = goedgekeurde reviewlijst doorvoeren. Dry-run standaard, `--apply` verplicht. |

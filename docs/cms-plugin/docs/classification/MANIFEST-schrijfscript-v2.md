@@ -9,7 +9,7 @@ Gooi die versie weg; deze is er de opvolger van, niet een aanvulling.
 | pad | wat |
 |---|---|
 | `scripts/class-md-classification-cli.php` | **versie 2** van het WP-CLI-commando |
-| `docs/materiaal-classificatie-regelboek.md` | versie 1.3, ongewijzigd meegeleverd |
+| `docs/materiaal-classificatie-regelboek.md` | canoniek in frontend-repo root `docs/` (huidige versie; geen lokale kopie meer in deze map) |
 
 ## Wat er anders is dan in versie 1
 
