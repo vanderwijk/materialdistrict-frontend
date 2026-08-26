@@ -12,9 +12,9 @@
 ---
 
 ## Laatste update
-Datum: 25-08-2026 — Documentatiefundament (§DOC-25-08): besluitenregister (30 besluiten),
-begrippenlijst en mutatieprotocol als nieuwe normdocumenten in `docs/`; `roadmap.md`
-samengevoegd na divergentie. Zie sectie "§DOC-25-08 — documentatiefundament" onderaan. Geen code gewijzigd.
+Datum: 25-08-2026 — Documentatiefundament (§DOC-25-08): besluitenregister (57 besluiten),
+begrippenlijst, mutatieprotocol en importprotocol als nieuwe normdocumenten in `docs/`;
+`roadmap.md` samengevoegd na divergentie en uitgebreid met §10 (Data, relaties & imports). Zie sectie "§DOC-25-08 — documentatiefundament" onderaan. Geen code gewijzigd.
 
 ----
 
@@ -3911,10 +3911,216 @@ statusparagraaf die vastlegt wat waar vandaan komt.
 ### Bevindingen — status 26-08-2026
 
 1. **Regelboek — opgelost.** Canoniek: `docs/materiaal-classificatie-regelboek.md`.
-   Cms-plugin-kopie + v1.3 weg. Zie besluitenregister B22 HERZIEN (niet de omgekeerde
-   spiegel die Claude eerst voorstelde).
+   Cms-plugin-kopie + v1.3 weg. Zie besluitenregister B22 HERZIEN.
 2. **Twee session-logs — opgelost.** `docs/session-log-mission-beeld-04-08-v2.md` verwijderd.
 3. **Channel-catalogus.** Gemeten op de live API: achttien channels, niet twintig zoals het
    commentaar in `src/lib/api/channels.ts` zegt. Zes channels dragen tien of minder materialen
    (Sense & Sensibility 0, Recycling 1, Regenerative 1, Timber 10, Leisure & Hospitality 10,
    Translucency 14). Relevant voor launch-taak 1.
+
+### Aanvulling — data, membership en imports
+
+Na een eerste ronde bleek dat de zwaarste afspraken juist níét in de moedermap stonden. Twee
+secties toegevoegd aan het register en één nieuw normdocument.
+
+**`importprotocol.md` (nieuw).** De importnorm was in augustus 2026 vastgelegd in
+`datastrategie-specificatie.docx`, na de mislukte ronde waarin 287 brands vrijwel leeg landden
+(nul adressen terwijl de bron er 111 had), ~193 brands hun Moneybird-verrijking misten en één
+persoon verloren ging door een ontbrekende kopregel. Dat docx staat niet in de moedermap. Nu wel,
+samengebracht met de afspraken over domeinkoppeling en e-mailvalidatie uit juli: twee entiteiten
+(brand + user), de veldscheiding tussen import-scope en redactionele velden, de acht kernregels,
+bron-tag in plaats van duplicaat, beursdeelname als gedateerd feit, en validatie vóór verzending.
+
+**Besluitenregister §7 en §8 (B30–B40).** Membership en statussen: twee gescheiden systemen, vier
+brand-tiers met grandfathered-tarieven (`pro_5` €995 / `pro_10` €1.245), zes publicatiestatussen,
+wederzijdse uitsluiting, legacy-deadline 30-04-2027. Data-import: de acht kernregels, de
+domeinverwachting zonder vooraf aangemaakte accounts, e-mailvalidatie vóór SES, en de
+verificatievelden.
+
+**`roadmap.md` §10 (nieuw).** Data, relaties & imports — statussen zetten, sanering legacy-archief,
+beursdata-import, e-mailvalidatie, talks-spreker-mail, member-outreach. Bewust in de roadmap en
+niet als vierde register ernaast: één backlog.
+
+### Metingen tegen de live API (25-08-2026)
+
+| | Stand |
+|---|---|
+| Gepubliceerde brands | 2.093 |
+| `verification_status` op brands | 110 `checked` · 1.983 `unknown` |
+| `brand.tier` | `free` op alle 2.093 |
+| Gepubliceerde materialen | 3.246 |
+| `material.publication_status` | **leeg op alle 3.246** (spec zegt default `legacy`) |
+| `verification_status` op materialen | `unknown` op alle 3.246 |
+| Channels in de catalogus | 18 (code-commentaar zegt nog 20) |
+| Material types | 11 |
+
+De lege `publication_status` is de zwaarste: zonder die status is er geen memberlijst, kan de
+legacy-banner niet verschijnen en heeft de archivering per 30-04-2027 niets om op te draaien.
+Dat blokkeert de member-outreach van september.
+
+### Drie besluiten die vóór de eerste grote import moeten vallen
+
+Vastgelegd in `importprotocol.md` §8, niet zelf beantwoord omdat ze commercieel of juridisch van
+aard zijn:
+
+1. Herkomst per veld of per record? Nu is het per record (`last_checked`). Per veld is een
+   schema-uitbreiding die achteraf een migratie op gevulde data wordt.
+2. De bronautoriteit-volgorde — welke bron wint van welke bij een conflict.
+3. Account-by-default ja of nee. Dat botst met B38 (domeinverwachting zonder vooraf aangemaakte
+   accounts); beide kunnen niet tegelijk gelden.
+
+### Herbouw importprotocol (v2.0)
+
+Jeroens oordeel op v1.0: de norm stond erin, de wég van bronregel naar database niet. Herbouwd
+als beslisflow in zes stappen, waarbij elke bronregel in precies één uitkomst eindigt.
+
+**Nieuw ten opzichte van v1.0:**
+
+- **Toelatingstoets (stap 1)** — hoort deze partij er überhaupt in? Drie eisen voor een brand
+  (bedrijf, aantoonbare identiteit, past bij MD), twee voor een contact (naam + e-mail, rol uit
+  een vaste lijst). `REJECTED` is een uitkomst mét reden in de uitdraai, geen stilzwijgende
+  weglating. Twijfel gaat naar een beoordelingslijst — de fout is asymmetrisch: een oninteressant
+  bedrijf importeren kost een regel, een interessant bedrijf weggooien kost een klant.
+- **Veldvergelijking (stap 3)** — vier gevallen (leeg/gevuld in beide richtingen, identiek,
+  verschillend) met een concrete bronautoriteit-rangorde bij conflict: handmatige correctie >
+  Moneybird > dashboardinvoer > exposantenregistratie > bezoekersregistratie > externe verrijking.
+  Binnen dezelfde rang wint de nieuwste.
+- **E-mailstatus (stap 4)** — zes waarden, alles begint op `unchecked`, alleen `valid` is mailbaar,
+  `unsubscribed` wint van elke bron.
+- **Deelnamefeit (stap 5)** — vaste woordenlijst met acht feiten, inclusief het onderscheid
+  `bezoeker_geregistreerd` / `bezoeker_aanwezig` / `no_show`. Dat onderscheid is commercieel het
+  interessantst en verdwijnt zodra je het samenvoegt tot "bezoeker".
+
+**Twee van de drie open besluiten zijn beantwoord in plaats van doorgeschoven.** Herkomst per veld
+(B41) volgt dwingend uit de gevraagde flow: de conflictregel is niet uitvoerbaar met een stempel
+per record. Account-by-default (B38) is beslist ten gunste van contactrecords zonder login — de
+datapool en deelnamehistorie ontstaan zonder één account; een account ontstaat pas bij eigen
+handeling. Het derde besluit, de bronautoriteit-rangorde (B42), staat nu als concreet voorstel en
+vraagt één bevestiging.
+
+**Besluitenregister aangevuld:** B41 t/m B45.
+
+**Vooraankondiging schema-uitbreiding Johan:** herkomst+datum per veld, e-mailstatus als eigen
+veld, deelnamefeiten met woordenlijst. Alle drie nu een veld, achteraf een migratie op gevulde
+data. De specificatie volgt in een aparte levering.
+
+### Samenvoeging importprotocol (v3.0)
+
+Jeroen liet in een parallelle importsessie een tweede protocol schrijven en deelde dat hier. De
+twee versies overlapten grotendeels en vulden elkaar op de rest aan. Samengevoegd tot v3.0.
+
+**Uit de parallelle versie overgenomen, omdat die concreter of strenger was:** echte veldnamen in
+plaats van categorieën; `md_account_kind = contact` als technische oplossing voor het onderscheid
+contact/account; **domein gedegradeerd van bewijs naar sterk signaal**; concernstructuur zonder
+derde entiteit (Tarkett NL versus DE op btw); batch-ID en rij-ID met terugdraaien op batch;
+veldvergrendeling `locked_by`/`locked_at`; bronautoriteit **per veld** in plaats van één globale
+rangorde; "recent" als moment van geldigheid en niet van aanlevering; vier waarde-statussen (leeg /
+verwijderd / ongeldig / verlopen); nieuwe records als concept met `record_status = prospect`; de
+afleidingsvolgorde bij externe verrijking inclusief VIES; kolom-kwitantie, bestandshash en
+transactie.
+
+**Uit de eigen versie behouden:** de toelatingstoets met expliciete afwijsgronden (`AFGEWEZEN`
+bestond daar als uitkomst zonder criteria); de deelnamefeiten met vaste woordenlijst inclusief
+geregistreerd/aanwezig/no-show; de kopregelcontrole; de 5%-bouncegrens van SES als reden achter
+e-mailvalidatie; en de regel dat domeinmatching nooit automatisch beheerrechten geeft.
+
+**Eerste echte herziening in het besluitenregister: B46 herziet B37 regel 2.** De norm zei
+"ontdubbelen op exact domein óf btw/KvK". Eén domein kan bij meerdere merken horen, dus domein is
+een sterk signaal dat eerst tegen KvK/btw geverifieerd moet worden. Het oude besluit blijft staan
+met een `HERZIEN DOOR`-regel. **Aandachtspunt:** de eerdere merge van 37 brands is met de oude,
+ruimere regel gedraaid en verdient een controle.
+
+**Besluitenregister aangevuld:** B46 t/m B50 (domein als signaal, concept-status, veldvergrendeling
++ batch, "recent" = geldigheid, geen importplatform).
+
+### START-HIER.md bijgewerkt
+
+Drie wijzigingen in het enige bestand dat in de project knowledge staat:
+
+1. **Sectie Normdocumenten** — verwijst naar de vier nieuwe bestanden in `docs/` en legt vast dat
+   er géén kopie in de project knowledge komt, met de roadmap-divergentie als reden. Plus de drie
+   gewoontes waar het systeem op staat of valt: nieuwe besluiten landen in het register ook als ze
+   elders zijn genomen, verwijzen gebeurt bij naam en besluitnummer, en elk levend document
+   eindigt met een statusparagraaf.
+2. **"Wat Claude zelf doet" aangescherpt.** Een blok tekst om over te nemen is geen levering. De
+   toetsvraag vóór versturen: hoeveel handelingen kost dit Jeroen? Is het antwoord meer dan
+   "doorsturen" of "bestand vervangen", dan is de levering niet af. Aanleiding: Claude schreef in
+   deze sessie een alinea in de chat met de vraag of Jeroen die zelf in `START-HIER.md` wilde
+   plakken — in dezelfde sessie waarin de regel tegen dat gedrag werd opgeschreven.
+3. **Roadmap-regel bijgewerkt** na de samenvoeging van de twee uiteengelopen kopieën.
+
+### launch-taken.md herzien tot content-taken.md
+
+Jeroens vraag of de twee overige documenten in de project knowledge nog actueel waren. Antwoord:
+`roadmap.md` daar is de uitgelopen kopie (zie boven) en kan weg; `launch-taken.md` (19-06-2026)
+ging uit van een launch die op 1 augustus heeft plaatsgevonden, dus de premisse was verlopen — de
+taken grotendeels niet.
+
+Alle negentien taken tegen de live API gecontroleerd in plaats van overgeschreven. **Vijf
+afgerond** en van de lijst: boekshop (71 boeken live), materiaalcategorieën (11 types),
+toegankelijkheidsverklaring (31-07), bannerposities (22-07), about-pagina (31-07).
+
+**Metingen die de lijst veranderden:**
+
+| Wat | Stand 25-08-2026 |
+|---|---|
+| Talks live | 102 van 254 — sprekers 102/102, duur 32, bedrijf 31, **Vimeo-ID 0** |
+| Talks per jaar | 2022: 48 · **2023: 0** · 2024: 10 · 2025: 19 · 2026: 25 |
+| Events | 170, waarvan 3 vanaf 2026; 141 van vóór 2020 |
+| Boeken met channel | **0 van 71** |
+| Stories | 3.335, alle met "Story by MaterialDistrict" |
+| Insider reports | 1 |
+
+De oude taak 11 (uitzoeken waarom er per jaar talks ontbreken) is door de meting beantwoord: 2023
+is volledig leeg, 2024/2025 incompleet. Samengevoegd met de taak "talks editen".
+
+**Twee dingen die nergens op een lijst stonden:**
+
+1. **Drie zwaar verouderde publieke pagina's:** `/submit-your-materials` (19-10-2016),
+   `/contact` (18-07-2018), `/advertise` (04-05-2023). De eerste en derde zijn commerciële
+   instappagina's — relevant richting de septembercampagne.
+2. **Sample-beschikbaarheid kán niet ingevuld worden.** Er is geen veld voor "hebben wij hier een
+   sample van". `disable_sample_request` en `not_available` bestaan wel maar betekenen iets anders
+   (of een bezoeker mág aanvragen, niet of wij er een hebben). Vraagt eerst een veld bij Johan.
+
+**Volgorde omgegooid:** de lege statusvelden staan bovenaan omdat ze drie taken blokkeren, en de
+events zijn naar voren gehaald omdat MaterialDistrict Expo: Beyond Plastics op 16-09-2026 valt —
+over drie weken — terwijl de agenda verder uit archief van vóór 2020 bestaat.
+
+### Sessie-sweep — wat er niet in de moedermap stond
+
+Aanleiding: Claude stelde Johan in een conceptmail de vraag waar de ontbrekende Vimeo-video's
+waren. Het antwoord stond in de eigen codebase (`src/app/api/talks/[id]/embed/route.ts`: *"Public
+/wp/v2/talk strips meta.vimeo_id for Insider-only talks"*) én in de sessie van 06-08. Jeroens
+reactie — dat dit een symptoom is en niet een incident — leidde tot een sweep over alle twintig
+gesprekken in dit project.
+
+**Zes uitgevoerde besluiten stonden in geen enkel moedermap-document** en zijn als B51–B56
+vastgelegd: het strippen van Vimeo-ID's uit de publieke API na de paywall-bypass van 06-08 (97
+talks); het lead-endpoint dat bijna 44.000 records vrijgaf en achter authenticatie is gezet; de
+vaste releasedag woensdag via staging, inclusief de beperking dat er géén CMS-staging is en
+plugin-werk dus direct op de live database landt; sample requests open voor iedereen en Free als
+echt tier; "Insider insights" zonder frequentiebelofte; en het Innovation Fund (75% tot €3.500) met
+de bindende 2030-belofte.
+
+**Nieuwe §10 in het register** met open punten die nergens op een lijst stonden: 458 materialen met
+Biophilic als enige channel — die blokkeren de goedgekeurde versmalling omdat het apply-script geen
+channel-set kan leegmaken; 331 materialen zonder afbeelding (2004–2015, migratieverlies);
+publicatietempo dat 76 dagen stilstond; de `partner`-vlag als enige werkende member-signaal (130
+brands, onbetrouwbaar); en twee onbeantwoorde Vercel-vragen aan Johan uit 18-08 (Web Analytics zonder
+data, ~79.000 invocations per zes uur).
+
+**Twee eigen fouten gecorrigeerd.** In `content-taken.md` stond "1.426 materialen (43%) zonder
+channel" — een getal dat deze sessie nooit gemeten is. De werkelijke stand is **987 (30,4%)**; het
+was 1.189 (37%) op 11-08, dus de ronde van 523 toevoegingen heeft geholpen. En de conclusie dat
+Vimeo-ID's leeg zijn was fout: ze worden gestript. Beide correcties zijn doorgevoerd, plus een
+negatieve regel in de begrippenlijst: meet nooit een gated veld tegen de publieke API zonder te
+controleren of het gestript wordt.
+
+**Nieuwe meting:** vijf materialen dragen méér dan drie channels (vier met vier, één met vijf) en
+overtreden de harde limiet.
+
+**Wat deze sweep niet is.** Geen volledige inventaris. Claude kan zoeken en gericht openen, niet
+alles inlezen; een sessie van 200 kB volledig lezen kost zoveel context dat er na drie sessies
+niets over is. De structurele oplossing is niet opnieuw sweepen maar het register voeden — zie
+`START-HIER.md`, sectie Normdocumenten.

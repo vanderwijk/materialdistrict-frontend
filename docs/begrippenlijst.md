@@ -164,6 +164,11 @@ print" zeggen niets over waar het materiaal van gemaakt is (B24).
 **Een merknaam-match betekent geen bewijs.** Dat een brand "Bamboo Industries" heet, maakt zijn
 materialen geen bamboe (B24).
 
+**Een lege `vimeo_id` in de publieke API betekent niet dat er geen video is.** De publieke
+`wp/v2/talk`-respons strípt dat veld bij Insider-only talks; `has_video` is de publieke vlag en de
+ID komt na login via `/api/talks/[id]/embed` (B51). Dit geldt breder: meet nooit een gated veld
+tegen de publieke API zonder te controleren of het gestript wordt.
+
 **"Live op het platform" betekent niet "klaar om te versturen".** Publicatie en distributie zijn
 twee poorten (B20).
 

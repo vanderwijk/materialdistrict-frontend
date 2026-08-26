@@ -564,6 +564,73 @@ Bevestigd in de moedermap-scan (18-06-2026):
 
 ---
 
+## 10. Data, relaties & imports  ·  NIEUW (25-08)
+
+*De werkstromen die niet frontend of feature zijn maar data en relaties raken. Ze stonden tot nu
+toe nergens op één lijst: deels in `launch-taken.md`, deels in specs, deels alleen in sessies.
+Norm: `importprotocol.md` en `mutatieprotocol.md`. Besluiten: `besluitenregister.md` §7 en §8.*
+
+### 10a. Statussen zetten die er al horen te staan  ·  **[open]**  ·  blokkeert de rest
+Twee velden bestaan maar zijn leeg, en er hangt meer aan dan het lijkt.
+
+- **`material.publication_status` — leeg op alle 3.246 gepubliceerde materialen.** Hoort volgens
+  B32 default `legacy` te zijn. Zolang dit leeg is, bestaat het onderscheid tussen betaald,
+  historisch en beëindigd materiaal niet in de data, kan de legacy-banner (B34) niet verschijnen
+  en heeft de archivering per 30-04-2027 niets om op te draaien.
+- **`brand.tier` — `free` op alle 2.093 gepubliceerde brands.** De member-status uit launch-taak 5
+  is dus nog niet gezet. Zonder die status is er geen memberlijst en dus geen gerichte outreach.
+
+Dit is een backfill langs `mutatieprotocol.md`, geen import. Eerst dit, dan de rest van §10 —
+alle andere werkstromen leunen op het onderscheid tussen member, legacy en standalone.
+Eigenaar: Jeroen (oordeel) + Johan (uitvoeren) · Afh: — · **Hoogste prioriteit in §10**
+
+### 10b. Sanering legacy-archief  ·  **[deels]**
+De scan is gedaan: 2.093 brands ingedeeld in levend / onbevestigd / geen website / dood, met
+`verification_status` en `last_checked` als dragende velden (B40). Stand: 110 `checked`, 1.983
+`unknown`. Wat rest is de status wegschrijven voor de rest van de bakken en de dode brands op
+`archived` zetten — **niet verwijderen** (B40). Principe: levend tenzij hard bewijs van het
+tegendeel; een dood bedrijf laten staan kost bijna niets, een levend bedrijf archiveren kost een
+klant. Materialen dragen nog allemaal `unknown`.
+Eigenaar: beide · Afh: 10a
+
+### 10c. Beursdata importeren — bezoekers, exposanten, standbemanning  ·  **[open]**  ·  groot
+Tien edities beursdata plus bezoekers, standbemanning en ticketexports. Uit de vijftien exports
+van de talks-ronde kwamen al 1.700 unieke personen met e-mailadres naar boven (549 met
+telefoonnummer) — dat bestand is veel breder dan alleen sprekers.
+
+**Loopt volledig langs `importprotocol.md`.** Kern: twee entiteiten (brand + user),
+veldscheiding, ontdubbelen alleen op domein of btw/KvK, bron-tag op het bestaande record in
+plaats van een duplicaat, beursdeelname als gedateerd feit. Terugdraaiscript vóór de import, niet
+erna.
+
+**Drie besluiten moeten vallen vóór de eerste ronde** (`importprotocol.md` §8): herkomst per veld
+of per record, de bronautoriteit-volgorde, en account-by-default ja of nee — dat laatste botst met
+de domeinverwachting uit B38.
+Eigenaar: beide · Afh: 10a, plus de drie besluiten
+
+### 10d. E-mailvalidatie vóór de eerste campagne  ·  **[open]**
+Geïmporteerde adressen gaan niet ongevalideerd naar SES (B39). Betaalde validatie, geen
+SMTP-ping; circa €11 voor 2.200 adressen. Daarnaast: de bouncehistorie uit Sendy oogsten vóór
+uitfasering (B14). Dit is geen optimalisatie maar een verzekering — bij >5% bounce gaat het hele
+SES-account op review, inclusief de transactionele mail.
+Eigenaar: beide · Afh: 10c
+
+### 10e. Talks — spreker koppelen en mail bij livegang  ·  **[deels]**
+Het archief staat: 254 lezingen, 250 sprekers met e-mailadres, 189 met portret. Een talk draagt
+`speakers` als meta en kan er meerdere hebben. Wat nog niet werkt: de **mail bij het live zetten
+van een talk** naar de gekoppelde spreker(s). Dat is een trigger op statuswijziging, verwant aan
+de transactionele mails uit het mailsysteem — en hij valt onder de distributiepoort (B20): een
+talk die gepubliceerd wordt, is niet automatisch klaar om een mail over te versturen.
+Eigenaar: beide · Afh: verzendfundament (mailsysteem fase 0)
+
+### 10f. Member-outreach september  ·  **[open]**
+De commerciële campagne die op alles hierboven leunt: brandprofiel en materialen op orde voor de
+huidige betaalde members (launch-taak 13), gekoppeld aan de member-mailing. Kan niet vóór 10a —
+zonder tier- en publicatiestatus is er geen lijst om op te richten.
+Eigenaar: Jeroen · Afh: 10a, 10b
+
+---
+
 ## Status
 
 **Samengevoegd 25-08-2026** — dit bestand en de kopie in de project knowledge droegen elk uniek
@@ -578,6 +645,12 @@ uitgefaseerd — is ongewijzigd behouden.
 **Afspraak vanaf nu:** één roadmap, in de moedermap. De project knowledge draagt alleen
 `START-HIER.md`; een tweede kopie van dit bestand daarnaast is precies wat deze divergentie heeft
 veroorzaakt.
+
+**Toegevoegd 25-08-2026:** §10 (Data, relaties & imports). Reden: de zwaarste openstaande
+werkstromen — statussen zetten, de sanering, de beursdata-import, de talks-mail en de
+member-outreach — stonden nergens op één lijst. Ze zaten deels in `launch-taken.md`, deels in
+specs, deels alleen in sessies. Er komt bewust géén apart register naast dit bestand: één
+backlog, hier.
 
 **Achterstand in dit bestand:** "Atlas" staat nog als werknaam bij §5b en de FacetWP-verwijzing bij
 de "New in your channels"-pagina (§3) is achterhaald — FacetWP is uitgefaseerd (besluitenregister

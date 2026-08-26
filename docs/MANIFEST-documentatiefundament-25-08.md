@@ -1,7 +1,11 @@
 # MANIFEST — documentatiefundament v1 · 25-08-2026
 
-**Zip:** `materialdistrict-documentatiefundament-v2.zip`
-**Vervangt v1** — die is niet verspreid; als je 'm toch hebt, gooi 'm weg.
+**Zip:** `materialdistrict-documentatiefundament-v8.zip`
+**Vervangt v1 t/m v7** — die zijn niet verspreid; als je ze toch hebt, gooi ze weg.
+
+**Twee handelingen, meer niet.** Johan merget de inhoud van `docs/` en `session-log.md` in de
+repo. Jeroen vervangt `START-HIER.md` in de project knowledge door het exemplaar uit deze zip —
+dat bestand hoort daar en niet in de repo.
 **Geen code.** Alleen markdown in de moedermap-structuur. Niets hoeft gedeployed te worden.
 
 ---
@@ -10,15 +14,17 @@
 
 | Pad | Wat |
 |---|---|
-| `docs/besluitenregister.md` | 30 besluiten (B1–B29 + B18a) met grond, bron en gevolg. Nieuw normdocument. |
+| `docs/besluitenregister.md` | 57 besluiten met grond, bron en gevolg, in acht domeinen. Nieuw normdocument. |
 | `docs/begrippenlijst.md` | Canon + mensentaal-versus-systeemnaam + verboden woorden + negatieve regels. Nieuw normdocument. |
 | `docs/mutatieprotocol.md` | Zes poorten voor bulkmutaties, twee-helften-regel, vijf statussen. Nieuw normdocument. |
+| `docs/content-taken.md` | Het niet-code werk bij Jeroen, Sigrid en Sjoerd. Vervangt `launch-taken.md` uit de project knowledge; alle statussen gemeten tegen de live API. |
+| `docs/importprotocol.md` | v3.0 — samenvoeging van twee onafhankelijk geschreven protocollen. Zestien secties, van bronvalidatie tot terugdraaien op batch-ID. Nieuw normdocument. |
 
 ## Gewijzigd — vervangt de bestaande versie
 
 | Pad | Wat |
 |---|---|
-| `docs/roadmap.md` | Samengevoegd met de divergerende kopie uit de project knowledge. Zie §Status onderaan het bestand. |
+| `docs/roadmap.md` | Samengevoegd met de divergerende kopie uit de project knowledge, **plus nieuwe §10 (Data, relaties & imports)**. Zie §Status onderaan het bestand. |
 | `session-log.md` | Nieuwe sectie `§DOC-25-08` onderaan + kopregel bijgewerkt. |
 
 **Let op:** `docs/roadmap.md` en `session-log.md` zijn **complete bestanden** die de bestaande
@@ -26,11 +32,24 @@ versies vervangen — geen patches. De oude versies mogen weg.
 
 ---
 
-## Wat er níét in zit, bewust
+## Voor Jeroen — project knowledge
 
-- **Geen wijziging aan `START-HIER.md`.** Dat bestand woont in de project knowledge, niet in de
-  repo. Wel relevant: de bronhiërarchie erin (B27) krijgt met het besluitenregister een plek waar
-  losse besluiten kunnen landen zonder dat er een normdocument voor nodig is.
+| Pad | Wat |
+|---|---|
+| `START-HIER.md` (zip-root) | Bijgewerkt. **Hoort in de project knowledge, niet in de repo.** Wordt ook los aangeleverd. |
+
+**En: `launch-taken.md` en `roadmap.md` mogen uit de project knowledge.** De eerste is herzien en
+heet nu `docs/content-taken.md`; de tweede is de kopie die was uitgelopen en staat samengevoegd in
+`docs/`. `START-HIER.md` blijft het enige bestand daar.
+
+Drie wijzigingen: een sectie Normdocumenten die naar de vier nieuwe bestanden wijst en vastlegt
+dat er géén tweede kopie in de project knowledge komt; de regel dat nieuwe besluiten in het
+register landen ook als ze elders zijn genomen; en een aanscherping op "wat Claude zelf doet" —
+een blok tekst om over te nemen is geen levering.
+
+---
+
+## Wat er níét in zit, bewust
 - **Geen opschoning van `docs/`.** Er staan ~200 bestanden, waarvan veel eenmalige MANIFESTs,
   `email-claude-*`-bestanden en `session-log-append-*`-fragmenten die al zijn verwerkt. Dat is een
   eigen ronde, langs `mutatieprotocol.md` §3 (nog-niet-gebruikt versus niet-meer-gebruikt), niet
@@ -41,14 +60,40 @@ versies vervangen — geen patches. De oude versies mogen weg.
 
 ---
 
-## Drie dingen die opgelost moeten worden
+## Dingen die opgelost moeten worden
 
 1. **Regelboek — gedaan 26-08.** Canoniek `docs/materiaal-classificatie-regelboek.md`;
-   cms-plugin-kopie weg (niet omgekeerd). Zie B22 HERZIEN.
-2. **Twee session-logs — gedaan 26-08.** Sessiekopie
-   `docs/session-log-mission-beeld-04-08-v2.md` verwijderd.
+   cms-plugin-kopie weg. Zie B22 HERZIEN. (v2.0 volgt later uit herclassificatie-levering.)
+2. **Twee session-logs — gedaan 26-08.** Sessiekopie verwijderd.
 3. **De channel-catalogus is niet vastgezet** en zes van de achttien channels dragen tien of minder
    materialen. Launch-taak 1. **Actie: Jeroen + Sigrid** — redactioneel oordeel.
+4. **`publication_status` is leeg op alle 3.246 gepubliceerde materialen** terwijl de spec `legacy`
+   als default voorschrijft, en `brand.tier` staat op `free` voor alle 2.093 brands. Het veld
+   bestaat, de backfill is nooit gedraaid. Gevolg: geen memberlijst, geen legacy-banner, en de
+   archivering per 30-04-2027 heeft niets om op te draaien. Zie roadmap §10a. **Actie: Jeroen
+   (oordeel) + Johan (uitvoeren)** — dit blokkeert de member-outreach.
+5. **`datastrategie-specificatie.docx` staat niet in de moedermap.** De importnorm uit augustus
+   staat nu als `importprotocol.md` in `docs/`; het losse docx zou daarna ingetrokken moeten
+   worden in plaats van ernaast blijven bestaan.
+
+---
+
+## Schema-uitbreiding bij Johan — vóór de eerste grote import
+
+Drie velden die nu triviaal zijn en achteraf een migratie op gevulde data. Ze volgen uit het
+importprotocol; de specificatie komt in een aparte levering, dit is de vooraankondiging.
+
+1. **Herkomst per veld** (provenance: bron-label + ISO-datum) + **batch-log** met batch-ID en
+   rij-ID (B41, B48). Zonder dit is de conflictregel niet uitvoerbaar — `last_checked` per record
+   zegt alleen wanneer je voor het laatst keek.
+2. **Veldvergrendeling** — `locked_by`, `locked_at` (B48). Een bewust gecorrigeerd veld wordt door
+   geen import geraakt.
+3. **Conceptstatus** voor nieuwe records — `record_status = prospect`, `visible = false` (B47).
+   Het veld `record_status` bestaat al op brand maar is leeg; de waardenlijst moet vast.
+4. **Deelnamefeiten** met vaste woordenlijst, editie en bron (B44) — `exposant`,
+   `standbemanning`, `bezoeker_geregistreerd`, `bezoeker_aanwezig`, `no_show`, `spreker`,
+   `boekkoper`, `abonnee`.
+5. **Een transactie** om het importscript — alles of niets (B48).
 
 ---
 
