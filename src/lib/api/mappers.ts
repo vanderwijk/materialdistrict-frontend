@@ -255,6 +255,11 @@ export function mapMaterialListItem(
     brandCountry: raw.meta?.brand_country?.label ?? null,
     materialCode: stringOrNull(raw.meta?.material_code),
     featured: Boolean(raw.meta?.featured),
+    insiderOnly: Boolean(
+      (raw.meta as { _insider_only?: boolean; insider_only?: boolean } | undefined)
+        ?._insider_only ??
+        (raw.meta as { insider_only?: boolean } | undefined)?.insider_only,
+    ),
     date: raw.date,
     modified: raw.modified,
     publication: publicationFromMaterialRaw(raw),
@@ -326,6 +331,10 @@ export function mapMaterial(
     featured: Boolean(m.featured),
     notAvailable: Boolean(m.not_available),
     commercialMaterial: Boolean(m.commercial_material),
+    insiderOnly: Boolean(
+      (m as { _insider_only?: boolean; insider_only?: boolean })._insider_only ??
+        (m as { insider_only?: boolean }).insider_only,
+    ),
 
     materialCode: stringOrNull(m.material_code),
     shortDescription: stringOrNull(m.short_description),

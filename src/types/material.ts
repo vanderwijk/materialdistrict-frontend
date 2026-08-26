@@ -281,6 +281,11 @@ export interface MaterialListItem {
   materialCode: string | null
   /** Featured op homepage / overzicht. */
   featured: boolean
+  /**
+   * Insider-only (redactioneel, meta `_insider_only`). Default false.
+   * §CHANNELS-VERPLICHT-25-08.
+   */
+  insiderOnly: boolean
   /** Sortering. */
   date: string
   modified: string
@@ -349,6 +354,11 @@ export interface Material {
   featured: boolean
   notAvailable: boolean
   commercialMaterial: boolean
+  /**
+   * Insider-only (redactioneel, meta `_insider_only`). Default false.
+   * §CHANNELS-VERPLICHT-25-08 — zelfde sleutel als talk/article-alias.
+   */
+  insiderOnly: boolean
 
   /** Tekst-velden uit meta. */
   materialCode: string | null
