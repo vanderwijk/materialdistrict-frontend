@@ -12,6 +12,13 @@
 ---
 
 ## Laatste update
+Datum: 25-08-2026 — Documentatiefundament (§DOC-25-08): besluitenregister (30 besluiten),
+begrippenlijst en mutatieprotocol als nieuwe normdocumenten in `docs/`; `roadmap.md`
+samengevoegd na divergentie. Zie sectie "§DOC-25-08 — documentatiefundament" onderaan. Geen code gewijzigd.
+
+----
+
+## Laatste update (vorige)
 Datum: 24-08-2026 — Betafeedback-ronde (§BETA-FIX-24-08): elf UI-punten uit twee
 weken beta, plus de cache-klacht ("publiceren is niet meteen zichtbaar") en de
 soft-404. Zie sectie "§BETA-FIX-24-08 — betafeedback-ronde" onderaan. Nog niet
@@ -3856,3 +3863,58 @@ werkt vanaf nu hetzelfde als bij een artikel.
 Zie `MANIFEST-beta-fix-24-08.md` in de zip. Let op de lijst met te verwijderen
 bestanden — de verplaatste overzichtspagina's moeten weg, anders bestaat de
 route dubbel.
+
+---
+
+## §DOC-25-08 — documentatiefundament (25-08-2026)
+
+Geen code. Aanleiding: Jeroen deelde de documentenset van het Sample.Store-project ter
+inspiratie — met name de manier waarop daar besluiten en poorten zijn vastgelegd. Bij het
+naast elkaar leggen bleek dat MaterialDistrict zijn besluiten wél goed vastlegt, maar over
+ongeveer vijftien documenten verspreid, zodat een besluit alleen terug te vinden is door de
+vindplaats al te kennen.
+
+### Toegevoegd — drie normdocumenten in `docs/`
+
+**`besluitenregister.md`** — negenentwintig besluiten (B1–B29), gereconstrueerd uit de
+moedermap-stand van 24-08. Per besluit: wat, waarom, bron met datum, en wat het raakt.
+Vervangt niets; de bestaande documenten blijven waar ze zijn en worden hier alleen
+opzoekbaar gemaakt. Herzieningen overschrijven niet maar krijgen een `HERZIEN DOOR`-regel.
+B17 is diezelfde dag bevestigd en herschreven, met **B18a** als nieuw besluit ernaast:
+de gecureerde channel-editie is geschrapt (dat was B17), maar de frequentiekeuze per gebruiker
+— daily / weekly / monthly / none, standaard weekly — staat daar los van en is in de frontend
+gebouwd (`FollowDigestBlock`, `FollowToggle`, `DetailChannelPill` → `PATCH
+/md/v2/follows/mail-frequency`). De verzendkant is nog niet gebouwd. Die twee werden door elkaar
+gehaald; ze staan nu apart. Er staat geen `TE BEVESTIGEN` meer open.
+
+**`begrippenlijst.md`** — de canon, met de mensentaal-versus-systeemnaam-tabel (channel =
+`theme`, story = `article`, insider report = `insider_report`), de elf types met hun
+slug-versus-label-afwijkingen, de woorden die we niet gebruiken (nooit "termen", nooit
+"Atlas"), en een reeks negatieve regels ("dit betekent níét"). Die afspraken bestonden wel,
+maar alleen in sessiegeheugen.
+
+**`mutatieprotocol.md`** — zes poorten voor elke bulkmutatie (norm vóór script, meting vóór
+voorstel, volledige dry-run, menselijk oordeel op patroon, uitvoering met terugweg,
+verificatie achteraf), de twee-helften-regel, en de vijf statussen inclusief GERESERVEERD.
+De onderliggende val — nog-niet-gebruikt en niet-meer-gebruikt zien er identiek uit — geldt
+bij ons het scherpst voor het lege channelveld.
+
+### Gewijzigd
+
+**`docs/roadmap.md` samengevoegd.** Dit bestand en de kopie in de project knowledge waren in
+beide richtingen uit elkaar gelopen. De moedermap-versie miste de volledige sessie van 22-06
+(§5d AI-team, DDOS-ingang, distributiepoort, submissions, command-center-koerswijziging,
+Campaigns, de gedeployde redactie-rechten); de andere kopie miste alles van ná 22-06 (Material
+visualizer 25-06, dual write live 30-06, mailtool-keuze 24-07). Samengevoegd, met een
+statusparagraaf die vastlegt wat waar vandaan komt.
+
+### Bevindingen — status 26-08-2026
+
+1. **Regelboek — opgelost.** Canoniek: `docs/materiaal-classificatie-regelboek.md`.
+   Cms-plugin-kopie + v1.3 weg. Zie besluitenregister B22 HERZIEN (niet de omgekeerde
+   spiegel die Claude eerst voorstelde).
+2. **Twee session-logs — opgelost.** `docs/session-log-mission-beeld-04-08-v2.md` verwijderd.
+3. **Channel-catalogus.** Gemeten op de live API: achttien channels, niet twintig zoals het
+   commentaar in `src/lib/api/channels.ts` zegt. Zes channels dragen tien of minder materialen
+   (Sense & Sensibility 0, Recycling 1, Regenerative 1, Timber 10, Leisure & Hospitality 10,
+   Translucency 14). Relevant voor launch-taak 1.

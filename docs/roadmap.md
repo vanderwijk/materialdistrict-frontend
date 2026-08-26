@@ -11,6 +11,21 @@
 > en het herontworpen topmenu) en Johans backend-afronding van de drie feedback-punten:
 > Get tickets-link op het event-list-endpoint, follow-scope-defaults, en `meta.properties`
 > voor de compare-velden. Zie §3, §9.
+>
+> **Bijgewerkt 22-06-2026** met de Content Command Center-sessie: het redactiedashboard
+> als command center rond een AI-team (motor- vs. groei-agents), drie nieuwe groei-agents,
+> de submissions-moderatieflow, het distributiepoort-principe, en Campaigns als horizon.
+> Zie §5d (nieuw), §5a, §3, §8.
+>
+> **Bijgewerkt 22-06-2026 (DDOS-incident)** met de bot-/scraping-bescherming na de DDOS-aanval:
+> de Cloudflare-basislaag, het besluit AI-crawlers toegestaan te houden, en cache-hardening
+> als launch-taak. Zie §1.
+>
+> **Samengevoegd 25-08-2026.** Dit bestand en de kopie in de project knowledge waren in beide
+> richtingen uit elkaar gelopen: de moedermap-versie miste de hele sessie van 22-06 (§5d, de
+> DDOS-ingang, de distributiepoort, Campaigns, de gedeployde redactie-rechten), de andere kopie
+> miste alles van ná 22-06 (Material visualizer 25-06, dual write live 30-06, mailtool-keuze
+> 24-07). Beide zijn hier samengevoegd. Vanaf nu geldt: één roadmap, in de moedermap. Zie §Status.
 
 ---
 
@@ -25,6 +40,22 @@ toepassing") + het discovery-model (geen e-commerce-conversiemachine). Aangedrag
 pitch (Devnex, "Onton-style"); de rest van die pitch (smart filtering, AI-search, checkout, premium
 design) is al gedekt of geparkeerd, en direct-to-cart materials + externe Insightly-CRM passen niet
 bij het MD-model. Eigenaar: beide.
+
+### Bot-/scraping-bescherming na DDOS  ·  **[deels]**  ·  launch-hardening  ·  (22-06)
+Op 22-06 legde een DDOS de site plat: 504 op `/login/`, test én live traag, 's nachts 5–18k
+hits/uur tegen een daggemiddelde van ~2k. **Niet de nieuwe frontend en geen plugin** — externe
+aanvalstraffic; WP Engine zette under attack mode aan als acute mitigatie. Drie sporen eruit:
+- **Cloudflare-basislaag (Johan, staand):** rate limiting + Bot Fight Mode aanzetten als
+  permanente onderlaag. Under attack mode is alleen noodknop, niet permanent — het hindert óók
+  de headless API-calls vanaf Vercel.
+- **Beslissing (Jeroen, 22-06): AI-crawlers blijven toegestaan** (besluitenregister B7).
+  Vindbaarheid in AI-zoekantwoorden weegt zwaarder dan content afschermen → de Cloudflare-
+  AI-blokkeerknop *niet* aanzetten.
+- **Cache-hardening (frontend, launch-taak):** nalopen dat alles wat cachebaar is ook gecachet
+  wordt, zodat scrapen de cache raakt i.p.v. de database.
+- **Let op richting launch:** zet Cloudflare onder druk under attack mode / strenge challenges aan,
+  dan moeten de API-paden uitgezonderd worden, anders breekt de datatoevoer naar de Vercel-frontend.
+Eigenaar: beide
 
 ### Terug naar de pagina na inloggen  ·  **[deels]**  ·  quick win
 Uitgelogd iets willen volgen (bv. een channel op een materiaalpagina) → eerst inloggen →
@@ -86,8 +117,10 @@ Eigenaar: beide
 
 ### Misgelopen zoekopdrachten benutten  ·  **[open]**
 `search_materials` wordt al gelogd; vang de zoekacties zónder resultaat apart op. Dubbel
-signaal: ontbrekende content (redactie) + binnen te halen brands (Atlas-prospects). Bijna
-gratis — het event bestaat al.
+signaal: ontbrekende content (redactie) + binnen te halen brands (prospects voor het
+businessdashboard). Bijna gratis — het event bestaat al.
+**Uitgewerkt (22-06) als Search Gap Agent** in het AI-team (§5d): signaleert niet alleen,
+maar levert een al voorbereid concept. Externe tegenhanger = Longtail Opportunity Agent (§5d).
 Eigenaar: beide
 
 ### Interesse-onboarding bij aanmelding  ·  **[open]**
@@ -130,7 +163,9 @@ na 08-07 (~3,5 week richting 1 aug).
 
 **Volgorde-advies:** quick wins los → fundament verbreden (events, follow, datamodel) →
 hefbomen die erop leunen (digest, alerts, SEO-landingspagina's) → parallel: social login →
-later & groot: bilingual + eigen admin → fase 2/3: intelligentie (incl. het Atlas-cluster).
+later & groot: bilingual + eigen admin → fase 2/3: intelligentie (incl. het AI-team §5d en
+het dashboard-cluster §5b). NB: het redactiedashboard zelf (§5a) is launch-kandidaat; het
+AI-team eroverheen is intelligentie en bouwt op de opgebouwde data-moat.
 
 **Quick wins (nu, vooral frontend — snel te leveren):**
 - Terug naar de pagina na inloggen — `?next=`-infra bestaat al, alleen benutten. Voedt follow-conversie.
@@ -193,6 +228,8 @@ fase 1 (Your update-assembler, oktober). Open: queue/worker, campagnepad, consen
 model, assembler, intro-generatie. Voorwaarde: `_md_first_approved_at` +
 `_md_distribution_approved` (merkuploads). Fundament (Johan, 21-06, `8e5ecff`):
 digest-filter-helpers klaar.
+**Distributiepoort (besluitenregister B20):** publicatie en distributie zijn twee aparte
+besluiten — live-op-platform is niet automatisch klaar-voor-verzenden. Geldt voor alle outbound.
 Afhankelijk van: backend fase 0/1 · Eigenaar: beide
 
 ### "New in your channels"-pagina  ·  **[open]**
@@ -229,6 +266,8 @@ Afhankelijk van: Johan (OAuth) · Eigenaar: vooral backend
 Echte pagina's per zinvolle facet-combinatie ("Acoustic biobased materials"): intro +
 gecureerde materialen + stories + structured data. Selectiviteit ís de strategie: wees
 dé bron voor de query, geen dunne commodity-content.
+De **Longtail Opportunity Agent** (§5d) identificeert welke pagina's de moeite waard zijn
+en bereidt het concept al voor — gewogen op business, niet alleen verkeer.
 Afhankelijk van: fundament · Eigenaar: frontend + curatie
 
 ### Rich results / structured data  ·  **[live]**, uit te breiden
@@ -286,14 +325,29 @@ MaterialDistrict-graph kennen — dáár zit de meerwaarde, en daarom is het dat
 - **Recycling** = de edit-pagina's (brand, material, user, profiel) zijn exact dezelfde componenten
   die er al staan — een edit is een edit, of de eigenaar of een redacteur 'm opent. Vrijwel 1-op-1
   herbruikbaar; zelfde bouw als het bestaande ledendashboard.
-- **Het nieuwe zit eromheen:** (a) rechten — na plugin-analyse (19-06) gesplitst: **brands + materials**
-  zijn met één capability-bypass in `md_dashboard_require_managed_brand` (`edit_others_posts`, al elders
-  in de plugin gebruikt) in één keer admin-breed te openen — klein, patch ligt klaar voor Johan;
-  **stories/events/talks/books/users** hebben nog géén dashboard-endpoints → dat is nieuwbouw. (b)
-  overzicht — zoek/lijst-laag om content te vinden (deels recyclebaar van listings).
-- **Planning:** frontend-recycling kan in Johans vakantie voorbereid worden; admin-breed schrijven
-  is het kritieke pad dat Johan-tijd vraagt → nú scopen (vóór 22-06).
-- Bevat de **nacht-agent** (zie 5c).
+- **Het nieuwe zit eromheen:** (a) rechten — **GEDEPLOYED (Johan, 22-06)**, zie besluitenregister
+  B21: keuze = `edit_others_posts` hergebruiken (geen eigen `md_manage_content`-cap, dicht bij de
+  bestaande Editor-rol); geïmplementeerd in `md_dashboard_require_managed_brand()`
+  (`rest-dashboard.php`) — users met `edit_others_posts` slippen de `connected_brand_id`-check, de
+  eigenaar-flow voor gewone members is ongewijzigd, `require_brand_material` niet aangeraakt. Doc in
+  de plugin-repo: `docs/redactie-dashboard-rechten-voorstel.md`. **Scope bevestigd:**
+  **stories/events/talks/books/users** hebben géén dashboard-endpoints → blijft nieuwbouw, buiten
+  deze patch. (b) overzicht — zoek/lijst-laag om content te vinden (deels recyclebaar van listings).
+- **Brand-switcher voor redacteuren  ·  [open]  ·  (Johan-noot 22-06).** De brand-switcher leest
+  nog `connected_brands[]` uit `/auth/me`: een Editor kan via de API nu elk brand bewerken, maar ziet
+  in de UI alleen gekoppelde brands. Frontend moet voor het redactiedashboard een alle-brands-selectie
+  (zoek/lijst) bouwen zodat redacteuren elk brand kunnen kiezen. Bewust de volgende stap, niet de
+  patch. Eigenaar: vooral frontend.
+- **Planning:** frontend-recycling kan voorbereid worden; admin-breed schrijven is het kritieke pad
+  dat Johan-tijd vraagt.
+- Bevat de **nacht-agent** (zie 5c) en het bredere **AI-team** (zie 5d).
+- **Koerswijziging (22-06): command center, geen CMS/dashboard.** De content-home is geen verzameling
+  kaarten/scorecards/overzichten maar een team dat voor je werkte en op je commando wacht — terugblik
+  op de nacht (voltooide verbetering), besluiten die wachten, kansen, en agents die je kunt aansturen
+  (scans starten, briefen). Georganiseerd langs **aandacht én waarde** in twee stromen: *platform
+  onderhouden* (motor-agents, gebundeld bekrachtigen) vs. *laten groeien* (groei-agents, op impact
+  gerangschikt, eersteklas). Ontwerpprincipe: *toon de beweging, niet de stand* ("74 → 89", voltooid
+  werkwoord). Drie home-richtingen verkend — Team / Ochtendbriefing / Groei — richting nog niet gekozen.
 
 ### 5b. Business-dashboard (sales + business owner) — "Atlas"  ·  **[open]**
 *Lezen — engagement- en leaddata omzetten in iets waar sales mee werkt (wie kijkt naar welke
@@ -377,7 +431,51 @@ ChatGPT met redacteur-prompt → origineel artikel. 's Nachts ~20 concepten in e
   daarna intelligentie eroverheen.
 
 **Namen (geparkeerd):** redactie → Desk / Newsroom; business → Signal / Pulse / Lens.
-Voorlopig: "redactiedashboard" en "businessdashboard".
+Voorlopig: "redactiedashboard" en "businessdashboard" (begrippenlijst §3 — "Atlas" niet meer
+gebruiken).
+
+### 5d. Het AI-team — redactie (motor & groei)  ·  **[open]**  ·  (22-06)
+Het redactiedashboard draait om een team van ~8 agents in **twee families**. De nacht-agent (5c)
+en de upload agent (§4) zijn hier onderdeel van.
+
+**Motor-agents — houden het platform draaiend (efficiency):**
+- **Night Agent** — schrijft + koppelt concepten (= 5c).
+- **SEO Agent** — repareert SEO-problemen en scoort; toont de delta (74 → 89), mens keurt goed.
+- **Content Health Agent** — vult profielen aan, genereert alt-text, bewaakt de kwaliteitsnorm.
+- **Material Matching Agent** — legt ontbrekende materiaalrelaties bij artikelen.
+
+**Groei-agents — vinden groeikansen (hier zit de meeste waarde):**
+- **Search Gap Agent** — interne 0-resultaat-zoekopdrachten → voorbereid concept (= §1).
+- **Longtail Opportunity Agent** — externe spiegel: vindt externe zoek-/contentkansen (Search
+  Console, volumes, trends) die we nog niet bedienen, gewogen op **business** (Insider-conversie,
+  membership-potentie, commerciële relevantie, eigen materiaaldata, bestaande merken/relaties),
+  en bereidt de conceptpagina voor. Voedt §4 (long-tail facetpagina's). Afh: Search Console.
+- **People & Relations Agent** — detecteert uit engagement/events/downloads één persoon die
+  tegelijk interviewkandidaat én membership-/relatiekans is; bouwt het dossier (verrijking,
+  betrokkenheid, relatie-eigenaar, vragen) besluit-klaar. Brug content × commercie; raakt de
+  leaddata van het businessdashboard (5b). Afh: contact-index/datapool.
+- **Insider Agent** — signaleert gating-kansen (hoge save-ratio → Insider-only-kandidaat) met
+  conversie-/MRR-projectie als onderbouwing. Afh: engagement-events (§3).
+
+**Richtingbepaling:** vermoeden dat de **groei-laag belangrijker is dan de motor-laag** — de home
+toont groeikansen eersteklas, niet weggestopt tussen het productiewerk.
+
+**Brief-modus** — naast de autonome nacht-run kan de redactie een agent zelf een opdracht/scan geven
+op een eigen signaal ("scan alle materiaalprofielen op akoestiek", "zoek kansen rond biobased").
+Maakt het dashboard een command center i.p.v. een wachtrij.
+
+**Submissions — moderatie (derde contentherkomst).** Naast AI-geproduceerd en mens-geproduceerd:
+extern aangeleverde content (Materials uploads, Partner Story submissions, Brand updates, Project
+submissions). AI pre-checkt (volledigheid, SEO, duplicate, beeld, kwaliteit); de redactie modereert
+met een triade **goedkeuren / afwijzen / terugsturen** — "terugsturen" betrekt de externe leverancier
+in een feedback-loop. Breder dan de upload agent (die alleen Materials-extractie dekt). Afh: upload agent.
+
+**Distributiepoort (hard principe, besluitenregister B20).** Alleen redactioneel goedgekeurde content
+komt in outbound-kanalen (nieuwsbrieven, channel updates, gepersonaliseerde + follow-up mails); geldt
+ook voor klantuploads/partner submissions. **Twee aparte poorten:** publicatie (op platform) én
+distributie (naar buiten). AI bereidt voor, mens beslist beide. Raakt de digest-engine (§3).
+
+Eigenaar: beide · Afh: data-moat (§2/3) — intelligentie-laag, bouwt op de opgebouwde historie.
 
 ---
 
@@ -406,6 +504,11 @@ Bewust later; pas zinvol als de data-moat gevuld is.
 ## 8. Geparkeerd
 
 Bewust uitgesteld. **Niet voorstellen als actieve volgende stap.**
+- **Campaigns — vierde pijler / Campaign Agent**  ·  (22-06), horizon. Naast Content /
+  Communication / Cash een groei-pijler: een agent die adviseert waar groeibudget de hoogste ROI
+  heeft (Google Ads, LinkedIn, social, eventpromotie, Insider-acquisitie) op basis van conversie,
+  CPA, memberships en ROI. Content/Communication/Cash = de operatie, Campaigns = de groeimotor.
+  Reden parkeren: pas zinvol als de operatie en de data-moat staan. Eigenaar: beide.
 - **Upsell shop** incl. beurs-configurator (complex: varianten, contracten, capaciteit).
 - **WooCommerce self-service checkout** als volledige zelfbediening + tier-vergelijking.
   *(NB: de gewone checkout/cart/iDEAL/insider-korting is wél live — zie §9.)*
@@ -418,6 +521,14 @@ Bewust uitgesteld. **Niet voorstellen als actieve volgende stap.**
 ---
 
 ## 9. Live / recent afgerond
+
+**Toegevoegd 22-06-2026 (Johan, redactie-dashboard-rechten):**
+- **Redactie-dashboard rechten (backend, gedeployed):** `edit_others_posts` hergebruikt (geen eigen
+  cap) in `md_dashboard_require_managed_brand()` (`rest-dashboard.php`) — Editors kunnen brands +
+  materials admin-breed bewerken via de API; eigenaar-flow ongewijzigd. Doc:
+  `docs/redactie-dashboard-rechten-voorstel.md`. Scope bevestigd: stories/events/talks/books/users
+  blijven nieuwbouw. Open frontend-vervolg: brand-switcher voor redacteuren (zie §5a).
+  Besluitenregister B21.
 
 **Toegevoegd 21-06-2026 (feedback-fix-build + Johans backend-afronding):**
 - **Compare-pagina** (`/compare`, nieuw): vergelijk tot 3 materials naast elkaar —
@@ -450,3 +561,25 @@ Bevestigd in de moedermap-scan (18-06-2026):
 - **Overzichtsfilters**: events Costs, brands Application area, stories Insider-only.
 - **WCAG**: P1-contrast-fixes + P2 focus-traps gemerged (a11y-sessie A11Y-1, 18-06).
 - **Strategie-docs**: traffic/SEO, e-mailsysteem-blueprint, mailautomation-plan.
+
+---
+
+## Status
+
+**Samengevoegd 25-08-2026** — dit bestand en de kopie in de project knowledge droegen elk uniek
+materiaal en waren niet meer met elkaar te verzoenen zonder handmatige samenvoeging. Uit de andere
+kopie zijn hier ingevoegd: de DDOS-/bot-beschermingsingang (§1), de Search Gap- en Longtail-
+verwijzingen (§1, §4), de distributiepoort bij de digest (§3), de gedeployde redactie-rechten en de
+brand-switcher (§5a), de koerswijziging naar command center (§5a), het volledige AI-team (§5d nieuw),
+Campaigns onder geparkeerd (§8) en de 22-06-regel bij afgerond (§9). Wat in dit bestand al nieuwer
+was — Material visualizer (25-06), dual write live (30-06), de mailtool-keuze (24-07), FacetWP
+uitgefaseerd — is ongewijzigd behouden.
+
+**Afspraak vanaf nu:** één roadmap, in de moedermap. De project knowledge draagt alleen
+`START-HIER.md`; een tweede kopie van dit bestand daarnaast is precies wat deze divergentie heeft
+veroorzaakt.
+
+**Achterstand in dit bestand:** "Atlas" staat nog als werknaam bij §5b en de FacetWP-verwijzing bij
+de "New in your channels"-pagina (§3) is achterhaald — FacetWP is uitgefaseerd (besluitenregister
+B8). Beide zijn bewust niet in deze ronde herschreven; ze horen bij een inhoudelijke consolidatie,
+niet bij een samenvoeging. Opgesteld door Claude, namens Jeroen.
