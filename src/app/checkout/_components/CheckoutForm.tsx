@@ -31,6 +31,7 @@ import type { StripeElementsOptions } from '@stripe/stripe-js'
 import { useAuth } from '@/components/providers/AuthContext'
 import { useCart } from '@/components/providers/CartContext'
 import { storeMinorToNumber, type StoreAddress } from '@/lib/api/cart'
+import { logEvent } from '@/lib/api/events'
 import { checkCheckoutEmail, checkCheckoutVat } from '@/lib/api/checkout-account'
 import {
   buildStripePaymentData,
@@ -155,6 +156,60 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [error, setError] = useState<string | null>(null)
   const [stripeRef, setStripeRef] = useState<ReturnType<typeof useStripe>>(null)
   const [elementsRef, setElementsRef] = useState<ReturnType<typeof useElements>>(null)
+
+  /** Guards the one-shot `checkout_started` event against re-renders. */
+  const startLogged = useRef(false)
+
+  // Commerce funnel step 2. Waits for `initialized` so the lazy cart bootstrap
+  // has settled — firing earlier would log an empty cart for every returning
+  // shopper. One event per mount, guarded against re-render and against the
+  // post-order state where the cart has just been cleared.
+  useEffect(() => {
+    if (startLogged.current) return
+    if (!initialized || placed) return
+    const count = cart?.items_count ?? 0
+    if (count < 1) return
+    startLogged.current = true
+    void logEvent({
+      eventType: 'checkout_started',
+      // `site` carries no object_id — md_analytics_validate_event() blanks it
+      // for site/search — so the cart detail rides in `attributes`.
+      objectType: 'site',
+      source: 'checkout',
+      attributes: {
+        item_count: count,
+        total: cart?.totals?.total_price ?? null,
+        currency: cart?.totals?.currency_code ?? null,
+      },
+    })
+  }, [initialized, placed, cart])
+
+  /**
+   * Commerce funnel step 3. Called at both success branches (redirect-based
+   * gateways and direct success) so every placed order is counted exactly
+   * once, whichever payment path it took.
+   *
+   * Note: for redirect gateways this fires when the order is created and the
+   * shopper is sent on to the bank, so someone who abandons there is still
+   * counted. The order's own WooCommerce status stays the source of truth for
+   * revenue — this event measures the funnel, not the ledger.
+   */
+  const logOrderCompleted = useCallback(
+    (orderId: string | number) => {
+      void logEvent({
+        eventType: 'order_completed',
+        objectType: 'order',
+        objectId: orderId,
+        source: 'checkout',
+        attributes: {
+          item_count: cart?.items_count ?? null,
+          total: cart?.totals?.total_price ?? null,
+          currency: cart?.totals?.currency_code ?? null,
+        },
+      })
+    },
+    [cart],
+  )
 
   const handleStripeReady = useCallback(
     (stripe: ReturnType<typeof useStripe>, elements: ReturnType<typeof useElements>) => {
@@ -513,6 +568,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
             fallbackReturnUrl: `${window.location.origin}${confirmationUrl}`,
           })
           setPlaced(true)
+          logOrderCompleted(result.order_id)
           clearCart()
           window.location.href = finalUrl
         } catch (err) {
@@ -526,6 +582,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
       }
       if (status === 'success' || status === 'pending') {
         setPlaced(true)
+        logOrderCompleted(result.order_id)
         clearCart()
         router.push(confirmationUrl)
         return

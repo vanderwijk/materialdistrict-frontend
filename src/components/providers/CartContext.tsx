@@ -35,6 +35,7 @@ import {
   type StoreAddress,
   type StoreCart,
 } from '@/lib/api/cart'
+import { logEvent } from '@/lib/api/events'
 
 interface CartContextValue {
   cart: StoreCart | null
@@ -103,7 +104,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const addItem = useCallback(
-    (id: number, quantity = 1) => run(() => addToCart(id, quantity)),
+    async (id: number, quantity = 1) => {
+      await run(() => addToCart(id, quantity))
+      // Commerce funnel step 1. Logged after the Store API confirms the add,
+      // so a failed call is not counted; `run` rethrows, which skips this.
+      // Fire-and-forget — `logEvent` swallows its own errors and must never
+      // affect the shopper.
+      void logEvent({
+        eventType: 'cart_item_added',
+        objectType: 'book',
+        objectId: id,
+        source: 'cart',
+        attributes: { quantity },
+      })
+    },
     [run],
   )
   const updateItem = useCallback(
