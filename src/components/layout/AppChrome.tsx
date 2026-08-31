@@ -4,6 +4,7 @@ import { CartProvider } from '@/components/providers/CartContext'
 import { BookmarksProvider } from '@/lib/hooks/useBookmarks'
 import { GateNoticeProvider } from '@/components/ui'
 import { HeaderShell } from '@/components/layout/HeaderShell'
+import { ConfirmEmailBanner } from '@/components/layout/ConfirmEmailBanner'
 import { Footer } from '@/components/layout/Footer'
 import { ScrollToTop } from '@/components/layout/ScrollToTop'
 
@@ -31,6 +32,8 @@ export function AppChrome({
         <CartProvider>
           <GateNoticeProvider>
             <HeaderShell />
+            {/* Renders nothing unless the signed-in account is unconfirmed. */}
+            <ConfirmEmailBanner />
             <main id="main">{children}</main>
             <Suspense fallback={null}>
               <Footer />

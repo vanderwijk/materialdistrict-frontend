@@ -1746,6 +1746,8 @@ export async function registerUser(args: {
   accountType?: 'specifier' | 'manufacturer'
   profession?: string
   organisation?: string
+  /** Milliseconds between the form rendering and submit — bot speed bump. */
+  formElapsedMs?: number
 }): Promise<AuthMeResponse> {
   const body: Record<string, string> = {
     email: args.email,
@@ -1756,12 +1758,47 @@ export async function registerUser(args: {
   }
   if (args.profession) body.profession = args.profession
   if (args.organisation) body.organisation = args.organisation
+  if (typeof args.formElapsedMs === 'number' && Number.isFinite(args.formElapsedMs)) {
+    body.form_elapsed_ms = String(Math.max(0, Math.round(args.formElapsedMs)))
+  }
 
   const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/register', {
     method: 'POST',
     body,
   })
   return mapAuthMeResponse(raw)
+}
+
+/**
+ * Redeem an email-confirmation key.
+ *
+ * Anonymous: the key is the credential, because the link is clicked from a mail
+ * client that often carries no session and is frequently a different device.
+ */
+export async function confirmEmail(
+  key: string,
+  userId: number,
+): Promise<{ ok: boolean; user: AuthMeResponse['user'] | null }> {
+  const raw = await wpAuthFetch<{ ok: boolean; user: WPAuthMeRawResponse['user'] | null }>(
+    '/md/v2/auth/confirm-email',
+    { method: 'POST', body: { key, user_id: String(userId) } },
+  )
+
+  return {
+    ok: Boolean(raw?.ok),
+    user: raw?.user ? mapAuthMeResponse({ user: raw.user } as WPAuthMeRawResponse).user : null,
+  }
+}
+
+/**
+ * Ask WordPress to send a fresh confirmation email to the signed-in user.
+ */
+export async function resendConfirmation(token: string): Promise<void> {
+  await wpAuthFetch<{ ok: boolean }>('/md/v2/auth/resend-confirmation', {
+    method: 'POST',
+    body: {},
+    bearer: token,
+  })
 }
 
 /**

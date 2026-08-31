@@ -19905,3 +19905,55 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   .follow-transition-trigger { padding-left: 14px; padding-right: 14px; }
 }
 /* ======================== einde §BETA-FIX-24-08 ======================== */
+
+/* ------------------------------------------------------------------
+   Confirm-email banner
+   ------------------------------------------------------------------
+   Shown only to signed-in accounts whose address is not confirmed yet.
+   Deliberately an inline strip under the header rather than a modal: it is a
+   nudge, not a wall — an unconfirmed visitor can still browse.
+   ------------------------------------------------------------------ */
+.confirm-email-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 12px 24px;
+  background: #fff8e5;
+  border-bottom: 1px solid #f0dfae;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.confirm-email-banner-text {
+  margin: 0;
+  flex: 1 1 320px;
+  color: #5c4708;
+}
+
+.confirm-email-banner-action {
+  appearance: none;
+  border: 1px solid #5c4708;
+  background: transparent;
+  color: #5c4708;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.confirm-email-banner-action:hover:not(:disabled) {
+  background: #5c4708;
+  color: #fff8e5;
+}
+
+.confirm-email-banner-action:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.confirm-email-banner-note {
+  color: #5c4708;
+  font-weight: 600;
+}

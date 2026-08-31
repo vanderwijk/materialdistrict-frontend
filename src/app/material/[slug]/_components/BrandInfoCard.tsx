@@ -47,7 +47,12 @@ export function BrandInfoCard({
   country,
   materialSlug,
 }: BrandInfoCardProps) {
-  const { isLoggedIn } = useAuth()
+  const { isLoggedIn, user } = useAuth()
+  // An unconfirmed account is signed in but not yet trusted with contact
+  // details — that is the whole point of the confirmation step. Pre-existing
+  // accounts are grandfathered `true` server-side, and the mapper defaults a
+  // missing value to `true`, so nobody loses access to what they had.
+  const hasVerifiedAccess = isLoggedIn && user?.emailConfirmed !== false
   const initials = getInitials(brandName)
   const signInHref = `/sign-in?next=${encodeURIComponent(`/material/${materialSlug}`)}`
 
@@ -91,14 +96,18 @@ export function BrandInfoCard({
         <div className="mat-brand-card-header is-static">{headerContent}</div>
       )}
 
-      {!isLoggedIn && (
+      {!hasVerifiedAccess && (
         <div className="mat-brand-card-gated">
           <p className="mat-brand-card-gated-msg">
-            Sign in to view full brand details, website and contact information.
+            {isLoggedIn
+              ? 'Confirm your email address to view full brand details, website and contact information.'
+              : 'Sign in to view full brand details, website and contact information.'}
           </p>
-          <a href={signInHref} className="mat-brand-card-gated-cta">
-            Sign in
-          </a>
+          {!isLoggedIn && (
+            <a href={signInHref} className="mat-brand-card-gated-cta">
+              Sign in
+            </a>
+          )}
         </div>
       )}
     </section>

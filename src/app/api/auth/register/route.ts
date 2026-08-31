@@ -31,6 +31,7 @@ interface RegisterBody {
   firstName: string
   lastName: string
   accountType: 'specifier' | 'manufacturer'
+  formElapsedMs?: number
   profession?: string
   organisation?: string
 }
@@ -48,6 +49,9 @@ function parseRegisterBody(raw: unknown): RegisterBody | null {
     firstName: typeof b.firstName === 'string' ? b.firstName : '',
     lastName: typeof b.lastName === 'string' ? b.lastName : '',
     accountType,
+    // Forwarded verbatim; WordPress decides. Optional, so an older client that
+    // does not send it still registers normally.
+    formElapsedMs: typeof b.formElapsedMs === 'number' ? b.formElapsedMs : undefined,
     profession: typeof b.profession === 'string' ? b.profession : undefined,
     organisation: typeof b.organisation === 'string' ? b.organisation : undefined,
   }

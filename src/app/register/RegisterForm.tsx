@@ -59,6 +59,13 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
 
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
+  /**
+   * When this form first rendered. Sent with the submission so the server can
+   * refuse anything filled faster than a person could type. Client-supplied and
+   * therefore forgeable — it is a speed bump against naive bots, chosen over a
+   * CAPTCHA, not a security control.
+   */
+  const renderedAtRef = useRef<number>(Date.now())
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -89,6 +96,7 @@ export function RegisterForm({ next, accountType }: RegisterFormProps) {
           profession,
           organisation,
           accountType: selectedType,
+          formElapsedMs: Date.now() - renderedAtRef.current,
         }),
       })
 

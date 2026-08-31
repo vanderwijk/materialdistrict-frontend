@@ -115,6 +115,15 @@ interface AuthContextValue {
    * logged out — `/api/auth/logout` is idempotent.
    */
   signOut: () => Promise<void>
+  /**
+   * Re-read the current user from `/api/auth/me` and adopt the result.
+   *
+   * For the cases where something changed server-side and the UI must catch up
+   * immediately rather than waiting for the next focus revalidation — e.g. the
+   * visitor just confirmed their email address, and the banner and gated
+   * content should update on the spot.
+   */
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -265,6 +274,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.refresh()
   }, [router])
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const resolved = await fetchCurrentUser()
+      setUser(resolved)
+      lastCheckedRef.current = Date.now()
+    } catch {
+      // Leave what we have; the focus handler retries.
+    }
+  }, [])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       isLoggedIn: user !== null,
@@ -273,8 +292,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isAuthPending,
       signIn,
       signOut,
+      refreshUser,
     }),
-    [user, isAuthPending, signIn, signOut],
+    [user, isAuthPending, signIn, signOut, refreshUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

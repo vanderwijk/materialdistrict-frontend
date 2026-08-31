@@ -245,6 +245,13 @@ export interface User {
    */
   hasShippingAddress?: boolean
 
+  /**
+   * False only for accounts created after email confirmation shipped that have
+   * not yet clicked the link. Every pre-existing account is grandfathered true
+   * server-side, so this never gates the existing user base.
+   */
+  emailConfirmed?: boolean
+
   /** Reader membership (always present, default free/inactive). */
   membership: Membership
 
@@ -368,6 +375,7 @@ export interface WPAuthMeRawResponse {
     country: string | null
     country_code?: string | null
     has_shipping_address?: boolean
+    email_confirmed?: boolean
     membership: {
       tier: ReaderTier
       is_insider: boolean

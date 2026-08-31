@@ -879,6 +879,9 @@ function mapUser(raw: WPAuthMeRawResponse['user']): User {
     company: raw.company,
     country: raw.country ?? null,
     hasShippingAddress: raw.has_shipping_address,
+    // Absent on older backends → treat as confirmed, so a version skew during
+    // deploy never locks anyone out of gated content.
+    emailConfirmed: raw.email_confirmed ?? true,
     membership: mapMembership(raw.membership),
     brands: raw.connected_brands.map(mapBrandMembership),
   }
