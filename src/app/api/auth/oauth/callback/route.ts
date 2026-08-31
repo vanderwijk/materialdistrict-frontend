@@ -3,11 +3,11 @@
  *
  * OAuth redirect target for Google + LinkedIn. Validates state, exchanges
  * the authorization code, asks WordPress to verify the provider token and
- * issue a JWT, then sets md_auth_token and redirects to `next`.
+ * issue a JWT, then sets md_auth_token + md_signed_in and redirects to `next`.
  */
 
 import { NextResponse, type NextRequest } from 'next/server'
-import { AUTH_COOKIE_NAME } from '@/lib/auth/cookies'
+import { AUTH_COOKIE_NAME, AUTH_HINT_COOKIE_NAME } from '@/lib/auth/cookies'
 import { WordPressAuthError } from '@/lib/api/wordpress'
 import {
   STATE_COOKIE,
@@ -63,14 +63,28 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const dest = sanitizeOAuthNext(state.next)
     const response = NextResponse.redirect(new URL(dest, request.url))
     response.cookies.delete(STATE_COOKIE)
+    const cookieBase = {
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax' as const,
+      path: '/',
+      expires: new Date(auth.expiresAt * 1000),
+    }
     response.cookies.set({
       name: AUTH_COOKIE_NAME,
       value: auth.token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      expires: new Date(auth.expiresAt * 1000),
+      ...cookieBase,
+    })
+    // The readable hint MUST ride along with the token. AuthContext only
+    // calls /api/auth/me when this flag is present; without it a socially
+    // authenticated user holds a perfectly valid session that the client
+    // never discovers — logged in server-side, "Login" in the header, and
+    // gated content still gated. Mirrors setAuthCookie() in lib/auth/cookies.
+    response.cookies.set({
+      name: AUTH_HINT_COOKIE_NAME,
+      value: '1',
+      httpOnly: false,
+      ...cookieBase,
     })
     return response
   } catch (err) {
