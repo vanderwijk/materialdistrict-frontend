@@ -4272,3 +4272,48 @@ kandidaatstap van B84 en nooit op naam.
 `md-importschema-v1-25-08` verwerkt: `importprotocol.md` v4.8, besluitenregister B80–B87,
 `schema-import.md`, `NU-DOEN-blokkades-25-08-v2.md`. Migratiescript dry-run daarna execute op CMS
 (idempotent; bestaande waarden niet overschreven). Zie mail Johan → Claude van 26-08.
+
+---
+
+## §BRANDS-GRID-AD — banner vervormde het merkenraster (01-09-2026)
+
+**Melding Jeroen.** Op `/brand` zijn de tegels niet meer gelijk van maat. Screenshot: linkerkolom
+smal, rechterkolom breed, met de leaderboard in die brede kolom.
+
+**Diagnose, gemeten en niet geredeneerd.** De live pagina en de gecompileerde CSS opgehaald, daarna
+het raster nagebouwd in headless Chrome met een blokje van 728×90 op de plek van het GAM-iframe. Twee
+oorzaken die elkaar versterken:
+
+1. `.ov-grid-brands` ontbreekt in de span-regel van §BETA-FIX-24-08 (L1). Die noemt alleen
+   `.ov-grid-3` en `.ov-grid-2`. Het merkenoverzicht kreeg bij de bouw een eigen raster omdat
+   brand-tiles een andere min-breedte hebben, en is bij die regel niet meegenomen. Zonder de regel
+   is `.ad-holder--grid` geen volle-breedte-rij maar een gewone cel in de auto-plaatsing. `/brand`
+   is het enige overzicht met dit raster; materials, stories, events, talks en books draaien op
+   `.ov-grid-3` en hebben het probleem daarom niet.
+2. De kolommen stonden op `1fr` in plaats van `minmax(0, 1fr)`. `1fr` is kortschrift voor
+   `minmax(auto, 1fr)`: de ondergrens is de min-content-breedte van de inhoud. Het GAM-iframe meet
+   728×90 boven een viewport van 768 px (`src/lib/ads/ad-units.ts`, unit `leaderboard`) en kan niet
+   krimpen. Die 728 px werd de ondergrens van de kolom waar de banner in viel.
+
+**Meting** (viewport 1440, rasterkolom 960 px, banner 728 px):
+
+| Situatie | Voor | Na |
+|---|---|---|
+| Kolomkeuze 2 (het screenshot) | 212 px + 728 px | 470 px + 470 px |
+| Standaard 3 kolommen | 728 px + 96 px + 96 px | 3 × 307 px |
+| Kolomkeuze 4 | 3 × 57 px + 728 px | 4 × 225 px |
+| Tablet ≤ 1024 px | 220 px + 728 px | 474 px + 474 px |
+
+**Wat níét kapot bleek.** Het `[data-cols]`-blok zet ook `.ov-grid-3` op kale `1fr`. Dat leek een
+tweede bug, maar de meting weerlegt het: daar spant de banner al alle kolommen, dus zijn min-content
+wordt over alle sporen verdeeld in plaats van één spoor op te rekken. Meegenomen als hardening, niet
+als reparatie — en zo ook in het CSS-commentaar opgeschreven.
+
+**Bewust niet aangeraakt.** Het iframe zelf. Een `max-width: 100%` daarop perst een 728 px creative
+samen zodra de container krapper is; een vervormde advertentie is erger dan een die een paar pixels
+buiten het raster valt. De kolombescherming lost het rasterprobleem volledig op.
+
+**Geleverd.** `src/styles/globals.css` — één nieuw append-only blok `§BRANDS-GRID-AD-01-09`,
+83 regels erbij, nul regels verwijderd of gewijzigd (`comm -23` tegen `main` leeg, `git diff --stat`
+83 insertions / 0 deletions). Geen TSX-wijziging nodig: `GridAdRow` staat al op de goede plek in
+`src/app/brand/(list)/page.tsx`.

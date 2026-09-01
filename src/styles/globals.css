@@ -19957,3 +19957,86 @@ a.mat-detail-tag:hover::after { opacity: 1; }
   color: #5c4708;
   font-weight: 600;
 }
+
+/* ============================================================================
+   §BRANDS-GRID-AD-01-09 — leaderboard vervormde het merkenraster (01-09-2026)
+   ----------------------------------------------------------------------------
+   Melding Jeroen: op /brand zijn de tegels niet meer gelijk van maat zodra de
+   banner geladen is. Eén kolom wordt ~728 px breed, de andere krijgt wat
+   overblijft. Twee oorzaken, die elkaar versterken.
+
+   1. `.ov-grid-brands` ontbreekt in de span-regel van §BETA-FIX-24-08 (L1).
+      Die noemt alleen `.ov-grid-3` en `.ov-grid-2`. Het merkenoverzicht heeft
+      sinds de bouw een eigen raster (brand-tiles hebben een andere min-breedte),
+      en is bij die regel niet meegenomen. Zonder de regel is `.ad-holder--grid`
+      geen volle-breedte-rij maar een gewone cel in de auto-plaatsing — precies
+      wat de melding laat zien. /brand is het enige overzicht met dit raster;
+      materials, stories, events, talks en books draaien op `.ov-grid-3` en
+      hebben het probleem daarom niet.
+
+   2. De kolommen stonden op `1fr` in plaats van `minmax(0, 1fr)`. `1fr` is
+      kortschrift voor `minmax(auto, 1fr)`: de ondergrens is de min-content-
+      breedte van de inhoud. Het GAM-iframe meet 728×90 boven een viewport van
+      768 px (`src/lib/ads/ad-units.ts`, unit `leaderboard`) en kan niet krimpen.
+      Die 728 px werd daarmee de ondergrens van de kolom waar de banner in viel.
+
+   Punt 1 alleen zou het probleem verplaatsen naar de eerstvolgende keer dat GAM
+   een breder formaat serveert; punt 2 is de structurele helft. De rest van de
+   codebase gebruikt al overal `minmax(0, 1fr)` — zie de basis-ov-grids bovenin
+   dit bestand. `.ov-grid-brands` en het `[data-cols]`-blok zijn de twee plekken
+   waar dat niet is meegenomen.
+
+   Het `[data-cols]`-blok is meegenomen als hardening, niet als reparatie: in
+   Chrome gemeten geeft `.ov-grid-3` op 2 en 4 kolommen ook mét `1fr` nog gelijke
+   tegels, omdat de banner daar al alle kolommen spant en zijn min-content dus
+   over alle sporen wordt verdeeld in plaats van één spoor op te rekken. Alleen
+   een banner die in één cel valt, zoals hier, laat het misgaan.
+
+   Gemeten (viewport 1440, rasterkolom 960 px, banner 728 px):
+
+     kolomkeuze 2   voor: sporen 212 px + 728 px    na: 470 px + 470 px
+     3 kolommen     voor: 728 px + 96 px + 96 px    na: 3 × 307 px
+     kolomkeuze 4   voor: 3 × 57 px + 728 px        na: 4 × 225 px
+     tablet ≤1024   voor: 220 px + 728 px           na: 474 px + 474 px
+
+   De eerste regel is de situatie op het screenshot van 01-09.
+
+   Append-only, dus de breakpoints staan hier compleet opnieuw. Een losse
+   basisregel aan het eind van het bestand zou de media-query-varianten
+   hierboven overrulen bij elke schermbreedte.
+
+   Niet aangeraakt: het iframe zelf. Een `max-width: 100%` daarop perst een
+   728 px creative samen zodra de container krapper is, en een vervormde
+   advertentie is erger dan een die een paar pixels buiten het raster valt.
+   ========================================================================== */
+
+.ov-grid-brands { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 1024px) {
+  .ov-grid-brands { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+  .ov-grid-brands { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (min-width: 1025px) {
+  [data-cols="2"] .ov-grid-3,
+  [data-cols="2"] .ov-grid-brands { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-cols="4"] .ov-grid-3,
+  [data-cols="4"] .ov-grid-brands { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Zelfde plaatsing als op de andere overzichten: volle-breedte-rij, expliciet
+   op rij 2, zodat rij 1 zich eerst vult en de tegels daarna ónder de banner
+   doorlopen — zonder gat, bij elke kolombreedte. */
+.ov-grid-brands > .ad-holder--grid {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 4px 0 12px;
+}
+
+/* Een grid-item dat alle kolommen spant, kan het raster alsnog oprekken via
+   zijn eigen `min-width: auto`. Dat sluit die weg af. */
+.ad-holder--grid { min-width: 0; }
+/* ==================== einde §BRANDS-GRID-AD-01-09 ==================== */
