@@ -129,7 +129,8 @@ export async function generateMetadata({
     return { title: 'Talk not found', robots: { index: false, follow: false } }
   }
 
-  const description = stripHtml(talk.excerptHtml) || undefined
+  const description =
+    stripHtml(talk.excerptHtml) || stripHtml(talk.contentHtml) || undefined
   const path = canonicalPath(`/talk/${talk.slug}`)
 
   return {
@@ -204,6 +205,8 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
   const durationLabel = formatDuration(talk.durationSeconds)
   const speakerNames = talk.speakers.map((s) => s.name)
   const bodyHtml = talk.contentHtml || talk.excerptHtml
+  const videoDescription =
+    stripHtml(talk.excerptHtml) || stripHtml(talk.contentHtml) || talk.title
 
   // §F2.8 punt 1: content-type-badge weg; alleen nog de insider-badge.
   const headerTags = [
@@ -320,12 +323,13 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
           buildVideoObject({
             slug: talk.slug,
             title: talk.title,
-            description: stripHtml(talk.excerptHtml) || undefined,
+            description: videoDescription,
             thumbnailUrl: talk.hero?.sizes?.large?.url ?? talk.hero?.sourceUrl,
-            uploadDate: talk.date,
+            uploadDate: talk.dateGmt || talk.date,
             // Never put the player URL in public JSON-LD for Insider-only talks.
             vimeoId: talk.insiderOnly ? null : talk.vimeoId,
             durationSeconds: talk.durationSeconds,
+            insiderOnly: talk.insiderOnly,
           }),
           buildBreadcrumbList([
             { label: 'Home', url: '/' },

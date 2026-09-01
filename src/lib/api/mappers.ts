@@ -768,6 +768,7 @@ export function mapTalk(raw: WPTalkRawResponse, hero?: MediaImage | null): Talk 
     excerptHtml: wpRenderedHtml(raw.excerpt),
     hero: hero ?? null,
     date: raw.date,
+    dateGmt: raw.date_gmt,
     modified: raw.modified,
     // C14: talk-default `true` bij afwezig veld (≠ article-default false).
     insiderOnly: Boolean(m._insider_only ?? m.insider_only ?? true),

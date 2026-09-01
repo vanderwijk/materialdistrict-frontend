@@ -10496,6 +10496,10 @@ mark.search-mark {
   margin-bottom: 28px;
 }
 
+.talk-video-gate .talk-video {
+  margin-bottom: 0;
+}
+
 .talk-video-locked {
   position: relative;
   aspect-ratio: 16 / 9;

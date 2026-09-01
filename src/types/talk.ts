@@ -59,6 +59,8 @@ export interface Talk {
   excerptHtml: string
   hero: MediaImage | null
   date: string
+  /** WP `date_gmt` (UTC, zonder offset). Voor JSON-LD `uploadDate` + `Z`. */
+  dateGmt: string
   modified: string
   /** C14 — Insider-only gating (talk-default true). */
   insiderOnly: boolean

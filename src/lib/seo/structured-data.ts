@@ -279,9 +279,12 @@ export function buildArticle(article: ArticleForJsonLd): ArticleSchema | null {
 /**
  * Talk → VideoObject structured data.
  *
- * Vereist `title` + `uploadDate`. `embedUrl` (Vimeo), `thumbnailUrl`,
- * `description` en `duration` (ISO 8601) zijn aanbevolen voor video-rich-
- * results. Retourneert null als titel of uploadDate ontbreekt.
+ * Google Video-snippets willen `description`, een `uploadDate` mét tijdzone,
+ * en `contentUrl` of `embedUrl`. Insider-talks mogen de Vimeo-player-URL
+ * niet in publieke JSON-LD zetten: die zit achter `/api/talks/{id}/embed`
+ * voor ingelogde Insiders. Daarvoor wijst `embedUrl` naar onze eigen
+ * gated player (`/talk/{slug}/player`) en markeren we de video als
+ * `isAccessibleForFree: false`.
  */
 interface VideoForJsonLd {
   slug: string
@@ -291,6 +294,7 @@ interface VideoForJsonLd {
   uploadDate: string
   vimeoId?: string | null
   durationSeconds?: number | null
+  insiderOnly?: boolean
 }
 
 /** Seconden → ISO 8601 duur (bv. 1435 → "PT23M55S"). */
@@ -305,27 +309,58 @@ function isoDuration(seconds: number): string {
   return out
 }
 
+/**
+ * WP `date` / `date_gmt` komen zonder offset (`2026-07-20T16:34:32`).
+ * Google wil ISO 8601 mét tijdzone. `date_gmt` is UTC → suffix `Z`.
+ */
+function toIso8601WithTimezone(value: string): string {
+  const trimmed = value.trim()
+  if (/[zZ]|[+-]\d{2}:\d{2}$/.test(trimmed)) return trimmed
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return `${trimmed}T00:00:00Z`
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(trimmed)) {
+    return `${trimmed}Z`
+  }
+  return trimmed
+}
+
 export function buildVideoObject(
   video: VideoForJsonLd,
 ): VideoObjectSchema | null {
   if (!video.title || !video.uploadDate) return null
 
   const url = absolutePageUrl(`/talk/${video.slug}`)
+  const playerUrl = absolutePageUrl(`/talk/${video.slug}/player`)
+  const insiderOnly = video.insiderOnly === true
   const schema: VideoObjectSchema = {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
     '@id': url,
     name: video.title,
-    uploadDate: video.uploadDate,
+    description: video.description?.trim() || video.title,
+    uploadDate: toIso8601WithTimezone(video.uploadDate),
   }
 
-  if (video.description) schema.description = video.description
   if (video.thumbnailUrl) schema.thumbnailUrl = video.thumbnailUrl
-  if (video.vimeoId) {
-    schema.embedUrl = `https://player.vimeo.com/video/${video.vimeoId}`
-  }
   if (video.durationSeconds && video.durationSeconds > 0) {
     schema.duration = isoDuration(Math.round(video.durationSeconds))
+  }
+
+  // Nooit de Vimeo-URL publiceren voor Insider-talks — ook niet als de
+  // caller per ongeluk een id meegeeft.
+  if (insiderOnly) {
+    schema.embedUrl = playerUrl
+    schema.isAccessibleForFree = false
+    schema.requiresSubscription = true
+    schema.hasPart = {
+      '@type': 'WebPageElement',
+      isAccessibleForFree: false,
+      cssSelector: '.talk-video-gate',
+    }
+  } else if (video.vimeoId) {
+    schema.embedUrl = `https://player.vimeo.com/video/${video.vimeoId}`
+    schema.isAccessibleForFree = true
+  } else {
+    schema.embedUrl = playerUrl
   }
 
   return schema

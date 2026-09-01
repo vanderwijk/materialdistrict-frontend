@@ -109,11 +109,18 @@ export interface VideoObjectSchema extends BaseThing {
   /** ISO 8601 datum waarop de talk plaatsvond/geüpload werd. */
   uploadDate: string
   thumbnailUrl?: string
-  /** Vimeo player-embed-URL. */
+  /** Vimeo player-embed-URL, of first-party gated player voor Insider-talks. */
   embedUrl?: string
   contentUrl?: string
   /** ISO 8601 duur, bv. "PT23M55S". */
   duration?: string
+  isAccessibleForFree?: boolean
+  requiresSubscription?: boolean
+  hasPart?: {
+    '@type': 'WebPageElement'
+    isAccessibleForFree: boolean
+    cssSelector: string
+  }
 }
 
 export interface EventSchema extends BaseThing {

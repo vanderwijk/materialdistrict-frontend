@@ -84,7 +84,7 @@ export function TalkVideoGate({
   if (!gated) {
     if (insiderOnly && embedStatus === 'loading') {
       return (
-        <div className="talk-video-gate" aria-busy="true">
+        <div id="talk-player" className="talk-video-gate" aria-busy="true">
           <div
             className="talk-video-locked"
             style={posterUrl ? { backgroundImage: `url(${posterUrl})` } : undefined}
@@ -94,11 +94,15 @@ export function TalkVideoGate({
       )
     }
 
-    return <TalkVideo vimeoId={insiderOnly ? memberVimeoId : vimeoId} title={title} />
+    return (
+      <div id="talk-player" className="talk-video-gate">
+        <TalkVideo vimeoId={insiderOnly ? memberVimeoId : vimeoId} title={title} />
+      </div>
+    )
   }
 
   return (
-    <div className="talk-video-gate">
+    <div id="talk-player" className="talk-video-gate">
       <div
         className="talk-video-locked"
         style={posterUrl ? { backgroundImage: `url(${posterUrl})` } : undefined}
