@@ -396,11 +396,15 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
             heroImage: event.hero?.sizes?.large?.url ?? event.hero?.sourceUrl,
             startsAt: event.startsAt ?? '',
             endsAt: event.endsAt ?? undefined,
+            isOnline: event.type === 'online',
             location: event.venue
               ? {
                   name: event.venue.name,
+                  street: event.venue.street ?? undefined,
+                  postcode: event.venue.postcode ?? undefined,
                   city: event.venue.city ?? undefined,
                   country: event.venue.country?.label,
+                  countryCode: event.venue.country?.code,
                 }
               : undefined,
           }),

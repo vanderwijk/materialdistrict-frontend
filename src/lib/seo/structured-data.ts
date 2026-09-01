@@ -311,8 +311,20 @@ export function buildVideoObject(
  * Event → Event structured data.
  *
  * Vereist `startDate` (ISO 8601). Location en organizer zijn sterk aanbevolen
- * voor event-snippets in Google search.
+ * voor event-snippets in Google search. Google Search Console flagt een
+ * `Place` zonder `address` (niet-kritiek); we vullen daarom altijd een
+ * adres in wanneer we een fysieke locatie uitzenden — structured als we
+ * straat/stad/postcode/land hebben, anders de venue-naam als tekst.
  */
+interface EventLocationInput {
+  name: string
+  street?: string
+  postcode?: string
+  city?: string
+  country?: string
+  countryCode?: string
+}
+
 interface EventForJsonLd {
   slug: string
   title: string
@@ -320,15 +332,47 @@ interface EventForJsonLd {
   heroImage?: string
   startsAt: string
   endsAt?: string
-  location?: { name: string; city?: string; country?: string }
+  /** Fysieke venue. Genegeerd wanneer `isOnline` true is. */
+  location?: EventLocationInput
+  /** Online event → VirtualLocation i.p.v. Place (geen address nodig). */
+  isOnline?: boolean
   organizer?: { name: string; url?: string }
   url?: string
+}
+
+function eventPostalAddress(
+  location: EventLocationInput,
+): NonNullable<EventSchema['location']>['address'] {
+  const address: Extract<
+    NonNullable<EventSchema['location']>['address'],
+    { '@type': 'PostalAddress' }
+  > = { '@type': 'PostalAddress' }
+
+  if (location.street) address.streetAddress = location.street
+  if (location.city) address.addressLocality = location.city
+  if (location.postcode) address.postalCode = location.postcode
+  const country = location.countryCode || location.country
+  if (country) address.addressCountry = country
+
+  if (
+    address.streetAddress ||
+    address.addressLocality ||
+    address.postalCode ||
+    address.addressCountry
+  ) {
+    return address
+  }
+
+  // Search Console: ontbrekend veld `address` in `location`. Een Place
+  // zonder adres is ongeldig; de venue-naam is beter dan weglaten.
+  return location.name
 }
 
 export function buildEvent(event: EventForJsonLd): EventSchema | null {
   if (!event.title || !event.slug || !event.startsAt) return null
 
   const url = absolutePageUrl(`/event/${event.slug}`)
+  const isOnline = event.isOnline === true
   const schema: EventSchema = {
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -337,26 +381,26 @@ export function buildEvent(event: EventForJsonLd): EventSchema | null {
     url,
     startDate: event.startsAt,
     eventStatus: 'https://schema.org/EventScheduled',
-    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventAttendanceMode: isOnline
+      ? 'https://schema.org/OnlineEventAttendanceMode'
+      : 'https://schema.org/OfflineEventAttendanceMode',
   }
 
   if (event.description) schema.description = event.description
   if (event.heroImage) schema.image = event.heroImage
   if (event.endsAt) schema.endDate = event.endsAt
 
-  if (event.location?.name) {
+  if (isOnline) {
+    schema.location = {
+      '@type': 'VirtualLocation',
+      name: event.location?.name ?? event.title,
+      url,
+    }
+  } else if (event.location?.name) {
     schema.location = {
       '@type': 'Place',
       name: event.location.name,
-      ...(event.location.city
-        ? {
-            address: {
-              '@type': 'PostalAddress',
-              addressLocality: event.location.city,
-              ...(event.location.country ? { addressCountry: event.location.country } : {}),
-            },
-          }
-        : {}),
+      address: eventPostalAddress(event.location),
     }
   }
 
