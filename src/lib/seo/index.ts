@@ -20,6 +20,7 @@ export type {
   OrganizationSchema,
   WebSiteSchema,
   ProductSchema,
+  ItemPageSchema,
   ArticleSchema,
   VideoObjectSchema,
   EventSchema,

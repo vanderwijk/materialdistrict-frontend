@@ -235,6 +235,9 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
     pages: book.pages ?? undefined,
     publishedAt: book.publicationYear ? `${book.publicationYear}` : undefined,
     publisher: book.publisher ? { name: book.publisher } : undefined,
+    format: book.format ?? undefined,
+    price: book.price,
+    inStock: book.inStock,
   })
 
   return (

@@ -182,6 +182,14 @@ export default async function MaterialDetailPage({
     heroImage:
       material.gallery.hero?.sizes.large?.url ??
       material.gallery.hero?.sourceUrl,
+    brand: material.brandName
+      ? {
+          name: material.brandName,
+          ...(material.brandSlug ? { slug: material.brandSlug } : {}),
+        }
+      : undefined,
+    category: materialCategoryTerms[0]?.name,
+    sku: material.materialCode || undefined,
     properties: tagsForJsonLd.map((tag) => ({
       name: humanizeFacet(tag.facet),
       value: tag.label,

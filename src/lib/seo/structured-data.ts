@@ -22,8 +22,8 @@ import type {
   CollectionPageSchema,
   EventSchema,
   FaqPageSchema,
+  ItemPageSchema,
   OrganizationSchema,
-  ProductSchema,
   VideoObjectSchema,
   WebSiteSchema,
 } from './types'
@@ -148,11 +148,14 @@ export function buildWebSite(): WebSiteSchema {
 }
 
 /**
- * Material → Product structured data.
+ * Material → ItemPage structured data.
  *
- * Materials zijn in Schema.org context Product, want Google geeft Products
- * rich snippets met prijs, brand, beschikbaarheid. Sample availability
- * mappen we naar `availability` als subtle hint.
+ * Geen `@type: Product`. Google's Product-snippets eisen `offers`, `review`
+ * of `aggregateRating`. Materials worden niet verkocht op de site en hebben
+ * geen reviews; een Product-blok zonder die velden is het kritieke Search
+ * Console-rapport "Productfragmenten". `price: 0` zou Google als "gratis"
+ * tonen — dat klopt niet. `ItemPage` + `Thing` beschrijft de pagina wel,
+ * zonder die rich-result-eis.
  */
 interface MaterialForJsonLd {
   slug: string
@@ -161,40 +164,61 @@ interface MaterialForJsonLd {
   heroImage?: string
   brand?: { name: string; slug?: string }
   category?: string
+  sku?: string
   properties?: Array<{ name: string; value: string }>
 }
 
-export function buildProduct(material: MaterialForJsonLd): ProductSchema | null {
+export function buildProduct(material: MaterialForJsonLd): ItemPageSchema | null {
   if (!material.title || !material.slug) return null
 
   const url = absolutePageUrl(`/material/${material.slug}`)
-  const schema: ProductSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    '@id': url,
+  const origin = getSiteOrigin()
+  const entity: NonNullable<ItemPageSchema['mainEntity']> = {
+    '@type': 'Thing',
     name: material.title,
     url,
   }
 
-  if (material.description) schema.description = material.description
-  if (material.heroImage) schema.image = material.heroImage
-  if (material.category) schema.category = material.category
+  if (material.description) entity.description = material.description
+  if (material.heroImage) entity.image = material.heroImage
+  if (material.category) entity.category = material.category
+  if (material.sku) entity.sku = material.sku
 
   if (material.brand?.name) {
-    schema.brand = {
+    entity.brand = {
       '@type': 'Brand',
       name: material.brand.name,
-      ...(material.brand.slug ? { url: absolutePageUrl(`/brand/${material.brand.slug}`) } : {}),
+      ...(material.brand.slug
+        ? { url: absolutePageUrl(`/brand/${material.brand.slug}`) }
+        : {}),
     }
   }
 
   if (material.properties && material.properties.length > 0) {
-    schema.additionalProperty = material.properties.map((p) => ({
+    entity.additionalProperty = material.properties.map((p) => ({
       '@type': 'PropertyValue' as const,
       name: p.name,
       value: p.value,
     }))
   }
+
+  const schema: ItemPageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemPage',
+    '@id': url,
+    name: material.title,
+    url,
+    isPartOf: {
+      '@type': 'WebSite',
+      '@id': `${origin}/#website`,
+      name: SITE_NAME,
+      url: `${origin}/`,
+    },
+    mainEntity: entity,
+  }
+
+  if (material.description) schema.description = material.description
+  if (material.heroImage) schema.image = material.heroImage
 
   return schema
 }
@@ -416,7 +440,16 @@ export function buildEvent(event: EventForJsonLd): EventSchema | null {
 }
 
 /**
- * Book → Book structured data.
+ * Book → Book (+ Product) structured data.
+ *
+ * Boeken zijn verkoopproducten. Met een bekende prijs markeren we ze als
+ * `["Product", "Book"]` plus `Offer`, zodat Google Product-snippets mag
+ * tonen. Zonder prijs blijven we bij `Book` — een Product zonder `offers`
+ * is precies de Search Console-fout van material-pagina's.
+ *
+ * Prijs is de reguliere incl.-btw-prijs (zichtbaar op de pagina, dezelfde
+ * als de shopping-feed). Geen Insider-korting: JSON-LD is voor anonieme
+ * crawlers, en de korting is persoonsgebonden.
  */
 interface BookForJsonLd {
   slug: string
@@ -429,15 +462,45 @@ interface BookForJsonLd {
   publishedAt?: string
   publisher?: { name: string }
   language?: string
+  format?: string
+  /** Reguliere prijs incl. btw in EUR. 0 / ontbrekend = geen Offer. */
+  price?: number
+  inStock?: boolean
+}
+
+function isbnToGtin13(isbn: string): string | undefined {
+  const digits = isbn.replace(/\D/g, '')
+  if (
+    digits.length === 13 &&
+    (digits.startsWith('978') || digits.startsWith('979'))
+  ) {
+    return digits
+  }
+  return undefined
+}
+
+function bookFormatIri(
+  format: string,
+): NonNullable<BookSchema['bookFormat']> | undefined {
+  const n = format.toLowerCase()
+  if (n.includes('hard')) return 'https://schema.org/Hardcover'
+  if (n.includes('paper') || n.includes('soft')) {
+    return 'https://schema.org/Paperback'
+  }
+  if (n.includes('e-book') || n.includes('ebook') || n.includes('digital')) {
+    return 'https://schema.org/EBook'
+  }
+  return undefined
 }
 
 export function buildBook(book: BookForJsonLd): BookSchema | null {
   if (!book.title || !book.slug) return null
 
   const url = absolutePageUrl(`/book/${book.slug}`)
+  const hasOffer = typeof book.price === 'number' && book.price > 0
   const schema: BookSchema = {
     '@context': 'https://schema.org',
-    '@type': 'Book',
+    '@type': hasOffer ? ['Product', 'Book'] : 'Book',
     '@id': url,
     name: book.title,
     url,
@@ -446,13 +509,42 @@ export function buildBook(book: BookForJsonLd): BookSchema | null {
   if (book.description) schema.description = book.description
   if (book.coverImage) schema.image = book.coverImage
   if (book.author?.name) schema.author = { '@type': 'Person', name: book.author.name }
-  if (book.isbn) schema.isbn = book.isbn
+  if (book.isbn) {
+    schema.isbn = book.isbn
+    const gtin13 = isbnToGtin13(book.isbn)
+    if (gtin13) {
+      schema.gtin13 = gtin13
+      schema.sku = gtin13
+    }
+  }
   if (book.pages) schema.numberOfPages = book.pages
   if (book.publishedAt) schema.datePublished = book.publishedAt
   if (book.publisher?.name) {
     schema.publisher = { '@type': 'Organization', name: book.publisher.name }
   }
   if (book.language) schema.inLanguage = book.language
+  if (book.format) {
+    const formatIri = bookFormatIri(book.format)
+    if (formatIri) schema.bookFormat = formatIri
+  }
+
+  if (hasOffer) {
+    schema.offers = {
+      '@type': 'Offer',
+      url,
+      price: book.price.toFixed(2),
+      priceCurrency: 'EUR',
+      availability: book.inStock
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        url: `${getSiteOrigin()}/`,
+      },
+    }
+  }
 
   return schema
 }

@@ -38,12 +38,58 @@ export interface ProductSchema extends BaseThing {
   manufacturer?: OrganizationSchema | { '@type': 'Organization'; name: string }
   category?: string
   material?: string
+  sku?: string
   /** Voor materials in MaterialDistrict-context. */
   additionalProperty?: Array<{
     '@type': 'PropertyValue'
     name: string
     value: string | number
   }>
+  /**
+   * Google Product snippets eisen minstens één van `offers`, `review` of
+   * `aggregateRating`. Zonder echte prijs of reviews gebruiken we dit type
+   * niet — zie `ItemPageSchema`.
+   */
+  offers?: {
+    '@type': 'Offer'
+    url?: string
+    price?: number | string
+    priceCurrency?: string
+    availability?: string
+    seller?: { '@type': 'Organization'; name: string }
+  }
+}
+
+/**
+ * Material-detailpagina. `ItemPage` i.p.v. `Product`: Google eist bij
+ * Product-snippets `offers`, `review` of `aggregateRating`, en materials
+ * hebben geen verkoopprijs of reviews. `mainEntity` blijft een `Thing`
+ * (geen Product-subtype) zodat Search Console dit niet als Productfragment
+ * valideert.
+ */
+export interface ItemPageSchema extends BaseThing {
+  '@type': 'ItemPage'
+  isPartOf?: {
+    '@type': 'WebSite'
+    '@id'?: string
+    name?: string
+    url?: string
+  }
+  mainEntity?: {
+    '@type': 'Thing'
+    name: string
+    url?: string
+    image?: string | string[]
+    description?: string
+    sku?: string
+    category?: string
+    brand?: { '@type': 'Brand'; name: string; url?: string }
+    additionalProperty?: Array<{
+      '@type': 'PropertyValue'
+      name: string
+      value: string | number
+    }>
+  }
 }
 
 export interface ArticleSchema extends BaseThing {
@@ -107,9 +153,16 @@ export interface EventSchema extends BaseThing {
 }
 
 export interface BookSchema extends BaseThing {
-  '@type': 'Book'
+  /**
+   * Alleen `Book` als er geen verkoopprijs is. Met prijs: `Product` + `Book`
+   * zodat Google Product-snippets (prijs/voorraad) én boekvelden (ISBN,
+   * auteur) kan gebruiken.
+   */
+  '@type': 'Book' | ['Product', 'Book']
   author?: PersonSchema | { '@type': 'Person'; name: string }
   isbn?: string
+  gtin13?: string
+  sku?: string
   numberOfPages?: number
   bookFormat?:
     | 'https://schema.org/Hardcover'
@@ -118,6 +171,15 @@ export interface BookSchema extends BaseThing {
   datePublished?: string
   publisher?: OrganizationSchema | { '@type': 'Organization'; name: string }
   inLanguage?: string
+  offers?: {
+    '@type': 'Offer'
+    url?: string
+    price: string
+    priceCurrency: string
+    availability?: string
+    itemCondition?: string
+    seller?: { '@type': 'Organization'; name: string; url?: string }
+  }
 }
 
 export interface BreadcrumbListSchema {
@@ -185,6 +247,7 @@ export interface FaqPageSchema extends BaseThing {
 export type StructuredData =
   | OrganizationSchema
   | ProductSchema
+  | ItemPageSchema
   | ArticleSchema
   | VideoObjectSchema
   | EventSchema

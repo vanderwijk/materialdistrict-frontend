@@ -16,7 +16,7 @@ interface JsonLdProps {
  *
  * Zet hem in de page (Server Component) waar de data thuishoort. Voor de
  * homepage en root: één Organization + WebSite. Voor detail-pagina's:
- * de specifieke entity (Product/Article/Event/Book) plus optioneel een
+ * de specifieke entity (ItemPage/Article/Event/Book) plus optioneel een
  * BreadcrumbList.
  *
  * **Waarom `@graph` i.p.v. een top-level array:** een bare JSON-array
