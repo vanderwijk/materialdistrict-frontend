@@ -112,3 +112,39 @@ verspilde capaciteit, want de klant is al weg.
 **Let op bij het uitzetten van recovery mode:** de circuit breaker in `upstream-guard.ts`
 kan nog openstaan (cooldown 120s bij `WP_LOAD_SHIELD=true`). Detailpagina's geven dan
 kortstondig een 500 in ~0,2s — te snel om een origin-probleem te zijn. Even wachten.
+
+---
+
+## Herziening: recovery mode is niet meer standaard (02-09-2026, tweede deploy)
+
+De instructie bovenaan — recovery mode aan vóór elke deploy — is geschreven vóór
+`listen.backlog`. Twee deploys op dezelfde dag lieten zien dat die volgorde nu averechts
+werkt.
+
+**Deploy 1, mét recovery mode.** De build draaide tegen een CMS die 503 gaf, dus de
+statische routes (`/`, `/material/`, `/article/`, `/brand/`) werden léég voorgebouwd. De
+homepage kwam op 83 kB uit in plaats van 278 kB, en bleef dat een volledige
+revalidate-periode lang. De detailroutes hebben daar geen last van — die hebben een lege
+`generateStaticParams` en worden niet voorgebouwd — maar de overzichtspagina's wel.
+
+**Deploy 2, zónder recovery mode.** De build haalde echte data op, de origin bleef
+gezond: load 2,8 tegen 2,3 baseline, mediaan 0,68s, p90 0,95s, 100% binnen Vercels
+8s-venster, 7 van de 10 workers bezet. Geen enkele lege pagina.
+
+Het verschil is `listen.backlog`: de origin beschermt zichzelf nu, dus je hoeft hem niet
+meer dicht te zetten om hem te sparen — en een dichte CMS is precies wat de build kapot
+maakt.
+
+### Werkwijze nu
+
+1. Controleer vooraf dat de origin gezond is: `ssh cms-materialdistrict uptime` (load < 5)
+   en `curl -o /dev/null -w "%{time_total}\n" -H "User-Agent: node"
+   https://cms.materialdistrict.com/wp-json/wp/v2/material?per_page=10&_fields=slug`
+   (< 2s).
+2. Push. **Geen recovery mode.**
+3. Volg de load tijdens en na de build. Loopt die boven ~12 of zakt het percentage binnen
+   8s onder de 80%, zet recovery mode dan alsnog aan — en accepteer dat de
+   overzichtspagina's tijdelijk leeg zijn.
+
+Recovery mode blijft dus bestaan, maar als **noodrem tijdens een incident**, niet als
+standaardstap bij een deploy.
