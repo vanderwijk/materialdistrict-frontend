@@ -20,6 +20,7 @@
  */
 
 import { resourceCacheTags } from './cache-tags'
+import { guardUpstreamFetch, scaleRevalidate } from './upstream-guard'
 
 // --------------------------------------------------------------------
 // Configuratie
@@ -231,56 +232,58 @@ export async function wpFetch<T>(
 ): Promise<T> {
   const url = buildUrl(path, options.params)
 
-  const fetchOptions: RequestInit & {
-    next?: { revalidate?: number; tags?: string[] }
-  } = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      ...buildAuthHeader(),
-      ...(options.headers ?? {}),
-    },
-    signal: options.signal,
-  }
-
-  if (options.noCache || CACHE_DISABLED) {
-    fetchOptions.cache = 'no-store'
-  } else {
-    // §BETA-FIX-24-08 (H2) / §CACHE-FIX-26-08: elke gecachete WP-fetch krijgt
-    // automatisch cache-tags op basis van wát hij opvraagt (zie
-    // `resourceCacheTags`). Een fetch van één record draagt de tag van dát
-    // record, een lijst-fetch de lijst-tag. Daardoor kan WordPress bij het
-    // opslaan gericht ontcachen zonder de rest van de site mee te nemen, en
-    // zonder dat elke aanroeper zelf tags hoeft mee te geven.
-    const autoTags = resourceCacheTags(path, options.params)
-    const tags = [...(options.tags ?? []), ...autoTags]
-    fetchOptions.next = {
-      revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
-      ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
+  return guardUpstreamFetch(`wpFetch ${path}`, async (signal) => {
+    const fetchOptions: RequestInit & {
+      next?: { revalidate?: number; tags?: string[] }
+    } = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        ...buildAuthHeader(),
+        ...(options.headers ?? {}),
+      },
+      signal,
     }
-  }
 
-  const res = await fetch(url, fetchOptions)
-
-  if (!res.ok) {
-    let payload: unknown
-    try {
-      payload = await res.json()
-    } catch {
-      // ignore
+    if (options.noCache || CACHE_DISABLED) {
+      fetchOptions.cache = 'no-store'
+    } else {
+      // §BETA-FIX-24-08 (H2) / §CACHE-FIX-26-08: elke gecachete WP-fetch krijgt
+      // automatisch cache-tags op basis van wát hij opvraagt (zie
+      // `resourceCacheTags`). Een fetch van één record draagt de tag van dát
+      // record, een lijst-fetch de lijst-tag. Daardoor kan WordPress bij het
+      // opslaan gericht ontcachen zonder de rest van de site mee te nemen, en
+      // zonder dat elke aanroeper zelf tags hoeft mee te geven.
+      const autoTags = resourceCacheTags(path, options.params)
+      const tags = [...(options.tags ?? []), ...autoTags]
+      fetchOptions.next = {
+        revalidate: scaleRevalidate(options.revalidate ?? DEFAULT_REVALIDATE),
+        ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
+      }
     }
-    if (res.status === 404) {
-      throw new WordPressNotFoundError(url, payload)
-    }
-    throw new WordPressError(
-      `WordPress fetch failed (${res.status} ${res.statusText})`,
-      res.status,
-      url,
-      payload,
-    )
-  }
 
-  return (await res.json()) as T
+    const res = await fetch(url, fetchOptions)
+
+    if (!res.ok) {
+      let payload: unknown
+      try {
+        payload = await res.json()
+      } catch {
+        // ignore
+      }
+      if (res.status === 404) {
+        throw new WordPressNotFoundError(url, payload)
+      }
+      throw new WordPressError(
+        `WordPress fetch failed (${res.status} ${res.statusText})`,
+        res.status,
+        url,
+        payload,
+      )
+    }
+
+    return (await res.json()) as T
+  }, { signal: options.signal })
 }
 
 /**
@@ -309,50 +312,52 @@ export async function wpFetchPaginated<T>(
 ): Promise<{ items: T; total: number; totalPages: number }> {
   const url = buildUrl(path, options.params)
 
-  const fetchOptions: RequestInit & {
-    next?: { revalidate?: number; tags?: string[] }
-  } = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      ...buildAuthHeader(),
-      ...(options.headers ?? {}),
-    },
-    signal: options.signal,
-  }
-
-  if (options.noCache || CACHE_DISABLED) {
-    fetchOptions.cache = 'no-store'
-  } else {
-    // §BETA-FIX-24-08 (H2) / §CACHE-FIX-26-08: elke gecachete WP-fetch krijgt
-    // automatisch cache-tags op basis van wát hij opvraagt (zie
-    // `resourceCacheTags`). Een fetch van één record draagt de tag van dát
-    // record, een lijst-fetch de lijst-tag. Daardoor kan WordPress bij het
-    // opslaan gericht ontcachen zonder de rest van de site mee te nemen, en
-    // zonder dat elke aanroeper zelf tags hoeft mee te geven.
-    const autoTags = resourceCacheTags(path, options.params)
-    const tags = [...(options.tags ?? []), ...autoTags]
-    fetchOptions.next = {
-      revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
-      ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
+  return guardUpstreamFetch(`wpFetchPaginated ${path}`, async (signal) => {
+    const fetchOptions: RequestInit & {
+      next?: { revalidate?: number; tags?: string[] }
+    } = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        ...buildAuthHeader(),
+        ...(options.headers ?? {}),
+      },
+      signal,
     }
-  }
 
-  const res = await fetch(url, fetchOptions)
+    if (options.noCache || CACHE_DISABLED) {
+      fetchOptions.cache = 'no-store'
+    } else {
+      // §BETA-FIX-24-08 (H2) / §CACHE-FIX-26-08: elke gecachete WP-fetch krijgt
+      // automatisch cache-tags op basis van wát hij opvraagt (zie
+      // `resourceCacheTags`). Een fetch van één record draagt de tag van dát
+      // record, een lijst-fetch de lijst-tag. Daardoor kan WordPress bij het
+      // opslaan gericht ontcachen zonder de rest van de site mee te nemen, en
+      // zonder dat elke aanroeper zelf tags hoeft mee te geven.
+      const autoTags = resourceCacheTags(path, options.params)
+      const tags = [...(options.tags ?? []), ...autoTags]
+      fetchOptions.next = {
+        revalidate: scaleRevalidate(options.revalidate ?? DEFAULT_REVALIDATE),
+        ...(tags.length > 0 ? { tags: Array.from(new Set(tags)) } : {}),
+      }
+    }
 
-  if (!res.ok) {
-    throw new WordPressError(
-      `WordPress fetch failed (${res.status} ${res.statusText})`,
-      res.status,
-      url,
-    )
-  }
+    const res = await fetch(url, fetchOptions)
 
-  const items = (await res.json()) as T
-  const total = Number(res.headers.get('X-WP-Total') ?? 0)
-  const totalPages = Number(res.headers.get('X-WP-TotalPages') ?? 0)
+    if (!res.ok) {
+      throw new WordPressError(
+        `WordPress fetch failed (${res.status} ${res.statusText})`,
+        res.status,
+        url,
+      )
+    }
 
-  return { items, total, totalPages }
+    const items = (await res.json()) as T
+    const total = Number(res.headers.get('X-WP-Total') ?? 0)
+    const totalPages = Number(res.headers.get('X-WP-TotalPages') ?? 0)
+
+    return { items, total, totalPages }
+  }, { signal: options.signal })
 }
 
 // --------------------------------------------------------------------

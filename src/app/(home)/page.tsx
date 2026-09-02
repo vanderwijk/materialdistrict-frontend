@@ -32,6 +32,7 @@ import {
   getChannelsIndex,
   listMaterialsWithFacets,
 } from '@/lib/api'
+import { withUpstreamFallback } from '@/lib/api/upstream-page'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { JsonLd, buildWebSite, buildOrganization, canonicalPath, openGraphSite } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
@@ -144,30 +145,56 @@ export default async function HomePage() {
     bookRes,
     latestBookRes,
   ] = await Promise.all([
-      listMaterials({ perPage: MATERIALS_FETCH }),
-      listArticles({ perPage: ARTICLES_FETCH }),
-      listEvents({ perPage: EVENTS_FETCH }),
-      listTalks({ perPage: TALKS_FETCH }),
+      withUpstreamFallback(
+        'home materials',
+        () => listMaterials({ perPage: MATERIALS_FETCH }),
+        { items: [], total: 0, totalPages: 0 },
+      ),
+      withUpstreamFallback(
+        'home articles',
+        () => listArticles({ perPage: ARTICLES_FETCH }),
+        { items: [], total: 0, totalPages: 0 },
+      ),
+      withUpstreamFallback(
+        'home events',
+        () => listEvents({ perPage: EVENTS_FETCH }),
+        { items: [], total: 0, totalPages: 0 },
+      ),
+      withUpstreamFallback(
+        'home talks',
+        () => listTalks({ perPage: TALKS_FETCH }),
+        { items: [], total: 0, totalPages: 0 },
+      ),
       // Material-categorieën voor de snelmenu-strip. Defensief: faalt de
       // taxonomie-fetch, dan degradeert de strip tot alleen "All materials"
       // i.p.v. de hele homepage te laten vallen.
-      getTerms('material_category', { perPage: 100, hide_empty: true }).catch(
-        () => [],
+      withUpstreamFallback(
+        'home material categories',
+        () => getTerms('material_category', { perPage: 100, hide_empty: true }),
+        [],
       ),
       // Brands voor het "Featured brands"-blok. Ruim ophalen zodat we Partner-
       // tier kunnen filteren én kunnen aanvullen. Faalt het → leeg blok.
-      listBrands({ perPage: 24 }).catch(() => ({
-        items: [],
-        total: 0,
-        totalPages: 0,
-      })),
+      withUpstreamFallback(
+        'home brands',
+        () => listBrands({ perPage: 24 }),
+        { items: [], total: 0, totalPages: 0 },
+      ),
       // Channels (featured-first gesorteerd) voor het spotlight-blok.
-      getChannelsIndex().catch(() => []),
+      withUpstreamFallback('home channels', () => getChannelsIndex(), []),
       // Featured boek (native WC featured-vlag, Store API featured=true) voor
       // het tegeltje naast de featured event. Geen featured boek → leeg.
-      listFeaturedBooks().catch(() => ({ items: [], total: 0, totalPages: 0 })),
+      withUpstreamFallback(
+        'home featured books',
+        () => listFeaturedBooks(),
+        { items: [], total: 0, totalPages: 0 },
+      ),
       // Nieuwste boeken voor het sidebar-blokje (rechterkolom). Geen → leeg.
-      listBooks({ perPage: 4 }).catch(() => ({ items: [], total: 0, totalPages: 0 })),
+      withUpstreamFallback(
+        'home latest books',
+        () => listBooks({ perPage: 4 }),
+        { items: [], total: 0, totalPages: 0 },
+      ),
     ])
 
   // --- Material-categorieën: snelmenu-strip (deeplinkt naar het filter) ---

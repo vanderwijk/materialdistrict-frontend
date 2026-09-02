@@ -64,6 +64,8 @@ import { MaterialsGrid } from '../_components/MaterialsGrid'
 import { MaterialsPagination } from '../_components/MaterialsPagination'
 import { RecentlyViewedSection } from '../_components/RecentlyViewedSection'
 import type { MaterialSortValue } from '@/types/facetwp'
+import { isUpstreamUnavailable } from '@/lib/api/upstream-guard'
+import { UpstreamMaintenance } from '@/components/ui/UpstreamMaintenance'
 
 const pagePath = canonicalPath('/material')
 
@@ -117,22 +119,41 @@ export default async function MaterialsPage({
     Object.keys(filterSelection).length === 0 &&
     !channelSlug
 
-  const [result, channels] = await Promise.all([
-    useBrandArchive
-      ? listMaterialsForBrandArchive({
-          brandSlug: brandSlug as string,
-          page,
-          sort,
-          search,
-        })
-      : listMaterialsWithFacets({
-          selection: filterSelection,
-          page,
-          sort,
-          search,
-        }),
-    getChannelCatalog(),
-  ])
+  let result
+  let channels
+  try {
+    ;[result, channels] = await Promise.all([
+      useBrandArchive
+        ? listMaterialsForBrandArchive({
+            brandSlug: brandSlug as string,
+            page,
+            sort,
+            search,
+          })
+        : listMaterialsWithFacets({
+            selection: filterSelection,
+            page,
+            sort,
+            search,
+          }),
+      getChannelCatalog(),
+    ])
+  } catch (err) {
+    if (isUpstreamUnavailable(err)) {
+      return (
+        <>
+          <header className="ov-page-header">
+            <div className="ov-page-header-main">
+              <Breadcrumb items={[{ label: 'Materials' }]} />
+              <h1 className="t-display-lg">Materials</h1>
+            </div>
+          </header>
+          <UpstreamMaintenance />
+        </>
+      )
+    }
+    throw err
+  }
 
   // Defensief uitfilteren: WP levert via REST normaal alleen 'publish'-posts,
   // maar als veiligheidsmarge verwijderen we hier ook offline materialen

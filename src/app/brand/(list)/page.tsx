@@ -48,6 +48,8 @@ import { BrandsFilterSidebar } from '../_components/BrandsFilterSidebar'
 import { BrandsPagination } from '../_components/BrandsPagination'
 import { Fragment } from 'react'
 import { GridAdRow, GRID_AD_AFTER } from '@/components/ads/GridAdRow'
+import { isUpstreamUnavailable } from '@/lib/api/upstream-guard'
+import { UpstreamMaintenance } from '@/components/ui/UpstreamMaintenance'
 
 const BRANDS_PER_PAGE = 24
 
@@ -104,16 +106,35 @@ export default async function BrandsPage({ searchParams }: BrandsPageProps) {
   // Brands + country-facetopties parallel. De facetopties komen uit een
   // ruime ongefilterde fetch (zie getBrandCountryOptions) — de
   // gefilterde lijst gebruikt de country-param.
-  const [result, countryOptions] = await Promise.all([
-    listBrands({
-      perPage: BRANDS_PER_PAGE,
-      page,
-      search,
-      theme: themeId,
-      country: selectedCountries.length > 0 ? selectedCountries : undefined,
-    }),
-    getBrandCountryOptions(),
-  ])
+  let result
+  let countryOptions
+  try {
+    ;[result, countryOptions] = await Promise.all([
+      listBrands({
+        perPage: BRANDS_PER_PAGE,
+        page,
+        search,
+        theme: themeId,
+        country: selectedCountries.length > 0 ? selectedCountries : undefined,
+      }),
+      getBrandCountryOptions(),
+    ])
+  } catch (err) {
+    if (isUpstreamUnavailable(err)) {
+      return (
+        <>
+          <header className="ov-page-header">
+            <div className="ov-page-header-main">
+              <Breadcrumb items={[{ label: 'Brands' }]} />
+              <h1 className="t-display-lg">Brands</h1>
+            </div>
+          </header>
+          <UpstreamMaintenance />
+        </>
+      )
+    }
+    throw err
+  }
 
   const hasActiveFilters =
     selectedCountries.length > 0 || Boolean(search) || Boolean(channelSlug)

@@ -19,6 +19,8 @@
  * worden hieronder gefaciliteerd.
  */
 
+import { guardUpstreamFetch, scaleRevalidate } from './upstream-guard'
+
 // --------------------------------------------------------------------
 // Configuratie
 // --------------------------------------------------------------------
@@ -118,44 +120,46 @@ export async function wcFetch<T>(
 ): Promise<T> {
   const url = buildUrl(path, options.params)
 
-  const fetchOptions: RequestInit & {
-    next?: { revalidate?: number; tags?: string[] }
-  } = {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      ...buildAuthHeader(),
-    },
-    signal: options.signal,
-  }
-
-  if (options.noCache) {
-    fetchOptions.cache = 'no-store'
-  } else {
-    fetchOptions.next = {
-      revalidate: options.revalidate ?? DEFAULT_REVALIDATE,
-      ...(options.tags ? { tags: options.tags } : {}),
+  return guardUpstreamFetch(`wcFetch ${path}`, async (signal) => {
+    const fetchOptions: RequestInit & {
+      next?: { revalidate?: number; tags?: string[] }
+    } = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        ...buildAuthHeader(),
+      },
+      signal,
     }
-  }
 
-  const res = await fetch(url, fetchOptions)
-
-  if (!res.ok) {
-    let payload: unknown
-    try {
-      payload = await res.json()
-    } catch {
-      // ignore
+    if (options.noCache) {
+      fetchOptions.cache = 'no-store'
+    } else {
+      fetchOptions.next = {
+        revalidate: scaleRevalidate(options.revalidate ?? DEFAULT_REVALIDATE),
+        ...(options.tags ? { tags: options.tags } : {}),
+      }
     }
-    throw new WooCommerceError(
-      `WooCommerce fetch failed (${res.status} ${res.statusText})`,
-      res.status,
-      url,
-      payload,
-    )
-  }
 
-  return (await res.json()) as T
+    const res = await fetch(url, fetchOptions)
+
+    if (!res.ok) {
+      let payload: unknown
+      try {
+        payload = await res.json()
+      } catch {
+        // ignore
+      }
+      throw new WooCommerceError(
+        `WooCommerce fetch failed (${res.status} ${res.statusText})`,
+        res.status,
+        url,
+        payload,
+      )
+    }
+
+    return (await res.json()) as T
+  }, { signal: options.signal })
 }
 
 // --------------------------------------------------------------------

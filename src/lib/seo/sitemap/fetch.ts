@@ -1,4 +1,5 @@
 import { wpFetchPaginated } from '@/lib/api/wordpress'
+import { getSitemapPageConcurrency } from '@/lib/api/upstream-guard'
 
 import type { WPSitemapPost } from './types'
 
@@ -14,9 +15,10 @@ const WP_MAX_PER_PAGE = 100
  *
  * Eight keeps the win without hammering a single WordPress box - the same
  * ceiling used elsewhere for bulk reads. Higher numbers stop helping:
- * upstream becomes the limit.
+ * upstream becomes the limit. During an incident, `WP_LOAD_SHIELD` lowers
+ * this via `getSitemapPageConcurrency()`.
  */
-const PAGE_CONCURRENCY = 8
+const PAGE_CONCURRENCY = getSitemapPageConcurrency()
 
 interface FetchPublishedPostsOptions {
   revalidate: number

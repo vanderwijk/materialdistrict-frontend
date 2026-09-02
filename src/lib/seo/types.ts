@@ -10,7 +10,7 @@
 
 interface BaseThing {
   '@context': 'https://schema.org'
-  '@type': string
+  '@type': string | [string, ...string[]]
   '@id'?: string
   name?: string
   /** Fallback names Google may use when the preferred `name` is not chosen. */

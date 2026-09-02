@@ -38,6 +38,7 @@ import {
 
 import { WP_API_URL, isCacheDisabled } from './wordpress'
 import { allTag, listTag } from './cache-tags'
+import { guardUpstreamFetch, scaleRevalidate } from './upstream-guard'
 
 // --------------------------------------------------------------------
 // Endpoint + constants
@@ -118,51 +119,55 @@ export async function facetwpFetch(
   body: FacetWPFetchRequest,
   options?: { revalidate?: number; signal?: AbortSignal },
 ): Promise<FacetWPFetchResponse> {
-  const fetchOptions: RequestInit & {
-    next?: { revalidate?: number; tags?: string[] }
-  } = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(body),
-    signal: options?.signal,
-  }
-
-  // Sessie 6 — feedback Johan: cache-kill-switch voor staging/dev.
-  // Zie `isCacheDisabled` + de toplevel comment in `wordpress.ts`.
-  if (isCacheDisabled()) {
-    fetchOptions.cache = 'no-store'
-  } else {
-    fetchOptions.next = {
-      revalidate: options?.revalidate ?? DEFAULT_REVALIDATE_FILTERED,
-      // §BETA-FIX-25-08: dit is een eigen POST buiten `wpFetch`, dus geen
-      // automatische tags. Zelfde tags als een materialen-lijstfetch
-      // (`wp:material:list` + `:all`), zodat een materiaal-opslag het
-      // overzicht meeneemt zonder de grofmazige `wp:materials`-tag uit
-      // Claude's 25-08-zip (die de scoped cache van 26-08 zou regresseren).
-      tags: [listTag('material'), allTag('material')],
+  return guardUpstreamFetch('facetwpFetch', async (signal) => {
+    const fetchOptions: RequestInit & {
+      next?: { revalidate?: number; tags?: string[] }
+    } = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal,
     }
-  }
 
-  const res = await fetch(FACETWP_FETCH_ENDPOINT, fetchOptions)
-
-  if (!res.ok) {
-    let payload: unknown
-    try {
-      payload = await res.json()
-    } catch {
-      // body niet parsbaar — laat undefined
+    // Sessie 6 — feedback Johan: cache-kill-switch voor staging/dev.
+    // Zie `isCacheDisabled` + de toplevel comment in `wordpress.ts`.
+    if (isCacheDisabled()) {
+      fetchOptions.cache = 'no-store'
+    } else {
+      fetchOptions.next = {
+        revalidate: scaleRevalidate(
+          options?.revalidate ?? DEFAULT_REVALIDATE_FILTERED,
+        ),
+        // §BETA-FIX-25-08: dit is een eigen POST buiten `wpFetch`, dus geen
+        // automatische tags. Zelfde tags als een materialen-lijstfetch
+        // (`wp:material:list` + `:all`), zodat een materiaal-opslag het
+        // overzicht meeneemt zonder de grofmazige `wp:materials`-tag uit
+        // Claude's 25-08-zip (die de scoped cache van 26-08 zou regresseren).
+        tags: [listTag('material'), allTag('material')],
+      }
     }
-    throw new FacetWPError(
-      `Material facet query failed (${res.status} ${res.statusText})`,
-      res.status,
-      payload,
-    )
-  }
 
-  return (await res.json()) as FacetWPFetchResponse
+    const res = await fetch(FACETWP_FETCH_ENDPOINT, fetchOptions)
+
+    if (!res.ok) {
+      let payload: unknown
+      try {
+        payload = await res.json()
+      } catch {
+        // body niet parsbaar — laat undefined
+      }
+      throw new FacetWPError(
+        `Material facet query failed (${res.status} ${res.statusText})`,
+        res.status,
+        payload,
+      )
+    }
+
+    return (await res.json()) as FacetWPFetchResponse
+  }, { signal: options?.signal })
 }
 
 // --------------------------------------------------------------------

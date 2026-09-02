@@ -563,7 +563,7 @@ export function buildBook(book: BookForJsonLd): BookSchema | null {
     if (formatIri) schema.bookFormat = formatIri
   }
 
-  if (hasOffer) {
+  if (hasOffer && book.price != null) {
     schema.offers = {
       '@type': 'Offer',
       url,

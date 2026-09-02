@@ -70,6 +70,8 @@ import { RecentlyViewedRail } from '@/components/ui'
 import { CardBookmarkButton } from '@/components/ui/CardBookmarkButton'
 import { ArticlesPagination } from '../_components/ArticlesPagination'
 import { AdSlot } from '@/components/ads/AdSlot'
+import { isUpstreamUnavailable } from '@/lib/api/upstream-guard'
+import { UpstreamMaintenance } from '@/components/ui/UpstreamMaintenance'
 
 /**
  * 13 = 1 featured (volle breedte) + 12 in `.ov-grid-3`.
@@ -145,17 +147,37 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
   // uit `getStoryTypeCounts()` (X-WP-Total per story_type-filter, gelijk aan
   // wat je ziet na klikken op News/People/…). Totaal "All" apart via
   // `getArticleTotalCount()`.
-  const [result, typeOptions, totalArticleCount] = await Promise.all([
-    listArticles({
-      perPage: ARTICLES_PER_PAGE,
-      page,
-      search,
-      storyType: selectedType ?? undefined,
-      theme: themeId,
-    }),
-    getArticleStoryTypeOptions(),
-    getArticleTotalCount(),
-  ])
+  let result
+  let typeOptions
+  let totalArticleCount
+  try {
+    ;[result, typeOptions, totalArticleCount] = await Promise.all([
+      listArticles({
+        perPage: ARTICLES_PER_PAGE,
+        page,
+        search,
+        storyType: selectedType ?? undefined,
+        theme: themeId,
+      }),
+      getArticleStoryTypeOptions(),
+      getArticleTotalCount(),
+    ])
+  } catch (err) {
+    if (isUpstreamUnavailable(err)) {
+      return (
+        <>
+          <header className="ov-page-header">
+            <div className="ov-page-header-main">
+              <Breadcrumb items={[{ label: 'Stories' }]} />
+              <h1 className="t-display-lg">Stories</h1>
+            </div>
+          </header>
+          <UpstreamMaintenance />
+        </>
+      )
+    }
+    throw err
+  }
 
   const hasActiveFilters =
     selectedType !== null || Boolean(search) || Boolean(channelSlug)
