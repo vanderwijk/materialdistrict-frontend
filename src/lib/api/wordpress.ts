@@ -125,6 +125,38 @@ const BRAND_REVALIDATE = 24 * 3600 // 86400s
 /** Media: afbeeldingen-metadata wijzigt nooit na upload. 24 uur. */
 const MEDIA_REVALIDATE = 24 * 3600 // 86400s
 
+/**
+ * Velden die `mapMedia()` werkelijk leest, plus wat `getAttachmentsForPost()`
+ * nodig heeft om te sorteren en filteren (`menu_order`, `date`, `media_type`).
+ *
+ * Waarom dit er staat (incident 02-09-2026): zonder `_fields` levert WordPress
+ * het volledige attachment-object inclusief `yoast_head` — Yoast bouwt dan per
+ * bijlage een complete schema-graaf met breadcrumb-lookups. Op een gallery van
+ * 100 bijlagen is dat honderd keer werk dat niemand opvraagt.
+ *
+ * `/wp/v2/media?parent=` was met 28% van alle CMS-requests het drukste endpoint
+ * van de site. Gemeten op een post met 7 bijlagen: 2,8s / 87 kB zonder, tegen
+ * 1,3s / 24 kB met. WordPress slaat velden die via `register_rest_field` zijn
+ * toegevoegd over zodra ze niet in `_fields` staan — daar hangt dit op.
+ *
+ * Let op: breid dit uit zodra `mapMedia()` een nieuw veld gaat lezen, anders
+ * komt dat veld stil als `undefined` binnen.
+ */
+const MEDIA_FIELDS: string[] = [
+  'id',
+  'date',
+  'modified_gmt',
+  'alt_text',
+  'caption',
+  'description',
+  'mime_type',
+  'media_type',
+  'source_url',
+  'media_details',
+  'post',
+  'menu_order',
+]
+
 /** Taxonomie-termen (tags, themes, etc.): zelden gewijzigd. 24 uur. */
 const TERM_REVALIDATE = 24 * 3600 // 86400s
 
@@ -506,7 +538,12 @@ export async function getMediaBatch(ids: number[]): Promise<WPMediaResponse[]> {
   if (ids.length === 0) return []
   return wpFetch<WPMediaResponse[]>(`/wp/v2/media`, {
     revalidate: MEDIA_REVALIDATE,
-    params: { include: ids, per_page: ids.length, orderby: 'include' },
+    params: {
+      include: ids,
+      per_page: ids.length,
+      orderby: 'include',
+      _fields: MEDIA_FIELDS,
+    },
   })
 }
 
@@ -741,6 +778,7 @@ export async function getAttachmentsForPost(
     params: {
       parent: postId,
       per_page: params?.perPage ?? 100,
+      _fields: MEDIA_FIELDS,
     },
   })
 
