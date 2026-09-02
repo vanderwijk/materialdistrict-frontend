@@ -8,12 +8,13 @@
  *
  * Defensief geparsed: accepteert een kale array of een wrapper
  * ({ channels | data | items | terms: [...] }), en een `id` als getal óf als
- * numerieke string (WP-term-id's komen soms als string terug). Faalt zacht
- * naar een lege lijst zodat een hapering de pagina niet breekt.
+ * numerieke string (WP-term-id's komen soms als string terug). Upstream-
+ * storingen gooien door; andere parse-fouten vallen terug op een lege lijst.
  */
 
 import { cache } from 'react'
 import { wpFetch, getTerms, getTerm } from './wordpress'
+import { isUpstreamUnavailable } from './upstream-guard'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { normalizeMediaUrl } from '@/lib/utils/normalize-media-url'
 
@@ -77,11 +78,15 @@ function toChannel(raw: unknown): Channel | null {
 
 /**
  * GET /md/v2/material-channels — de canonieke channels met term-id, slug en
- * label. Robuust voor afwijkende response-vormen; lege lijst bij fout.
+ * label. Robuust voor afwijkende response-vormen.
  *
  * Channels met 0 materials worden weggelaten (nav, `/channel`-index, ChannelBar,
  * follow-chips). Voorkomt lege hubs die als 404 openen tot fase-2 content hangt.
  * `count` is materials-only — bewust dezelfde teller als de catalogus toont.
+ *
+ * §INCIDENT-02-09 — upstream-storingen gooien door i.p.v. `return []`, zodat
+ * ISR geen lege render als geldige pagina cachet. Decoratieve callers (`Footer`,
+ * `/api/channels`, `digest-channels`) hebben een eigen `.catch(() => [])`.
  */
 export const getChannelCatalog = cache(async function getChannelCatalog(): Promise<Channel[]> {
   try {
@@ -91,7 +96,8 @@ export const getChannelCatalog = cache(async function getChannelCatalog(): Promi
     return extractArray(res)
       .map(toChannel)
       .filter((c): c is Channel => c !== null && c.count > 0)
-  } catch {
+  } catch (err) {
+    if (isUpstreamUnavailable(err)) throw err
     return []
   }
 })

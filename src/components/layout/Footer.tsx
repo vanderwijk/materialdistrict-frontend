@@ -175,7 +175,7 @@ export async function Footer({ className }: FooterProps) {
                 {l.label}
               </a>
             ) : (
-              <Link key={l.label} href={l.href}>
+              <Link key={l.label} href={l.href} prefetch={false}>
                 {l.label}
               </Link>
             ),
@@ -190,12 +190,18 @@ export async function Footer({ className }: FooterProps) {
 // Sub-components
 // ============================================================
 
+/** §INCIDENT-02-09 — footerlinks niet prefetch-en (staat op elke pagina). */
 function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div className="footer-col">
       <div className="footer-title">{title}</div>
       {links.map((link) => (
-        <Link key={link.label} href={link.href} className="footer-link">
+        <Link
+          key={link.label}
+          href={link.href}
+          className="footer-link"
+          prefetch={false}
+        >
           {link.label}
         </Link>
       ))}

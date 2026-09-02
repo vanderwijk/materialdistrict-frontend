@@ -31,6 +31,7 @@ import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { EmptyState } from '@/components/ui'
 import { getChannelsIndex } from '@/lib/api'
+import { assertRenderable } from '@/lib/api/upstream-page'
 import { JsonLd, buildBreadcrumbList, buildCollectionPage, canonicalPath } from '@/lib/seo'
 import { ChannelsHub } from '../_components/ChannelsHub'
 
@@ -47,6 +48,8 @@ export const metadata: Metadata = {
 
 export default async function ChannelsIndexPage() {
   const channels = await getChannelsIndex()
+
+  assertRenderable('channel index', [channels.length])
 
   return (
     <>

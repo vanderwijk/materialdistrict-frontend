@@ -32,7 +32,7 @@ import {
   getChannelsIndex,
   listMaterialsWithFacets,
 } from '@/lib/api'
-import { withUpstreamFallback } from '@/lib/api/upstream-page'
+import { withUpstreamFallback, assertRenderable } from '@/lib/api/upstream-page'
 import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 import { JsonLd, buildWebSite, buildOrganization, canonicalPath, openGraphSite } from '@/lib/seo'
 import { STORY_TYPE_META } from '@/lib/config/story-types'
@@ -196,6 +196,12 @@ export default async function HomePage() {
         { items: [], total: 0, totalPages: 0 },
       ),
     ])
+
+  assertRenderable('home', [
+    matRes.items.length,
+    artRes.items.length,
+    channelsIndex.length,
+  ])
 
   // --- Material-categorieën: snelmenu-strip (deeplinkt naar het filter) ---
   // Op aantal aflopend (zoals de FacetWP-facet), label HTML-gedecodeerd. De
