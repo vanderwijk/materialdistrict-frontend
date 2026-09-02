@@ -22,27 +22,41 @@ const PAGE_CONCURRENCY = getSitemapPageConcurrency()
 
 interface FetchPublishedPostsOptions {
   revalidate: number
+  /** Extra query params (e.g. product_cat for book sitemaps). */
+  params?: Record<string, string | number | boolean | undefined>
 }
 
 async function fetchPage(
   endpoint: string,
   page: number,
   revalidate: number,
+  extraParams?: FetchPublishedPostsOptions['params'],
 ): Promise<{ items: WPSitemapPost[]; totalPages: number }> {
+  const isSitemapApi = endpoint.startsWith('/md/v2/sitemap/')
+
   return wpFetchPaginated<WPSitemapPost[]>(endpoint, {
     revalidate,
-    params: {
-      per_page: WP_MAX_PER_PAGE,
-      page,
-      status: 'publish',
-      _fields: ['slug', 'modified'],
-    },
+    params: isSitemapApi
+      ? {
+          per_page: WP_MAX_PER_PAGE,
+          page,
+          ...extraParams,
+        }
+      : {
+          per_page: WP_MAX_PER_PAGE,
+          page,
+          status: 'publish',
+          _fields: ['slug', 'modified'],
+          ...extraParams,
+        },
   })
 }
 
 /**
- * Haal alle gepubliceerde posts op voor een WP REST CPT-endpoint.
- * Gebruikt `_fields=slug,modified` om de payload minimaal te houden.
+ * Haal alle gepubliceerde posts op voor een sitemap-endpoint.
+ *
+ * Prefer `/md/v2/sitemap/{type}` — direct SQL, geen rest_prepare_*-filters.
+ * Legacy `/wp/v2/*` blijft als fallback mogelijk via `_fields=slug,modified`.
  *
  * Page 1 is fetched on its own because it is what tells us how many pages
  * there are; the remainder is fetched in bounded parallel batches. Order is
@@ -53,7 +67,7 @@ export async function fetchAllPublishedPosts(
   endpoint: string,
   options: FetchPublishedPostsOptions,
 ): Promise<WPSitemapPost[]> {
-  const first = await fetchPage(endpoint, 1, options.revalidate)
+  const first = await fetchPage(endpoint, 1, options.revalidate, options.params)
 
   const totalPages = Math.max(1, first.totalPages)
   if (totalPages === 1) return first.items
@@ -71,7 +85,7 @@ export async function fetchAllPublishedPosts(
     const results = await Promise.allSettled(
       batch.map(async (page) => ({
         page,
-        items: (await fetchPage(endpoint, page, options.revalidate)).items,
+        items: (await fetchPage(endpoint, page, options.revalidate, options.params)).items,
       })),
     )
 

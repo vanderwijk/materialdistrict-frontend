@@ -1,5 +1,5 @@
 import { STATIC_PAGE_SLUGS } from '@/lib/config/static-pages'
-import { getPageBySlug, wpFetch, wpFetchPaginated } from '@/lib/api/wordpress'
+import { getPageBySlug, wpFetch } from '@/lib/api/wordpress'
 import { absolutePageUrl, canonicalPath } from '@/lib/seo/urls'
 
 import { fetchAllPublishedPosts } from './fetch'
@@ -47,34 +47,13 @@ async function getBooksCategoryId(): Promise<number | null> {
 }
 
 async function fetchAllBooks(): Promise<WPSitemapPost[]> {
-  // /wp/v2/product geeft `modified` terug (in tegenstelling tot de WC Store
-  // API). product_cat-filter gebruikt het WP term-ID van de books-categorie.
   const categoryId = await getBooksCategoryId()
-  const books: WPSitemapPost[] = []
-  let page = 1
-  let totalPages = 1
+  if (!categoryId) return []
 
-  while (page <= totalPages) {
-    const { items, totalPages: pages } = await wpFetchPaginated<WPSitemapPost[]>(
-      '/wp/v2/product',
-      {
-        revalidate: BOOK_REVALIDATE,
-        params: {
-          status: 'publish',
-          _fields: ['slug', 'modified'],
-          ...(categoryId ? { product_cat: categoryId } : {}),
-          per_page: 100,
-          page,
-        },
-      },
-    )
-
-    books.push(...items.filter((item) => item.slug))
-    totalPages = pages
-    page += 1
-  }
-
-  return books
+  return fetchAllPublishedPosts('/md/v2/sitemap/product', {
+    revalidate: BOOK_REVALIDATE,
+    params: { product_cat: categoryId },
+  })
 }
 
 /** Vaste routes: home, archieven en marketingpagina's zonder WP lastmod. */
@@ -115,35 +94,35 @@ export async function getStaticSitemapEntries(): Promise<SitemapEntry[]> {
 }
 
 export async function getMaterialsSitemapEntries(): Promise<SitemapEntry[]> {
-  const posts = await fetchAllPublishedPosts('/wp/v2/material', {
+  const posts = await fetchAllPublishedPosts('/md/v2/sitemap/material', {
     revalidate: MATERIAL_REVALIDATE,
   })
   return postsToEntries(posts, '/material')
 }
 
 export async function getArticlesSitemapEntries(): Promise<SitemapEntry[]> {
-  const posts = await fetchAllPublishedPosts('/wp/v2/article', {
+  const posts = await fetchAllPublishedPosts('/md/v2/sitemap/article', {
     revalidate: EDITORIAL_REVALIDATE,
   })
   return postsToEntries(posts, '/article')
 }
 
 export async function getBrandsSitemapEntries(): Promise<SitemapEntry[]> {
-  const posts = await fetchAllPublishedPosts('/wp/v2/brand', {
+  const posts = await fetchAllPublishedPosts('/md/v2/sitemap/brand', {
     revalidate: BRAND_REVALIDATE,
   })
   return postsToEntries(posts, '/brand')
 }
 
 export async function getEventsSitemapEntries(): Promise<SitemapEntry[]> {
-  const posts = await fetchAllPublishedPosts('/wp/v2/event', {
+  const posts = await fetchAllPublishedPosts('/md/v2/sitemap/event', {
     revalidate: EDITORIAL_REVALIDATE,
   })
   return postsToEntries(posts, '/event')
 }
 
 export async function getTalksSitemapEntries(): Promise<SitemapEntry[]> {
-  const posts = await fetchAllPublishedPosts('/wp/v2/talk', {
+  const posts = await fetchAllPublishedPosts('/md/v2/sitemap/talk', {
     revalidate: EDITORIAL_REVALIDATE,
   })
   return postsToEntries(posts, '/talk')
