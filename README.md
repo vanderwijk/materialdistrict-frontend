@@ -104,7 +104,7 @@ Zie `build-order.md`. Per stap één Claude-sessie. Na elke sessie `session-log.
 
 ## Deploy naar productie
 
-**Vóór elke Vercel-deploy: CMS recovery mode aan.** Zie checklist en commando's in [`docs/deploy-runbook-cms.md`](docs/deploy-runbook-cms.md).
+Check origin-gezondheid, push **zonder** recovery mode. Zie [`docs/deploy-runbook-cms.md`](docs/deploy-runbook-cms.md) voor checklist, droplet-tuning en noodrem-procedure.
 
 ---
 

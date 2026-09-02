@@ -1,150 +1,173 @@
-# Deploy-runbook — CMS beschermen
+# Deploy-runbook — CMS & origin
 
-**Verplicht bij elke productie-deploy naar Vercel** (push naar `main` of handmatige redeploy).
+Checklist voor elke productie-deploy naar Vercel (push naar `main` of handmatige redeploy).
 
-Zonder recovery mode stampedeert Vercel het CMS na een deploy: lege CDN-cache → duizenden ISR-requests → php-fpm vol → site en wp-admin onbereikbaar. Incident: sep 2026.
+Incident achtergrond: sep 2026 — lege CDN-cache na deploy → duizenden ISR-requests → php-fpm vol → site en wp-admin onbereikbaar. Opgelost met origin-tuning (`listen.backlog`) + frontend load shield.
 
-`WP_LOAD_SHIELD=true` staat in `vercel.json` — **niet uitzetten** tijdens opwarmperiode of deploy. Dat is geen vervanging voor recovery mode bij deploy.
+`WP_LOAD_SHIELD=true` staat in `vercel.json` — **niet uitzetten** tijdens opwarmperiode. Dat is geen vervanging voor een gezonde origin.
 
 ---
 
-## Vóór deploy
+## Werkwijze (standaard)
+
+**Geen recovery mode vóór deploy.** Recovery mode geeft de build 503 → overzichtspagina's (`/`, `/material/`, `/article/`, `/brand/`) worden leeg voorgebouwd (homepage 83 kB i.p.v. 278 kB). Met `listen.backlog` beschermt de origin zichzelf.
+
+### 1. Vóór deploy — origin gezond?
 
 ```bash
-ssh cms-materialdistrict 'touch /var/www/html/.cms-recovery-mode && systemctl reload caddy'
-```
+ssh cms-materialdistrict uptime
+# load < 5 op 4 vCPU
 
-Controle (moet **503** in <1s zijn, geen WordPress-boot):
-
-```bash
 curl -sS -o /dev/null -w "%{http_code} %{time_total}s\n" \
   -H "User-Agent: node" \
-  https://cms.materialdistrict.com/wp-json/
-# Verwacht: 503 ~0.1s
+  "https://cms.materialdistrict.com/wp-json/wp/v2/material?per_page=10&_fields=slug"
+# Verwacht: 200, < 2s
 ```
 
-wp-admin blijft bereikbaar tijdens recovery.
-
----
-
-## Deploy
+### 2. Deploy
 
 1. Push naar `main` of redeploy in Vercel-dashboard.
-2. Wacht tot build **Ready** is (build mag CMS niet nodig hebben — fallbacks in `getPage()`).
-3. Wacht **niet** recovery uit te zetten tot de deploy klaar is.
+2. Wacht tot build **Ready** is.
 
----
-
-## Na deploy
-
-Load volgen tot stabiel (<5, CPU niet structureel >80%):
+### 3. Na deploy — load monitoren
 
 ```bash
 ssh cms-materialdistrict uptime
 ```
 
-Recovery **uit** zetten:
-
-```bash
-ssh cms-materialdistrict 'rm /var/www/html/.cms-recovery-mode && systemctl reload caddy'
-```
-
-Controle (moet **200** in <2s zijn):
-
-```bash
-curl -sS -o /dev/null -w "%{http_code} %{time_total}s\n" \
-  -H "User-Agent: node" \
-  "https://cms.materialdistrict.com/wp-json/wp/v2/pages?per_page=1"
-```
-
 **Verwacht:** frontend vult cache geleidelijk op (traffic-gedreven ISR, geen bulk pre-fill). Populaire pagina's eerst; long-tail kan uren duren. Redactionele updates blijven direct via revalidate-webhook.
 
----
+**Circuit breaker:** na zware load kan `upstream-guard.ts` nog 120s openstaan (`WP_LOAD_SHIELD=true`). Detailpagina's geven dan kortstondig 500 in ~0,2s — even wachten.
 
-## Bij problemen — recovery weer aan
+### 4. Noodrem — recovery mode aan
+
+Alleen als load boven ~12 loopt of het percentage requests binnen 8s onder ~80% zakt:
 
 ```bash
 ssh cms-materialdistrict 'touch /var/www/html/.cms-recovery-mode && systemctl reload caddy'
 ```
 
+Controle (503 in <1s, geen WordPress-boot):
+
+```bash
+curl -sS -o /dev/null -w "%{http_code} %{time_total}s\n" \
+  -H "User-Agent: node" \
+  https://cms.materialdistrict.com/wp-json/
+```
+
+wp-admin blijft bereikbaar. **Let op:** actieve builds krijgen lege prerender als recovery aan staat.
+
+Recovery **uit**:
+
+```bash
+ssh cms-materialdistrict 'rm /var/www/html/.cms-recovery-mode && systemctl reload caddy'
+```
+
 ---
 
-## Technische achtergrond
+## Frontend-bescherming
 
 | Onderdeel | Locatie |
 |---|---|
-| Recovery-flag | `/var/www/html/.cms-recovery-mode` op CMS-droplet |
-| Caddy-config | `/etc/caddy/Caddyfile` — `@recovery_api` + `@recovery_vercel` |
 | Load shield | `vercel.json` → `WP_LOAD_SHIELD=true` |
-| Upstream guard | `src/lib/api/upstream-guard.ts` |
-
-Recovery blokkeert `User-Agent: node` (Vercel server-side) op `/wp-json/*` en overige API-paden; wp-admin/wp-login gaat door.
-
----
-
-## Toelatingsbeheer op de origin (toegevoegd 02-09-2026)
-
-De aanname hierboven — "de frontend vult de cache geleidelijk" — bleek te optimistisch.
-Na de deploy van 2 september vroeg het vullen ~29x de capaciteit van de droplet. Alles
-kwam in de wachtrij, de gemiddelde requestduur liep op tot 74s, en omdat Vercel na 8s
-afkapt werd al dat werk weggegooid: WordPress produceerde antwoorden die niemand meer
-ophaalde, waarna dezelfde pagina opnieuw werd opgevraagd. De cache vulde zich niet.
-
-De oplossing is toelatingsbeheer, niet meer capaciteit:
-
-```
-# /etc/php/8.3/fpm/pool.d/www.conf
-listen.backlog = 16
-```
-
-**Vereist `systemctl restart php8.3-fpm`, niet reload** — de socket is bij een reload al
-gebonden en houdt de oude backlog.
-
-Wat het doet: verbindingen boven de backlog worden meteen geweigerd in plaats van in de
-rij gezet. Caddy geeft dan snel een 502, Vercel faalt snel en probeert later opnieuw, en
-de requests die wél worden toegelaten zijn binnen een seconde klaar — en landen dus
-permanent in de cache. Meetresultaat direct na invoering: mediaan van 74s naar 0,81s,
-96% binnen Vercels 8s-venster, en binnen enkele minuten weer 100% status 200.
-
-Liever de helft snel bedienen dan alles traag: een verzoek dat na 8s alsnog slaagt is
-verspilde capaciteit, want de klant is al weg.
-
-**Let op bij het uitzetten van recovery mode:** de circuit breaker in `upstream-guard.ts`
-kan nog openstaan (cooldown 120s bij `WP_LOAD_SHIELD=true`). Detailpagina's geven dan
-kortstondig een 500 in ~0,2s — te snel om een origin-probleem te zijn. Even wachten.
+| Upstream guard | `src/lib/api/upstream-guard.ts` — 8s timeout, max 3 concurrent, circuit breaker 120s |
+| Build fallbacks | `src/lib/api/content.ts` — `withUpstreamFallback` op `getPage()` |
 
 ---
 
-## Herziening: recovery mode is niet meer standaard (02-09-2026, tweede deploy)
+## Droplet-tuning (cms-materialdistrict)
 
-De instructie bovenaan — recovery mode aan vóór elke deploy — is geschreven vóór
-`listen.backlog`. Twee deploys op dezelfde dag lieten zien dat die volgorde nu averechts
-werkt.
+Live serverconfiguratie per 02-09-2026. Wijzigingen alleen via SSH; backups staan naast de config (`*.bak-YYYYMMDD*`).
 
-**Deploy 1, mét recovery mode.** De build draaide tegen een CMS die 503 gaf, dus de
-statische routes (`/`, `/material/`, `/article/`, `/brand/`) werden léég voorgebouwd. De
-homepage kwam op 83 kB uit in plaats van 278 kB, en bleef dat een volledige
-revalidate-periode lang. De detailroutes hebben daar geen last van — die hebben een lege
-`generateStaticParams` en worden niet voorgebouwd — maar de overzichtspagina's wel.
+### Hardware
 
-**Deploy 2, zónder recovery mode.** De build haalde echte data op, de origin bleef
-gezond: load 2,8 tegen 2,3 baseline, mediaan 0,68s, p90 0,95s, 100% binnen Vercels
-8s-venster, 7 van de 10 workers bezet. Geen enkele lege pagina.
+| | Waarde |
+|---|---|
+| vCPU | 4 |
+| RAM | 7,8 GB |
+| Swap | 2 GB |
+| Disk | 67 GB |
 
-Het verschil is `listen.backlog`: de origin beschermt zichzelf nu, dus je hoeft hem niet
-meer dicht te zetten om hem te sparen — en een dichte CMS is precies wat de build kapot
-maakt.
+### PHP-FPM — `/etc/php/8.3/fpm/pool.d/www.conf`
 
-### Werkwijze nu
+| Setting | Waarde | Doel |
+|---|---|---|
+| `listen.backlog` | **16** | Verbindingen boven capaciteit direct weigeren i.p.v. 74s wachtrij |
+| `pm.max_children` | 10 | Max gelijktijdige WordPress-requests (was 20) |
+| `pm.start_servers` | 5 | |
+| `pm.min_spare_servers` | 3 | |
+| `pm.max_spare_servers` | 5 | |
+| `pm.max_requests` | 500 | Worker recyclen vóór memory leaks |
+| `request_terminate_timeout` | 30s | Hangende requests killen |
+| `request_slowlog_timeout` | 5s | Log naar `/var/log/php8.3-fpm-slow.log` |
 
-1. Controleer vooraf dat de origin gezond is: `ssh cms-materialdistrict uptime` (load < 5)
-   en `curl -o /dev/null -w "%{time_total}\n" -H "User-Agent: node"
-   https://cms.materialdistrict.com/wp-json/wp/v2/material?per_page=10&_fields=slug`
-   (< 2s).
-2. Push. **Geen recovery mode.**
-3. Volg de load tijdens en na de build. Loopt die boven ~12 of zakt het percentage binnen
-   8s onder de 80%, zet recovery mode dan alsnog aan — en accepteer dat de
-   overzichtspagina's tijdelijk leeg zijn.
+**`listen.backlog` vereist `systemctl restart php8.3-fpm`, niet reload** — de socket is bij reload al gebonden.
 
-Recovery mode blijft dus bestaan, maar als **noodrem tijdens een incident**, niet als
-standaardstap bij een deploy.
+Effect backlog: mediaan 74s → 0,81s, 96% binnen Vercels 8s-venster. Liever de helft snel bedienen dan alles traag — een request dat na 8s alsnog slaagt is verspilde capaciteit.
+
+### OPcache — `/etc/php/8.3/fpm/conf.d/`
+
+| Setting | Waarde |
+|---|---|
+| `opcache.memory_consumption` | 512 |
+| `opcache.max_accelerated_files` | 32531 |
+| `opcache.interned_strings_buffer` | 32 |
+| `opcache.revalidate_freq` | 60 |
+| `opcache.validate_timestamps` | 1 |
+| `opcache.jit` | off |
+
+PHP: `memory_limit = 1024M`, `max_execution_time = 60`.
+
+### MySQL — `/etc/mysql/mysql.conf.d/mysqld.cnf`
+
+| Setting | Waarde |
+|---|---|
+| `innodb_buffer_pool_size` | 1 GB |
+
+### Systeem (sysctl)
+
+```
+vm.swappiness = 10
+net.core.somaxconn = 4096
+```
+
+### Caddy — `/etc/caddy/Caddyfile`
+
+- Recovery mode: flag `/var/www/html/.cms-recovery-mode` → 503 op `/wp-json/*` en `User-Agent: node`
+- Bot-blocking (Amazonbot, GPTBot, AhrefsBot, etc.)
+- JSON access log: `/var/log/caddy/access.json`
+- Sitemaps → 404 op CMS
+- Feed-handler voor `?md_feed=*`
+
+Reload Caddy na recovery-wijziging: `systemctl reload caddy`.
+
+### WordPress & cron
+
+- `DISABLE_WP_CRON = true` in `wp-config.php`
+- System cron: `*/5 * * * * www-data wp cron event run --due-now`
+- Redis object cache: `wp-content/object-cache.php`
+
+### Diagnose-commando's
+
+```bash
+# Load + workers
+ssh cms-materialdistrict 'uptime; ps aux | grep "php-fpm: pool www" | grep -v grep | wc -l'
+
+# API-latency
+curl -sS -o /dev/null -w "%{http_code} %{time_total}s\n" \
+  -H "User-Agent: node" \
+  "https://cms.materialdistrict.com/wp-json/wp/v2/pages?per_page=1"
+
+# Trage PHP-requests
+ssh cms-materialdistrict 'tail -20 /var/log/php8.3-fpm-slow.log'
+```
+
+---
+
+## Historisch — waarom recovery mode geen standaardstap meer is
+
+**Deploy 1 (mét recovery):** build tegen CMS met 503 → statische overzichtsroutes leeg voorgebouwd.
+
+**Deploy 2 (zónder recovery):** load 2,8 vs 2,3 baseline, mediaan 0,68s, p90 0,95s, 100% binnen 8s, 7/10 workers bezet, geen lege pagina's.
+
+Verschil: `listen.backlog` laat de origin overload afwijzen in plaats van vastlopen in een wachtrij.
