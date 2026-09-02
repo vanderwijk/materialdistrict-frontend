@@ -142,6 +142,45 @@ const MEDIA_REVALIDATE = 24 * 3600 // 86400s
  * Let op: breid dit uit zodra `mapMedia()` een nieuw veld gaat lezen, anders
  * komt dat veld stil als `undefined` binnen.
  */
+/**
+ * Velden voor de drie detail-lookups op slug (`?slug=…&per_page=1`).
+ *
+ * Waarom (incident 02-09-2026): tijdens het hervullen van de ISR-cache waren
+ * deze drie samen 61% van alle php-fpm-workertijd op de CMS. Zonder `_fields`
+ * bouwt WordPress per item ook `_links`, `guid`, `template` en — de dure —
+ * `class_list`, die via `get_post_class()` en `is_object_in_taxonomy()` de
+ * taxonomieen van het posttype uitvraagt. Die trace stond letterlijk in de
+ * slowlog.
+ *
+ * De lijsten zijn afgeleid uit wat de mappers werkelijk lezen (`mapMaterial`,
+ * `mapBrand`, `mapArticle` in mappers.ts) plus `id` en `featured_media`, die de
+ * detail-getters in content.ts zelf gebruiken.
+ *
+ * LET OP bij uitbreiden: een veld dat hier ontbreekt komt binnen als `undefined`
+ * en de mappers vangen dat stil af met `?? []` of `?.`. Een ontbrekend veld
+ * geeft dus geen foutmelding maar stil dataverlies. Voeg een veld hier toe zodra
+ * een mapper het gaat lezen.
+ */
+
+/** `class_list` blijft: `mergeMaterialProperties()` leest er eigenschappen uit. */
+const MATERIAL_DETAIL_FIELDS: string[] = [
+  'id', 'slug', 'title', 'content', 'excerpt', 'date', 'modified', 'link',
+  'featured_media', 'meta', 'class_list', 'material_category',
+  'product_category', 'sector', 'theme', 'tags',
+]
+
+/** Geen `class_list`: `mapBrand()` raakt hem niet aan. */
+const BRAND_DETAIL_FIELDS: string[] = [
+  'id', 'slug', 'title', 'content', 'excerpt', 'date', 'modified', 'link',
+  'featured_media', 'meta',
+]
+
+/** Geen `class_list`: `mapArticle()` raakt hem niet aan. */
+const ARTICLE_DETAIL_FIELDS: string[] = [
+  'id', 'slug', 'title', 'content', 'excerpt', 'date', 'modified', 'link',
+  'featured_media', 'meta', 'author', 'categories', 'tags',
+]
+
 const MEDIA_FIELDS: string[] = [
   'id',
   'date',
@@ -724,7 +763,7 @@ export async function getMaterialBySlug(
 ): Promise<WPMaterialRawResponse | null> {
   const matches = await wpFetch<WPMaterialRawResponse[]>('/wp/v2/material', {
     revalidate: MATERIAL_REVALIDATE,
-    params: { slug, per_page: 1 },
+    params: { slug, per_page: 1, _fields: MATERIAL_DETAIL_FIELDS },
   })
   return matches[0] ?? null
 }
@@ -929,7 +968,7 @@ export async function getBrandBySlug(
 ): Promise<WPBrandRawResponse | null> {
   const matches = await wpFetch<WPBrandRawResponse[]>('/wp/v2/brand', {
     revalidate: BRAND_REVALIDATE,
-    params: { slug, per_page: 1 },
+    params: { slug, per_page: 1, _fields: BRAND_DETAIL_FIELDS },
   })
   return matches[0] ?? null
 }
@@ -1103,7 +1142,7 @@ export async function getArticleBySlug(
 ): Promise<WPArticleRawResponse | null> {
   const matches = await wpFetch<WPArticleRawResponse[]>('/wp/v2/article', {
     revalidate: EDITORIAL_REVALIDATE,
-    params: { slug, per_page: 1 },
+    params: { slug, per_page: 1, _fields: ARTICLE_DETAIL_FIELDS },
   })
   return matches[0] ?? null
 }
