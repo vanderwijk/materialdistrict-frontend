@@ -47,7 +47,17 @@ export function createSitemapResponse(
   getEntries: () => Promise<Parameters<typeof buildUrlSetXml>[0]>,
 ): () => Promise<Response> {
   return async function GET() {
-    const entries = await getEntries()
+    let entries: Parameters<typeof buildUrlSetXml>[0] = []
+
+    try {
+      entries = await getEntries()
+    } catch (err) {
+      // Page 1 of a bulk fetch failed, or an unexpected error escaped.
+      // Return valid (possibly empty) XML so Vercel can cache it and crawlers
+      // do not stampede the origin on every retry.
+      console.error('[sitemap] getEntries failed, returning urlset anyway:', err)
+    }
+
     const xml = buildUrlSetXml(entries)
     return new Response(xml, { headers: XML_HEADERS })
   }

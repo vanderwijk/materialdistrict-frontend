@@ -2,9 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "fluid": true,
   "regions": ["fra1"],
-  "env": {
-    "WP_LOAD_SHIELD": "true"
-  },
   "headers": [
     {
       "source": "/(.*)",

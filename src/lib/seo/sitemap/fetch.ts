@@ -68,15 +68,23 @@ export async function fetchAllPublishedPosts(
   for (let i = 0; i < remaining.length; i += PAGE_CONCURRENCY) {
     const batch = remaining.slice(i, i + PAGE_CONCURRENCY)
 
-    const results = await Promise.all(
+    const results = await Promise.allSettled(
       batch.map(async (page) => ({
         page,
         items: (await fetchPage(endpoint, page, options.revalidate)).items,
       })),
     )
 
-    for (const { page, items } of results) {
-      pages[page - 1] = items
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        const { page, items } = result.value
+        pages[page - 1] = items
+      } else {
+        console.warn(
+          `[sitemap] skipped ${endpoint} page after fetch failure:`,
+          result.reason,
+        )
+      }
     }
   }
 
