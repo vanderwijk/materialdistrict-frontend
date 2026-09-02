@@ -21,6 +21,9 @@ import {
 
 const WP_SLUG = 'about'
 
+/** ISR — herstelt na een build terwijl het CMS down was. */
+export const revalidate = 3600
+
 const VARIANTS: Record<string, SectionVariant> = {
   'what-we-do-today': 'cards',
   facts: 'facts',

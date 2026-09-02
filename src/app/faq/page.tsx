@@ -36,6 +36,8 @@ import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 const WP_SLUG = 'faq'
 
 export const dynamicParams = false
+/** ISR — herstelt na een build terwijl het CMS down was. */
+export const revalidate = 3600
 
 interface FaqItem {
   question: string

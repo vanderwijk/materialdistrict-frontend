@@ -33,6 +33,9 @@ interface StaticPageProps {
 // de notFound()-gate in de component zelf.
 export const dynamicParams = false
 
+/** ISR — herstelt na een build terwijl het CMS down was. */
+export const revalidate = 3600
+
 // BELANGRIJK: deze route heeft bewust GEEN loading.tsx. Een loading-boundary
 // maakt een Suspense-shell die direct als HTTP 200 wordt gestreamd; een
 // daarna aangeroepen notFound() kan de status dan niet meer naar 404 zetten

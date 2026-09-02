@@ -21,6 +21,9 @@ import { EditorialPage, type SectionVariant } from '@/components/content/Editori
 
 const WP_SLUG = 'innovation-fund'
 
+/** ISR — herstelt na een build terwijl het CMS down was. */
+export const revalidate = 3600
+
 const VARIANTS: Record<string, SectionVariant> = {
   'what-the-fund-offers': 'highlight',
   'who-can-apply': 'checklist',

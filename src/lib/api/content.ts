@@ -34,6 +34,8 @@ import {
   type StoryType,
 } from '@/lib/config/story-types'
 
+import { withUpstreamFallback } from './upstream-page'
+
 import {
   fetchMaterialFacetsBaseline,
   fetchMaterialsFiltered,
@@ -788,9 +790,11 @@ export const getArticle = cache(async function getArticle(
  * deze functie fetcht exact de slug die de route doorgeeft.
  */
 export async function getPage(slug: string): Promise<Page | null> {
-  const raw = await fetchPageBySlugRaw(slug)
-  if (!raw) return null
-  return mapPage(raw)
+  return withUpstreamFallback(`page ${slug}`, async () => {
+    const raw = await fetchPageBySlugRaw(slug)
+    if (!raw) return null
+    return mapPage(raw)
+  }, null)
 }
 
 export async function listArticles(

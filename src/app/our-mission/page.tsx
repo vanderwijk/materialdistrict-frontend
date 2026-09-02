@@ -35,6 +35,9 @@ import { MdImage } from '@/components/ui/MdImage'
 
 const WP_SLUG = 'our-mission'
 
+/** ISR — herstelt na een build terwijl het CMS down was. */
+export const revalidate = 3600
+
 const VARIANTS: Record<string, SectionVariant> = {
   'what-we-mean-by-sustainable': 'cards',
   'our-ambition-for-2030': 'highlight',
