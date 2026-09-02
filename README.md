@@ -102,6 +102,12 @@ Zie `build-order.md`. Per stap één Claude-sessie. Na elke sessie `session-log.
 
 ---
 
+## Deploy naar productie
+
+**Vóór elke Vercel-deploy: CMS recovery mode aan.** Zie checklist en commando's in [`docs/deploy-runbook-cms.md`](docs/deploy-runbook-cms.md).
+
+---
+
 ## Status
 
 Stap 1 — Projectfundament: ✅ klaar
