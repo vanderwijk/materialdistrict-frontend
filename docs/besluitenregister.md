@@ -16,7 +16,8 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.14 · 25-08-2026 · B75–B79: Activity, één logboek, zichtbaarheid, Events. B74: "event" betekent drie dingen; interactie vervangt interactie.
+> Versie 1.17 · 03-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
 
@@ -1067,6 +1068,42 @@ deur uit.
 **Bron.** 25-08-2026, sessie documentatiefundament.
 **Raakt.** Elke meting, elke audit, elke importronde. Uitgewerkt in `datamodel.md` §1 en §7.
 
+### B88 · Het CMS is live-only voor Stripe
+**Besluit.** Het CMS draagt uitsluitend de **live** Stripe-keys en het **live** webhook-secret.
+Test-mode events worden met het test-secret ondertekend, dat het CMS niet kent; de signature-check
+faalt dan met een nette `400`. Dat is geen storing maar het bedoelde gedrag. Het testmodus-endpoint
+naar `/md/v2/stripe/webhook` is op 03-09-2026 uitgeschakeld.
+
+Wil er weer end-to-end tegen test-Stripe getest worden via dit CMS, dan is dat een **bewuste,
+tijdelijke handeling**: endpoint aanzetten én het test-secret (en bij voorkeur de test-API-key)
+tijdelijk ondersteunen, daarna terug naar live-only. Nooit permanent twee secrets naast elkaar.
+**Grond.** Voor productie is live-only het juiste model: twee geldige secrets naast elkaar betekent
+dat een testevent de live-handler kan bereiken, en die kent geen verschil tussen een test-`sub_` en
+een echte. De prijs ervan is een reeks 400's zodra er nog test-verkeer bestaat — hinderlijk, niet
+gevaarlijk.
+**Uitgevoerd 03-09-2026 door Johan.** Vijf nog actieve test-abonnementen geannuleerd (nul over op
+`active`/`trialing`/`past_due`), het testmodus-endpoint uitgeschakeld, en de e2e-usermeta op het CMS
+opgeschoond — die stond nog op `insider`/`active` met test-`sub_`- en `cus_`-ID's. Live webhooks en
+live keys zijn niet aangeraakt.
+**Bron.** 03-09-2026, Johan, na de Stripe-melding van dezelfde dag: twaalf mislukte leveringen in
+testmodus sinds 31-08 09:39 UTC, in het dashboard allemaal een `400`. Live stond en staat op 0%
+foutpercentage, zowel op `/?wc-api=wc_stripe` als op `/wp-json/md/v2/stripe/webhook`. De events
+kwamen van oude e2e-abonnementen, niet van klanten.
+**Gevolg — en dit is het punt dat openstaat.** Er is geen aparte CMS-staging (B53) en de
+staging-frontend draait op test-Stripe. Met het testmodus-endpoint uit kan de **abonnementsflow niet
+meer end-to-end getest worden**: juist de webhook-handler is wat ná betaling het membership toekent.
+Dat pad is nu alleen op live te verifiëren, met echt geld, vóór de septembercampagne. Twee routes
+zijn allebei verdedigbaar — (a) één e2e-ronde met tijdelijk test-secret vóór de campagne, of (b)
+aanvaarden dat de eerste echte transactie de test is, mits die handmatig wordt meegelezen. **Kies
+expliciet; laat het niet impliciet gebeuren.**
+**Raakt.** B53 (de bekende beperking "geen aparte CMS-/backend-staging" krijgt hier zijn concrete
+prijs), de septembercampagne, elke toekomstige e2e-test op de betaalflow.
+**Verhouding tot B57.** Dezelfde familie fout, andere laag. Bij het diagnosticeren gaf de externe
+test exact `400 md_stripe_expired_signature` terug — het antwoord stond in de eigen meting — maar
+Stripe's formulering *"other errors"* woog zwaarder en leidde naar een verkeerd vermoeden
+(hangende handler, time-out). **Meting boven melding**, ook wanneer de melding van de leverancier
+zelf komt.
+
 ---
 
 ## 10. Openstaand uit eerdere sessies — niet eerder vastgelegd
@@ -1274,3 +1311,18 @@ Vijf bevindingen staan apart genoteerd (§Bevindingen).
 Opgesteld door Claude, namens Jeroen.
 
 **v1.16 · 26-08-2026** — Johan: importschema-v1 gemerged; B22 frontend-canon behouden; schema-migratie dry-run/execute op CMS.
+
+**v1.17 · 03-09-2026** — B88 toegevoegd: het CMS is live-only voor Stripe. Aanleiding was een
+Stripe-melding over twaalf mislukte webhook-leveringen in testmodus, die na onderzoek door Johan
+geen storing bleek maar de bedoelde uitkomst van live keys tegenover een test-signature. Het besluit
+is vastgelegd omdat de *gevolgtrekking* breder gaat dan het incident: met het testmodus-endpoint uit
+en zonder aparte CMS-staging (B53) is de abonnementsflow niet meer end-to-end te testen vóór de
+septembercampagne. Die keuze staat expliciet open in B88 in plaats van impliciet te blijven.
+
+Twee dingen zijn bij deze ronde gecorrigeerd zonder inhoudelijke wijziging. De versieregel in de kop
+stond nog op 1.14 terwijl de Status al tot v1.16 liep; die loopt nu weer gelijk. En de foutieve
+diagnose die aan B88 voorafging is als les bij het besluit genoteerd in plaats van weggelaten — de
+externe meting gaf hetzelfde `400` als het dashboard, en is genegeerd ten gunste van de formulering
+in de leveranciersmail. Zie de regel *Verhouding tot B57* onder B88.
+
+Opgesteld door Claude, namens Jeroen.
