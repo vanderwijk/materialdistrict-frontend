@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.17 · 03-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.20 · 03-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1089,13 +1089,21 @@ live keys zijn niet aangeraakt.
 testmodus sinds 31-08 09:39 UTC, in het dashboard allemaal een `400`. Live stond en staat op 0%
 foutpercentage, zowel op `/?wc-api=wc_stripe` als op `/wp-json/md/v2/stripe/webhook`. De events
 kwamen van oude e2e-abonnementen, niet van klanten.
-**Gevolg — en dit is het punt dat openstaat.** Er is geen aparte CMS-staging (B53) en de
-staging-frontend draait op test-Stripe. Met het testmodus-endpoint uit kan de **abonnementsflow niet
-meer end-to-end getest worden**: juist de webhook-handler is wat ná betaling het membership toekent.
-Dat pad is nu alleen op live te verifiëren, met echt geld, vóór de septembercampagne. Twee routes
-zijn allebei verdedigbaar — (a) één e2e-ronde met tijdelijk test-secret vóór de campagne, of (b)
-aanvaarden dat de eerste echte transactie de test is, mits die handmatig wordt meegelezen. **Kies
-expliciet; laat het niet impliciet gebeuren.**
+**Gevolg.** Er is geen aparte CMS-staging (B53) en de staging-frontend draait op test-Stripe. Met
+het testmodus-endpoint uit kan de **abonnementsflow niet end-to-end getest worden**: juist de
+webhook-handler is wat ná betaling het membership toekent. Zonder test zou dat pad pas op live
+blijken te werken of niet — bij een betalende member die geen toegang krijgt, midden in de
+campagne.
+**Besloten 03-09-2026 door Jeroen: één e2e-ronde vóór de septembercampagne.** Uitvoering door Johan,
+in deze volgorde: (1) het testmodus-endpoint naar `/md/v2/stripe/webhook` weer aanzetten; (2) het
+CMS tijdelijk ook het **test**-signing-secret laten accepteren naast het live-secret, en zo nodig de
+test-API-key; (3) één volledige aankoop door de flow — checkout, webhook, membership toegekend,
+zichtbaar in het account; (4) test-abonnement en e2e-usermeta opruimen; (5) test-secret eruit,
+endpoint uit, terug naar live-only.
+
+De omvang is een dagdeel. Stap 5 is niet optioneel: twee geldige secrets naast elkaar is precies de
+toestand die dit besluit uitsluit, en die mag niet blijven staan omdat de test toevallig klaar is.
+Wat er tussen stap 1 en 5 gebeurt is een tijdelijke uitzondering, geen nieuwe norm.
 **Raakt.** B53 (de bekende beperking "geen aparte CMS-/backend-staging" krijgt hier zijn concrete
 prijs), de septembercampagne, elke toekomstige e2e-test op de betaalflow.
 **Verhouding tot B57.** Dezelfde familie fout, andere laag. Bij het diagnosticeren gaf de externe
@@ -1143,43 +1151,24 @@ toegevoegd.
 
 ---
 
-## Bevindingen bij het opstellen — drie dingen die nu niet kloppen
+## Bevindingen bij het opstellen — wat nu niet klopt
 
 *Deze horen niet permanent in het register; ze staan hier tot ze zijn opgelost.*
 
-**1. `roadmap.md` bestaat in twee versies die beide uniek materiaal bevatten.** De versie in de
-moedermap (`docs/roadmap.md`, laatst gewijzigd 31-07) mist de hele sessie van 22-06: §5d (het
-AI-team met acht agents), de DDOS-/bot-beschermingsingang, de distributiepoort, submissions, de
-koerswijziging naar command center, Campaigns onder geparkeerd, en de bevestiging dat de
-redactie-rechten gedeployed zijn. De versie in de project knowledge mist juist wat er ná 22-06 is
-bijgekomen: de Material visualizer (25-06), de dual-write-status van 30-06, en de mailtool-keuze
-van 24-07. Ze zijn in beide richtingen uit elkaar gelopen. De meegeleverde `docs/roadmap.md`
-is de samenvoeging.
-
-**2. Het regelboek staat nog twee keer in de frontend-repo, en de twee kopieën spreken elkaar
-tegen over welke canoniek is.** Op `docs/materiaal-classificatie-regelboek.md` staat "houd deze
-frontend-kopie als bron van waarheid voor Claude"; op `docs/cms-plugin/docs/materiaal-classificatie-regelboek.md`
-staat "één repository, niet twee — de verouderde kopie wordt verwijderd, niet bijgewerkt". Beide
-dragen nu inhoudelijk versie 1.9, dus er is nog geen schade. Commit `a6fd49c` verwijderde de
-stale kopie; `0df2dc4` (de plugin-mirror) zette 'm terug. Zie B22.
-
-**3. `publication_status` is leeg op alle 3.246 gepubliceerde materialen.** Volgens B32 hoort de
+**1. `publication_status` is leeg op alle 3.246 gepubliceerde materialen.** Volgens B32 hoort de
 default `legacy` te zijn. Het veld bestaat en is geregistreerd, maar de backfill is nooit
 gedraaid. Gevolg: het onderscheid tussen betaald, historisch en beëindigd materiaal bestaat op
 dit moment niet in de data, de legacy-banner uit B34 kan niet verschijnen, en de automatische
 archivering op 30 april 2027 heeft niets om op te draaien. Ook `brand.tier` staat op `free` voor
 alle 2.093 gepubliceerde brands — de member-status uit launch-taak 5 is dus nog niet gezet.
 
-**4. `datastrategie-specificatie.docx` staat niet in de moedermap.** De importnorm — acht
-kernregels, veldscheiding, twee entiteiten — is in augustus 2026 vastgelegd na de mislukte
-importronde, maar alleen als los docx-bestand uit die sessie. Voor het riskantste project dat er
-ligt is de norm daarmee alleen vindbaar door de sessie te kennen. `importprotocol.md` in deze
-levering brengt hem in de moedermap; het originele docx zou daarna ingetrokken moeten worden in
-plaats van ernaast blijven bestaan.
-
-**5. Er zijn twee session-logs van vergelijkbare omvang.** `session-log.md` in de root (219 KB,
-bijgewerkt 24-08) en `docs/session-log-mission-beeld-04-08-v2.md` (207 KB, 04-08). De tweede is
-een sessiekopie die is blijven staan. Zolang beide bestaan is niet zichtbaar welke de log is.
+**2. Het importprotocol staat als los `.docx` in de project knowledge.**
+`importprotocol-v4-25-08.docx` draagt versie 4.0 van 25-08-2026, terwijl de norm in de moedermap
+(`docs/importprotocol.md`) sindsdien is doorgelopen. Dat is precies de tweede kopie die
+`START-HIER.md` verbiedt: normdocumenten wonen in `docs/`, en de project knowledge bevat alleen
+`START-HIER.md`. Zolang het docx daar staat, start elke importsessie met een verouderde norm die
+zichzelf als normdocument presenteert. Verwijderen kan alleen Jeroen; Claude kan niet in de project
+knowledge.
 
 ---
 
@@ -1211,7 +1200,7 @@ domeinkoppeling, de e-mailvalidatie en de verificatievelden — uitgewerkt in `i
 
 Bij het meten tegen de live API kwamen twee dingen boven die niet zijn wat de specs zeggen: geen
 enkel materiaal draagt een `publication_status`, en geen enkele brand draagt een andere tier dan
-`free`. Zie §Bevindingen 3.
+`free`. Zie §Bevindingen 1.
 
 **v1.3 · 25-08-2026** — B41–B45 toegevoegd bij de herbouw van `importprotocol.md` tot een
 volledige beslisflow: herkomst per veld (B41), de bronautoriteit-rangorde (B42), de zes
@@ -1307,7 +1296,7 @@ Vier punten blijven expliciet open en worden niet ingevuld met een aanname: de e
 `wp_postmeta`-sleutels achter `vatNumber` en `chamberNumber` met hun vulgraad, de waardenlijst van
 `record_status`, en of `brand.primary_user_id` is gebouwd.
 
-Vijf bevindingen staan apart genoteerd (§Bevindingen).
+De bevindingen staan apart genoteerd (§Bevindingen).
 Opgesteld door Claude, namens Jeroen.
 
 **v1.16 · 26-08-2026** — Johan: importschema-v1 gemerged; B22 frontend-canon behouden; schema-migratie dry-run/execute op CMS.
@@ -1324,5 +1313,53 @@ stond nog op 1.14 terwijl de Status al tot v1.16 liep; die loopt nu weer gelijk.
 diagnose die aan B88 voorafging is als les bij het besluit genoteerd in plaats van weggelaten — de
 externe meting gaf hetzelfde `400` als het dashboard, en is genegeerd ten gunste van de formulering
 in de leveranciersmail. Zie de regel *Verhouding tot B57* onder B88.
+
+**v1.18 · 03-09-2026** — Bevinding 2 verwijderd en de overige bevindingen hernummerd. De twee
+elkaar tegensprekende regelboekkopieën bestaan niet meer: de frontend-kopie
+(`materialdistrict-frontend/docs/materiaal-classificatie-regelboek.md`) is canoniek, de plugin-repo
+houdt alleen een pointer, en onder `docs/cms-plugin/` ligt geen kopie meer. Dat was al beslist op
+26-08 en staat correct in B22 met een `HERZIEN`-regel; alleen de bevinding was blijven staan.
+Bevestigd door Johan, 03-09-2026.
+
+Volgens de eigen regel van die sectie horen bevindingen daar tot ze zijn opgelost, dus is de alinea
+verwijderd in plaats van als opgelost gemarkeerd. Wat de bevinding vastlegde is niet verloren: het
+staat in B22, waar het thuishoort. De kruisverwijzing vanuit B32 wijst nu naar §Bevindingen 2 en de
+sectiekop telt weer kloppend.
+
+**Les uit deze ronde.** De vraag die tot deze correctie leidde was overbodig: B22 stond in de
+aangeleverde moedermap-versie al herzien, en is beschreven vanuit de verouderde kopie in de project
+knowledge — dezelfde bron waarvan `START-HIER.md` zegt dat hij niet als bron telt. Dat is de tweede
+variant van dezelfde fout binnen één dag (zie B88, *Verhouding tot B57*): niet meten in de verkeerde
+laag, maar lezen uit de verkeerde kopie terwijl de goede voorlag.
+
+**v1.19 · 03-09-2026** — de bevindingensectie opgeruimd. Drie van de vier waren achterhaald:
+
+- *Twee roadmap-versies* — opgelost sinds de samengevoegde `docs/roadmap.md` is geleverd, en de
+  tweede kopie staat niet meer in de project knowledge.
+- *`datastrategie-specificatie.docx` los naast de norm* — verwijderd; alleen
+  `docs/importprotocol.md` staat er nog. Bevestigd door Johan, 03-09-2026.
+- *Twee session-logs* — `docs/session-log-mission-beeld-04-08-v2.md` is weg; `session-log.md` in de
+  root blijft de log. Er staat nog een `docs/MANIFEST-mission-beeld-04-08-v2.md`, een ander bestand
+  dat geen tweede log is. Bevestigd door Johan, 03-09-2026.
+
+De kop draagt geen aantal meer, en de verwijzing in de v1.15-regel ook niet. Dat aantal is nu twee
+keer achtergelopen op de inhoud; een sectie die per definitie leegloopt hoort niet in een vast getal
+te worden geteld.
+
+**Eén bevinding is toegevoegd.** `importprotocol-v4-25-08.docx` staat als los normdocument in de
+project knowledge, op versie 4.0, terwijl de norm in de moedermap is doorgelopen. Dat is dezelfde
+fout die B22 en de vorige ronde veroorzaakte, nu op het riskantste onderwerp dat er ligt: een
+importsessie die met dat bestand begint, begint met een verouderde norm die zich als geldend
+presenteert. Alleen Jeroen kan het weghalen.
+
+Daarmee blijft `publication_status` de enige inhoudelijke bevinding: leeg op alle 3.246 materialen,
+met `brand.tier` op `free` bij alle 2.093 brands. Dat blokkeert de legacy-banner (B34) en de
+member-outreach, en staat in dezelfde week als de septembercampagne.
+
+**v1.20 · 03-09-2026** — de open keuze in B88 is gesloten. Jeroen kiest voor één e2e-ronde vóór de
+septembercampagne, in plaats van de eerste echte transactie als test te laten gelden. De vijf
+uitvoeringsstappen staan nu in B88, inclusief de terugdraai-stap; die is expliciet als niet-optioneel
+genoteerd, omdat een tijdelijke uitzondering die blijft staan de facto een nieuwe norm wordt en dit
+besluit dan zijn eigen inhoud tegenspreekt.
 
 Opgesteld door Claude, namens Jeroen.
