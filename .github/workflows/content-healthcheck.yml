@@ -1,0 +1,118 @@
+# §INCIDENT-02-09 — periodieke controle op "200 OK maar leeg".
+#
+# Waarom hier en niet op de droplet of een runner: deze check hoort buiten de
+# infrastructuur te staan die hij controleert. Draait hij op de droplet, dan valt
+# hij stil op precies het moment dat er iets mis is met de droplet. GitHub Actions
+# staat er los van, kost niets op publieke of inbegrepen minuten, en vraagt geen
+# server die iemand moet onderhouden.
+#
+# Dit vervangt de uptime-monitoring niet en is er ook geen dubbeling van. Uptime
+# met keyword-checks ziet dat de site plat ligt. Deze ziet het geval waarin de
+# site keurig 200 geeft, valide HTML uitlevert, en gewoon geen inhoud draagt —
+# wat op 02-09-2026 gebeurde met /channel (een uur lang "No channels available"
+# uit cache).
+#
+# Faalt de run, dan maakt de laatste stap een issue aan. Bewust een issue en geen
+# mail: die is zichtbaar voor iedereen die eraan werkt en vervalt niet in een
+# inbox. Meerdere opeenvolgende storingen bundelen zich in hetzelfde issue zolang
+# dat openstaat.
+
+name: Content healthcheck
+
+on:
+  schedule:
+    # Elke tien minuten. GitHub voert cron met vertraging uit bij drukte;
+    # dat is voor deze controle geen bezwaar.
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+  # Ook na een deploy op main, want dat is het moment waarop een lege render
+  # kan ontstaan.
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: content-healthcheck
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wachten na een deploy
+        if: github.event_name == 'push'
+        run: sleep 90
+
+      - name: Content healthcheck
+        id: check
+        run: |
+          chmod +x scripts/md-frontend-healthcheck.sh
+          set +e
+          OUTPUT=$(./scripts/md-frontend-healthcheck.sh 2>&1)
+          CODE=$?
+          set -e
+          echo "$OUTPUT"
+          {
+            echo 'report<<HEALTHCHECK_EOF'
+            echo "$OUTPUT"
+            echo 'HEALTHCHECK_EOF'
+          } >> "$GITHUB_OUTPUT"
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          exit $CODE
+
+      - name: Issue aanmaken bij falen
+        if: failure()
+        uses: actions/github-script@v7
+        env:
+          REPORT: ${{ steps.check.outputs.report }}
+        with:
+          script: |
+            const title = 'Content healthcheck: pagina zonder inhoud'
+            const body = [
+              'De content healthcheck vond een pagina die wel 200 geeft maar geen inhoud draagt.',
+              '',
+              'Dit is bijna altijd een render die is gedraaid terwijl het CMS niets teruggaf.',
+              'Sinds `assertRenderable` zou dat niet meer in de cache mogen belanden; komt deze',
+              'melding toch, kijk dan of de betreffende pagina een guard mist.',
+              '',
+              'Herstel: POST naar `/api/revalidate/` met `x-md-revalidate-secret`.',
+              'Werkt dat niet, dan een redeploy.',
+              '',
+              '```',
+              process.env.REPORT || '(geen uitvoer)',
+              '```',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n')
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'healthcheck',
+            })
+
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body,
+              })
+              return
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['healthcheck'],
+            })
