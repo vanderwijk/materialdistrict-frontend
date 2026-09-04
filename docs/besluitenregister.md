@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.22 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.23 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1124,6 +1124,19 @@ prijs is met een smoke net zo zichtbaar. Johans inschatting: een halve tot hele 
 volledig; drie volledig zou eerder een dag zijn. Opruimen omvat hier ook brand-Stripe-meta en het
 testmerk, en stap 5 (terug naar live-only) geldt onverkort.
 
+**Uitgevoerd 04-09-2026 door Johan: alle drie de merk-tiers geslaagd.** Basic, plus en partner elk
+een geslaagde checkout met de juiste prijs (€750 / €1.500 / €3.000, alle drie `paid`), webhook
+schrijft op brand-meta en niet op user-membership, `md_dashboard_require_managed_brand` en de
+zichtbaarheid in het brand-dashboard kloppen. Fixture-user 160990 verwijderd, drie test-abonnementen
+geannuleerd, merk 140833 naar de prullenbak, test-secret eruit en terug naar live-only.
+
+**Het uitzonderingsvenster is gebruikt en gesloten.** De test liep tegen het *live* CMS op
+`materialdistrict.com`, dat tijdelijk zowel het live- als het test-signing-secret accepteerde; de
+checkouts zelf zijn door een geautomatiseerde agent uitgevoerd. Dat is precies de tijdelijke
+uitzondering die dit besluit toestaat, en stap 5 is uitgevoerd. Vastgelegd omdat er een venster
+bestond waarin een test-ondertekend event op live merk-meta had kunnen schrijven; dat is de prijs van
+geen aparte CMS-staging (B53), en de reden dat het venster kort hoort te zijn.
+
 **Losse verificatie van de verlengingskant.** Johan heeft sinds begin augustus een lopend *live*
 Insider-abonnement, dat op 05-09-2026 opnieuw zou moeten afschrijven. De e2e-ronde dekte alleen de
 eenmalige checkout; een geslaagde verlenging dekt de andere helft, op live en zonder testopstelling.
@@ -1277,6 +1290,15 @@ Verwacht gedrag en geen regressie, maar het is wel waar de function invocations 
 Suspense-verbouwing is besproken en bewust uitgesteld tot na de septembercampagne, op basis van
 Johans cijfers uit Vercel Usage. Overgenomen uit de incidentsessie van 02-09-2026, die als v1.17
 nooit op `main` is geland.
+
+**5. De checkout toont "Subscribe to Basic" bij plus en partner.** Vastgesteld 04-09-2026 bij de
+merk-tier-test: op de checkout voor plus (€1.500) en partner (€3.000) stond het label van de
+basic-tier, terwijl bedrag en toegekende tier wél klopten. Functioneel dus goed, maar het is het
+scherm waarop iemand zijn betaalgegevens invult. Wat de koper bevestigt en wat hij krijgt staan daar
+niet gelijk: dat kost conversie bij de duurste tiers en levert een geldige grond voor terugboeking.
+Behandeld als blokkerend vóór de septembercampagne, niet als copy-correctie. Vermoedelijke plaats:
+een vaste productnaam op de line item in `/checkout/brand` in plaats van een naam per tier — het
+klopte bedrag wijst erop dat alleen de naam hardcoded is.
 
 ---
 
@@ -1504,5 +1526,15 @@ onjuist, hij draaide na circa dertig minuten om (`revalidate = 600`). En de 429'
 als een rate-limit-instelling; het was terugslag van een vollopende functiepool. Ze staan hier omdat
 correcties worden vastgelegd en niet stil overschreven — ook wanneer de versie waarin ze stonden
 nooit geplaatst is.
+
+**v1.23 · 04-09-2026** — B88 aangevuld met de uitkomst van de merk-tier-ronde: alle drie geslaagd,
+opruiming en terugkeer naar live-only uitgevoerd. Het uitzonderingsvenster op het live CMS is
+expliciet vastgelegd in plaats van weggelaten, omdat een gebruikte uitzondering navolgbaar hoort te
+zijn en niet alleen een toegestane.
+
+Eén bevinding toegevoegd, en die wijkt af van hoe zij is aangeleverd. Het verkeerde tier-label op de
+checkout is gemeld als niet-blokkerende UI-bug; hier staat zij als blokkerend. Grond: het gaat om het
+betaalscherm van de duurste tiers, waar bedrag en label elkaar tegenspreken. Dat is geen cosmetisch
+verschil maar een verschil tussen wat de koper bevestigt en wat hij krijgt.
 
 Opgesteld door Claude, namens Jeroen.
