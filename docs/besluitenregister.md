@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.20 · 03-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.21 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1104,6 +1104,19 @@ endpoint uit, terug naar live-only.
 De omvang is een dagdeel. Stap 5 is niet optioneel: twee geldige secrets naast elkaar is precies de
 toestand die dit besluit uitsluit, en die mag niet blijven staan omdat de test toevallig klaar is.
 Wat er tussen stap 1 en 5 gebeurt is een tijdelijke uitzondering, geen nieuwe norm.
+**Uitgevoerd 04-09-2026 door Johan.** Alle vijf stappen doorlopen. Testaccount
+`e2e-betaalflow-20260904@…` (WP id 160988), Insider maandelijks €10, betaald in Stripe-sandbox;
+daarna in het dashboard Insider `active`, billing Monthly, verlenging 4 oktober, factuur €10 `paid`.
+Screenshots van status en invoice zijn bewijs. Daarna opgeruimd en terug naar live-only.
+
+**Wat hiermee bewezen is:** de webhook-handler kent ná betaling het Insider-membership correct toe,
+en het dashboard toont dat. **Wat níét:** de merk-tiers (basic, plus, partner) zijn niet e2e
+getest, terwijl juist die de commercieel zwaarste kant van de septembercampagne zijn. Dat is een
+open risico, geen afgeronde zaak.
+
+**Losse verificatie van de verlengingskant.** Johan heeft sinds begin augustus een lopend *live*
+Insider-abonnement, dat op 05-09-2026 opnieuw zou moeten afschrijven. De e2e-ronde dekte alleen de
+eenmalige checkout; een geslaagde verlenging dekt de andere helft, op live en zonder testopstelling.
 **Raakt.** B53 (de bekende beperking "geen aparte CMS-/backend-staging" krijgt hier zijn concrete
 prijs), de septembercampagne, elke toekomstige e2e-test op de betaalflow.
 **Verhouding tot B57.** Dezelfde familie fout, andere laag. Bij het diagnosticeren gaf de externe
@@ -1169,6 +1182,13 @@ alle 2.093 gepubliceerde brands — de member-status uit launch-taak 5 is dus no
 `START-HIER.md`. Zolang het docx daar staat, start elke importsessie met een verouderde norm die
 zichzelf als normdocument presenteert. Verwijderen kan alleen Jeroen; Claude kan niet in de project
 knowledge.
+
+**3. Een betaald membership kan tot stand komen zonder bevestigd e-mailadres.** Bij de e2e-ronde
+van 04-09-2026 stond de e-mailbevestigingsbanner op het testaccount aan, maar blokkeerde de
+checkout- en membershipflow niet. Voor een test is dat handig; voor de campagne is het de vraag of
+het zo bedoeld is. Een betalend lid met een nooit geverifieerd adres is een lid dat niet bereikt kan
+worden, in een campagne die volledig op e-mail draait. Vastgesteld gedrag, geen besluit — Jeroen
+bepaalt of dit blijft.
 
 ---
 
@@ -1361,5 +1381,15 @@ septembercampagne, in plaats van de eerste echte transactie als test te laten ge
 uitvoeringsstappen staan nu in B88, inclusief de terugdraai-stap; die is expliciet als niet-optioneel
 genoteerd, omdat een tijdelijke uitzondering die blijft staan de facto een nieuwe norm wordt en dit
 besluit dan zijn eigen inhoud tegenspreekt.
+
+**v1.21 · 04-09-2026** — B88 aangevuld met de uitkomst: de e2e-ronde is door Johan uitgevoerd en
+geslaagd voor Insider. Twee dingen zijn er expliciet bij gezet in plaats van als afgerond te worden
+weggeschreven. Ten eerste dat de merk-tiers níét getest zijn, want een geslaagde test op één tier
+leest makkelijk als "de betaalflow werkt" terwijl de commercieel zwaarste kant onbeproefd is. Ten
+tweede de verlengingskant, die de eenmalige checkout niet dekt en waarvoor Johans eigen live
+abonnement op 05-09 een gratis controle oplevert.
+
+Eén bevinding toegevoegd: bij de test kwam een betaald membership tot stand terwijl het
+e-mailadres niet bevestigd was. Genoteerd als vastgesteld gedrag, niet als besluit.
 
 Opgesteld door Claude, namens Jeroen.
