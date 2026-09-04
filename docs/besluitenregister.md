@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.24 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.25 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -281,7 +281,6 @@ woont de norm daar, niet omgekeerd.
 **Raakt.** `START-HIER.md` (bronhiërarchie), elke classificatiesessie.
 **HERZIEN 26-08-2026.** Eerdere formulering (“alleen in de plugin-repo”) botste met de
 toegangsreden; cms-plugin-kopie en v1.3 zijn verwijderd.
-
 
 ### B23 · Certificaten zijn geen channel-bewijs
 **Besluit.** C2C, FSC en PEFC tellen op zichzelf niet als bewijs voor een channel. De
@@ -865,7 +864,6 @@ frontend-call verandert mee. De rest van de naamgeving blijft ongemoeid (B75).
 **Bron.** 25-08-2026.
 **Actie voor Johan**, mee te nemen met een volgende deploy.
 
-
 ### B80 · Terugdraaien kent twee vormen
 **Besluit.** Bestond het record vóór de import, dan herstelt terugdraaien de vórige veldwaarden en
 wordt het record niet verwijderd. Maakte de import het record **zelf** aan, dan mag terugdraaien het
@@ -1291,25 +1289,17 @@ Suspense-verbouwing is besproken en bewust uitgesteld tot na de septembercampagn
 Johans cijfers uit Vercel Usage. Overgenomen uit de incidentsessie van 02-09-2026, die als v1.17
 nooit op `main` is geland.
 
-**5. Het tier-label op de checkout — gerepareerd, nog niet geverifieerd.** Vastgesteld 04-09-2026
-bij de merk-tier-test: op de checkout voor plus (€1.500) en partner (€3.000) stond het label van de
-basic-tier, terwijl bedrag en toegekende tier wél klopten. Behandeld als blokkerend en niet als
-copy-correctie: het is het scherm waarop iemand zijn betaalgegevens invult, en wat de koper daar
-bevestigt en wat hij krijgt liepen uiteen.
 
-*Oorzaak.* Niet een vaste productnaam in `/checkout/brand`, zoals hier eerst werd vermoed. De sessie
-stuurt alleen de price-ID mee; Stripe Checkout toont zelf `Subscribe to {productnaam}`, en alle
-prijzen hingen onder één product — in test "Basic", live "MD Brand Membership".
+**5. Adaptive Pricing staat aan in Stripe, zonder dat dat ergens is besloten.** Vastgesteld
+04-09-2026, als bijvangst van de labelmeting: bij het openen van een checkout vanaf een niet-Europese
+locatie verscheen een valutakeuze. Dat is Stripe Adaptive Pricing, dat het bedrag omrekent naar de
+lokale valuta van de koper, inclusief wisselkoersopslag. Geen storing en geen tierverschil.
 
-*Hersteld 04-09-2026 door Johan:* aparte producten Basic, Plus en Partner in zowel live als test,
-nieuwe yearly prices, `lookup_key`s overgezet en `wp-config` bijgewerkt.
-
-*Waarom deze bevinding blijft staan.* Het herstel is niet gemeten. Belangrijker dan het label is wat
-de ingreep zelf raakt: er zijn vijf dagen vóór de campagne live producten, prijzen en lookup-sleutels
-omgezet. Sluit één sleutel of configwaarde niet aan, dan faalt de checkout volledig in plaats van een
-verkeerd woord te tonen — een ernstiger uitkomst dan het probleem dat werd opgelost. Verifiëren kan
-zonder betaling en zonder uitzonderingsvenster: een checkout-sessie per tier aanmaken en de pagina
-openen toont de productnaam al. Pas na die meting gaat deze bevinding eruit.
+Wel een commerciële instelling die gevolgen heeft en die niemand aanwijsbaar heeft gekozen. Een
+buitenlands merk ziet dan niet €3.000 maar een omgerekend bedrag, en wat er binnenkomt verschilt per
+land. Voor een platform met een aanzienlijk deel niet-Europese merken is dat geen randgeval. Aan
+verlaagt de drempel voor buitenlandse kopers; uit houdt de prijs overal gelijk en de opbrengst
+voorspelbaar. Besluit ligt bij Jeroen, vóór de septembercampagne.
 
 ---
 
@@ -1557,5 +1547,16 @@ De bevinding blijft open, ook al is er gerepareerd. Reden: het herstel is niet g
 raakt meer dan het label — live producten, prijzen en lookup-sleutels zijn vijf dagen vóór de
 campagne omgezet. Een besluitenregister dat "opgelost" noteert op grond van een verwachting doet
 precies wat B57 en B90 verbieden.
+
+**v1.25 · 04-09-2026** — bevinding 5 (het tier-label) is gesloten na meting. Johan heeft per tier een
+live checkout-sessie aangemaakt en geopend: alle drie kwamen tot stand met de nieuwe lookup-sleutels,
+de labels lezen Basic, Plus en Partner, en de bedragen zijn €750, €1.500 en €3.000 per jaar. De oude
+prijsobjecten zijn behouden, zodat lopende abonnementen kunnen blijven verlengen. Daarmee is het
+laatste blokkerende punt vóór de campagne weg.
+
+Eén nieuwe bevinding, als bijvangst van diezelfde meting: Adaptive Pricing staat aan in Stripe. Dat
+is geen storing en het verklaart de valutakeuze die bij de meting opviel, maar het is een
+commerciële instelling met gevolgen voor wat buitenlandse merken betalen — en er is geen besluit dat
+haar aanzet. Genoteerd als openstaand, niet als fout.
 
 Opgesteld door Claude, namens Jeroen.
