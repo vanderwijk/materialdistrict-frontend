@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.21 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.22 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1114,6 +1114,16 @@ en het dashboard toont dat. **Wat níét:** de merk-tiers (basic, plus, partner)
 getest, terwijl juist die de commercieel zwaarste kant van de septembercampagne zijn. Dat is een
 open risico, geen afgeronde zaak.
 
+**Vervolg, besloten 04-09-2026 door Jeroen: de merk-tiers worden vóór de campagne getest, in de
+goedkope variant.** Basic volledig end-to-end (checkout, webhook, brand-meta, dashboard, met een merk
+dat de testuser mag beheren); plus en partner als smoke — checkout-session plus webhook-meta. Grond:
+het risico zit in de machinerie die alle drie de tiers delen (`md_dashboard_require_managed_brand`,
+en dat de webhook op brand-meta schrijft in plaats van op user-membership). Die bewijs je één keer,
+volledig. Wat de tiers verder onderscheidt is vooral een andere prijs, en een verkeerd gekoppelde
+prijs is met een smoke net zo zichtbaar. Johans inschatting: een halve tot hele dag voor één tier
+volledig; drie volledig zou eerder een dag zijn. Opruimen omvat hier ook brand-Stripe-meta en het
+testmerk, en stap 5 (terug naar live-only) geldt onverkort.
+
 **Losse verificatie van de verlengingskant.** Johan heeft sinds begin augustus een lopend *live*
 Insider-abonnement, dat op 05-09-2026 opnieuw zou moeten afschrijven. De e2e-ronde dekte alleen de
 eenmalige checkout; een geslaagde verlenging dekt de andere helft, op live en zonder testopstelling.
@@ -1124,6 +1134,71 @@ test exact `400 md_stripe_expired_signature` terug — het antwoord stond in de 
 Stripe's formulering *"other errors"* woog zwaarder en leidde naar een verkeerd vermoeden
 (hangende handler, time-out). **Meting boven melding**, ook wanneer de melding van de leverancier
 zelf komt.
+
+### B90 · Een degraded render wordt niet gecachet
+**Besluit.** Een pagina die na alle fallbacks geen inhoud draagt, wordt niet weggeschreven als
+geldige pagina. De datalaag maakt daarbij onderscheid tussen twee toestanden die tot 02-09-2026
+hetzelfde antwoord gaven: **leeg** (er zijn nul resultaten, een geldige uitkomst) en **onbereikbaar**
+(de bron antwoordde niet, geen uitkomst). Alleen de eerste mag worden gecachet.
+
+De verdeling loopt langs het gewicht van een blok, niet langs de techniek:
+
+- **Sier-blokken mogen wegvallen.** Boeken, brands, featured, gerelateerde content. Een ontbrekend
+  boekenblokje hoort de homepage niet te slopen. Hiervoor blijft `withUpstreamFallback` het middel.
+- **Kern-blokken gooien.** De data die de pagina *ís*. Vallen die weg, dan wordt er geen lege pagina
+  gerenderd maar een fout. Bij ISR is dat precies het gewenste gedrag: Next.js schrijft dan geen
+  nieuwe cache-entry en blijft de laatste goede versie serveren.
+
+Praktisch: `assertRenderable(label, counts)` in `src/lib/api/upstream-page.ts`, aangeroepen na het
+verzamelen van de kern-data. Een kale `catch { return [] }` in de datalaag is vanaf nu een fout,
+tenzij expliciet gemotiveerd bij een sier-blok.
+
+**Grond.** Op 02-09-2026 lag het CMS onder de belasting plat. `getChannelCatalog` droeg een kale
+`catch { return [] }` die ook de `UpstreamUnavailableError` van de eigen load shield opslokte. De
+storing kwam daardoor niet aan als storing maar als "er zijn geen channels", en Next.js schreef dat
+met `revalidate: 3600` een uur lang weg als geldige pagina. `/channel` toonde die hele periode "No
+channels available" terwijl de API de twintig channels gewoon teruggaf. De homepage had hetzelfde
+met `revalidate: 600` en herstelde na circa dertig minuten vanzelf.
+
+Het addertje zit in de goede bedoeling: de fallback is gebouwd om te voorkomen dat Vercel een
+herstartend CMS stukloopt. Maar dat werk doet de circuit breaker in `upstream-guard.ts`. De fallback
+voorkomt geen storm — hij verbergt alleen de uitkomst, en omdat een render die "lukt" ook gecachet
+wordt, betaalt hij dat met een leugen in de cache.
+
+**Bron.** 02-09-2026, incidentsessie. Geleverd in `md-incident-fix-02-09-2026-v2.zip`, door Johan
+gedeployed als commit `f2a1fcc`.
+
+**Gevolg voor deploys.** `next build` faalt nu wanneer het CMS onbereikbaar is tijdens de build,
+waar hij eerder een lege homepage opleverde en die als geldige cache wegschreef. Dat is gewenst.
+Komt dit voor, dan is de juiste reactie wachten tot het CMS terug is — niet de guard verwijderen.
+
+**Raakt.** Elke route met ISR, elke datalaagfunctie die een fout in een lege waarde omzet, en
+`upstream-guard.ts` (dat ongewijzigd blijft). Zie ook B57: meten in de juiste laag en niet cachen
+wat je niet gemeten hebt zijn dezelfde fout in twee richtingen.
+**Nummering.** Dit besluit is op 04-09-2026 geschreven als B88 en hernummerd naar B90; zie de
+statusparagraaf onder v1.22.
+
+### B91 · Bewaking dekt twee verschillende storingen, en staat buiten wat ze bewaakt
+**Besluit.** Er lopen twee onafhankelijke controles naast elkaar, omdat ze verschillende dingen zien:
+
+1. **Uptime met keyword-checks** (Johan, bestaand) — ziet dat de site plat ligt of niet reageert.
+   Alarmeert per telefoon.
+2. **Content-healthcheck** (`scripts/md-frontend-healthcheck.sh`, via
+   `.github/workflows/content-healthcheck.yml`) — ziet het geval waarin de site 200 geeft, valide
+   HTML uitlevert en gewoon geen inhoud draagt. Elke tien minuten plus na elke push op `main`.
+   Opent bij falen een issue met label `healthcheck`.
+
+Een controle draait **niet** op de infrastructuur die hij controleert. Daarom staat de
+content-healthcheck op GitHub Actions en niet op de droplet of op Vercel: een check op de droplet
+valt stil op precies het moment dat de droplet het probleem is.
+
+**Grond.** Op 02-09-2026 sloeg de uptime-monitoring correct aan en zag Johan het incident vóór
+Sigrids melding — die laag werkte. Wat níét werd gezien was de nasleep: `/channel` gaf een uur lang
+200 met valide HTML en nul inhoud. Geen enkele klassieke check merkt dat op.
+
+**Bron.** 02-09 en 04-09-2026, incidentsessie en de terugkoppeling van Johan.
+**Raakt.** B90 (waar de check op controleert), en elke toekomstige monitoring-keuze.
+**Nummering.** Geschreven als B89, hernummerd naar B91; zie v1.22.
 
 ---
 
@@ -1183,12 +1258,25 @@ alle 2.093 gepubliceerde brands — de member-status uit launch-taak 5 is dus no
 zichzelf als normdocument presenteert. Verwijderen kan alleen Jeroen; Claude kan niet in de project
 knowledge.
 
-**3. Een betaald membership kan tot stand komen zonder bevestigd e-mailadres.** Bij de e2e-ronde
-van 04-09-2026 stond de e-mailbevestigingsbanner op het testaccount aan, maar blokkeerde de
-checkout- en membershipflow niet. Voor een test is dat handig; voor de campagne is het de vraag of
-het zo bedoeld is. Een betalend lid met een nooit geverifieerd adres is een lid dat niet bereikt kan
-worden, in een campagne die volledig op e-mail draait. Vastgesteld gedrag, geen besluit — Jeroen
-bepaalt of dit blijft.
+**3. De checkout-endpoints toetsen `email_confirmed` niet.** `/checkout/insider` en
+`/checkout/brand` controleren niet of het e-mailadres bevestigd is. Dat is bewust ontworpen: de
+bevestigingsbanner is een duwtje, geen betaalpoort. `email_confirmed` remt wél mail via Sendy en
+delen van de afgeschermde content. Gevolg: iemand kan een betaald membership afsluiten met een adres
+dat nooit geverifieerd is — een betalend lid dat niet bereikt kan worden, in een campagne die
+volledig op e-mail draait. Of de checkout achter bevestiging moet, is een productbesluit dat nog
+niet genomen is.
+
+*Correctie op de eerdere formulering (v1.21).* Daar stond dat bij de e2e-ronde betaald is terwijl
+het adres onbevestigd was. Zo ging het niet: het testadres was geen werkende mailbox, dus is
+`email_confirmed` handmatig op `1` gezet om door te kunnen. Die handmatige waarde maakte de betaling
+niet mogelijk — die was sowieso niet geblokkeerd. De conclusie klopte, de onderbouwing niet.
+
+**4. Vijf listingpagina's staan structureel op `x-vercel-cache: MISS`.** `/material/`, `/article/`,
+`/brand/`, `/talk/` en `/event/` lezen `searchParams`, wat Next.js tot dynamisch renderen dwingt.
+Verwacht gedrag en geen regressie, maar het is wel waar de function invocations zitten. Een
+Suspense-verbouwing is besproken en bewust uitgesteld tot na de septembercampagne, op basis van
+Johans cijfers uit Vercel Usage. Overgenomen uit de incidentsessie van 02-09-2026, die als v1.17
+nooit op `main` is geland.
 
 ---
 
@@ -1391,5 +1479,30 @@ abonnement op 05-09 een gratis controle oplevert.
 
 Eén bevinding toegevoegd: bij de test kwam een betaald membership tot stand terwijl het
 e-mailadres niet bevestigd was. Genoteerd als vastgesteld gedrag, niet als besluit.
+
+**v1.22 · 04-09-2026** — twee besluiten uit de incidentsessie van 02-09-2026 alsnog opgenomen, met
+nieuwe nummers: *een degraded render wordt niet gecachet* is **B90** geworden en *bewaking dekt twee
+verschillende storingen* **B91**. Ze zijn daar geschreven als B88 en B89, maar die nummers waren
+inmiddels door een parallelle sessie uitgegeven aan Stripe live-only. De levering van 02-09 is nooit
+geplaatst; Johan zag de botsing en heeft geweigerd, wat precies de bedoeling is.
+
+De oorzaak is structureel en niet incidenteel: nummers worden pas bij levering uitgegeven, dus twee
+sessies die naast elkaar lopen kunnen hetzelfde nummer pakken zonder dat een van beide het merkt.
+Zolang dat zo is, kan dit opnieuw gebeuren. In beide besluiten staat nu een `Nummering`-regel, zodat
+een verwijzing naar "B88" uit die sessie terugvindbaar blijft. **B89 blijft bewust leeg** — dat nummer is
+nooit in gebruik geweest op `main`, en het gat is goedkoper dan opnieuw schuiven met nummers waar al
+naar verwezen wordt. Een leeg nummer is geen verwijderd besluit.
+
+Verder in deze ronde: B88 is aangevuld met het besluit om de merk-tiers vóór de campagne te testen in
+de goedkope variant. Bevinding 3 is gecorrigeerd — de conclusie klopte, de onderbouwing niet; de
+volledige toedracht staat er nu bij in plaats van dat de oude tekst stil is vervangen. En bevinding 4
+is overgenomen uit de gestrande v1.17: de vijf listingpagina's die structureel op `MISS` staan.
+
+**Twee correcties uit de incidentsessie, die alleen in de gestrande v1.17 stonden en anders verloren
+waren gegaan.** Er is die dag eerst gemeld dat de homepage zichzelf niet zou herstellen; dat was
+onjuist, hij draaide na circa dertig minuten om (`revalidate = 600`). En de 429's zijn eerst gelezen
+als een rate-limit-instelling; het was terugslag van een vollopende functiepool. Ze staan hier omdat
+correcties worden vastgelegd en niet stil overschreven — ook wanneer de versie waarin ze stonden
+nooit geplaatst is.
 
 Opgesteld door Claude, namens Jeroen.
