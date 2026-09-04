@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.23 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.24 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1291,14 +1291,25 @@ Suspense-verbouwing is besproken en bewust uitgesteld tot na de septembercampagn
 Johans cijfers uit Vercel Usage. Overgenomen uit de incidentsessie van 02-09-2026, die als v1.17
 nooit op `main` is geland.
 
-**5. De checkout toont "Subscribe to Basic" bij plus en partner.** Vastgesteld 04-09-2026 bij de
-merk-tier-test: op de checkout voor plus (€1.500) en partner (€3.000) stond het label van de
-basic-tier, terwijl bedrag en toegekende tier wél klopten. Functioneel dus goed, maar het is het
-scherm waarop iemand zijn betaalgegevens invult. Wat de koper bevestigt en wat hij krijgt staan daar
-niet gelijk: dat kost conversie bij de duurste tiers en levert een geldige grond voor terugboeking.
-Behandeld als blokkerend vóór de septembercampagne, niet als copy-correctie. Vermoedelijke plaats:
-een vaste productnaam op de line item in `/checkout/brand` in plaats van een naam per tier — het
-klopte bedrag wijst erop dat alleen de naam hardcoded is.
+**5. Het tier-label op de checkout — gerepareerd, nog niet geverifieerd.** Vastgesteld 04-09-2026
+bij de merk-tier-test: op de checkout voor plus (€1.500) en partner (€3.000) stond het label van de
+basic-tier, terwijl bedrag en toegekende tier wél klopten. Behandeld als blokkerend en niet als
+copy-correctie: het is het scherm waarop iemand zijn betaalgegevens invult, en wat de koper daar
+bevestigt en wat hij krijgt liepen uiteen.
+
+*Oorzaak.* Niet een vaste productnaam in `/checkout/brand`, zoals hier eerst werd vermoed. De sessie
+stuurt alleen de price-ID mee; Stripe Checkout toont zelf `Subscribe to {productnaam}`, en alle
+prijzen hingen onder één product — in test "Basic", live "MD Brand Membership".
+
+*Hersteld 04-09-2026 door Johan:* aparte producten Basic, Plus en Partner in zowel live als test,
+nieuwe yearly prices, `lookup_key`s overgezet en `wp-config` bijgewerkt.
+
+*Waarom deze bevinding blijft staan.* Het herstel is niet gemeten. Belangrijker dan het label is wat
+de ingreep zelf raakt: er zijn vijf dagen vóór de campagne live producten, prijzen en lookup-sleutels
+omgezet. Sluit één sleutel of configwaarde niet aan, dan faalt de checkout volledig in plaats van een
+verkeerd woord te tonen — een ernstiger uitkomst dan het probleem dat werd opgelost. Verifiëren kan
+zonder betaling en zonder uitzonderingsvenster: een checkout-sessie per tier aanmaken en de pagina
+openen toont de productnaam al. Pas na die meting gaat deze bevinding eruit.
 
 ---
 
@@ -1536,5 +1547,15 @@ Eén bevinding toegevoegd, en die wijkt af van hoe zij is aangeleverd. Het verke
 checkout is gemeld als niet-blokkerende UI-bug; hier staat zij als blokkerend. Grond: het gaat om het
 betaalscherm van de duurste tiers, waar bedrag en label elkaar tegenspreken. Dat is geen cosmetisch
 verschil maar een verschil tussen wat de koper bevestigt en wat hij krijgt.
+
+**v1.24 · 04-09-2026** — bevinding 5 bijgewerkt. De oorzaak lag niet waar dit register hem
+vermoedde: niet in vaste copy in `/checkout/brand`, maar in de productnamen in Stripe, waar alle
+prijzen onder één product hingen. De vermoedens-regel is vervangen door de vastgestelde oorzaak, met
+de correctie zichtbaar in plaats van stil overschreven.
+
+De bevinding blijft open, ook al is er gerepareerd. Reden: het herstel is niet gemeten, en de ingreep
+raakt meer dan het label — live producten, prijzen en lookup-sleutels zijn vijf dagen vóór de
+campagne omgezet. Een besluitenregister dat "opgelost" noteert op grond van een verwachting doet
+precies wat B57 en B90 verbieden.
 
 Opgesteld door Claude, namens Jeroen.
