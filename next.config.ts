@@ -551,6 +551,74 @@ const nextConfig: NextConfig = {
         destination: '/about',
         permanent: true,
       },
+
+      // ------------------------------------------------------------------
+      // 6. CO₂ subscript in article slugs → ASCII `co2`.
+      //     WP stored percent-encoded Unicode (`%e2%82%82`) in post_name;
+      //     Next decoded that into `x-next-cache-tags` and crashed ISR with
+      //     ERR_INVALID_CHAR (Sentry JAVASCRIPT-NEXTJS-12). Slugs were
+      //     renamed in WordPress; these 301s keep old indexes/bookmarks.
+      // ------------------------------------------------------------------
+      {
+        source:
+          '/article/living-building-material-converts-co₂-into-stone-and-biomass',
+        destination:
+          '/article/living-building-material-converts-co2-into-stone-and-biomass/',
+        permanent: true,
+      },
+      {
+        source: '/article/low-cost-low-energy-co₂-capture-unlocks-new-potential',
+        destination:
+          '/article/low-cost-low-energy-co2-capture-unlocks-new-potential/',
+        permanent: true,
+      },
+      {
+        source: '/article/zurich-pioneers-next-generation-urban-co₂-monitoring',
+        destination:
+          '/article/zurich-pioneers-next-generation-urban-co2-monitoring/',
+        permanent: true,
+      },
+      {
+        source:
+          '/article/turning-co₂-into-solar-fuels-new-material-breakthroughs-with-design-potential',
+        destination:
+          '/article/turning-co2-into-solar-fuels-new-material-breakthroughs-with-design-potential/',
+        permanent: true,
+      },
+      {
+        source: '/article/modular-circular-culvert-reduces-co₂-and-enables-reuse',
+        destination:
+          '/article/modular-circular-culvert-reduces-co2-and-enables-reuse/',
+        permanent: true,
+      },
+      {
+        source:
+          '/article/reusable-brick-walls-enable-circular-construction-with-up-to-60-lower-co₂-emissions',
+        destination:
+          '/article/reusable-brick-walls-enable-circular-construction-with-up-to-60-lower-co2-emissions/',
+        permanent: true,
+      },
+      {
+        source:
+          '/article/bacterial-factories-turn-co₂-into-feedstock-for-sustainable-materials',
+        destination:
+          '/article/bacterial-factories-turn-co2-into-feedstock-for-sustainable-materials/',
+        permanent: true,
+      },
+      {
+        source:
+          '/article/concrete-as-a-carbon-sink-co₂-binding-cement-substitute-aims-to-transform-construction',
+        destination:
+          '/article/concrete-as-a-carbon-sink-co2-binding-cement-substitute-aims-to-transform-construction/',
+        permanent: true,
+      },
+      {
+        source:
+          '/article/co₂-to-carbon-process-advances-towards-industrial-application',
+        destination:
+          '/article/co2-to-carbon-process-advances-towards-industrial-application/',
+        permanent: true,
+      },
     ]
   },
 }

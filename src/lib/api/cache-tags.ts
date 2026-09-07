@@ -120,8 +120,32 @@ function base(resource: string): string {
   return `${TAG_PREFIX}:${resource}`
 }
 
+/**
+ * Maak een slug veilig voor Next.js cache-tags / `x-next-cache-tags`.
+ *
+ * HTTP-headers zijn ASCII-only. WP bewaart soms percent-encoded Unicode in
+ * `post_name` (bv. `co%e2%82%82` = CO₂); Next decodeert dat naar non-ASCII in
+ * de route-param en stort dan met `ERR_INVALID_CHAR` op `x-next-cache-tags`
+ * (Sentry JAVASCRIPT-NEXTJS-12; Next.js #93142).
+ *
+ * Normaliseer: decodeer één keer, encodeer daarna deterministisch zodat
+ * fetch-tags en `revalidateTag` altijd dezelfde string gebruiken.
+ */
+export function sanitizeCacheTagSegment(value: string): string {
+  const raw = String(value)
+  let decoded = raw
+  try {
+    decoded = decodeURIComponent(raw)
+  } catch {
+    decoded = raw
+  }
+  // Alleen ASCII printable zonder spaties/control — encodeURIComponent dekt
+  // non-ASCII en reserved chars; lowercase houden voor stabiele matches.
+  return encodeURIComponent(decoded).toLowerCase()
+}
+
 export function recordTagBySlug(resource: string, slug: string): string {
-  return `${base(resource)}:slug:${slug}`
+  return `${base(resource)}:slug:${sanitizeCacheTagSegment(slug)}`
 }
 
 export function recordTagById(resource: string, id: number | string): string {
