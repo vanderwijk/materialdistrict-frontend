@@ -347,15 +347,16 @@ export function buildVideoObject(
 
   // Nooit de Vimeo-URL publiceren voor Insider-talks — ook niet als de
   // caller per ongeluk een id meegeeft.
+  //
+  // Paywall-signalering: alleen `isAccessibleForFree` /
+  // `requiresSubscription` op de VideoObject. Geen `hasPart` met
+  // `WebPageElement` — dat is het Article-paywall-patroon; Google's
+  // Video-rich-result verwacht bij `hasPart` uitsluitend `Clip`
+  // (key moments). Search Console: "Ongeldig objecttype voor veld hasPart".
   if (insiderOnly) {
     schema.embedUrl = playerUrl
     schema.isAccessibleForFree = false
     schema.requiresSubscription = true
-    schema.hasPart = {
-      '@type': 'WebPageElement',
-      isAccessibleForFree: false,
-      cssSelector: '.talk-video-gate',
-    }
   } else if (video.vimeoId) {
     schema.embedUrl = `https://player.vimeo.com/video/${video.vimeoId}`
     schema.isAccessibleForFree = true

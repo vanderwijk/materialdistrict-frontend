@@ -116,11 +116,20 @@ export interface VideoObjectSchema extends BaseThing {
   duration?: string
   isAccessibleForFree?: boolean
   requiresSubscription?: boolean
+  /** Alleen voor video key moments (`Clip`); niet voor Article-paywall. */
   hasPart?: {
-    '@type': 'WebPageElement'
-    isAccessibleForFree: boolean
-    cssSelector: string
-  }
+    '@type': 'Clip'
+    name: string
+    startOffset: number
+    endOffset?: number
+    url: string
+  } | Array<{
+    '@type': 'Clip'
+    name: string
+    startOffset: number
+    endOffset?: number
+    url: string
+  }>
 }
 
 export interface EventSchema extends BaseThing {
