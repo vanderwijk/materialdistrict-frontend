@@ -25,7 +25,29 @@ import { PATHNAME_HEADER } from '@/lib/auth/request-path'
  * Vercel geo header directly, so event gating no longer depends on the
  * cookie having been written first.
  */
+/**
+ * WP once stored CO₂ as Unicode subscript U+2082 in `post_name` (often
+ * percent-encoded as `%e2%82%82`). Next 16.2 puts the decoded route segment
+ * into `x-next-cache-tags` and throws ERR_INVALID_CHAR before our app tags
+ * run — so config redirects with literal `₂` never fire. Rewrite to ASCII
+ * `2` at the edge, then stamp the path as usual.
+ */
+function redirectCo2Subscript(request: NextRequest): NextResponse | null {
+  const { pathname } = request.nextUrl
+  if (!pathname.includes('\u2082') && !/%e2%82%82/i.test(pathname)) {
+    return null
+  }
+  const url = request.nextUrl.clone()
+  url.pathname = pathname
+    .replaceAll('\u2082', '2')
+    .replace(/%e2%82%82/gi, '2')
+  return NextResponse.redirect(url, 301)
+}
+
 export function middleware(request: NextRequest) {
+  const co2Redirect = redirectCo2Subscript(request)
+  if (co2Redirect) return co2Redirect
+
   // Forward the original headers plus our own; `NextResponse.next({ request })`
   // is what makes them visible to server components (response headers are not).
   const requestHeaders = new Headers(request.headers)
