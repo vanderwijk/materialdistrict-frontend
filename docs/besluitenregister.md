@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.26 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.27 · 08-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1231,6 +1231,9 @@ eigen valuta iets minder gedoe. Weegt drempelverlaging bij werving in Azië of N
 zwaarder dan een schone factuur, dan is dit besluit te herzien — maar dan als gekozen
 wisselkoersopslag, niet als vergeten standaardinstelling.
 **Bron.** 04-09-2026, Jeroen, na de cijfers van Johan.
+**Bijkomend, vastgesteld 08-09-2026.** Dit besluit is niet alleen een voorkeur: zolang SEPA-incasso
+als betaalmethode aanstaat, eist Stripe dat alle regelitems in Checkout in euro's zijn. Euro's
+aanhouden is daarmee een voorwaarde en geen smaak.
 **Raakt.** De septembercampagne, de brand-checkout en elke toekomstige betaalroute.
 
 ---
@@ -1312,6 +1315,26 @@ Johans cijfers uit Vercel Usage. Overgenomen uit de incidentsessie van 02-09-202
 nooit op `main` is geland.
 
 
+
+**5. Bij SEPA-incasso staat het membership los van het moment waarop het geld binnen is.** Een
+SEPA-betaling is een vertraagde betaalmethode: Stripe heeft de succestermijn in juni 2026 verlengd
+van twee naar zes werkdagen, en een incasso kan in het uiterste geval tot veertien werkdagen in
+behandeling blijven. Binnen dat venster kan zij alsnog mislukken — onvoldoende saldo, opgeheven
+rekening, ontbrekende machtiging.
+
+Daaruit volgen twee vragen die vóór de campagne beantwoord moeten zijn, en geen van beide is
+gemeten. Kent de webhook het membership toe bij afronding van de checkout of pas bij geslaagde
+betaling? Bij het eerste heeft een merk ruim een week toegang voordat het geld binnen is; bij het
+tweede wacht een betalend merk ruim een week op toegang. En wat gebeurt er bij `charge.failed` of
+`invoice.payment_failed` — wordt de toegang dan ingetrokken? Dat pad is nooit doorlopen.
+
+Daarbij hoort de terugboektermijn: de betaler mag een geautoriseerde incasso acht weken lang bij zijn
+eigen bank terugvragen, bij niet-geautoriseerde incasso's dertien maanden, en SEPA-geschillen zijn
+definitief zonder beroep. Bij merkmemberships van €750 tot €3.000 is dat een reëel bedrag.
+
+Aanleiding: Johans eigen live Insider-verlenging stond op 08-09-2026 nog op "In behandeling" na een
+incasso van 05-09. Dat is normaal gedrag en geen storing — het bracht alleen aan het licht dat de
+afhandeling eromheen niet belegd is.
 
 ---
 
@@ -1577,5 +1600,14 @@ er met het tegenargument erbij, zodat een latere heroverweging kan zien wat er i
 van alleen wat er is gekozen.
 
 Nummering: B92 volgt op B91. B89 blijft leeg, zoals vastgelegd onder v1.22.
+
+**v1.27 · 08-09-2026** — B92 aangevuld: euro's aanhouden is een voorwaarde voor SEPA-incasso in
+Checkout, niet alleen een voorkeur. Stripe eist daar euro-regelitems.
+
+Eén bevinding toegevoegd over SEPA. Aanleiding was een vraag of een verlenging die drie dagen op "In
+behandeling" staat normaal is; dat is zo, en juist daarom is het opgeschreven. Wat níét geregeld
+blijkt, is wat het membership doet in het venster tussen betaling en bevestiging, en wat er gebeurt
+als de incasso binnen dat venster alsnog mislukt. Een normaal verschijnsel dat een ongeregeld gevolg
+blootlegt hoort in dit register; een storing was het niet.
 
 Opgesteld door Claude, namens Jeroen.
