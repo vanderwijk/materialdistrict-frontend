@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.27 · 08-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.28 · 08-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1316,25 +1316,38 @@ nooit op `main` is geland.
 
 
 
-**5. Bij SEPA-incasso staat het membership los van het moment waarop het geld binnen is.** Een
-SEPA-betaling is een vertraagde betaalmethode: Stripe heeft de succestermijn in juni 2026 verlengd
-van twee naar zes werkdagen, en een incasso kan in het uiterste geval tot veertien werkdagen in
-behandeling blijven. Binnen dat venster kan zij alsnog mislukken — onvoldoende saldo, opgeheven
-rekening, ontbrekende machtiging.
+**5. Toegang eindigt pas bij `canceled`, en wat daarheen leidt is niet ingesteld.** Gemeten
+08-09-2026 door Johan. Het membership wordt toegekend bij `checkout.session.completed`; de toegang
+volgt daarna de abonnementsstatus, waarbij `active`, `trialing` én `past_due` toegang geven en alleen
+`incomplete` niet. Een mislukte betaling zet het abonnement via `invoice.payment_failed` op
+`past_due` — en dat trekt de toegang dus níét in. Echt intrekken gebeurt pas bij `canceled` of
+`deleted`.
 
-Daaruit volgen twee vragen die vóór de campagne beantwoord moeten zijn, en geen van beide is
-gemeten. Kent de webhook het membership toe bij afronding van de checkout of pas bij geslaagde
-betaling? Bij het eerste heeft een merk ruim een week toegang voordat het geld binnen is; bij het
-tweede wacht een betalend merk ruim een week op toegang. En wat gebeurt er bij `charge.failed` of
-`invoice.payment_failed` — wordt de toegang dan ingetrokken? Dat pad is nooit doorlopen.
+*Dat ontwerp is verdedigbaar,* want je wilt iemand niet buitensluiten omdat zijn pas verlopen is. Het
+werkt alleen zolang er iets is dat een blijvend onbetaald abonnement uiteindelijk annuleert. Dat is
+één instelling in Stripe Billing: de actie aan het eind van de incassopogingen. Staat die op niets
+doen, dan blijft het abonnement onbeperkt `past_due` en houdt een niet-betalend lid zijn toegang.
+Staat die op annuleren, dan sluit de keten. **Niemand heeft die instelling bekeken.** Dat is de
+kern van deze bevinding, en zij is niet SEPA-specifiek: een verlopen creditcard komt vaker voor dan
+een mislukte incasso en loopt langs hetzelfde pad.
 
-Daarbij hoort de terugboektermijn: de betaler mag een geautoriseerde incasso acht weken lang bij zijn
-eigen bank terugvragen, bij niet-geautoriseerde incasso's dertien maanden, en SEPA-geschillen zijn
-definitief zonder beroep. Bij merkmemberships van €750 tot €3.000 is dat een reëel bedrag.
+*Wat de campagne wel en niet raakt.* De merk-checkout biedt card en iDEAL, geen rauwe SEPA-incasso.
+iDEAL bevestigt direct, dus bij een nieuwe verkoop zit er nauwelijks tijd tussen toegang en geld. De
+SEPA-machtiging die uit iDEAL volgt wordt pas bij de verlenging gebruikt — over een jaar, en dan bij
+alle merken tegelijk. Minder urgent dus, niet minder noodzakelijk.
+
+*Wat wel scheef staat.* Bij SEPA mag de betaler een geautoriseerde incasso acht weken lang bij zijn
+bank terugvragen, en bij niet-geautoriseerde incasso's dertien maanden; SEPA-geschillen zijn
+definitief zonder beroep. Een teruggevorderde betaling laat het abonnement op `past_due` staan, en
+`past_due` houdt de toegang open.
+
+*Vervallen vermoeden.* Hier stond eerder dat er ook een handler op `charge.failed` zou moeten zijn.
+Dat is onjuist: bij abonnementen is `invoice.payment_failed` het juiste event en zou `charge.failed`
+dubbelop zijn.
 
 Aanleiding: Johans eigen live Insider-verlenging stond op 08-09-2026 nog op "In behandeling" na een
-incasso van 05-09. Dat is normaal gedrag en geen storing — het bracht alleen aan het licht dat de
-afhandeling eromheen niet belegd is.
+incasso van 05-09. Dat is normaal SEPA-gedrag en geen storing — het bracht alleen aan het licht dat
+het einde van het pad niet belegd is.
 
 ---
 
@@ -1609,5 +1622,14 @@ behandeling" staat normaal is; dat is zo, en juist daarom is het opgeschreven. W
 blijkt, is wat het membership doet in het venster tussen betaling en bevestiging, en wat er gebeurt
 als de incasso binnen dat venster alsnog mislukt. Een normaal verschijnsel dat een ongeregeld gevolg
 blootlegt hoort in dit register; een storing was het niet.
+
+**v1.28 · 08-09-2026** — bevinding 5 herschreven na meting. De vraag was of het membership te vroeg
+wordt toegekend; het antwoord is dat het te laat wordt ingetrokken. Toegang loopt door bij
+`past_due`, en of daar ooit een einde aan komt hangt op één ongecontroleerde instelling in Stripe
+Billing. Daarmee is de bevinding ook breder dan SEPA: elke mislukte verlenging loopt langs dit pad,
+en een verlopen creditcard komt vaker voor dan een mislukte incasso.
+
+Eén eerdere aanname is als vervallen genoteerd in plaats van geschrapt: dat er een handler op
+`charge.failed` zou moeten zijn. Bij abonnementen is `invoice.payment_failed` het juiste event.
 
 Opgesteld door Claude, namens Jeroen.
