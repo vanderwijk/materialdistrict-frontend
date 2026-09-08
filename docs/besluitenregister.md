@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.25 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.26 · 04-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1211,6 +1211,28 @@ Sigrids melding — die laag werkte. Wat níét werd gezien was de nasleep: `/ch
 **Raakt.** B90 (waar de check op controleert), en elke toekomstige monitoring-keuze.
 **Nummering.** Geschreven als B89, hernummerd naar B91; zie v1.22.
 
+### B92 · Prijzen worden in euro's getoond en afgerekend
+**Besluit.** Adaptive Pricing gaat **account-breed uit** in Stripe. Iedere koper ziet en betaalt het
+europrijs, waar hij ook vandaan komt; omrekenen is aan de bank van de koper.
+**Grond.** MaterialDistrict verkoopt aan bedrijven, niet aan consumenten. Een merkmembership gaat
+naar een organisatie die een factuur wil die klopt met de prijs op de site, in de valuta van haar
+administratie, met btw verlegd waar dat hoort. De hele btw-logica hangt aan europrijzen: de
+VIES-controle, de prijs exclusief btw, de verlegging binnen de EU. Een omgerekend factuurbedrag met
+een wisselkoersopslag die niemand heeft afgesproken past daar niet in. Dezelfde redenering als bij
+het tier-label: wat de koper ziet en wat hij krijgt horen gelijk te zijn.
+**Waarom account-breed en niet per sessie.** Per sessie uitzetten geeft hetzelfde resultaat maar
+moet in elke checkout-route opnieuw. Een route die later wordt gebouwd vergeet het, en dan staat de
+instelling stilzwijgend weer aan.
+**Wat dit niet raakt.** Er verandert niets aan het verleden. Alle 1.172 charges in de historie zijn
+in euro; er zijn geen facturen of afgeronde sessies met valutaconversie. De instelling stond aan als
+Stripe-default, is nooit aangezet door iemand hier en heeft nooit gewerkt.
+**Tegenargument, voor de volledigheid.** Voor een twijfelend merk buiten de eurozone is betalen in
+eigen valuta iets minder gedoe. Weegt drempelverlaging bij werving in Azië of Noord-Amerika ooit
+zwaarder dan een schone factuur, dan is dit besluit te herzien — maar dan als gekozen
+wisselkoersopslag, niet als vergeten standaardinstelling.
+**Bron.** 04-09-2026, Jeroen, na de cijfers van Johan.
+**Raakt.** De septembercampagne, de brand-checkout en elke toekomstige betaalroute.
+
 ---
 
 ## 10. Openstaand uit eerdere sessies — niet eerder vastgelegd
@@ -1290,16 +1312,6 @@ Johans cijfers uit Vercel Usage. Overgenomen uit de incidentsessie van 02-09-202
 nooit op `main` is geland.
 
 
-**5. Adaptive Pricing staat aan in Stripe, zonder dat dat ergens is besloten.** Vastgesteld
-04-09-2026, als bijvangst van de labelmeting: bij het openen van een checkout vanaf een niet-Europese
-locatie verscheen een valutakeuze. Dat is Stripe Adaptive Pricing, dat het bedrag omrekent naar de
-lokale valuta van de koper, inclusief wisselkoersopslag. Geen storing en geen tierverschil.
-
-Wel een commerciële instelling die gevolgen heeft en die niemand aanwijsbaar heeft gekozen. Een
-buitenlands merk ziet dan niet €3.000 maar een omgerekend bedrag, en wat er binnenkomt verschilt per
-land. Voor een platform met een aanzienlijk deel niet-Europese merken is dat geen randgeval. Aan
-verlaagt de drempel voor buitenlandse kopers; uit houdt de prijs overal gelijk en de opbrengst
-voorspelbaar. Besluit ligt bij Jeroen, vóór de septembercampagne.
 
 ---
 
@@ -1558,5 +1570,12 @@ Eén nieuwe bevinding, als bijvangst van diezelfde meting: Adaptive Pricing staa
 is geen storing en het verklaart de valutakeuze die bij de meting opviel, maar het is een
 commerciële instelling met gevolgen voor wat buitenlandse merken betalen — en er is geen besluit dat
 haar aanzet. Genoteerd als openstaand, niet als fout.
+
+**v1.26 · 04-09-2026** — die bevinding is dezelfde dag weer dicht: B92 legt vast dat prijzen in
+euro's worden getoond en afgerekend, en dat Adaptive Pricing account-breed uit gaat. Het besluit staat
+er met het tegenargument erbij, zodat een latere heroverweging kan zien wat er is afgewogen in plaats
+van alleen wat er is gekozen.
+
+Nummering: B92 volgt op B91. B89 blijft leeg, zoals vastgelegd onder v1.22.
 
 Opgesteld door Claude, namens Jeroen.
