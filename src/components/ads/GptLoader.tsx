@@ -6,7 +6,7 @@
  * Ad Manager Privacy & messaging (EU consent CMP) only appears when gpt.js
  * is on the page. Waiting for an AdSlot to hydrate is too late and leaves
  * visitors on a custom cookie bar with no TCF signal. Ads still wait for
- * consent via disableInitialLoad + refresh in AdSlot.
+ * consent via setConfig({ disableInitialLoad }) + refresh in AdSlot.
  */
 
 import { useEffect } from 'react'

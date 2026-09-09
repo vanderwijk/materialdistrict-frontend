@@ -7,8 +7,8 @@
  * It lazily loads gpt.js the first time any slot mounts, so ad-less pages never
  * pull the tag. Each slot defines itself, applies its responsive `sizeMapping`,
  * and registers with `display`. Ad *requests* wait until consent is granted
- * (`disableInitialLoad` + `refresh`), so GPT can load early for a CMP while
- * cookies/identifiers are not used before the visitor agrees.
+ * (`setConfig({ disableInitialLoad })` + `refresh`), so GPT can load early for
+ * a CMP while cookies/identifiers are not used before the visitor agrees.
  *
  * Empty (unbooked) slots collapse via `googletag.setConfig({ collapseDiv })`.
  *
@@ -42,7 +42,6 @@ interface GptSlotRenderEndedEvent {
 
 interface GptPubAdsService {
   setTargeting(key: string, value: string | string[]): GptPubAdsService
-  disableInitialLoad(): void
   refresh(slots?: GptSlot[]): void
   addEventListener(
     type: 'slotRenderEnded',
@@ -62,7 +61,10 @@ interface GoogleTag {
   enableServices(): void
   display(divId: string): void
   destroySlots(slots?: unknown[]): boolean
-  setConfig(config: { collapseDiv?: 'DISABLED' | 'BEFORE_FETCH' | 'ON_NO_FILL' | null }): void
+  setConfig(config: {
+    collapseDiv?: 'DISABLED' | 'BEFORE_FETCH' | 'ON_NO_FILL' | null
+    disableInitialLoad?: boolean
+  }): void
 }
 
 declare global {
@@ -148,10 +150,13 @@ export function AdSlot({
       slotRef.current = slot
 
       if (!servicesEnabled) {
-        // Hold requests until consent — also lets a CMP finish before fetch.
-        gt.pubads().disableInitialLoad()
-        // Replaces deprecated pubads().collapseEmptyDivs().
-        gt.setConfig({ collapseDiv: 'BEFORE_FETCH' })
+        // Hold requests until consent (setConfig replaces deprecated
+        // pubads().disableInitialLoad / collapseEmptyDivs). Must run before
+        // enableServices() and display().
+        gt.setConfig({
+          disableInitialLoad: true,
+          collapseDiv: 'BEFORE_FETCH',
+        })
         gt.enableServices()
         servicesEnabled = true
       }
