@@ -4,7 +4,7 @@
  * Site-wide contact form.
  *
  * Topic cards pick the subject; the form posts to `/api/contact/`.
- * Spam: honeypot + minimum dwell time (mirror FeedbackButton).
+ * Spam: honeypot + minimum dwell time.
  */
 
 import { useId, useRef, useState } from 'react'

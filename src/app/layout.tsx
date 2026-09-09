@@ -3,7 +3,6 @@ import { Schibsted_Grotesk } from 'next/font/google'
 import { AppChrome } from '@/components/layout/AppChrome'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { JsonLd, buildOrganization, buildWebSite, openGraphSite } from '@/lib/seo'
-import { FeedbackButton } from '@/components/feedback/FeedbackButton'
 import { ConsentBar } from '@/components/consent/ConsentBar'
 import { ConsentBootstrap } from '@/components/consent/ConsentBootstrap'
 import { RegionBootstrap } from '@/components/consent/RegionBootstrap'
@@ -154,9 +153,6 @@ export default function RootLayout({
             Per-page entities (Product/Article/Event/Book) live in the
             individual page.tsx files. */}
         <JsonLd data={[buildOrganization(), buildWebSite()]} />
-        {/* Soft-launch reporter — visible to everyone, signed in or not.
-            Remove this line when the test month ends. */}
-        <FeedbackButton />
         {/* Consent bar — renders only until the visitor has chosen. */}
         <ConsentBar />
         {/* Plausible — always on (cookieless / AVG-compliant). */}
