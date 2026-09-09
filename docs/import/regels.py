@@ -291,3 +291,64 @@ def domein_index(merken, domein_van, is_platform_check=True):
             continue
         uit.setdefault(d, []).append(m)
     return uit
+
+
+# ---------------------------------------------------------------------------
+# Het activiteitenlogboek. Gesloten lijsten, in code bewaakt en niet in het schema,
+# zodat een nieuw type geen ALTER TABLE op een groeiende tabel kost.
+# ---------------------------------------------------------------------------
+
+ACTIVITEIT = (
+    # beurs
+    'exposant', 'standbemanning', 'bezoeker_geregistreerd', 'bezoeker_aanwezig',
+    'no_show', 'spreker',
+    # commercie
+    'boekbestelling', 'ticketbestelling', 'materiaalpublicatie', 'membership',
+    'advertentie', 'innovatiefonds',
+    # contact
+    'abonnee', 'sampleaanvraag', 'brochuredownload', 'contactformulier',
+    # intern
+    'gesprek', 'notitie',
+)
+
+ZICHTBAARHEID = ('met_naam', 'geteld', 'intern')
+
+#: Welke kant een feit op hangt. Uit docs/importprotocol.md §8.
+KANT = {
+    'exposant': 'brand',
+    'standbemanning': 'user',
+    'bezoeker_geregistreerd': 'user',
+    'bezoeker_aanwezig': 'user',
+    'no_show': 'user',
+    'spreker': 'user',
+    'boekbestelling': 'user',
+    'ticketbestelling': 'user',
+    'materiaalpublicatie': 'brand',
+    'membership': 'brand',
+    'advertentie': 'brand',
+    'innovatiefonds': 'brand',
+    'abonnee': 'user',
+    'sampleaanvraag': 'user',
+    'brochuredownload': 'user',
+    'contactformulier': 'user',
+    'gesprek': 'brand',
+    'notitie': 'brand',
+}
+
+
+def controleer_activiteit(soort):
+    if soort not in ACTIVITEIT:
+        raise ValueError(f'activiteitstype {soort!r} staat niet in de gesloten lijst.')
+    return soort
+
+
+def subject_kant(soort):
+    """Aan welke kant een feit hangt. Een catalogus zegt dat het BEDRIJF exposant was;
+    dat iemand aan de stand stond is een feit over de PERSOON."""
+    return KANT[controleer_activiteit(soort)]
+
+
+def feitsleutel(subject_type, subject_id, soort, editie, datum):
+    """Eén feit bestaat één keer. Zelfde sleutel als de unieke index op wp_md_activity."""
+    return (subject_type, int(subject_id), controleer_activiteit(soort),
+            editie or '', str(datum or ''))

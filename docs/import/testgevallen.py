@@ -284,6 +284,51 @@ def t_domein_index():
     assert "instagram.com" not in idx, "platformdomein hoort geen identiteit te zijn"
 
 
+@geval(
+    "paginering rekent, en neemt niet over",
+    "X-WP-TotalPages hoort bij de per_page van dat ene verzoek. Op 09-09-2026 werd het "
+    "aantal pagina's opgehaald met per_page=1 en daarna in stappen van 100 gelezen: "
+    "2.635 pagina's in plaats van 27, en de ronde liep vast.",
+)
+def t_paginering():
+    def paginas(totaal, per_page):
+        return max(1, -(-totaal // per_page))
+
+    assert paginas(2635, 100) == 27
+    assert paginas(100, 100) == 1
+    assert paginas(101, 100) == 2
+    assert paginas(0, 100) == 1
+    assert paginas(2635, 100) != 2635
+
+
+@geval(
+    "type en editie zijn twee kolommen",
+    "Op een samengesteld label als exposant_mdu2022 valt niet te tellen en niet te "
+    "filteren, en 'wie stond er drie edities' is een teloefening. Uit §8 van het protocol.",
+)
+def t_activiteit():
+    assert norm.controleer_activiteit("exposant") == "exposant"
+    for fout in ("exposant_mdu2022", "bezoeker2023", "onbekend"):
+        try:
+            norm.controleer_activiteit(fout)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"{fout!r} had geweigerd moeten worden")
+
+    # Een catalogus zegt dat het bedrijf exposant was; standbemanning hangt aan de persoon.
+    assert norm.subject_kant("exposant") == "brand"
+    assert norm.subject_kant("standbemanning") == "user"
+    assert norm.subject_kant("no_show") == "user"
+
+    # Hetzelfde feit twee keer geeft dezelfde sleutel, dus geen tweede rij.
+    a = norm.feitsleutel("user", 42, "standbemanning", "MDU 2026", "2026-03-04")
+    b = norm.feitsleutel("user", "42", "standbemanning", "MDU 2026", "2026-03-04")
+    assert a == b
+    # Andere editie is een ander feit.
+    assert a != norm.feitsleutel("user", 42, "standbemanning", "MDU 2025", "2026-03-04")
+
+
 def main():
     goed = 0
     for naam, toelichting, fn in GEVALLEN:
