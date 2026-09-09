@@ -187,7 +187,8 @@ export function ProfileForm({
             type="email"
             required
             value={form.email}
-            onChange={(e) => set('email', e.target.value)}
+            readOnly
+            helper="Email changes need confirmation at the new address. That flow lands with the next frontend update — until then this field stays as-is."
           />
           <Input
             label="Telephone"
