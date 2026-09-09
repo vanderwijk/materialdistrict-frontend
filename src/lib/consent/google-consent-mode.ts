@@ -66,4 +66,16 @@ export function updateGoogleConsentMode(state: ConsentModeState): void {
     ad_personalization: state,
     analytics_storage: state,
   })
+
+  // Non-Google tags (Meta, LinkedIn) carry an additional consent check in GTM.
+  // GTM does not release those retroactively: once their All Pages trigger has
+  // passed with consent denied, a later `consent update` never revives them.
+  // This event gives them a trigger at the moment permission arrives.
+  //
+  // Deliberately inside the dedupe above: for a returning visitor the head
+  // snippet already granted before gtm.js, so All Pages covers them and this
+  // never fires — which keeps the pixels at one hit per page load.
+  if (state === 'granted') {
+    window.dataLayer?.push({ event: 'md_consent_granted' })
+  }
 }
