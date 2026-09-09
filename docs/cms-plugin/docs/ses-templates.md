@@ -28,7 +28,7 @@ define( 'MD_SES_TEMPLATE_LEAD_CONFIRMATION', 'md-lead-confirmation' );
 define( 'MD_SES_TEMPLATE_SAMPLE_BRAND', 'md-sample-brand' );
 define( 'MD_SES_TEMPLATE_SAMPLE_CONFIRMATION', 'md-sample-confirmation' );
 define( 'MD_SES_TEMPLATE_PASSWORD_RESET', 'md-password-reset' ); // legacy; password reset now uses md-transactional
-define( 'MD_SES_LOGO_URL', 'https://materialdistrict.com/wp-content/themes/materialdistrict-theme/img/material-district-logo-full.png' ); // optional override; PNG required for email clients
+define( 'MD_SES_LOGO_URL', 'https://cms.materialdistrict.com/wp-content/plugins/materialdistrict-plugin/img/material-district-logo-full.png' ); // optional override; PNG required for email clients
 ```
 
 ## Standard transactional layout (`md-transactional`)
