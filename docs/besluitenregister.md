@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.29 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.31 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1236,6 +1236,44 @@ als betaalmethode aanstaat, eist Stripe dat alle regelitems in Checkout in euro'
 aanhouden is daarmee een voorwaarde en geen smaak.
 **Raakt.** De septembercampagne, de brand-checkout en elke toekomstige betaalroute.
 
+### B93 · Een terugvordering sluit niemand automatisch buiten; er wordt gebeld
+**Besluit.** Wordt een betaling teruggeboekt, dan blijft de toegang aan en gaat er een signaal naar
+een mens, die binnen enkele dagen contact opneemt met het merk. Blijkt het een misverstand, dan wordt
+het met een nieuwe betaling rechtgezet. Wil het merk bewust niet betalen, dan gaat het membership uit
+— als besluit van een mens, niet als automatische reactie.
+
+**Er zit een termijn aan: veertien dagen na het signaal is er ofwel opnieuw betaald, ofwel het
+membership gaat uit.** Zonder die termijn wordt "we bellen nog" vanzelf permanente gratis toegang.
+
+**Grond.** Een terugboeking is bij MaterialDistrict zelden fraude. Het waarschijnlijke geval is een
+boekhouder die een onbekende afschrijving van €750 tot €3.000 ziet en één knop indrukt, terwijl de
+collega die het membership afsloot van niets weet. Automatisch afsluiten straft dan een klant die
+geen conflict zoekt, en kost de verlenging van volgend jaar — een veelvoud van het teruggeboekte
+bedrag. Het omgekeerde kan ook niet: het geld is bij SEPA definitief weg (geen beroepsprocedure), en
+toegang geven aan wie niet betaalt is oneerlijk tegenover de merken die dat wel doen.
+
+**Waarom dit met een signaal moet en niet met een gewoonte.** Stripe legt de terugvordering al vast:
+er ontstaat een dispute-object bij de betaling en die betaling wordt als betwist gemarkeerd. Het
+abonnement blijft ondertussen op `active`, want een abonnement weet niets van wat er later met een
+losse betaling gebeurt (zie bevinding 5). Het signaal bestaat dus al — er kijkt alleen niets naar.
+Een handler op `charge.dispute.created` bedenkt niets nieuws, hij leest een bestaand vlaggetje.
+
+**Volgorde: eerst de gratis melding, daarna de eigen.** Twee stappen, geen keuze tussen twee opties.
+
+1. **Nu meteen, nul code:** de e-mailnotificatie op disputes in het Stripe-dashboard aanzetten. Dat
+   is een duwmelding in plaats van iets waar iemand aan moet denken, en dat is precies het verschil
+   dat telt bij een gebeurtenis die een paar keer per jaar voorkomt. Een afspraak om maandelijks een
+   overzicht te bekijken — zoals hier eerst stond — is geen afspraak maar een voornemen.
+2. **Zodra de campagneleden binnenkomen:** een handler op `charge.dispute.created` die één SES-mail
+   naar webmaster/finance stuurt, langs hetzelfde pad als de andere transactionele mail. Geen
+   statuswijziging, alleen een alert. Dat schaalt beter dan een postvak bij Stripe en houdt de
+   melding binnen het eigen systeem, waar hij bij de rest van de klantcommunicatie hoort.
+
+Het bouwmoment ligt dus ná de start van de campagne, maar het is een moment en geen voornemen:
+zonder dat is "voorlopig met de hand" alleen uitstel.
+**Bron.** 09-09-2026, Jeroen.
+**Raakt.** Bevinding 5, de septembercampagne, en het beheer van memberships na de campagne.
+
 ---
 
 ## 10. Openstaand uit eerdere sessies — niet eerder vastgelegd
@@ -1337,10 +1375,10 @@ terugboekrecht maar eist registratie van de machtiging bij de bank van de betale
 onvoorwaardelijk terugboekrecht is dus onvermijdelijk, en de bankmail van de betaler legt actief uit
 hoe het moet. SEPA-geschillen zijn bovendien definitief: het geld is dan zeker weg.
 
-*Aanbevolen richting, nog te besluiten.* Niet automatisch annuleren — terugboeken is bij sommige
-banken één handeling in de app, en een betalende klant automatisch afsluiten is een dure manier om
-gelijk te hebben. Wel signaleren: een melding op `charge.dispute.created` en een mens die beslist.
-Bij de huidige ~30 betalende leden kan dat met de hand; na de campagne niet meer.
+*Besloten 09-09-2026, zie B93.* Niet automatisch annuleren maar signaleren en bellen, met een
+termijn van veertien dagen. De dispute-notificatie in het Stripe-dashboard gaat meteen aan; de eigen
+handler op `charge.dispute.created` volgt zodra de campagneleden binnenkomen. Deze bevinding blijft
+tot die handler er is.
 
 *Vervallen aannames, zichtbaar gehouden.* Hier stond eerder dat er een handler op `charge.failed`
 zou moeten zijn (onjuist: bij abonnementen is `invoice.payment_failed` het juiste event), en dat de
@@ -1649,5 +1687,22 @@ Bevinding 6 toegevoegd, als correctie op dit register zelf: hier stond dat de aa
 juiste huisstijl droeg. Dat was afgelezen van een schermafbeelding en niet gemeten; het was het oude
 Materia-logo. Johan heeft het aangepast. Het staat er als bevinding en niet als voetnoot, omdat de
 fout in de beoordeling zat.
+
+**v1.30 · 09-09-2026** — B93 toegevoegd: bij een terugvordering blijft de toegang aan en belt een
+mens, met veertien dagen als termijn. Het alternatief — automatisch afsluiten — is afgewogen en
+verworpen omdat een terugboeking hier vrijwel nooit fraude is maar een boekhouder die een onbekende
+afschrijving ziet.
+
+Bij het besluit staat expliciet wanneer het handmatige regime ophoudt: het signaal wordt gebouwd
+zodra de campagneleden binnenkomen, niet ervóór. Dat is opgeschreven omdat "voorlopig met de hand"
+zonder zo'n moment geen keuze is maar uitstel. Bevinding 5 blijft daarom open tot die handler bestaat,
+met de richting er nu wel in.
+
+**v1.31 · 09-09-2026** — de uitvoering bij B93 aangescherpt, op voorstel van Johan. Hier stond dat
+er tot de campagne maandelijks in het Stripe-dashboard gekeken zou worden. Dat is vervangen: de
+dispute-notificatie van Stripe gaat meteen aan, want die kost geen code en duwt de melding naar je
+toe in plaats van dat iemand eraan moet denken. Bij een gebeurtenis die een paar keer per jaar
+voorkomt is dat het hele verschil. De eigen SES-melding blijft staan als tweede stap, na de
+campagnestart.
 
 Opgesteld door Claude, namens Jeroen.
