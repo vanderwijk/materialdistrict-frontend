@@ -228,3 +228,66 @@ def is_persoonsgebonden(e, merknaam=''):
 def domeinkern(d):
     """Het label zonder extensie: burnedwood.nl en burnedwood.com hebben dezelfde kern."""
     return stam(d).split('.')[0] if d else ''
+
+
+# ---------------------------------------------------------------------------
+# Schema-afspraken. Gemeten waarden, geen aannames.
+#
+# Afgesproken met Johan op 09-09-2026, nadat een migratie live faalde doordat er een
+# hele zin in `grond` werd geschreven terwijl die kolom VARCHAR(16) is.
+# ---------------------------------------------------------------------------
+
+GROND = ('domein', 'domeinstam', 'naam', 'handmatig', 'registratie')
+
+ROL = ('medewerker', 'contactpersoon', 'commercieel contact',
+       'lead routing', 'factuurcontact', 'beheerder')
+
+#: Kolombreedtes op wp_md_user_brand, gemeten met SHOW COLUMNS.
+KOLOMBREEDTE = {
+    'rol': 32,
+    'rol_detail': 32,
+    'grond': 16,
+    'bewijs': 191,
+    'bron': 191,
+}
+
+
+def controleer_grond(waarde):
+    """De korte reden. Lange uitleg hoort in `bewijs` of `bron`."""
+    if waarde not in GROND:
+        raise ValueError(
+            f'grond {waarde!r} staat niet in de gesloten lijst {GROND}. '
+            'Een uitleg hoort in bewijs of bron, niet hier.'
+        )
+    return waarde
+
+
+def controleer_rol(waarde):
+    if waarde not in ROL:
+        raise ValueError(f'rol {waarde!r} staat niet in de gesloten lijst {ROL}.')
+    return waarde
+
+
+def past_in_kolom(kolom, waarde):
+    """Toets aan de gemeten breedte, niet aan wat het veld heet."""
+    breedte = KOLOMBREEDTE.get(kolom)
+    return breedte is not None and len(str(waarde or '')) <= breedte
+
+
+def domein_index(merken, domein_van, is_platform_check=True):
+    """Domein -> lijst merken. Nooit een enkelvoudige map.
+
+    Op 09-09-2026 gebruikte de matcher een gewone dict. Bij twee merken op één domein
+    won daardoor willekeurig de laatste: bij i-did.nl koos hij Sylvia Calvo in plaats van
+    I-did, terwijl daar een besluit over lag. Een domein draagt vaker dan je denkt meer
+    dan één merk — 81 domeinen in de database doen dat — dus dit is een lijst.
+    """
+    uit = {}
+    for m in merken:
+        d = domein_van(m)
+        if not d:
+            continue
+        if is_platform_check and is_platform(d):
+            continue
+        uit.setdefault(d, []).append(m)
+    return uit

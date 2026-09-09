@@ -218,6 +218,72 @@ def t_poort3():
     assert not norm.is_persoonsgebonden("sales@abet.nl", "ABET")
 
 
+@geval(
+    "een kolomnaam is geen kolomtype",
+    "Op 09-09-2026 kreeg de kolom grond een hele zin terwijl hij VARCHAR(16) is; de "
+    "invoegingen faalden en de migratie moest opnieuw. De naam was gemeten, het type "
+    "aangenomen. SHOW COLUMNS geeft beide — lees ze allebei.",
+)
+def t_kolomtype():
+    # Wat er in een kolom geschreven wordt, wordt getoetst aan de gemeten breedte,
+    # niet aan wat het veld heet.
+    kolommen = {"grond": 16, "bewijs": 191, "rol": 32, "rol_detail": 32}
+
+    def past(kolom, waarde):
+        breedte = kolommen.get(kolom)
+        return breedte is not None and len(waarde) <= breedte
+
+    assert past("grond", "handmatig")
+    assert past("grond", "domein gelijk")
+    assert not past("grond", "bestaande koppeling in connected_brand_id")
+    assert past("bewijs", "usermeta connected_brand_id")
+    assert past("rol", "commercieel contact")
+
+
+@geval(
+    "grond is een gesloten lijst van hooguit zestien tekens",
+    "Afgesproken met Johan 09-09-2026 nadat de migratie live faalde: grond is een enum "
+    "(domein|domeinstam|naam|handmatig|registratie). Uitleg hoort in bewijs of bron.",
+)
+def t_grond_enum():
+    for goed in norm.GROND:
+        assert norm.controleer_grond(goed) == goed
+        assert norm.past_in_kolom("grond", goed), f"{goed} past niet in VARCHAR(16)"
+
+    for fout in ("bestaande koppeling in connected_brand_id", "e-maildomein gelijk aan merkdomein"):
+        try:
+            norm.controleer_grond(fout)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"{fout!r} had geweigerd moeten worden")
+
+    for rol in norm.ROL:
+        assert norm.controleer_rol(rol) == rol
+        assert norm.past_in_kolom("rol", rol)
+
+
+@geval(
+    "een domein draagt meer dan één merk",
+    "Op 09-09-2026 zette de matcher domeinen in een gewone dict, waardoor bij twee merken "
+    "op één domein willekeurig de laatste won. Bij i-did.nl koos hij Sylvia Calvo in "
+    "plaats van I-did, terwijl daar een besluit over lag.",
+)
+def t_domein_index():
+    merken = [
+        {"id": 54787, "web": "i-did.nl"},
+        {"id": 135221, "web": "i-did.nl"},
+        {"id": 2801, "web": "abet.nl"},
+        {"id": 99, "web": "instagram.com"},
+    ]
+    idx = norm.domein_index(merken, lambda m: m["web"])
+
+    assert len(idx["i-did.nl"]) == 2, "beide merken op i-did.nl horen kandidaat te zijn"
+    assert {m["id"] for m in idx["i-did.nl"]} == {54787, 135221}
+    assert len(idx["abet.nl"]) == 1
+    assert "instagram.com" not in idx, "platformdomein hoort geen identiteit te zijn"
+
+
 def main():
     goed = 0
     for naam, toelichting, fn in GEVALLEN:
