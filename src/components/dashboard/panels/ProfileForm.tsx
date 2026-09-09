@@ -9,6 +9,7 @@ import { COUNTRY_OPTIONS, resolveCountryCode } from '@/lib/config/countries'
 import { withCurrentSelectValue } from '@/lib/config/profile-options'
 import { checkCheckoutVat } from '@/lib/api/checkout-account'
 import type { UserProfile, ProfileFieldOptions } from '@/types/dashboard'
+import { EmailChangeField } from './EmailChangeField'
 
 /**
  * Personal profile form. Controlled state seeded from the data layer; the
@@ -182,14 +183,7 @@ export function ProfileForm({
         </div>
 
         <div className="g2">
-          <Input
-            label="Email"
-            type="email"
-            required
-            value={form.email}
-            readOnly
-            helper="Email changes need confirmation at the new address. That flow lands with the next frontend update — until then this field stays as-is."
-          />
+          <EmailChangeField email={form.email} pendingEmail={initial.pendingEmail} />
           <Input
             label="Telephone"
             type="tel"

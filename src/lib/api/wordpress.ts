@@ -1636,7 +1636,9 @@ export class WordPressAuthError extends WordPressError {
 function isAuthErrorResponse(payload: unknown): payload is AuthErrorResponse {
   if (!payload || typeof payload !== 'object') return false
   const p = payload as Record<string, unknown>
-  if (typeof p.code !== 'string' || !p.code.startsWith('md_auth_')) return false
+  // Auth, tokens, and dashboard email-change all use the WP REST error envelope
+  // with an `md_*` code (not only `md_auth_*`).
+  if (typeof p.code !== 'string' || !p.code.startsWith('md_')) return false
   if (typeof p.message !== 'string') return false
   const data = p.data as Record<string, unknown> | undefined
   if (!data || typeof data.status !== 'number') return false
@@ -1881,6 +1883,85 @@ export async function resendConfirmation(token: string): Promise<void> {
     body: {},
     bearer: token,
   })
+}
+
+/**
+ * Peek a claim token without consuming it (mail-scanner safe).
+ */
+export async function claimCheck(token: string): Promise<{
+  email: string
+  firstName: string
+  lastName: string
+}> {
+  const raw = await wpAuthFetch<{
+    email?: string
+    first_name?: string
+    last_name?: string
+  }>(`/md/v2/auth/claim/check?token=${encodeURIComponent(token)}`, {
+    method: 'GET',
+  })
+
+  return {
+    email: raw.email ?? '',
+    firstName: raw.first_name ?? '',
+    lastName: raw.last_name ?? '',
+  }
+}
+
+/**
+ * Complete a contact → account claim. Returns the same JWT payload as login/register.
+ */
+export async function claimComplete(args: {
+  token: string
+  password: string
+  accountType: string
+  firstName?: string
+  lastName?: string
+  profession?: string
+  organisation?: string
+}): Promise<AuthMeResponse> {
+  const body: Record<string, string> = {
+    token: args.token,
+    password: args.password,
+    account_type: args.accountType,
+  }
+  if (args.firstName) body.first_name = args.firstName
+  if (args.lastName) body.last_name = args.lastName
+  if (args.profession) body.profession = args.profession
+  if (args.organisation) body.organisation = args.organisation
+
+  const raw = await wpAuthFetch<WPAuthMeRawResponse>('/md/v2/auth/claim/complete', {
+    method: 'POST',
+    body,
+  })
+  return mapAuthMeResponse(raw)
+}
+
+/**
+ * Peek an email-change token without consuming it.
+ */
+export async function emailChangeCheck(token: string): Promise<{ newEmail: string }> {
+  const raw = await wpAuthFetch<{ new_email?: string }>(
+    `/md/v2/dashboard/email-change/check?token=${encodeURIComponent(token)}`,
+    { method: 'GET' },
+  )
+  return { newEmail: raw.new_email ?? '' }
+}
+
+/**
+ * Consume an email-change token and move the account address.
+ */
+export async function emailChangeComplete(
+  token: string,
+): Promise<{ email: string; message: string }> {
+  const raw = await wpAuthFetch<{ email?: string; message?: string }>(
+    '/md/v2/dashboard/email-change/complete',
+    { method: 'POST', body: { token } },
+  )
+  return {
+    email: raw.email ?? '',
+    message: raw.message ?? '',
+  }
 }
 
 /**

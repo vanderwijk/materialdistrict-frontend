@@ -85,6 +85,11 @@ export interface UserProfile {
   profession: string
   /** Industry/sector dropdown value (slug). Options come from `getProfileFieldOptions`. */
   industry: string
+  /**
+   * Masked address of an email change awaiting confirmation, e.g. `j***@example.com`.
+   * Set by the server; the account still uses `email` until the link is clicked.
+   */
+  pendingEmail?: string | null
   // --- Billing & address ---
   address: string
   /** Optionele tweede adresregel (suite, etage, etc.); WP user-meta `address_2`. */

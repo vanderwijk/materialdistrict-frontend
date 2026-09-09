@@ -6126,6 +6126,27 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* Text links inside profile email-change / claim banners. */
+.link-button {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.link-button:hover { color: var(--navy-mid); }
+.field-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
 
 /* ============================================================ */
 /* SESSIE 4 PATCH B3 — merged from globals-additions-patch-batch3.css */

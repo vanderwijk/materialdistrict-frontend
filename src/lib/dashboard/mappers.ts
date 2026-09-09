@@ -68,6 +68,7 @@ interface RawUserProfile {
   company?: string
   vat_number?: string
   avatar_url?: string | null
+  pending_email?: string | null
 }
 
 interface RawProfileFieldOption {
@@ -140,6 +141,7 @@ export function mapUserProfile(raw: RawUserProfile): UserProfile {
     company: raw.company ?? '',
     vatNumber: raw.vat_number ?? '',
     avatarUrl: raw.avatar_url ?? null,
+    pendingEmail: raw.pending_email ?? null,
   }
 }
 
