@@ -329,6 +329,24 @@ def t_activiteit():
     assert a != norm.feitsleutel("user", 42, "standbemanning", "MDU 2025", "2026-03-04")
 
 
+@geval(
+    "een indexnaam mag geen gereserveerd woord zijn",
+    "Op 09-09-2026 botsten KEY lead en KEY object op wp_md_activity; dbDelta struikelde "
+    "erover en Johan moest ze hernoemen naar lead_idx en object_idx.",
+)
+def t_gereserveerd():
+    for fout in ("lead", "object", "order", "rank"):
+        try:
+            norm.veilige_schemanaam(fout)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"{fout!r} had geweigerd moeten worden")
+
+    for goed in ("lead_idx", "object_idx", "type_editie", "batch", "subject"):
+        assert norm.veilige_schemanaam(goed) == goed
+
+
 def main():
     goed = 0
     for naam, toelichting, fn in GEVALLEN:

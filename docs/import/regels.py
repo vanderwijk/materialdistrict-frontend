@@ -352,3 +352,22 @@ def feitsleutel(subject_type, subject_id, soort, editie, datum):
     """Eén feit bestaat één keer. Zelfde sleutel als de unieke index op wp_md_activity."""
     return (subject_type, int(subject_id), controleer_activiteit(soort),
             editie or '', str(datum or ''))
+
+
+#: Woorden die MySQL voor zichzelf houdt. Een index of kolom die zo heet laat dbDelta
+#: stilletjes struikelen. Op 09-09-2026 botsten de indexnamen `lead` en `object` op
+#: wp_md_activity; hernoemd naar lead_idx en object_idx.
+GERESERVEERD = {
+    'lead', 'object', 'rank', 'system', 'groups', 'rows', 'window', 'over',
+    'order', 'group', 'key', 'index', 'table', 'column', 'select', 'from',
+    'where', 'range', 'first', 'last', 'lag', 'cume_dist', 'percent_rank',
+}
+
+
+def veilige_schemanaam(naam):
+    """Voor een kolom- of indexnaam. Geeft de naam terug of legt uit waarom hij niet kan."""
+    if naam.lower() in GERESERVEERD:
+        raise ValueError(
+            f'{naam!r} is een gereserveerd woord in MySQL; kies bijvoorbeeld {naam}_idx.'
+        )
+    return naam
