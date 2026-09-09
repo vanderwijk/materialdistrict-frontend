@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.28 · 08-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.29 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1316,38 +1316,44 @@ nooit op `main` is geland.
 
 
 
-**5. Toegang eindigt pas bij `canceled`, en wat daarheen leidt is niet ingesteld.** Gemeten
-08-09-2026 door Johan. Het membership wordt toegekend bij `checkout.session.completed`; de toegang
-volgt daarna de abonnementsstatus, waarbij `active`, `trialing` én `past_due` toegang geven en alleen
-`incomplete` niet. Een mislukte betaling zet het abonnement via `invoice.payment_failed` op
-`past_due` — en dat trekt de toegang dus níét in. Echt intrekken gebeurt pas bij `canceled` of
-`deleted`.
+**5. Een teruggeboekte betaling laat het membership onaangeroerd.** Gemeten 08 en 09-09-2026 door
+Johan.
 
-*Dat ontwerp is verdedigbaar,* want je wilt iemand niet buitensluiten omdat zijn pas verlopen is. Het
-werkt alleen zolang er iets is dat een blijvend onbetaald abonnement uiteindelijk annuleert. Dat is
-één instelling in Stripe Billing: de actie aan het eind van de incassopogingen. Staat die op niets
-doen, dan blijft het abonnement onbeperkt `past_due` en houdt een niet-betalend lid zijn toegang.
-Staat die op annuleren, dan sluit de keten. **Niemand heeft die instelling bekeken.** Dat is de
-kern van deze bevinding, en zij is niet SEPA-specifiek: een verlopen creditcard komt vaker voor dan
-een mislukte incasso en loopt langs hetzelfde pad.
+*Wat wél sluit.* Het membership wordt toegekend bij `checkout.session.completed`; toegang volgt de
+abonnementsstatus, waarbij `active`, `trialing` en `past_due` toegang geven. Een mislukte betaling
+zet het abonnement via `invoice.payment_failed` op `past_due`, wat de toegang bewust laat staan — je
+sluit iemand niet buiten omdat zijn pas verlopen is. In Stripe Billing staan Smart Retries aan met
+als eindactie *abonnement opzeggen*. De keten loopt dus `past_due` → retries → `canceled` → geen
+toegang. Dat deel is in orde.
 
-*Wat de campagne wel en niet raakt.* De merk-checkout biedt card en iDEAL, geen rauwe SEPA-incasso.
-iDEAL bevestigt direct, dus bij een nieuwe verkoop zit er nauwelijks tijd tussen toegang en geld. De
-SEPA-machtiging die uit iDEAL volgt wordt pas bij de verlenging gebruikt — over een jaar, en dan bij
-alle merken tegelijk. Minder urgent dus, niet minder noodzakelijk.
+*Wat niet sluit.* Bij een terugvordering blijft het abonnement onveranderd. De dunning-keten reageert
+op mislukte incasso's, niet op een geslaagde betaling die later wordt teruggehaald. Er is geen
+handler op dispute-events. Gevolg: een merk kan binnen acht weken €3.000 terugvragen bij zijn bank en
+het membership blijft actief, zonder dat iemand het merkt.
 
-*Wat wel scheef staat.* Bij SEPA mag de betaler een geautoriseerde incasso acht weken lang bij zijn
-bank terugvragen, en bij niet-geautoriseerde incasso's dertien maanden; SEPA-geschillen zijn
-definitief zonder beroep. Een teruggevorderde betaling laat het abonnement op `past_due` staan, en
-`past_due` houdt de toegang open.
+Dat is geen randgeval. De incasso loopt via de particuliere variant (*doorlopende incasso,
+standaard*), de enige die bij online verkoop werkbaar is; de zakelijke variant kent geen
+terugboekrecht maar eist registratie van de machtiging bij de bank van de betaler. Acht weken
+onvoorwaardelijk terugboekrecht is dus onvermijdelijk, en de bankmail van de betaler legt actief uit
+hoe het moet. SEPA-geschillen zijn bovendien definitief: het geld is dan zeker weg.
 
-*Vervallen vermoeden.* Hier stond eerder dat er ook een handler op `charge.failed` zou moeten zijn.
-Dat is onjuist: bij abonnementen is `invoice.payment_failed` het juiste event en zou `charge.failed`
-dubbelop zijn.
+*Aanbevolen richting, nog te besluiten.* Niet automatisch annuleren — terugboeken is bij sommige
+banken één handeling in de app, en een betalende klant automatisch afsluiten is een dure manier om
+gelijk te hebben. Wel signaleren: een melding op `charge.dispute.created` en een mens die beslist.
+Bij de huidige ~30 betalende leden kan dat met de hand; na de campagne niet meer.
 
-Aanleiding: Johans eigen live Insider-verlenging stond op 08-09-2026 nog op "In behandeling" na een
-incasso van 05-09. Dat is normaal SEPA-gedrag en geen storing — het bracht alleen aan het licht dat
-het einde van het pad niet belegd is.
+*Vervallen aannames, zichtbaar gehouden.* Hier stond eerder dat er een handler op `charge.failed`
+zou moeten zijn (onjuist: bij abonnementen is `invoice.payment_failed` het juiste event), en dat de
+eindactie na de incassopogingen mogelijk op "niets doen" stond (onjuist: die staat op opzeggen).
+
+
+
+**6. Correctie: de Stripe-aankondigingsmail droeg het oude Materia-logo.** Vastgesteld en
+opgelost door Johan op 09-09-2026. Dit register meldde op grond van een schermafbeelding dat de
+huisstijl klopte; dat was een bevestiging zonder meting. De branding in Stripe stond nog op het
+oude logo en de bijbehorende grijstint, en is aangepast. Genoteerd omdat de fout in de
+beoordeling zat, niet in de instelling — en omdat elke incassoaankondiging die uitgaat deze
+branding draagt.
 
 ---
 
@@ -1631,5 +1637,17 @@ en een verlopen creditcard komt vaker voor dan een mislukte incasso.
 
 Eén eerdere aanname is als vervallen genoteerd in plaats van geschrapt: dat er een handler op
 `charge.failed` zou moeten zijn. Bij abonnementen is `invoice.payment_failed` het juiste event.
+
+**v1.29 · 09-09-2026** — bevinding 5 versmald na meting. De dunning-keten blijkt te sluiten: Smart
+Retries met opzeggen als eindactie, dus een blijvend onbetaald abonnement eindigt vanzelf. Wat
+overblijft is één specifiek gat: een terugvordering laat het abonnement onveranderd en er is geen
+handler op dispute-events, terwijl het terugboekrecht acht weken duurt en het geld dan definitief weg
+is. Met een richting erbij — signaleren in plaats van automatisch annuleren — die nog besloten moet
+worden.
+
+Bevinding 6 toegevoegd, als correctie op dit register zelf: hier stond dat de aankondigingsmail de
+juiste huisstijl droeg. Dat was afgelezen van een schermafbeelding en niet gemeten; het was het oude
+Materia-logo. Johan heeft het aangepast. Het staat er als bevinding en niet als voetnoot, omdat de
+fout in de beoordeling zat.
 
 Opgesteld door Claude, namens Jeroen.
