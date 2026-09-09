@@ -12,7 +12,7 @@
 > **De regel die eruit volgt:** een veld dat niet in `wp/v2` staat, bestaat níét niet. De publieke
 > API is een uitsnede, geen inventaris. Meet altijd tegen de laag waar het veld hoort.
 >
-> Versie 1.2 · 09-09-2026 · vier open punten gesloten door Johan; §7 regel 13. Zie §Status.
+> Versie 1.3 · 09-09-2026 · opslagsleutels bij `publication` vastgelegd. Zie §Status.
 
 ---
 
@@ -156,6 +156,27 @@ translucence · uv_resistance · weather_resistance · weight
   100%, `isOnline` = `true` op 100%, `validUntil` = `2027-12-31` op 3.245 en leeg op 12. Die twaalf
   zijn alle gepubliceerd vanaf 24-08-2026.
 
+  **Opslagsleutels (bevestigd door Johan, 09-09-2026).**
+
+  | Sleutel | Rol |
+  |---|---|
+  | `_material_publication_status` | de status: `legacy`, `member`, `standalone_regular`, `standalone_grandfathered`, `editorial`, `former_member`, `former_standalone` (B32 + B94) |
+  | `_material_publication_valid_until` | **canoniek** voor `validUntil` |
+  | `_material_period_end_date` | **legacy-alias** voor dezelfde datum; alleen gelezen als de canonieke leeg is |
+
+  De samenstelling gebeurt in `md_material_get_publication_payload()`. **Schrijf altijd naar de
+  canonieke sleutel.**
+
+  **Verwar deze niet met de membershiptermijn op merkniveau.** Die heeft eigen sleutels:
+  `_brand_membership_valid_until` en `_brand_period_end_date`. Ondanks de gelijkende naam is
+  `_material_period_end_date` géén membershipveld — wie op naam afgaat, schrijft een publicatiedatum
+  in een abonnementsveld of andersom.
+
+  **De alias mag weg.** Op 09-09-2026 zijn beide sleutels op alle 3.257 gepubliceerde materialen
+  gevuld en gelijk; nul afwijkingen. Zolang er dubbel geschreven wordt is dat houdbaar, maar het zijn
+  twee kopieën van dezelfde waarheid en die lopen uiteen zodra ergens maar één wordt bijgewerkt. Zie
+  het openstaande punt 5 in §Status.
+
   **Wat daaruit volgt.** De backfill ís gedraaid, rond 23-08-2026, en niet "nooit" zoals hier stond.
   Wat ontbreekt is een standaardwaarde bij het aanmaken van nieuw materiaal: alles van na de mutatie
   valt erbuiten, en dat aantal groeit. Voor `source` is onbeslist of `standalone` een opgeslagen
@@ -290,8 +311,8 @@ uit de live API. De dashboardvelden (§2b, §3c, §5a) komen uit `src/types/dash
 frontend-repo — dat is het contract dat de frontend hanteert, dus het is betrouwbaar over wat de
 endpoint teruggeeft. De membership- en statusvelden komen uit `docs/cms-plugin/database.md`.
 
-**Wat níét geverifieerd was en door Johan bevestigd moest worden — alle vier gesloten op
-09-09-2026:**
+**Openstaande punten.** De vier uit v1.0 zijn op 09-09-2026 beantwoord; punt 5 is die dag
+toegevoegd.
 
 1. ~~De exacte meta-sleutels achter de dashboardvelden.~~ **Beantwoord:** `_brand_vat_number` en
    `_brand_chamber_number`, als brand-postmeta. Het gebruikers-btw-nummer is een ander veld
@@ -304,6 +325,12 @@ endpoint teruggeeft. De membership- en statusvelden komen uit `docs/cms-plugin/d
    besluit, geen meting.
 4. ~~Of `brand.primary_user_id` is gebouwd.~~ **Beantwoord:** `_brand_primary_user_id` bestaat en is
    gevuld op 7 brands. `_brand_email` blijft parallel als mailroute bestaan — geen of/of.
+5. **De dual-write op de vervaldatum moet eruit.** Toegevoegd 09-09-2026.
+   `_material_period_end_date` is een legacy-alias voor `_material_publication_valid_until` en wordt
+   nu nog daarnaast geschreven. Er is niets stuk — beide staan op alle 3.257 records gevuld en gelijk
+   — maar het zijn twee kopieën van dezelfde waarheid. De dual-write kan eruit zodra alle schrijf- en
+   leespaden de canonieke sleutel gebruiken. Genoteerd omdat een opruiming die nergens als taak staat
+   niet gebeurt, en deze stukloopt bij de eerste eenzijdige update.
 
 Daarmee kan een importscript naar de dashboardvelden schrijven, mits het `_brand_email` en
 `_brand_primary_user_id` naast elkaar behandelt en niet het één voor het ander aanziet.
@@ -355,5 +382,17 @@ md/v2-routelijst gaf `dashboard/brands/{brandId}/profile` niet terug; ik noteerd
 in plaats van als conclusie, en dat was maar goed ook, want de route bestaat gewoon. De les is de
 regel van dit hele document, één laag hoger: ook de routelijst is een uitsnede. Een endpoint die er
 niet in staat, bestaat níét niet.
+
+**v1.3 · 09-09-2026** — de opslagsleutels achter `publication` staan er nu, bevestigd door Johan.
+`_material_publication_valid_until` is canoniek; `_material_period_end_date` is een legacy-alias die
+alleen wordt gelezen als de canonieke leeg is. Zonder die twee namen op papier is een importscript
+niet te schrijven zonder gokken.
+
+Dat de alias eruit kan staat als openstaand punt 5 en niet alleen in deze regel. Een opruiming die
+nergens als taak staat gebeurt niet, en deze loopt stuk op het moment dat iets één van de twee
+sleutels bijwerkt en de ander niet.
+
+Ook vastgelegd omdat de namen misleiden: `_material_period_end_date` is géén membershipveld. De
+membershiptermijn op merkniveau heeft eigen sleutels.
 
 Opgesteld door Claude, namens Jeroen.
