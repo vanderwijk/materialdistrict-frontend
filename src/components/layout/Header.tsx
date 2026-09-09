@@ -236,12 +236,15 @@ export function Header({
           <form onSubmit={handleSearchSubmit} role="search">
             <input
               ref={searchInputRef}
-              type="text"
+              id="header-search"
+              name="q"
+              type="search"
               className="header-search"
               placeholder="Search materials, brands, articles…"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               aria-label="Search"
+              autoComplete="off"
             />
             <button
               type="button"
