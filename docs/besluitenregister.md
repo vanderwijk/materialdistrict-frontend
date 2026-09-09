@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.35 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.36 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1338,6 +1338,17 @@ blijven is een gesprek met bewijs in plaats van een koude benadering. Verlopend 
 materiaal hoort daarom op een lijst voor Vincent en Dave te komen. Een `editorial`-materiaal kan
 daarna `member` of `standalone_regular` worden; dat is precies de conversie waarvoor de status
 bestaat.
+**Wie publiceert bepaalt de status — ook als het merk niet zelf uploadt.** Bij de eerste uitvoering
+op 09-09-2026 zijn twaalf recent gepubliceerde materialen op `standalone_regular` gezet, op grond van
+de regel "merk op Free → `standalone_regular`". Die regel is onvolledig: hij geldt voor zelf-upload
+door een merk. Publiceert de redactie voor een merk dat niets betaalt, dan is het `editorial`. Geen
+van de twaalf merken komt voor in het factuuroverzicht; ze stonden dus geregistreerd als betalende
+standalone-klant à €250 per jaar zonder dat er iemand betaalde. Zie bevinding 7.
+
+**Terugwerkende kracht raakt zichtbaarheid, en dat is een redactionele keuze.** Omdat `editorial`
+standaard insider-only is, betekent het corrigeren van bestaand publiek materiaal dat het achter
+Insider verdwijnt. Bij een herstelactie wordt `insider_only` daarom **niet** meegezet; dat beoordeelt
+Sigrid per materiaal.
 **Bron.** 09-09-2026, Jeroen.
 **Raakt.** B32 (uitgebreid van zes naar zeven), B33, het redactiedashboard, de member-outreach.
 
@@ -1489,6 +1500,29 @@ huisstijl klopte; dat was een bevestiging zonder meting. De branding in Stripe s
 oude logo en de bijbehorende grijstint, en is aangepast. Genoteerd omdat de fout in de
 beoordeling zat, niet in de instelling — en omdat elke incassoaankondiging die uitgaat deze
 branding draagt.
+
+**7. Twaalf materialen staan onterecht als betalende standalone-publicatie.** Op 09-09-2026 zijn de
+twaalf materialen die nog geen `validUntil` droegen bijgewerkt naar `standalone_regular` met
+`validUntil` 09-09-2027. Alle twaalf horen bij merken die niet in het factuuroverzicht voorkomen —
+LCR Technologies, ErgoFloor, Aectual, Angel Mary Consultants, Reselo, CHARLE Berlin, Trederra,
+Circular Flow, Save Plastics, Elastever, RENATURE Materials en Lenkki Oy. Er betaalt niemand voor,
+en de status zegt van wel.
+
+*Gevolg.* De ledentelling en de campagnesegmentatie tellen twaalf betalende standalone-klanten die er
+niet zijn. Daarnaast staat de vervaldatum bij alle twaalf op dezelfde dag — een jaar na de mutatie in
+plaats van een jaar na publicatie.
+
+*Oorzaak, en die ligt hier.* De instructie luidde "merk op Free → `standalone_regular`". Die regel
+geldt voor zelf-upload door een merk; deze twaalf zijn door de redactie gepubliceerd en horen dus op
+`editorial` (B94). De regel is opgeschreven zonder te toetsen of hij op de bestaande gevallen paste.
+
+*Herstel.* Status naar `editorial`, `validUntil` op één jaar na de eigen publicatiedatum.
+`insider_only` blijft ongemoeid: die twaalf staan nu publiek, en ze alsnog achter Insider zetten is
+een redactionele keuze van Sigrid.
+
+*Procespunt.* Deze mutatie is buiten de zes poorten van `mutatieprotocol.md` gegaan — geen droogloop,
+geen uitdraai, geen menselijk oordeel op het patroon. Het protocol sluit dat expliciet uit, ook "even
+snel voor twintig records" (§4). Dat het om twaalf records ging is precies waarom het gebeurde.
 
 ---
 
@@ -1859,5 +1893,16 @@ het moment van publiceren, in plaats van dat alles `legacy` wordt.
 
 Die laatste correctie is de derde deze week waarbij een bevinding van 25-08 bij hermeting onjuist
 bleek. Alle drie stonden ze twee weken in het register als reden waarom de campagne geblokkeerd was.
+
+**v1.36 · 09-09-2026** — bevinding 7 toegevoegd en B94 aangevuld, beide naar aanleiding van een fout
+in mijn eigen instructie.
+
+De regel "merk op Free → `standalone_regular`" is doorgegeven zonder te toetsen of hij paste op de
+gevallen die er al lagen. Twaalf redactioneel gepubliceerde materialen zijn daardoor als betalende
+standalone-publicatie geregistreerd. B94 draagt nu de ontbrekende helft van de regel: wie publiceert
+bepaalt de status, en de redactie publiceren voor een niet-betalend merk levert `editorial`.
+
+Er staat ook bij dat een herstelactie `insider_only` niet meeneemt. Materiaal dat al twee weken
+publiek staat achter Insider laten verdwijnen is een redactionele keuze en geen technisch gevolg.
 
 Opgesteld door Claude, namens Jeroen.
