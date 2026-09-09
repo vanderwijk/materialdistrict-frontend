@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.31 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.32 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1317,12 +1317,26 @@ toegevoegd.
 
 *Deze horen niet permanent in het register; ze staan hier tot ze zijn opgelost.*
 
-**1. `publication_status` is leeg op alle 3.246 gepubliceerde materialen.** Volgens B32 hoort de
-default `legacy` te zijn. Het veld bestaat en is geregistreerd, maar de backfill is nooit
-gedraaid. Gevolg: het onderscheid tussen betaald, historisch en beëindigd materiaal bestaat op
-dit moment niet in de data, de legacy-banner uit B34 kan niet verschijnen, en de automatische
-archivering op 30 april 2027 heeft niets om op te draaien. Ook `brand.tier` staat op `free` voor
-alle 2.093 gepubliceerde brands — de member-status uit launch-taak 5 is dus nog niet gezet.
+**1. Niet de bulkmutatie ontbreekt, maar de standaardwaarde bij aanmaak — en `brand.tier` klopt
+niet.** Herzien 09-09-2026 na hermeting tegen de live API; de oude formulering ("`publication_status`
+leeg op alle 3.246 materialen") was achterhaald en stond ten onrechte als campagneblokkade genoteerd.
+
+*Materialen.* Van de 3.257 gepubliceerde materialen dragen er 3.245 `validUntil` = 31-12-2027,
+precies de afgesproken waarde. De twaalf die het missen zijn alle gepubliceerd vanaf 24-08-2026. De
+bulkmutatie is dus rond 23-08 gedraaid; wat sindsdien is aangemaakt valt erbuiten. Dat is geen
+restant van een bulkmutatie maar een ontbrekende standaardwaarde bij publicatie — een ander en
+kleiner probleem, dat vanzelf groeit zolang het blijft staan.
+
+*Wat van buitenaf niet vast te stellen is.* `publication.source` leest op alle records `standalone`
+en nergens `legacy`. Bij honderd procent dezelfde waarde valt niet te zien of dat de opgeslagen
+waarde is of een invulling door de API. Dat vraagt een telling op `wp_postmeta` (B57: meet in de
+juiste laag).
+
+*Merken.* Alle 2.102 merken staan op `tier` = `free`, inclusief de betalende leden. De e2e-ronde van
+04-09 heeft bewezen dat de webhook de tier correct op brand-meta schrijft, dus nieuwe aankopen komen
+goed binnen. De bestaande betalende merken hebben echter geen Stripe-abonnement — die zijn via de
+administratie afgerekend. Hun tier is dus geen databasemutatie maar een eenmalige aanvulling waarvan
+de bron in Moneybird ligt. Zolang die lijst er niet is, valt er niets te schrijven.
 
 **2. Het importprotocol staat als los `.docx` in de project knowledge.**
 `importprotocol-v4-25-08.docx` draagt versie 4.0 van 25-08-2026, terwijl de norm in de moedermap
@@ -1704,5 +1718,21 @@ dispute-notificatie van Stripe gaat meteen aan, want die kost geen code en duwt 
 toe in plaats van dat iemand eraan moet denken. Bij een gebeurtenis die een paar keer per jaar
 voorkomt is dat het hele verschil. De eigen SES-melding blijft staan als tweede stap, na de
 campagnestart.
+
+**v1.32 · 09-09-2026** — bevinding 1 herzien na hermeting. Wat hier stond als dé campagneblokkade
+blijkt voor het materiaaldeel grotendeels uitgevoerd: `validUntil` staat op 3.245 van de 3.257
+records, en de twaalf uitzonderingen zijn allemaal ná de mutatie aangemaakt. Daarmee verandert het
+probleem van aard — geen bulkmutatie meer, maar een ontbrekende standaardwaarde bij publicatie.
+
+Het merkendeel blijft staan en verandert eveneens van aard: `brand.tier` is geen databasemutatie maar
+een aanvulling uit de administratie, omdat de bestaande betalende merken geen Stripe-abonnement
+hebben.
+
+De aanleiding is het vermelden waard. Deze bevinding stond sinds 25-08 ongewijzigd in het register en
+is sindsdien in drie sessies aangehaald als de laatste blokkade, zonder dat iemand haar opnieuw had
+gemeten. Een bevinding veroudert net zo hard als een normdocument.
+
+**Ook genoteerd:** stap 1 van B93 is uitgevoerd — de dispute-notificatie staat aan in Stripe Live
+(Johan, 09-09-2026).
 
 Opgesteld door Claude, namens Jeroen.
