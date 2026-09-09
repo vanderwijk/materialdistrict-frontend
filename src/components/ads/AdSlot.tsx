@@ -23,7 +23,6 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { AD_UNITS, type AdSize, type AdSlotName } from '@/lib/ads/ad-units'
 import { hasConsent, onConsentChange } from '@/lib/consent/consent'
-import { updateGoogleConsentMode } from '@/lib/consent/google-consent-mode'
 
 interface GptSlot {
   addService(service: unknown): GptSlot
@@ -165,7 +164,6 @@ export function AdSlot({
 
       if (hasConsent() && !refreshedRef.current) {
         refreshedRef.current = true
-        updateGoogleConsentMode('granted')
         gt.pubads().refresh([slot])
       }
     })
@@ -195,7 +193,6 @@ export function AdSlot({
     if (!gt || !slot) return
 
     refreshedRef.current = true
-    updateGoogleConsentMode('granted')
     gt.cmd.push(() => {
       gt.pubads().refresh([slot])
     })

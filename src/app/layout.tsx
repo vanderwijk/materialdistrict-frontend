@@ -103,12 +103,15 @@ const consentModeInitScript = `
   try {
     var match = document.cookie.match(/(?:^|; )md_consent=([^;]*)/);
     if (match && match[1] === 'granted') {
+      window.__mdConsentMode = 'granted';
       gtag('consent', 'update', {
         ad_storage: 'granted',
         ad_user_data: 'granted',
         ad_personalization: 'granted',
         analytics_storage: 'granted'
       });
+    } else if (match && match[1] === 'denied') {
+      window.__mdConsentMode = 'denied';
     }
   } catch (e) {}
 })();

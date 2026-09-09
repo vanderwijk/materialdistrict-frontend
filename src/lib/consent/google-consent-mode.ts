@@ -10,6 +10,9 @@
  * Defaults must be set in `<head>` before any Google script runs — see the
  * inline bootstrap in `layout.tsx`. This module only updates the state after
  * the visitor chooses (or a returning visitor’s cookie is applied).
+ *
+ * Updates are deduped: ConsentBootstrap, the head snippet, and (previously)
+ * every AdSlot could each push the same `consent update` on one page load.
  */
 
 export type ConsentModeState = 'granted' | 'denied'
@@ -32,6 +35,8 @@ declare global {
     dataLayer?: unknown[]
     gtag?: (...args: unknown[]) => void
     __tcfapi?: TcfApi
+    /** Last Consent Mode state we pushed — skip identical updates. */
+    __mdConsentMode?: ConsentModeState
   }
 }
 
@@ -48,6 +53,11 @@ function ensureGtag(): (...args: unknown[]) => void {
 /** Push a Consent Mode update that GPT can pick up on the next ad request. */
 export function updateGoogleConsentMode(state: ConsentModeState): void {
   if (typeof window === 'undefined') return
+
+  // Head snippet may already have granted for returning visitors; React
+  // remounts and AdSlots must not flood dataLayer with the same update.
+  if (window.__mdConsentMode === state) return
+  window.__mdConsentMode = state
 
   const gtag = ensureGtag()
   gtag('consent', 'update', {
