@@ -12,7 +12,7 @@
 > **De regel die eruit volgt:** een veld dat niet in `wp/v2` staat, bestaat níét niet. De publieke
 > API is een uitsnede, geen inventaris. Meet altijd tegen de laag waar het veld hoort.
 >
-> Versie 1.1 · 09-09-2026 · hermeten tegen de live API; §3b herzien. Zie §Status.
+> Versie 1.2 · 09-09-2026 · vier open punten gesloten door Johan; §7 regel 13. Zie §Status.
 
 ---
 
@@ -66,6 +66,15 @@ die niet publiek zijn:**
 >
 > In de plugindocumentatie staat `_brand_email` bovendien expliciet genoemd als bestaand veld dat
 > als fallback blijft bestaan naast `brand.primary_user_id` (`docs/cms-plugin/database.md` §B7).
+>
+> **Opslagsleutels, bevestigd door Johan 09-09-2026:** `vatNumber` → `_brand_vat_number`,
+> `chamberNumber` → `_brand_chamber_number`, beide als brand-postmeta. Het btw-nummer van een
+> *gebruiker* is iets anders en blijft `billing_vat_number` — verwar die twee niet bij een import.
+>
+> **De endpoint bestaat.** Op 09-09-2026 gaf de md/v2-routelijst deze route niet terug, wat hier
+> eerst als open vraag stond. Johan heeft bevestigd dat `GET/POST
+> /md/v2/dashboard/brands/{brandId}/profile` gewoon bestaat en niet hernoemd is. De routelijst was
+> incompleet, niet het pad. Zie §7 regel 13.
 
 ### 2c. Membership & status
 
@@ -207,6 +216,9 @@ is geparkeerd.
 - `membership_status` — Insider-status. **`legacy` is hier geen geldige waarde**; dat is
   uitsluitend een brand-/materiaalbegrip (B30).
 - `connected_brands` — de brands die deze user beheert.
+- **`_brand_primary_user_id` bestaat** (bevestigd Johan, 09-09-2026) en is gevuld op 7 van de 2.102
+  brands. `_brand_email` verdwijnt daarmee niet: die blijft parallel bestaan als mailroute. Het is
+  geen of/of, en een import mag dus niet aannemen dat het één het ander vervangt.
 - `md_account_kind = contact` — een geïmporteerd contact, géén inlogbaar account (B38).
 - Mailvoorkeur: `newsletter_consent` · `mail_suppressed` · `digest_frequency` · `mail_basis`.
   `digest_frequency` = `daily` · `weekly` · `monthly` · `none`, default `weekly` (B18a).
@@ -259,6 +271,10 @@ vier channels, één met vijf).
     09-09-2026.
 12. **Een pagina voorbij de laatste geeft `400`.** Dat is het einde van de lijst, geen fout — laat
     een pagineerscript daar stoppen in plaats van afbreken. Toegevoegd 09-09-2026.
+13. **Ook de routelijst is een uitsnede.** `GET /wp-json/md/v2` gaf op 09-09-2026 71 routes terug
+    zonder `dashboard/brands/{brandId}/profile`, terwijl die route bestaat. Een endpoint die niet in
+    de index staat, bestaat dus níét niet — dezelfde regel als voor velden, één laag hoger. Wie een
+    route mist, vraagt het na in plaats van te concluderen dat hij weg is. Toegevoegd 09-09-2026.
 
 ---
 
@@ -274,20 +290,23 @@ uit de live API. De dashboardvelden (§2b, §3c, §5a) komen uit `src/types/dash
 frontend-repo — dat is het contract dat de frontend hanteert, dus het is betrouwbaar over wat de
 endpoint teruggeeft. De membership- en statusvelden komen uit `docs/cms-plugin/database.md`.
 
-**Wat níét geverifieerd is en door Johan bevestigd moet worden:**
+**Wat níét geverifieerd was en door Johan bevestigd moest worden — alle vier gesloten op
+09-09-2026:**
 
-1. **De exacte meta-sleutels achter de dashboardvelden.** Ik ken de namen in het API-contract
-   (`vatNumber`, `chamberNumber`) maar niet met zekerheid de onderliggende `wp_postmeta`-sleutels.
-   Voor een import is dat het verschil tussen werken en niet werken.
-2. **Of er velden in de database staan die door géén enkele endpoint worden teruggegeven.** Dat kan
-   ik principieel niet zien. Alleen een blik op `wp_postmeta` beantwoordt dat.
-3. **De waardenlijst van `record_status`.** Het veld bestaat en is leeg; het importprotocol wil er
-   `prospect` in schrijven (B47).
-4. **Of `brand.primary_user_id` is gebouwd** of dat `_brand_email` nog de enige route is (§B7 stond
-   als voorstel in `database.md`).
+1. ~~De exacte meta-sleutels achter de dashboardvelden.~~ **Beantwoord:** `_brand_vat_number` en
+   `_brand_chamber_number`, als brand-postmeta. Het gebruikers-btw-nummer is een ander veld
+   (`billing_vat_number`).
+2. **Of er velden in de database staan die door géén enkele endpoint worden teruggegeven.** Blijft
+   principieel open; alleen een volledige blik op `wp_postmeta` beantwoordt dat. Er is geen
+   aanleiding om aan te nemen dat het er zijn, maar het is niet uitgesloten.
+3. ~~De waardenlijst van `record_status`.~~ Nog steeds niet vastgelegd, maar het veld is gemeten en
+   leeg op alle 2.102 brands. Het importprotocol wil er `prospect` in schrijven (B47); dat is een
+   besluit, geen meting.
+4. ~~Of `brand.primary_user_id` is gebouwd.~~ **Beantwoord:** `_brand_primary_user_id` bestaat en is
+   gevuld op 7 brands. `_brand_email` blijft parallel als mailroute bestaan — geen of/of.
 
-Deze vier gaten zijn expliciet gemarkeerd in plaats van ingevuld met een aanname. Zolang ze
-openstaan, mag een importscript niet naar die velden schrijven.
+Daarmee kan een importscript naar de dashboardvelden schrijven, mits het `_brand_email` en
+`_brand_primary_user_id` naast elkaar behandelt en niet het één voor het ander aanziet.
 
 **v1.1 · 09-09-2026** — hermeten tegen de live API, met één inhoudelijke herziening.
 
@@ -323,5 +342,18 @@ blijven liggen. Er lag al een volledig nieuw opgebouwde versie klaar toen het or
 teruggevonden. Die is weggegooid — het origineel bevatte de dashboardvelden, de user-sectie, de
 taxonomieën en drie meetregels (6, 7 en de cap op 100 per pagina) die in een hermeting niet zichtbaar
 zijn. Een hermeting vervangt geen document dat ook contractkennis draagt.
+
+**v1.2 · 09-09-2026** — vier open punten gesloten met antwoorden van Johan, en één meetregel
+toegevoegd naar aanleiding van een fout in mijn eigen meting.
+
+De opslagsleutels achter de dashboardvelden staan er nu (§2b), en `_brand_primary_user_id` is
+bevestigd met zeven gevulde records (§5c). Dat laatste met de nadruk dat `_brand_email` parallel
+blijft bestaan: een import die aanneemt dat het één het ander vervangt, gaat mailroutes kwijtraken.
+
+**Regel 13 is toegevoegd omdat ik een bestaande endpoint als ontbrekend rapporteerde.** De
+md/v2-routelijst gaf `dashboard/brands/{brandId}/profile` niet terug; ik noteerde dat als open vraag
+in plaats van als conclusie, en dat was maar goed ook, want de route bestaat gewoon. De les is de
+regel van dit hele document, één laag hoger: ook de routelijst is een uitsnede. Een endpoint die er
+niet in staat, bestaat níét niet.
 
 Opgesteld door Claude, namens Jeroen.

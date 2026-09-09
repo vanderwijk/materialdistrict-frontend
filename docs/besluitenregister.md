@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.32 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.33 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -1327,10 +1327,26 @@ bulkmutatie is dus rond 23-08 gedraaid; wat sindsdien is aangemaakt valt erbuite
 restant van een bulkmutatie maar een ontbrekende standaardwaarde bij publicatie — een ander en
 kleiner probleem, dat vanzelf groeit zolang het blijft staan.
 
-*Wat van buitenaf niet vast te stellen is.* `publication.source` leest op alle records `standalone`
-en nergens `legacy`. Bij honderd procent dezelfde waarde valt niet te zien of dat de opgeslagen
-waarde is of een invulling door de API. Dat vraagt een telling op `wp_postmeta` (B57: meet in de
-juiste laag).
+*Gemeten door Johan, 09-09-2026 op `wp_postmeta`.* Alle 3.257 gepubliceerde materialen dragen
+`_material_publication_status` = `legacy`. Het is dus een opgeslagen waarde en geen invulling van een
+leeg veld. `validUntil` wordt níét gezet bij publiceren — dat is nooit gebouwd, omdat de bulkmutatie
+het destijds in één keer deed.
+
+*Daaruit volgen twee dingen die geen van beide een bulkmutatie zijn.*
+
+**(a) De API slaat `legacy` plat naar `standalone`.** In de database staat `legacy`, de publieke laag
+geeft `source: "standalone"`. Die twee betekenen niet hetzelfde, en de frontend kan ze daardoor niet
+onderscheiden. Dat raakt B34 rechtstreeks: een legacy-banner die moet tonen dat een materiaal onder
+de overgangsregeling online staat, kan niet werken zolang legacy en standalone in de uitsnede
+samenvallen. De data is in orde; de projectie gooit informatie weg. Dit is een fout in de mapper, niet
+in de gegevens.
+
+**(b) Nieuw materiaal krijgt bij aanmaak `legacy`.** Dat conflicteert met wat `legacy` betekent —
+online onder de oude regeling, geldig tot 31-12-2027. Materiaal dat vandaag door een betalend lid
+wordt gepubliceerd hoort aan dat lidmaatschap te hangen, niet aan de overgangsregeling. Zolang dit zo
+blijft groeit de legacy-groep aan met records die er niet in thuishoren, en dat is precies de groep
+die eind 2027 moet worden aangeschreven. **Welke waarde nieuw materiaal wél moet krijgen is een
+productbesluit dat nog niet genomen is.**
 
 *Merken.* Alle 2.102 merken staan op `tier` = `free`, inclusief de betalende leden. De e2e-ronde van
 04-09 heeft bewezen dat de webhook de tier correct op brand-meta schrijft, dus nieuwe aankopen komen
@@ -1734,5 +1750,17 @@ gemeten. Een bevinding veroudert net zo hard als een normdocument.
 
 **Ook genoteerd:** stap 1 van B93 is uitgevoerd — de dispute-notificatie staat aan in Stripe Live
 (Johan, 09-09-2026).
+
+**v1.33 · 09-09-2026** — bevinding 1 aangevuld met Johans meting op `wp_postmeta`, die twee dingen
+blootlegt die geen van beide met een bulkmutatie op te lossen zijn.
+
+De eerste is een fout in de mapper: opgeslagen `legacy` komt er als `standalone` uit, waardoor de
+frontend die twee niet kan onderscheiden en de legacy-banner uit B34 niet kan werken. De tweede is
+een productvraag: nieuw materiaal krijgt bij aanmaak `legacy`, terwijl legacy de overgangsregeling
+tot 31-12-2027 is en niet iets waar nieuw materiaal in hoort.
+
+Beide zijn gevonden door één vraag te stellen die van buitenaf niet te beantwoorden was. De les uit
+v1.32 gaat hier dus verder: honderd procent dezelfde waarde was niet alleen reden om door te vragen,
+maar verborg ook dat de opgeslagen waarde iets anders was dan de gerapporteerde.
 
 Opgesteld door Claude, namens Jeroen.
