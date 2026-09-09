@@ -16,7 +16,7 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.33 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
+> Versie 1.35 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
 > bewuste, tijdelijke handeling.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
@@ -379,12 +379,25 @@ prijsmodel erop hoeft te worden geforceerd.
 **Besluit.** `material.publication_status` = `member` / `standalone_regular` (€250/jr) /
 `standalone_grandfathered` (€100/jr) / `legacy` / `former_member` / `former_standalone`.
 **Default voor bestaande materialen: `legacy`.**
+**⚠ UITGEBREID DOOR B94 (09-09-2026): een zevende status `editorial` is toegevoegd.**
 **Grond.** Het onderscheid tussen betaald, historisch en beëindigd bepaalt zichtbaarheid,
 filtering, badges en sortering — en is de basis onder de member-outreach.
 **Bron.** `docs/cms-plugin/database.md` A4.
-**⚠ NIET UITGEVOERD.** Gemeten op 25-08-2026: `publication_status` is **leeg op alle 3.246
-gepubliceerde materialen**. Het veld bestaat, de backfill naar `legacy` is nooit gedraaid.
-Daarmee is het hele onderscheid op dit moment onzichtbaar in de data. Zie §Bevindingen.
+**⚠ HERZIEN 09-09-2026 — de melding "niet uitgevoerd" was onjuist.** Hier stond dat
+`publication_status` leeg was op alle 3.246 materialen en dat de backfill nooit had gedraaid. Johan
+heeft op 09-09-2026 op `wp_postmeta` gemeten: alle 3.257 gepubliceerde materialen dragen
+`_material_publication_status` = `legacy`. De backfill ís gedraaid, rond 23-08-2026.
+
+Wat het onderscheid onzichtbaar maakt is iets anders: de API mapt `legacy` naar
+`source: "standalone"`, waardoor de frontend de statussen niet uit elkaar kan houden. Zie bevinding 1
+en B34.
+
+**Wat nieuw materiaal krijgt, is nu belegd.** Bij aanmaak zette het systeem `legacy` — ook op
+materiaal van vandaag, wat niet klopt met wat legacy betekent. Vastgesteld 09-09-2026: de status
+volgt uit de tier van het merk op het moment van publiceren. Een merk met membership levert `member`
+(binnen zijn slots), een merk op Free levert `standalone_regular`. `standalone_grandfathered` is niet
+te kiezen maar een erfenis van bestaande MAT-klanten. Publiceert de redactie zelf, dan is het
+`editorial` (B94).
 
 ### B33 · Een brand heeft óf een tier, óf standalone-publicaties — nooit beide
 **Besluit.** Bij `brand.tier = free` zijn alleen `legacy`, `standalone_*` en `former_*`
@@ -394,14 +407,29 @@ toegestaan; bij `basic`/`plus`/`partner` alleen `member`.
 `save_post`-hook) of alleen op UI-niveau, stond in de spec als beslissing voor Johan en is niet
 teruggevonden als beantwoord.
 
-### B34 · Legacy-materiaal verloopt op 30 april 2027
+### B34 · Legacy-materiaal verloopt op 31 december 2027
 **Besluit.** Brands die vóór het nieuwe systeem materialen hadden krijgen een legacy-banner
-("Your materials expire in X months") met automatische archivering op 30 april 2027; de actie is
-een membership kiezen om de materialen te behouden.
+("Your materials expire in X months") met automatische archivering; de actie is een membership
+kiezen om de materialen te behouden.
 **Bron.** `membership-config.md` §Legacy-modus.
 **Raakt.** De member-outreach en de septembercampagne.
-**Afhankelijk van B32.** Zolang geen enkel materiaal op `legacy` staat, kan de banner niet
-verschijnen en kan de archivering niet draaien.
+
+**⚠ HERZIEN 09-09-2026 — datum gecorrigeerd van 30 april naar 31 december 2027.** Dit besluit noemde
+30-04-2027. Twee andere bronnen zeggen 31-12-2027: de afspraak bij de bulkmutatie, en de data zelf —
+`validUntil` staat op `2027-12-31` bij 3.245 van de 3.257 gepubliceerde materialen. De afwijking is
+op 28-08-2026 al opgemerkt en toen niet in het register verwerkt. Acht maanden verschil bepaalt
+wanneer er gearchiveerd mag worden en dus wanneer de conversiedruk landt; **Jeroen bevestigt welke
+datum leidend is** — deze regel legt vast wat de data zegt, niet wat commercieel is besloten.
+
+**⚠ HERZIEN 09-09-2026 — de afhankelijkheid van B32 klopt niet meer.** Hier stond: "Zolang geen
+enkel materiaal op `legacy` staat, kan de banner niet verschijnen." Dat is achterhaald. Alle 3.257
+gepubliceerde materialen dragen `_material_publication_status` = `legacy` in `wp_postmeta` (gemeten
+door Johan, 09-09-2026). De data is er dus wél.
+
+Wat de banner nu blokkeert is iets anders: **de API mapt `legacy` naar `source: "standalone"`**,
+waardoor de frontend legacy en standalone niet kan onderscheiden en er geen signaal is om de banner
+op te sturen. Zie bevinding 1. Dat is een fout in de mapper, geen ontbrekende data — en het verandert
+wie dit oplost en hoe snel.
 
 ---
 
@@ -1274,6 +1302,45 @@ zonder dat is "voorlopig met de hand" alleen uitstel.
 **Bron.** 09-09-2026, Jeroen.
 **Raakt.** Bevinding 5, de septembercampagne, en het beheer van memberships na de campagne.
 
+### B94 · Zevende publicatiestatus: `editorial`
+**Besluit.** `material.publication_status` krijgt een zevende waarde: **`editorial`** — materiaal dat
+de redactie op eigen initiatief publiceert, zonder commerciële afspraak. Daarmee wordt B32 uitgebreid
+van zes naar zeven statussen.
+
+**Vier regels horen erbij:**
+
+1. **Alleen vanuit het CMS te zetten.** Een merk kan deze status nooit zelf kiezen bij het uploaden.
+   Zou dat wel kunnen, dan is het gratis publiceren met een mooi woord.
+2. **Standaard insider-only.** Redactioneel materiaal staat achter het Insider-lidmaatschap; dat was
+   het oorspronkelijke argument voor Insider — interessant materiaal kan gepubliceerd worden zonder
+   commerciële afspraak. Het bestaande veld `insider_only` blijft de schakelaar, dus de redactie kan
+   het per materiaal uitzetten wanneer daar reden voor is.
+3. **Einddatum verplicht, standaard één jaar.** Leeglaten mag niet, en het veld is vooringevuld. Een
+   verplicht veld zonder standaardwaarde nodigt uit tot een datum ver in de toekomst; een
+   vooringevulde termijn moet je bewust verhogen.
+4. **Geen `former_editorial`.** Bij verlopen gaat het materiaal offline naar het archief, zoals nu.
+   De symmetrie met `former_member` en `former_standalone` wordt hier bewust niet doorgetrokken: die
+   twee bewaren een beëindigde betaalrelatie, en hier is geen betaalrelatie geweest.
+
+**Grond.** De zes statussen uit B32 beantwoorden allemaal dezelfde vraag: op welke grond betaalt
+iemand voor deze publicatie. Redactioneel materiaal heeft daar geen antwoord op — niemand betaalt, en
+dat is de bedoeling. Onderbrengen bij `legacy` zou fout zijn (dat is de overgangsregeling met een
+eigen deadline), bij `member` zou het de administratie tegenspreken.
+
+**Waarom `editorial` en niet `insider`.** `insider_only` bestaat al als apart veld en beantwoordt
+"wie mag dit zien". De publicatiestatus beantwoordt "op welke grond staat dit online". Twee assen die
+gescheiden horen te blijven: redactioneel materiaal kan publiek worden gezet, en een betalend merk
+kan zijn eigen materiaal insider-only willen hebben.
+
+**Gevolg voor de verkoop.** Een verlopende redactionele publicatie is een lead, geen opruimklus. Het
+merk heeft dan een jaar zichtbaarheid gehad met bezoekcijfers eronder, en de vraag of het online moet
+blijven is een gesprek met bewijs in plaats van een koude benadering. Verlopend redactioneel
+materiaal hoort daarom op een lijst voor Vincent en Dave te komen. Een `editorial`-materiaal kan
+daarna `member` of `standalone_regular` worden; dat is precies de conversie waarvoor de status
+bestaat.
+**Bron.** 09-09-2026, Jeroen.
+**Raakt.** B32 (uitgebreid van zes naar zeven), B33, het redactiedashboard, de member-outreach.
+
 ---
 
 ## 10. Openstaand uit eerdere sessies — niet eerder vastgelegd
@@ -1762,5 +1829,35 @@ tot 31-12-2027 is en niet iets waar nieuw materiaal in hoort.
 Beide zijn gevonden door één vraag te stellen die van buitenaf niet te beantwoorden was. De les uit
 v1.32 gaat hier dus verder: honderd procent dezelfde waarde was niet alleen reden om door te vragen,
 maar verborg ook dat de opgeslagen waarde iets anders was dan de gerapporteerde.
+
+**v1.34 · 09-09-2026** — B34 op twee punten herzien, beide met gevolgen voor de campagne.
+
+De vervaldatum stond op 30-04-2027, terwijl de bulkmutatie-afspraak én de data zelf 31-12-2027
+zeggen. Die afwijking is op 28-08-2026 al gesignaleerd en toen niet verwerkt; hij heeft er dus twaalf
+dagen in gestaan. Acht maanden verschil bepaalt wanneer er gearchiveerd mag worden. De regel legt nu
+vast wat de data zegt, met de bevestiging van Jeroen als openstaand punt.
+
+De afhankelijkheid van B32 is vervallen. Er stond dat de banner niet kan verschijnen zolang geen
+materiaal op `legacy` staat; ze staan er allemaal op. De blokkade zit in de mapper, niet in de data.
+
+Dat beide correcties uit dezelfde sessie van 28-08 voortkomen is het vermelden waard: daar is
+opgemerkt dat de afspraak `legacy` zei en de API `standalone`, met als conclusie dat het vermoedelijk
+berekende standaardwaarden waren. Die vraag is toen niet aan Johan gesteld. Eén e-mail had er twaalf
+dagen geleden een antwoord op gegeven.
+
+**v1.35 · 09-09-2026** — B94 toegevoegd en B32 op twee punten bijgewerkt.
+
+B94 legt een leemte vast die geen randgeval was: redactioneel materiaal past in geen van de zes
+bestaande statussen, omdat die allemaal beantwoorden op welke grond iemand betaalt. De status heet
+`editorial` en niet `insider`, omdat `insider_only` al bestaat als apart veld en een andere vraag
+beantwoordt — zichtbaarheid is niet hetzelfde als publicatiegrond, en die twee moeten gecombineerd
+kunnen worden.
+
+Bij B32 is de melding "niet uitgevoerd" ingetrokken; die was onjuist, de backfill heeft wél gedraaid.
+En wat nieuw materiaal bij aanmaak krijgt is nu belegd: de status volgt uit de tier van het merk op
+het moment van publiceren, in plaats van dat alles `legacy` wordt.
+
+Die laatste correctie is de derde deze week waarbij een bevinding van 25-08 bij hermeting onjuist
+bleek. Alle drie stonden ze twee weken in het register als reden waarom de campagne geblokkeerd was.
 
 Opgesteld door Claude, namens Jeroen.

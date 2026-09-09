@@ -199,11 +199,17 @@ export interface MaterialMeta {
 /**
  * Bron van de publicatie — waar komt het recht-om-online-te-zijn vandaan?
  *  - `tier_slot`  — inbegrepen in brand-tier (basis/plus/partner)
- *  - `standalone` — los €150/jaar-abonnement (alleen mogelijk voor brands
- *                   op free-tier)
+ *  - `standalone` — los standalone-abonnement (free-tier brands)
+ *  - `legacy`     — overgangsregeling tot 31-12-2027 (B34)
+ *  - `editorial`  — redactioneel, zonder commerciële afspraak (B94)
  *  - `null`       — material is niet online (`isOnline: false`)
  */
-export type PublicationSource = 'tier_slot' | 'standalone' | null
+export type PublicationSource =
+  | 'tier_slot'
+  | 'standalone'
+  | 'legacy'
+  | 'editorial'
+  | null
 
 /**
  * Publication-status van een material.
