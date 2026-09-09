@@ -1,7 +1,7 @@
 /**
  * Google Consent Mode v2 — signals ad/analytics permission to Google tags.
  * ----------------------------------------------------------------------
- * GPT and other Google tags read these defaults/updates from `dataLayer`.
+ * GTM, GPT and other Google tags read these defaults/updates from `dataLayer`.
  * Without them (and without a TCF CMP), EU ad requests stay limited /
  * non-personalized. Consent Mode is not a substitute for a Google-certified
  * CMP when personalized ads are required; it is the bridge our soft-launch

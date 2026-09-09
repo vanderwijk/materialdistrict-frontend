@@ -8,6 +8,8 @@ import { ConsentBootstrap } from '@/components/consent/ConsentBootstrap'
 import { RegionBootstrap } from '@/components/consent/RegionBootstrap'
 import { GptLoader } from '@/components/ads/GptLoader'
 import { PlausibleAnalytics } from '@/components/analytics/PlausibleAnalytics'
+import { GtmPageViews } from '@/components/analytics/GtmPageViews'
+import { GTM_ID, gtmInitScript } from '@/components/analytics/gtm'
 import '@/styles/globals.css'
 
 /**
@@ -126,8 +128,19 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <script dangerouslySetInnerHTML={{ __html: consentModeInitScript }} />
+        {/* GTM after Consent Mode defaults so tags honour denied-by-default. */}
+        <script dangerouslySetInnerHTML={{ __html: gtmInitScript }} />
       </head>
       <body className="app-shell">
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height={0}
+            width={0}
+            style={{ display: 'none', visibility: 'hidden' }}
+            title="Google Tag Manager"
+          />
+        </noscript>
         <a href="#main" className="skip-link">
           Skip to main content
         </a>
@@ -157,6 +170,8 @@ export default function RootLayout({
         <ConsentBar />
         {/* Plausible — always on (cookieless / AVG-compliant). */}
         <PlausibleAnalytics />
+        {/* GTM virtual pageviews on client-side navigations. */}
+        <GtmPageViews />
       </body>
     </html>
   )
