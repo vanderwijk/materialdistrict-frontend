@@ -93,10 +93,12 @@ const ContentSecurityPolicy = [
   `connect-src ${connectSrc.join(' ')}`,
   // Session Replay uses a web worker from a blob URL
   "worker-src 'self' blob:",
-  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com https://securepubads.g.doubleclick.net https://tpc.googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com https://www.google.com https://www.googleadservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google https://www.googletagmanager.com",
+  // www.facebook.com: Meta Pixel iframe fallback (fbevents) when image beacons are blocked.
+  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube.com https://www.youtube-nocookie.com https://securepubads.g.doubleclick.net https://tpc.googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com https://www.google.com https://www.googleadservices.com https://fundingchoicesmessages.google.com https://*.adtrafficquality.google https://www.googletagmanager.com https://www.facebook.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
-  "form-action 'self'",
+  // facebook.com/tr: Pixel form-POST fallback from GTM. Without it the tag fires but the event never leaves the browser.
+  "form-action 'self' https://www.facebook.com",
 ].join('; ')
 
 const securityHeaders = [

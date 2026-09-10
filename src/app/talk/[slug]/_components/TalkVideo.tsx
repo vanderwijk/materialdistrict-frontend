@@ -30,7 +30,6 @@ export function TalkVideo({ vimeoId, title }: TalkVideoProps) {
         src={buildVimeoEmbedUrl(vimeoId)}
         title={title}
         allow="autoplay; fullscreen; picture-in-picture"
-        allowFullScreen
         loading="lazy"
       />
     </div>
