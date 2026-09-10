@@ -22,7 +22,7 @@ voor elke ronde, ook de rondes die al gedraaid zijn.
 ## Voor elke ronde
 
 ```
-python3 testgevallen.py       # moet 11 van 11 groen zijn
+python3 testgevallen.py       # moet 21 van 21 groen zijn
 ```
 
 Is er iets rood, dan is er een regel verdwenen of veranderd. Uitzoeken vóór er één bronrij

@@ -424,8 +424,301 @@ SCHOOL = ("hochschule", "universit", "university", "academie", "academy", "hoges
 STICHTING = ("stichting", "foundation", "vereniging", "association", "museum")
 
 
+def lees_oordelen(pad):
+    """Eerder gegeven oordelen van Jeroen, zodat een vraag maar één keer wordt gesteld.
+
+    Een oordeel is veldgesloten: het geldt voor elke volgende ronde en wordt er niet
+    opnieuw uitgevraagd. Zonder dit register stond dezelfde vraag over i-did in twee
+    achtereenvolgende rondes opnieuw op tafel, en werd wat op 1 september was beslist
+    op 9 september alsnog anders gematcht.
+
+    Sleutel is het domein of de genormaliseerde naam uit de bron. Waarde:
+
+        {"besluit": "WEL"|"NIET", "brand_id": 54787|null,
+         "website": "ntgrate.eu", "naam": "NTGRATE", "alias": "LEOXX",
+         "reden": "...", "door": "Jeroen", "datum": "2026-09-09"}
+    """
+    if not pad:
+        return {}
+    p = Path(pad)
+    if not p.exists():
+        zeg(f"  oordelenregister {pad} bestaat niet — geen eerdere oordelen toegepast")
+        return {}
+    reg = json.loads(p.read_text(encoding="utf-8"))
+    zeg(f"  oordelenregister: {len(reg)} eerdere oordelen")
+    return reg
+
+
+def pas_oordelen_toe(uniek, register):
+    """Legt vastgelegde oordelen over de uitkomst heen, vóór de automatische besluiten."""
+    if not register:
+        return uniek, 0
+
+    toegepast = 0
+    for m in uniek:
+        sleutels = [k for k in (m.get("website"), m.get("naamsleutel")) if k]
+        for a in (m.get("alias") or "").split("; "):
+            if a:
+                sleutels.append(regels.naamsleutel(a))
+
+        for sleutel in sleutels:
+            o = register.get(sleutel)
+            if not o:
+                continue
+
+            if o.get("naam"):
+                m["brand_name"] = o["naam"]
+                m["naamsleutel"] = regels.naamsleutel(o["naam"])
+            if o.get("website"):
+                m["website"] = o["website"]
+                m["kern"] = regels.domeinkern(o["website"])
+            if o.get("alias"):
+                m["alias"] = o["alias"]
+
+            if o.get("brand_id"):
+                m["kandidaten"] = [c for c in m["kandidaten"] if c["id"] == o["brand_id"]] or [
+                    {"id": o["brand_id"], "naam": o.get("naam", ""), "web": o.get("website", ""),
+                     "grond": "handmatig", "status": "?"}
+                ]
+            elif o.get("besluit") == "WEL":
+                # eigen merk: eerdere kandidaten waren de verkeerde
+                m["kandidaten"] = []
+
+            m["besluit"] = o.get("besluit", "")
+            m["reden"] = f"{o.get('reden', 'oordeel')} — {o.get('door', 'Jeroen')}, {o.get('datum', '')}"
+            m["oordeel_toegepast"] = sleutel
+            toegepast += 1
+            break
+
+    zeg(f"    {toegepast} eerdere oordelen toegepast")
+    return uniek, toegepast
+
+
+
+# ---------------------------------------------------------------------------
+# Stap 7b — aanvullen wat leeg is
+#
+# Dit ontbrak tot 09-09-2026, en dat is de reden dat elke ronde met de hand werd
+# nagelopen en elke ronde net anders. Een leeg veld met een reden is geen eindstation
+# maar een opzoektaak; blijft hij daarna leeg, dan staat er waarom.
+# ---------------------------------------------------------------------------
+
+AANVULBAAR = ("email", "phone", "website", "address_line_1", "postcode", "city", "country")
+
+STAND = re.compile(r"^[A-Z]{1,4}\s?\d{1,3}[A-Za-z]?$")
+
+
+def lees_catalogus(pad):
+    """De catalogusindex: vaste blokken van naam, standnummer, adres, T, E en I.
+
+    Bij MDU 2026 bleek dit het rijkste van de drie bestanden: het draagt algemene
+    e-mailadressen waar de export een persoonlijk adres heeft, en complete adressen waar de
+    export er geen heeft. Wordt alleen gebruikt om lege velden te vullen, nooit om iets te
+    overschrijven — zie stap 7b.
+    """
+    if not pad:
+        return []
+    try:
+        from docx import Document
+    except ImportError:
+        zeg("  LET OP  python-docx ontbreekt; de catalogus is NIET gelezen")
+        return []
+    if not Path(pad).exists():
+        zeg(f"  LET OP  catalogus {pad} bestaat niet; NIET gelezen")
+        return []
+
+    regel = [p.text.strip() for p in Document(pad).paragraphs if p.text.strip()]
+    uit, i = [], 0
+    while i < len(regel):
+        if i + 1 < len(regel) and STAND.match(regel[i + 1]):
+            naam, stand, j, blok = regel[i], regel[i + 1], i + 2, []
+            while j < len(regel) and not (j + 1 < len(regel) and STAND.match(regel[j + 1])):
+                blok.append(regel[j])
+                j += 1
+
+            straat = pc = stad = land = tel = mail = web = ""
+            for b in blok:
+                if b.startswith("T "):
+                    tel = b[2:].strip()
+                elif b.startswith("E "):
+                    mail = b[2:].strip()
+                elif b.startswith("I "):
+                    web = b[2:].strip()
+                elif re.search(r",\s*[A-Z]{2}$", b):
+                    kop, land = b.rsplit(",", 1)
+                    land = land.strip()
+                    pc, stad = regels.splits_postcode_stad(kop, land)
+                else:
+                    straat = (straat + " " + b).strip()
+
+            w = regels.domein(web)
+            uit.append({
+                "naam": regels.schoonnaam(naam),
+                "naamsleutel": regels.naamsleutel(naam),
+                "stand": stand.replace(" ", ""),
+                "address_line_1": straat,
+                "postcode": regels.postcode(pc, land),
+                "city": regels.kapitaliseer(stad),
+                "country": regels.land(land) or land,
+                "phone": regels.telefoon(tel, land)[0],
+                "email": regels.email(mail),
+                "website": "" if (w and regels.is_platform(w)) else w,
+            })
+            i = j
+        else:
+            i += 1
+
+    zeg(f"  catalogusindex: {len(uit)} records gelezen")
+    return uit
+
+PADEN = ("", "contact", "contact-us", "over-ons", "kontakt", "impressum")
+
+
+def haal_website(domein):
+    """De eigen site van een merk, hooguit een paar pagina's.
+
+    Een onbereikbare site is een toestand en geen bevinding: dan blijft het veld leeg met
+    die reden erbij, zodat een volgende ronde het opnieuw probeert.
+    """
+    blob = ""
+    for pad in PADEN:
+        for url in (f"https://{domein}/{pad}", f"https://www.{domein}/{pad}"):
+            try:
+                rq = urllib.request.Request(url, headers={"User-Agent": KOP["User-Agent"]})
+                with urllib.request.urlopen(rq, timeout=8) as r:
+                    blob += r.read(200000).decode("utf-8", "ignore")
+                break
+            except Exception:
+                continue
+        if len(blob) > 250000:
+            break
+    return blob
+
+
+def aanvullen(uniek, catalogus_op_naam):
+    """Vult per merk elk leeg veld dat aangevuld kan worden, in drie ronden van goedkoop
+    naar duur: eerst de catalogus, dan de eigen site, en anders blijft het leeg met reden.
+
+    Geeft een telling terug zodat in de uitvoer staat hoeveel er leeg was, hoeveel is
+    gevonden en hoeveel niet — anders is "leeg" niet te onderscheiden van "vergeten".
+    """
+    tel = Counter()
+    leeg_vooraf = Counter()
+
+    for m in uniek:
+        if m.get("besluit") == "NIET":
+            continue
+        for v in AANVULBAAR:
+            if not (m.get(v) or "").strip():
+                leeg_vooraf[v] += 1
+
+    # 1 — de catalogus, als die dit merk kent
+    for m in uniek:
+        if m.get("besluit") == "NIET":
+            continue
+        c = catalogus_op_naam.get(m.get("naamsleutel") or "")
+        if not c:
+            continue
+        for v in AANVULBAAR:
+            if (m.get(v) or "").strip() or not (c.get(v) or "").strip():
+                continue
+
+            # Wat aanvult moet door dezelfde poorten als wat uit de bron komt. Anders vult
+            # stap 7b terug wat stap 4 er net heeft uitgehaald — precies wat er op
+            # 09-09-2026 gebeurde: 41 persoonsgebonden adressen kwamen via de catalogus
+            # weer op de merken terecht en poort 3 sloeg alsnog aan.
+            waarde = c[v]
+
+            if v == "email" and regels.is_persoonsgebonden(waarde, m.get("brand_name")):
+                m["email_reden"] = "catalogus geeft een persoonsgebonden adres; niet op een merk"
+                tel["catalogus geweigerd: persoonsgebonden adres"] += 1
+                continue
+
+            if v == "postcode" and not regels.postcode_bruikbaar(waarde, c.get("country") or m.get("country")):
+                m["postcode_reden"] = f"catalogus geeft een onvolledige postcode: {waarde!r}"
+                tel["catalogus geweigerd: halve postcode"] += 1
+                continue
+
+            if v == "address_line_1" and regels.straat_is_geen_straat(waarde, m.get("brand_name")):
+                m["address_line_1_reden"] = "catalogus geeft de bedrijfsnaam in het straatveld"
+                tel["catalogus geweigerd: naam in straatveld"] += 1
+                continue
+
+            m[v] = waarde
+            m[v + "_bron"] = "catalogusindex"
+            m[v + "_herkomst"] = "bestand"
+            m.pop(v + "_reden", None)
+            tel["uit de catalogus"] += 1
+
+    # 2 — de eigen site, alleen voor wat daar te halen valt
+    for m in uniek:
+        if m.get("besluit") == "NIET" or not m.get("website"):
+            continue
+        mist_mail = not (m.get("email") or "").strip()
+        mist_tel = not (m.get("phone") or "").strip()
+        if not (mist_mail or mist_tel):
+            continue
+
+        blob = haal_website(m["website"])
+        if not blob:
+            for v in ("email", "phone"):
+                if not (m.get(v) or "").strip():
+                    m[v + "_reden"] = "site onbereikbaar; opnieuw proberen"
+            tel["site onbereikbaar"] += 1
+            continue
+
+        if mist_mail:
+            stam = regels.stam(m["website"])
+            kand = {x.lower() for x in re.findall(r"[A-Za-z0-9._%+-]+@" + re.escape(stam), blob)}
+            goed = sorted([e for e in kand if regels.is_algemeen_adres(e)], key=len)
+            if goed:
+                m["email"] = goed[0]
+                m["email_bron"] = "research"
+                m["email_herkomst"] = "opgezocht"
+                m.pop("email_reden", None)
+                tel["e-mailadres opgezocht"] += 1
+            else:
+                m["email_reden"] = "geen algemeen adres op de site gevonden"
+                tel["e-mailadres niet gevonden"] += 1
+
+        if mist_tel:
+            t = re.search(r"(?:tel|phone|telefoon|t:)\D{0,12}(\+?[\d][\d\s().\-/]{7,20}\d)", blob, re.I)
+            nummer, waarom = regels.telefoon(t.group(1), m.get("country", "")) if t else ("", "geen nummer op de site")
+            if nummer:
+                m["phone"] = nummer
+                m["phone_bron"] = "research"
+                m["phone_herkomst"] = "opgezocht"
+                m.pop("phone_reden", None)
+                tel["telefoon opgezocht"] += 1
+            else:
+                m["phone_reden"] = waarom or "geen bruikbaar nummer op de site"
+                tel["telefoon niet gevonden"] += 1
+
+    # 3 — wat nog leeg is krijgt een reden, zodat leeg nooit stil is
+    leeg_achteraf = Counter()
+    for m in uniek:
+        if m.get("besluit") == "NIET":
+            continue
+        for v in AANVULBAAR:
+            if not (m.get(v) or "").strip():
+                leeg_achteraf[v] += 1
+                if not m.get(v + "_reden"):
+                    m[v + "_reden"] = "ontbreekt in de bron en niet gevonden"
+
+    zeg("\nStap 7b — aanvullen wat leeg is")
+    for wat, hoeveel in tel.most_common():
+        zeg(f"    {hoeveel:4d}  {wat}")
+    for v in AANVULBAAR:
+        if leeg_vooraf[v]:
+            zeg(f"    {v:16s} leeg vooraf {leeg_vooraf[v]:3d} -> na aanvullen {leeg_achteraf[v]:3d}")
+    return uniek
+
+
 def besluiten(uniek):
     for m in uniek:
+        if m.get("oordeel_toegepast"):
+            continue
+
         n = (m.get("brand_name") or "").lower()
         if any(s in n for s in SCHOOL):
             m["besluit"], m["reden"] = "NIET", "onderwijsinstelling — geen bedrijf"
@@ -578,6 +871,7 @@ def main():
     p.add_argument("--kant", required=True, choices=["merk", "persoon"])
     p.add_argument("--catalogus", help="optioneel: catalogusindex .docx")
     p.add_argument("--sleutel", help="MD_IMPORT_KEY; anders uit de omgeving MD_IMPORT_KEY")
+    p.add_argument("--oordelen", help="JSON met eerder gegeven oordelen van Jeroen")
     p.add_argument("--uit", default="uitvoer")
     a = p.parse_args()
 
@@ -613,7 +907,33 @@ def main():
     uniek = match(uniek, db)
 
     wijz = wijzigingen(uniek, db, sleutel, a.bron, a.brondatum, a.niveau)
+    uniek, _ = pas_oordelen_toe(uniek, lees_oordelen(a.oordelen))
+
+    # Een adres dat bij meer dan één merk staat is van geen van die merken.
+    opgeruimd = regels.deel_adressen_opruimen(
+        uniek,
+        lambda m: m.get("email"),
+        lambda m: m.get("website"),
+        lambda m, reden: (m.__setitem__("email_persoonlijk", m.get("email")),
+                          m.__setitem__("email", ""),
+                          m.__setitem__("email_reden", reden)),
+    )
+    if opgeruimd:
+        zeg(f"    {opgeruimd} gedeelde e-mailadressen leeggemaakt met reden")
+
+    # Een halve postcode is geen postcode.
+    half = 0
+    for m in uniek:
+        if not regels.postcode_bruikbaar(m.get("postcode"), m.get("country")):
+            m["postcode_reden"] = f"onvolledige postcode in de bron: {m['postcode']!r}"
+            m["postcode"] = ""
+            half += 1
+    if half:
+        zeg(f"    {half} onvolledige postcodes leeggemaakt met reden")
+
     uniek = besluiten(uniek)
+    catalogus = lees_catalogus(a.catalogus)
+    uniek = aanvullen(uniek, {c["naamsleutel"]: c for c in catalogus})
 
     ronde = {"bron": a.bron, "brondatum": a.brondatum, "editie": a.editie,
              "niveau": a.niveau, "activiteit": a.activiteit, "kant": a.kant,

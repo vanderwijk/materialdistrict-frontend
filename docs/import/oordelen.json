@@ -1,0 +1,169 @@
+{
+  "ntgrate.eu": {
+    "besluit": "WEL",
+    "brand_id": null,
+    "naam": "NTGRATE",
+    "website": "ntgrate.eu",
+    "alias": "LEOXX",
+    "reden": "eigen merk, exposeert via distributeur LEOXX; ntgrate.eu gemeten en bevestigd",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "ntgratepoweredbyleoxx": {
+    "besluit": "WEL",
+    "brand_id": null,
+    "naam": "NTGRATE",
+    "website": "ntgrate.eu",
+    "alias": "LEOXX",
+    "reden": "eigen merk, exposeert via distributeur LEOXX",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "wineopoweredbyleoxx": {
+    "besluit": "WEL",
+    "brand_id": null,
+    "naam": "wineo",
+    "website": "wineo.de",
+    "alias": "VANBESOUW",
+    "reden": "eigen merk van Windmoeller, exposeert via distributeur LEOXX",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "wineobyleoxx": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "gedeelde stand met A Casa Agency; geen eigen identiteit in die bron",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "idid": {
+    "besluit": "WEL",
+    "brand_id": 54787,
+    "reden": "naam en domein komen exact overeen; Sylvia Calvo deelt alleen het domein",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "i-did.nl": {
+    "besluit": "WEL",
+    "brand_id": 54787,
+    "reden": "naam en domein komen exact overeen; Sylvia Calvo deelt alleen het domein",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "arcelormittalconstructionspecials": {
+    "besluit": "WEL",
+    "brand_id": 52875,
+    "reden": "hernoeming van bestaand merk; oude naam blijft als alias",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "arcelormittalbuildingsolutionsspecials": {
+    "besluit": "WEL",
+    "brand_id": 52875,
+    "reden": "hernoeming van bestaand merk; oude naam blijft als alias",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "denimxbymaiburg": {
+    "besluit": "WEL",
+    "brand_id": 128943,
+    "reden": "productmerk onder het bronmerk Maiburg; bestaand record Denimx 35498 blijft ongemoeid",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "stichtinginsert": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "stichting, geen bedrijf; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "bni": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "beroepsvereniging, geen bedrijf; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "oboros": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "dienstverlener, geen materiaal; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "bootingenieursmeteenverhaal": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "ingenieursbureau, dienst; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "tbiklimaattrein": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "partnerzone, aannemer; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-01"
+  },
+  "fabraa.com": {
+    "besluit": "WEL",
+    "brand_id": 121247,
+    "reden": "een bedrijf dat twee keer is aangemaakt; het gepubliceerde record aangehouden",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "fabraa": {
+    "besluit": "WEL",
+    "brand_id": 121247,
+    "reden": "een bedrijf dat twee keer is aangemaakt; het gepubliceerde record aangehouden",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "acosorb.nl": {
+    "besluit": "WEL",
+    "brand_id": 120348,
+    "reden": "een bedrijf dat twee keer is aangemaakt; het gepubliceerde record aangehouden",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "acosorb": {
+    "besluit": "WEL",
+    "brand_id": 120348,
+    "reden": "een bedrijf dat twee keer is aangemaakt; het gepubliceerde record aangehouden",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "caracterr.com": {
+    "besluit": "WEL",
+    "brand_id": 40048,
+    "reden": "een bedrijf dat twee keer is aangemaakt; beide concept, oudste id aangehouden",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "caracterrexcellentegietvloeren": {
+    "besluit": "WEL",
+    "brand_id": 40048,
+    "reden": "een bedrijf dat twee keer is aangemaakt; beide concept, oudste id aangehouden",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "novacolornederland.nl": {
+    "besluit": "WEL",
+    "brand_id": 128925,
+    "naam": "Novacolor Nederland",
+    "alias": "A.G.N.N. B.V.",
+    "reden": "handelsnaam aanhouden; A.G.N.N. B.V. is de statutaire naam en wordt alias",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  },
+  "novacolornederland": {
+    "besluit": "WEL",
+    "brand_id": 128925,
+    "naam": "Novacolor Nederland",
+    "alias": "A.G.N.N. B.V.",
+    "reden": "handelsnaam aanhouden; A.G.N.N. B.V. is de statutaire naam en wordt alias",
+    "door": "Jeroen",
+    "datum": "2026-09-09"
+  }
+}

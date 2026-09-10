@@ -347,6 +347,84 @@ def t_gereserveerd():
         assert norm.veilige_schemanaam(goed) == goed
 
 
+@geval(
+    "overslaan geldt voor de persoon, niet voor de rij",
+    "Op 09-09-2026 sloeg het schrijfpad bij actie=overslaan de hele rij over, inclusief "
+    "de activiteit. Het exposant-rondje plantte daardoor nul feiten, en nul leest als "
+    "'er viel niets te doen'. Een merkfeit draagt geen persoon en hoort er toch te komen.",
+)
+def t_overslaan():
+    def verwerk(rij):
+        """Wat het schrijfpad met een rij doet, in het klein."""
+        uit = {"persoon": False, "activiteit": False}
+        geen_persoon = rij.get("actie") == "overslaan" or not rij.get("email")
+        if not geen_persoon:
+            uit["persoon"] = True
+        if rij.get("activiteit"):
+            uit["activiteit"] = True
+        return uit
+
+    merkfeit = {"actie": "overslaan", "email": "", "activiteit": "exposant",
+                "subject_type": "brand", "subject_id": 135361}
+    assert verwerk(merkfeit) == {"persoon": False, "activiteit": True}
+
+    persoonsfeit = {"actie": "nieuw", "email": "iemand@example.org",
+                    "activiteit": "standbemanning", "subject_type": "user"}
+    assert verwerk(persoonsfeit) == {"persoon": True, "activiteit": True}
+
+    leeg = {"actie": "overslaan", "email": "", "activiteit": ""}
+    assert verwerk(leeg) == {"persoon": False, "activiteit": False}
+
+
+@geval(
+    "het subject van een feit is niet de brand_id van een koppeling",
+    "brand_id is de kolom voor de KOPPELING; het subject van een activiteit staat in "
+    "subject_id. Op 09-09-2026 gebruikte het schrijfpad brand_id voor een merkfeit, en dat "
+    "veld is daar leeg — alle exposant-feiten kwamen op subject 0 uit.",
+)
+def t_subject():
+    def subject(rij, user_id=0):
+        sid = rij.get("subject_id") or 0
+        if not sid:
+            sid = user_id if rij.get("subject_type") == "user" else (rij.get("brand_id") or 0)
+        return sid
+
+    # merkfeit: subject staat in de rij, brand_id is leeg
+    assert subject({"subject_type": "brand", "subject_id": 135361, "brand_id": None}) == 135361
+    # persoonsfeit: subject komt van de gevonden persoon
+    assert subject({"subject_type": "user", "subject_id": None, "brand_id": 2801}, user_id=42) == 42
+    # niets bruikbaars: dat hoort geweigerd te worden, niet stil op 0 te belanden
+    assert subject({"subject_type": "brand", "subject_id": None, "brand_id": None}) == 0
+
+
+@geval(
+    "postcode en plaats uit een catalogusregel",
+    "Op 09-09-2026 pakte de ontleding uit '3072 DB Rotterdam' alleen 3072 en verdwenen "
+    "de letters. Unilin Flooring Nederland kwam daardoor zonder postcode in de ronde, en "
+    "poort 5 sloeg terecht aan op een halve postcode die geen halve postcode was.",
+)
+def t_postcode_stad():
+    assert norm.splits_postcode_stad("3072 DB Rotterdam", "NL") == ("3072 DB", "Rotterdam")
+    assert norm.splits_postcode_stad("1234AB Amsterdam", "NL") == ("1234 AB", "Amsterdam")
+    assert norm.splits_postcode_stad("8792 Waregem", "BE") == ("8792", "Waregem")
+    assert norm.splits_postcode_stad("SW1A 1AA London", "GB") == ("SW1A 1AA", "London")
+    # Geen postcode in de regel: de hele regel is de plaatsnaam, postcode blijft leeg.
+    assert norm.splits_postcode_stad("Genemuiden", "NL") == ("", "Genemuiden")
+
+
+@geval(
+    "de bedrijfsnaam in het straatveld is geen straat",
+    "Bij Unilin Flooring Nederland stond de bedrijfsnaam in Company Street. Een straat "
+    "zonder cijfer die de merknaam is, hoort leeg te blijven zodat de catalogus of een "
+    "opzoekactie hem vult.",
+)
+def t_straat():
+    assert norm.straat_is_geen_straat("Unilin Flooring Nederland", "Unilin Flooring Nederland - Projecten")
+    assert not norm.straat_is_geen_straat("Wilhelminaplein 20", "Unilin Flooring Nederland")
+    # Een Britse straat zonder huisnummer is wel een straat.
+    assert not norm.straat_is_geen_straat("Henfaes Lane", "Newmor Wallcoverings")
+
+
 def main():
     goed = 0
     for naam, toelichting, fn in GEVALLEN:

@@ -371,3 +371,109 @@ def veilige_schemanaam(naam):
             f'{naam!r} is een gereserveerd woord in MySQL; kies bijvoorbeeld {naam}_idx.'
         )
     return naam
+
+
+def adres_van_een_ander(email, website):
+    """Hoort dit e-mailadres bij dit merk, of bij iemand anders?
+
+    Een merk mag best een adres op een ander domein voeren — 25% van de merken in de
+    database doet dat. Maar staat hetzelfde adres bij meer dan één merk, dan is het van
+    geen van beide: het is het adres van een distributeur of een bureau.
+
+    Gevonden 09-09-2026: NTGRATE en wineo droegen allebei info@leoxx.com, het adres van
+    hun distributeur, terwijl ze eigen domeinen hebben.
+    """
+    if not email or '@' not in email or not website:
+        return False
+    return stam(email.split('@')[1]) != stam(website)
+
+
+def deel_adressen_opruimen(merken, email_van, website_van, zet_leeg):
+    """Adressen die bij meer dan één merk staan, horen bij geen van die merken.
+
+    Geeft terug hoeveel er zijn leeggemaakt. De reden komt mee, want een leeg veld zonder
+    reden is niet te onderscheiden van een veld dat nooit gevuld was.
+    """
+    tel = {}
+    for m in merken:
+        e = (email_van(m) or '').lower()
+        if e:
+            tel[e] = tel.get(e, 0) + 1
+
+    gedeeld = {e for e, n in tel.items() if n > 1}
+    if not gedeeld:
+        return 0
+
+    opgeruimd = 0
+    for m in merken:
+        e = (email_van(m) or '').lower()
+        if e in gedeeld:
+            zet_leeg(m, f'{e} staat bij meer dan een merk; dat is het adres van een '
+                        f'distributeur of bureau, niet van dit merk')
+            opgeruimd += 1
+    return opgeruimd
+
+
+def postcode_bruikbaar(waarde, land):
+    """Is dit een volledige postcode voor dit land, of een halve?
+
+    Een halve postcode is geen postcode. `3072` zonder letters is in Nederland niet
+    bezorgbaar en hoort leeg te blijven met de reden erbij, niet half weggeschreven.
+    """
+    v = (waarde or '').strip().upper()
+    if not v:
+        return True
+    if land == 'NL':
+        return bool(re.fullmatch(r'\d{4} [A-Z]{2}', v))
+    return True
+
+
+def splits_postcode_stad(regel, land=''):
+    """Haalt postcode en plaats uit een catalogusregel als `3072 DB Rotterdam`.
+
+    De Nederlandse postcode bestaat uit vier cijfers en twee letters met een spatie
+    ertussen, en die spatie maakt hem lastig van de plaatsnaam te scheiden. Op
+    09-09-2026 pakte de ontleding alleen `3072` en belandde `DB` in de plaatsnaam of
+    verdween het; daardoor kwam Unilin Flooring Nederland zonder postcode in de ronde.
+
+    Geeft (postcode, plaats) terug. Lukt het niet, dan ('', regel) — dan is de hele
+    regel de plaatsnaam en blijft de postcode leeg met een reden.
+    """
+    r = re.sub(r'\s+', ' ', (regel or '').strip())
+    if not r:
+        return '', ''
+
+    # NL: 1234 AB Plaatsnaam
+    m = re.match(r'^(\d{4})\s*([A-Z]{2})\s+(.+)$', r)
+    if m:
+        return f'{m.group(1)} {m.group(2)}', m.group(3).strip()
+
+    # BE, DE, AT, veel andere: 8792 Plaatsnaam
+    m = re.match(r'^(\d{4,5})\s+(.+)$', r)
+    if m:
+        return m.group(1), m.group(2).strip()
+
+    # GB: SW1A 1AA Plaatsnaam
+    m = re.match(r'^([A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2})\s+(.+)$', r)
+    if m:
+        return re.sub(r'\s+', ' ', m.group(1)), m.group(2).strip()
+
+    return '', r
+
+
+def straat_is_geen_straat(straat, merknaam):
+    """Staat de bedrijfsnaam in het straatveld?
+
+    Gemeten op 09-09-2026: bij Unilin Flooring Nederland stond de bedrijfsnaam in
+    `Company Street`. Een straat zonder cijfer die gelijk is aan de merknaam is geen
+    adres; die hoort leeg te blijven zodat de catalogus of een opzoekactie hem vult.
+    """
+    s = (straat or '').strip()
+    if not s or re.search(r'\d', s):
+        return False
+    a, b = naamsleutel(s), naamsleutel(merknaam or '')
+    if not a or not b:
+        return False
+    # Bevatting en niet gelijkheid: "Unilin Flooring Nederland" in het straatveld hoort
+    # bij het merk "Unilin Flooring Nederland - Projecten".
+    return a == b or a in b or b in a
