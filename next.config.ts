@@ -62,6 +62,7 @@ const connectSrc = [
   'https://*.analytics.google.com',
   // Meta Pixel + LinkedIn Insight Tag (beacons; fbevents uses sendBeacon)
   'https://www.facebook.com',
+  'https://*.facebook.net',
   'https://*.ads.linkedin.com',
   // Meta Conversions API Gateway (GTM Pixel → /events). Hosts are hash-based
   // ECS Express (*.on.aws) or Cloud Run (*.run.app) URLs, not a stable custom domain.
@@ -80,15 +81,15 @@ const ContentSecurityPolicy = [
   "default-src 'self'",
   // GPT + Stripe + Funding Choices (Privacy & messaging CMP); 'unsafe-eval' remains required by Next/GPT tooling paths.
   // googleadservices / *.googlesyndication / *.doubleclick: creative + conversion scripts GPT loads after auction.
-  // connect.facebook.net + snap.licdn.com: pixel libraries injected by GTM. Without them the tags fire
+  // *.facebook.net + snap.licdn.com: pixel libraries injected by GTM. Without them the tags fire
   // in GTM but the browser blocks the script, so nothing ever reaches Meta or LinkedIn.
   // capi-automation S3: Meta CAPI Parameter Builder loaded by the GTM Pixel template.
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://www.googleadservices.com https://www.google.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://fundingchoicesmessages.google.com https://*.adtrafficquality.google https://www.gstatic.com https://plausible.io https://www.googletagmanager.com https://*.googletagmanager.com https://connect.facebook.net https://snap.licdn.com https://capi-automation.s3.us-east-2.amazonaws.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://securepubads.g.doubleclick.net https://www.googletagservices.com https://www.googleadservices.com https://www.google.com https://pagead2.googlesyndication.com https://*.googlesyndication.com https://*.doubleclick.net https://fundingchoicesmessages.google.com https://*.adtrafficquality.google https://www.gstatic.com https://plausible.io https://www.googletagmanager.com https://*.googletagmanager.com https://*.facebook.net https://snap.licdn.com https://capi-automation.s3.us-east-2.amazonaws.com",
   // Funding Choices / IAB TCF wall loads Google Fonts CSS + webfonts.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // www.google.com / www.google.nl: ads/measurement pixels (remarketing uses the regional TLD);
   // googleadservices: conversion beacons.
-  `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://media.materialdistrict.com https://secure.gravatar.com https://securepubads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://*.gstatic.com https://*.googleusercontent.com https://www.google.com https://www.google.nl https://www.googleadservices.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://www.facebook.com https://*.ads.linkedin.com`,
+  `img-src 'self' data: https://${WP_HOST} https://cms.materialdistrict.com https://media.materialdistrict.com https://secure.gravatar.com https://securepubads.g.doubleclick.net https://*.doubleclick.net https://*.googlesyndication.com https://*.adtrafficquality.google https://*.gstatic.com https://*.googleusercontent.com https://www.google.com https://www.google.nl https://www.googleadservices.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://www.facebook.com https://*.facebook.net https://*.ads.linkedin.com`,
   "font-src 'self' data: https://fonts.gstatic.com",
   `connect-src ${connectSrc.join(' ')}`,
   // Session Replay uses a web worker from a blob URL
