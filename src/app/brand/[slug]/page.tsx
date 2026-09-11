@@ -32,7 +32,7 @@ import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { MaterialGallery } from '@/components/materials'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
-import { getBrand, listBrands, listMaterialsByBrand } from '@/lib/api'
+import { getBrand, listBrands, listMaterialsByBrand, redirectIfOldSlug } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildBrandOrganization, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { BrandDetailActions } from './_components/BrandDetailActions'
@@ -107,6 +107,7 @@ export async function generateMetadata({
   const brand = await getBrand(slug, { resolve: { gallery: false } })
 
   if (!brand) {
+    await redirectIfOldSlug('brand', slug)
     notFound()
   }
 
@@ -160,7 +161,10 @@ export default async function BrandDetailPage({ params }: BrandDetailPageProps) 
   const { slug } = await params
 
   const brand = await getBrand(slug)
-  if (!brand) notFound()
+  if (!brand) {
+    await redirectIfOldSlug('brand', slug)
+    notFound()
+  }
 
   // Materials van de brand + buren parallel.
   const [materialsResult, neighbours] = await Promise.all([

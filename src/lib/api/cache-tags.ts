@@ -248,6 +248,8 @@ export interface RevalidateTarget {
   mediaId?: number
   /** Post waar de attachment onder hangt, alleen bij een media-ping. */
   parentId?: number
+  /** Vorige slugs van dit record — de ISR-kopie op die paden moet ook weg. */
+  oldSlugs?: string[]
   /** `'all'` leegt het hele contenttype — alleen op expliciet verzoek. */
   scope?: 'record' | 'all'
 }
@@ -265,7 +267,7 @@ export interface RevalidateTarget {
  * één contenttype, en het blijft correct.
  */
 export function tagsForTarget(target: RevalidateTarget): string[] {
-  const { type, slug, postId, brandSlug, mediaId, parentId, scope } = target
+  const { type, slug, postId, brandSlug, mediaId, parentId, oldSlugs, scope } = target
   const tags = new Set<string>()
 
   if (scope === 'all') {
@@ -286,6 +288,9 @@ export function tagsForTarget(target: RevalidateTarget): string[] {
   // Het record zelf.
   if (slug) tags.add(recordTagBySlug(type, slug))
   if (postId !== undefined) tags.add(recordTagById(type, postId))
+  for (const old of oldSlugs ?? []) {
+    if (old) tags.add(recordTagBySlug(type, old))
+  }
 
   // De lijsten waar het record in voorkomt.
   tags.add(listTag(type))

@@ -75,6 +75,8 @@ interface RevalidatePayload {
   scope?: 'record' | 'all'
   /** Losse extra paden die mee moeten verversen. */
   paths?: string[]
+  /** Vorige slugs — de ISR-kopie op die URL's moet ook weg. */
+  oldSlugs?: string[]
   secret?: string
 }
 
@@ -101,6 +103,26 @@ function toId(value: unknown): number | undefined {
   return n
 }
 
+/** Slug-segmenten uit de ping: geen pad-uitbraak, geen lege strings. */
+function toOldSlugs(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  const slugs = new Set<string>()
+  for (const item of value) {
+    if (typeof item !== 'string') continue
+    const slug = item.trim()
+    if (
+      !slug ||
+      slug.includes('/') ||
+      slug.includes('..') ||
+      slug.includes('\\')
+    ) {
+      continue
+    }
+    slugs.add(slug)
+  }
+  return Array.from(slugs)
+}
+
 export async function POST(request: Request) {
   let body: RevalidatePayload = {}
   try {
@@ -124,6 +146,7 @@ export async function POST(request: Request) {
     )
   }
 
+  const oldSlugs = toOldSlugs(body.oldSlugs)
   const target: RevalidateTarget = {
     type,
     slug: body.slug?.trim() || undefined,
@@ -131,6 +154,7 @@ export async function POST(request: Request) {
     brandSlug: body.brandSlug?.trim() || undefined,
     mediaId: toId(body.mediaId),
     parentId: toId(body.parentId),
+    oldSlugs: oldSlugs.length > 0 ? oldSlugs : undefined,
     scope: body.scope === 'all' ? 'all' : 'record',
   }
 
@@ -156,6 +180,14 @@ export async function POST(request: Request) {
   const baseRoute = POST_TYPE_ROUTES[type]
   if (baseRoute && target.slug) {
     paths.add(`${baseRoute}/${target.slug}`)
+  }
+  if (baseRoute) {
+    for (const old of oldSlugs) {
+      paths.add(`${baseRoute}/${old}`)
+      if (type === 'talk') {
+        paths.add(`${baseRoute}/${old}/player`)
+      }
+    }
   }
   if (target.brandSlug) {
     paths.add(`/brand/${target.brandSlug}`)

@@ -1,12 +1,14 @@
 import type { NextConfig } from 'next'
 import { withSentryConfig } from '@sentry/nextjs'
+import { editorialRedirects } from './editorial-redirects'
 
 /**
  * MaterialDistrict — Next.js configuratie
  *
  * - Image domains: WordPress media-host
  * - Security headers: CSP, frame-ancestors, X-Content-Type-Options
- * - Redirects: legacy WordPress-URLs → Next (sitemap-meting 31-07-2026; 424 van 10.901)
+ * - Redirects: editorial slug corrections first (`editorial-redirects.ts`),
+ *   then legacy WordPress-URLs → Next (sitemap-meting 31-07-2026; 424 van 10.901)
  */
 
 const WP_HOST = process.env.WP_API_URL
@@ -186,6 +188,12 @@ const nextConfig: NextConfig = {
    */
   async redirects() {
     return [
+      // ------------------------------------------------------------------
+      // Editorial slug corrections — see editorial-redirects.ts.
+      // Must sit above catch-alls (/person/:slug*, /:path*, …).
+      // ------------------------------------------------------------------
+      ...editorialRedirects,
+
       // ------------------------------------------------------------------
       // 0. Legacy WordPress search links inside article bodies.
       //     2.547 published articles contain keyword links pointing at
@@ -558,6 +566,8 @@ const nextConfig: NextConfig = {
 
       // ------------------------------------------------------------------
       // 4. Speaker archives — 92 auto-generated person taxonomy pages → /talk
+      //    There is no /person/[slug] page. Existing and unknown slugs both
+      //    land on the talks index; that is the migration choice, not a 404.
       // ------------------------------------------------------------------
       {
         source: '/person/:slug*',

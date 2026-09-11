@@ -31,7 +31,7 @@ import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { ContentCard } from '@/components/ui'
-import { getTalk, listTalks } from '@/lib/api'
+import { getTalk, listTalks, redirectIfOldSlug } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildVideoObject, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
@@ -197,7 +197,10 @@ export default async function TalkDetailPage({ params }: TalkDetailPageProps) {
   const { slug } = await params
 
   const talk = await getTalk(slug)
-  if (!talk) notFound()
+  if (!talk) {
+    await redirectIfOldSlug('talk', slug)
+    notFound()
+  }
 
   const { prev, next, more } = await getTalkContext(slug)
 

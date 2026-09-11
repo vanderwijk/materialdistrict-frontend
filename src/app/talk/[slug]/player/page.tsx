@@ -9,7 +9,7 @@
 
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getTalk } from '@/lib/api'
+import { getTalk, redirectIfOldSlug } from '@/lib/api'
 import { canonicalPath } from '@/lib/seo'
 import { TalkVideoGate } from '../_components/TalkVideoGate'
 
@@ -45,7 +45,10 @@ export async function generateMetadata({
 export default async function TalkPlayerPage({ params }: TalkPlayerPageProps) {
   const { slug } = await params
   const talk = await getTalk(slug)
-  if (!talk) notFound()
+  if (!talk) {
+    await redirectIfOldSlug('talk', slug, 'player')
+    notFound()
+  }
 
   return (
     <article className="pub-wrap talk-player-page">

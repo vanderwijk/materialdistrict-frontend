@@ -40,7 +40,7 @@ import { notFound } from 'next/navigation'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { MaterialGallery } from '@/components/materials'
-import { getMaterialDetail } from '@/lib/api'
+import { getMaterialDetail, redirectIfOldSlug } from '@/lib/api'
 import { JsonLd, buildBreadcrumbList, buildProduct, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { materialFilterHref } from '@/lib/api/facetwp'
@@ -156,6 +156,7 @@ export default async function MaterialDetailPage({
   const detail = await getMaterialDetail(slug)
 
   if (!detail) {
+    await redirectIfOldSlug('material', slug)
     notFound()
   }
 

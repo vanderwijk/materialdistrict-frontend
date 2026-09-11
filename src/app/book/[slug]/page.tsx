@@ -30,6 +30,7 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getBook, listBooks } from '@/lib/api/books'
+import { redirectIfOldSlug } from '@/lib/api'
 import { MaterialBody } from '@/app/material/[slug]/_components/MaterialBody'
 import { DetailHeader } from '@/components/layout/DetailHeader'
 import { JsonLd, buildBook, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
@@ -123,6 +124,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   const book = await getBook(slug)
 
   if (!book) {
+    await redirectIfOldSlug('book', slug)
     notFound()
   }
 

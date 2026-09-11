@@ -50,6 +50,7 @@ import {
   getArticleNeighbours,
   getRelatedContent,
   listMaterials,
+  redirectIfOldSlug,
 } from '@/lib/api'
 import { JsonLd, buildArticle, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
@@ -203,7 +204,10 @@ export default async function ArticleDetailPage({
       getDigestChannels(),
     ])
 
-  if (!article) notFound()
+  if (!article) {
+    await redirectIfOldSlug('article', slug)
+    notFound()
+  }
 
   const typeMeta = STORY_TYPE_META[article.type]
   const publishedLabel = formatDate(article.date)

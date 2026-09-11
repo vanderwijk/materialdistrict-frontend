@@ -100,6 +100,9 @@ export {
   wpFetchPaginated,
 } from './wordpress'
 
+export { redirectIfOldSlug } from './old-slug-redirect'
+export type { OldSlugContentType } from './old-slug-redirect'
+
 // Mappers — voor wanneer je raw data hebt en domain-shape wilt (zelden direct gebruikt)
 export {
   mapArticle,

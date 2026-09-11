@@ -29,7 +29,7 @@ import { DetailHeader } from '@/components/layout/DetailHeader'
 import { DetailReadingTools } from '@/components/ui/DetailReadingTools'
 import { RecentlyViewedTracker } from '@/lib/hooks/useRecentlyViewed'
 import { Button } from '@/components/ui'
-import { getEvent, listEvents } from '@/lib/api'
+import { getEvent, listEvents, redirectIfOldSlug } from '@/lib/api'
 import { JsonLd, buildEvent, buildBreadcrumbList, canonicalPath, openGraphSite } from '@/lib/seo'
 import { ViewLogger } from '@/components/ui/ViewLogger'
 import { eventTypeLabel } from '@/lib/config/event-types'
@@ -192,7 +192,10 @@ export default async function EventDetailPage({ params }: EventDetailPageProps) 
   const { slug } = await params
 
   const event = await getEvent(slug)
-  if (!event) notFound()
+  if (!event) {
+    await redirectIfOldSlug('event', slug)
+    notFound()
+  }
 
   const { prev, next, others } = await getRelatedEvents(slug)
 
