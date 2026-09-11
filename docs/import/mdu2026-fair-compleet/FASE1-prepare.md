@@ -29,3 +29,7 @@
 ## Voor Jeroen
 
 [`oordeel/fase1-oordeel-jeroen.xlsx`](oordeel/fase1-oordeel-jeroen.xlsx)
+
+## Schrijf 2026-09-11
+
+Zie [FASE1-schrijf.md](FASE1-schrijf.md).
