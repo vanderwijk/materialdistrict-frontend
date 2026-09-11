@@ -1,0 +1,118 @@
+{
+ "total": 4059,
+ "stats": {
+  "act_bezoeker_aanwezig": 3172,
+  "type_ticket": 3868,
+  "act_no_show": 698,
+  "act_bezoeker_geregistreerd": 189,
+  "type_booker": 191,
+  "skip_geen_email": 2
+ },
+ "phone_norm_fail_or_placeholder": 368,
+ "chunks": [
+  {
+   "batch": "mdu2026-bezoekers-01",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 395,
+    "no_show": 75,
+    "bezoeker_geregistreerd": 30
+   },
+   "phones": 456,
+   "addresses": 491
+  },
+  {
+   "batch": "mdu2026-bezoekers-02",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 397,
+    "no_show": 82,
+    "bezoeker_geregistreerd": 21
+   },
+   "phones": 453,
+   "addresses": 486
+  },
+  {
+   "batch": "mdu2026-bezoekers-03",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 387,
+    "no_show": 97,
+    "bezoeker_geregistreerd": 16
+   },
+   "phones": 461,
+   "addresses": 485
+  },
+  {
+   "batch": "mdu2026-bezoekers-04",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 385,
+    "no_show": 91,
+    "bezoeker_geregistreerd": 24
+   },
+   "phones": 454,
+   "addresses": 488
+  },
+  {
+   "batch": "mdu2026-bezoekers-05",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 390,
+    "no_show": 82,
+    "bezoeker_geregistreerd": 28
+   },
+   "phones": 447,
+   "addresses": 484
+  },
+  {
+   "batch": "mdu2026-bezoekers-06",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 393,
+    "bezoeker_geregistreerd": 20,
+    "no_show": 87
+   },
+   "phones": 459,
+   "addresses": 486
+  },
+  {
+   "batch": "mdu2026-bezoekers-07",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 384,
+    "no_show": 91,
+    "bezoeker_geregistreerd": 25
+   },
+   "phones": 451,
+   "addresses": 486
+  },
+  {
+   "batch": "mdu2026-bezoekers-08",
+   "n": 500,
+   "acts": {
+    "bezoeker_aanwezig": 395,
+    "no_show": 83,
+    "bezoeker_geregistreerd": 22
+   },
+   "phones": 458,
+   "addresses": 485
+  },
+  {
+   "batch": "mdu2026-bezoekers-09",
+   "n": 59,
+   "acts": {
+    "bezoeker_aanwezig": 46,
+    "no_show": 10,
+    "bezoeker_geregistreerd": 3
+   },
+   "phones": 52,
+   "addresses": 57
+  }
+ ],
+ "mapping": {
+  "show": "bezoeker_aanwezig",
+  "no_show": "no_show",
+  "leeg": "bezoeker_geregistreerd"
+ }
+}

@@ -1,0 +1,408 @@
+{
+ "ronde": "MDU 2026 — bezoekers adres chunk 9",
+ "batch": "mdu2026-bezoekers-09-addr",
+ "bron": "Mailchimp bezoekers show/no-show MDU 2026",
+ "brondatum": "2026-03-09",
+ "regel": "Alleen lege billing_address / postcode / city / country vullen. Company niet aanraken.",
+ "rijen": [
+  {
+   "email": "puckvandongen08@gmail.com",
+   "address": "Paasberg 5",
+   "postcode": "6862 CB",
+   "city": "Oosterbeek",
+   "country": "NL"
+  },
+  {
+   "email": "isavanderwegen@gmail.com",
+   "address": "Van Lieflandlaan , 54",
+   "postcode": "3571 AD",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "adeelsbsb90@gmail.com",
+   "address": "Muhallah mori gate gate karimpura Sialkot",
+   "postcode": "54000",
+   "city": "Sialkot",
+   "country": ""
+  },
+  {
+   "email": "loeke1204@gmail.com",
+   "address": "Doornakkerlaan 1",
+   "postcode": "5282 PP",
+   "city": "BOXTEL",
+   "country": "NL"
+  },
+  {
+   "email": "officenederland@ace11.nl",
+   "address": "Handweg 151",
+   "postcode": "1185 TX",
+   "city": "Amstelveen",
+   "country": "NL"
+  },
+  {
+   "email": "isabellehagen@porcelanosa.nl",
+   "address": "Westerdoksdijk 681",
+   "postcode": "1013 BX",
+   "city": "Amsterdam",
+   "country": "NL"
+  },
+  {
+   "email": "sweeda@gmail.com",
+   "address": "Aambeeldstraat 9",
+   "postcode": "1021 KB",
+   "city": "Amsterdam",
+   "country": "NL"
+  },
+  {
+   "email": "liam@puursang.nl",
+   "address": "Ruysdaelhof 5",
+   "postcode": "5642 JM",
+   "city": "eindhoven",
+   "country": "NL"
+  },
+  {
+   "email": "davineweijenberg@icloud.com",
+   "address": "Mauritsstraat 10",
+   "postcode": "5616 AA",
+   "city": "Eindhoven",
+   "country": "NL"
+  },
+  {
+   "email": "thijmenbaan8@live.nl",
+   "address": "Roerdomp 37",
+   "postcode": "7463 AD",
+   "city": "Rijssen",
+   "country": "NL"
+  },
+  {
+   "email": "joel.moreno@mango.com",
+   "address": "Via Augusta, 10, 08184 Palau-solità i Plegamans, Barcelona 10",
+   "postcode": "8184",
+   "city": "Palau Solità i Plegamans",
+   "country": "ES"
+  },
+  {
+   "email": "gerritjan@heerschoponline.nl",
+   "address": "Kromme Nieuwegracht 3",
+   "postcode": "3511 BD",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "p.vannieuwenhuyzen@natuurmonumenten.nl",
+   "address": "Statsionsplein 1",
+   "postcode": "3818 LE",
+   "city": "Amersfoort",
+   "country": "NL"
+  },
+  {
+   "email": "lilian.marcolina@rws.nl",
+   "address": "magistratenlaan 82",
+   "postcode": "5224 CD",
+   "city": "den bosch",
+   "country": "NL"
+  },
+  {
+   "email": "maddiebollen@gmail.com",
+   "address": "Oosteinde",
+   "postcode": "2271 EE",
+   "city": "VOORBURG",
+   "country": "NL"
+  },
+  {
+   "email": "sander.hagens@owenscorning.com",
+   "address": "Laan van Westenenk 5",
+   "postcode": "7336 AZ",
+   "city": "Apeldoorn",
+   "country": "NL"
+  },
+  {
+   "email": "sophie.crum14@gmail.com",
+   "address": "Singelstraat 1d",
+   "postcode": "2613 EM",
+   "city": "Delft",
+   "country": "NL"
+  },
+  {
+   "email": "haenz@donow.nl",
+   "address": "J van Riebeeckstraat 14 bisa",
+   "postcode": "3531 EJ",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "info@haajee.com",
+   "address": "Oostzeestraat 2",
+   "postcode": "7411 MD",
+   "city": "Deventer",
+   "country": "NL"
+  },
+  {
+   "email": "pim@dsignmarking.nl",
+   "address": "Hangarweg 2",
+   "postcode": "2241 TZ",
+   "city": "Wassenaar",
+   "country": "NL"
+  },
+  {
+   "email": "interieurbouw@creativehouse.nl",
+   "address": "westrak 23",
+   "postcode": "38454LB",
+   "city": "Harderwijk",
+   "country": "NL"
+  },
+  {
+   "email": "579813@student.saxion.nl",
+   "address": "Kolonieweg 21",
+   "postcode": "7707 BR",
+   "city": "Balkbrug",
+   "country": "NL"
+  },
+  {
+   "email": "ditzitgoed@gmail.com",
+   "address": "Ridder van Catsweg 20",
+   "postcode": "2805 BA",
+   "city": "Gouda",
+   "country": "NL"
+  },
+  {
+   "email": "michiel@apetozebra.nl",
+   "address": "Gerard Doustraat 212",
+   "postcode": "1073 XB",
+   "city": "Amsterdam",
+   "country": "NL"
+  },
+  {
+   "email": "halawaoubaida@gmail.com",
+   "address": "AV.LARBI BEN M HIDI BT 26 N° 03",
+   "postcode": "18000",
+   "city": "JIJEL",
+   "country": ""
+  },
+  {
+   "email": "kevinvanelven@hotmail.com",
+   "address": "Vonderweg 14",
+   "postcode": "7468 DC",
+   "city": "Enter",
+   "country": "NL"
+  },
+  {
+   "email": "mariannekalkman@gmail.com",
+   "address": "Livarstraat 29",
+   "postcode": "3573 SB",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "heike.hustedt@volkswagen.de",
+   "address": "Berliner Ring",
+   "postcode": "38440",
+   "city": "Braunschweig",
+   "country": "DE"
+  },
+  {
+   "email": "erik@vormer.com",
+   "address": "Noorderbeekdwarsstraat 210",
+   "postcode": "2562 XX",
+   "city": "DEN HAAG",
+   "country": "NL"
+  },
+  {
+   "email": "ilya.facepalm@gmail.com",
+   "address": "Theodorus Niemeyerstraat 187",
+   "postcode": "9726 BR",
+   "city": "Groningen",
+   "country": "NL"
+  },
+  {
+   "email": "info@co-im.nl",
+   "address": "Brouwerslaan 1a",
+   "postcode": "6931 AC",
+   "city": "Westervoort",
+   "country": "NL"
+  },
+  {
+   "email": "e.van.mil@sintlucasedu.nl",
+   "address": "Kromsteeg 20",
+   "postcode": "5331 AK",
+   "city": "Kerkdriel",
+   "country": "NL"
+  },
+  {
+   "email": "jolai.design@gmail.com",
+   "address": "Zuiderweg 243",
+   "postcode": "1221 HH",
+   "city": "Hilversum",
+   "country": "NL"
+  },
+  {
+   "email": "j.schutte@duravermeer.nl",
+   "address": "157 Hertogswetering",
+   "postcode": "3543 AS",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "todormilovic@gmail.com",
+   "address": "Kees Van Dongenhof 61",
+   "postcode": "3024 NE",
+   "city": "Rotterdam",
+   "country": "NL"
+  },
+  {
+   "email": "simon.smedinga@legerdesheils.nl",
+   "address": "Koopvaardijweg 15",
+   "postcode": "4906 CV",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "arie.huisman@bmvanhouwelingen.nl",
+   "address": "Hakgriend 26",
+   "postcode": "3371 KA",
+   "city": "HARDINXVELD-GIESSENDAM",
+   "country": "NL"
+  },
+  {
+   "email": "romanie.menschaert@gmail.com",
+   "address": "Roderoestraat 11",
+   "postcode": "9000",
+   "city": "gent",
+   "country": "BE"
+  },
+  {
+   "email": "c.benning@lijbrandt.nl",
+   "address": "Meercamp 27",
+   "postcode": "3992 RH",
+   "city": "Houten",
+   "country": "NL"
+  },
+  {
+   "email": "titus.vanderspek@gmail.com",
+   "address": "Prinsenhof 34",
+   "postcode": "2641 RP",
+   "city": "Pijnacker",
+   "country": "NL"
+  },
+  {
+   "email": "jessemuur05@gmail.com",
+   "address": "Roggestro 20",
+   "postcode": "5404 JD",
+   "city": "Uden",
+   "country": "NL"
+  },
+  {
+   "email": "stephanie_rompa@live.nl",
+   "address": "Den Hof 2",
+   "postcode": "5248 NJ",
+   "city": "Rosmalen",
+   "country": "NL"
+  },
+  {
+   "email": "lineke.bouman@secrid.com",
+   "address": "Saturnusstraat 81",
+   "postcode": "2516 AG",
+   "city": "Den Haag",
+   "country": "NL"
+  },
+  {
+   "email": "anuuexplore29@gmail.com",
+   "address": "AA GERET MARKET",
+   "postcode": "144002",
+   "city": "Jalandhar",
+   "country": ""
+  },
+  {
+   "email": "info@drplusarchitecten.nl",
+   "address": "Dr. Hub van Doorneweg 173",
+   "postcode": "5026 RD",
+   "city": "Tilburg",
+   "country": "NL"
+  },
+  {
+   "email": "daphnemonsma@gmail.com",
+   "address": "Pagelaan 213",
+   "postcode": "3525 GW",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "hello@gretafacchinato.com",
+   "address": "Hoge Zand 30",
+   "postcode": "2512 EM",
+   "city": "Den Haag",
+   "country": "NL"
+  },
+  {
+   "email": "voortpost@gmail.com",
+   "address": "Biltweg",
+   "postcode": "8043 PC",
+   "city": "Zwolle",
+   "country": "NL"
+  },
+  {
+   "email": "ienifer.ferreira@rever.nl",
+   "address": "Radonweg 2",
+   "postcode": "3542 AN",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "eveline@mindinterieur.nl",
+   "address": "Shakespearehof, 9",
+   "postcode": "3533 CZ",
+   "city": "Utrecht",
+   "country": "NL"
+  },
+  {
+   "email": "1095272@hr.nl",
+   "address": "Haarlemmerplein 4",
+   "postcode": "2013 HS",
+   "city": "Amsterdam",
+   "country": "NL"
+  },
+  {
+   "email": "joffreydelfgaauw@hotmail.com",
+   "address": "Herengracht 80",
+   "postcode": "2312 LE",
+   "city": "Leiden",
+   "country": "NL"
+  },
+  {
+   "email": "info@solidusmeubelen.nl",
+   "address": "Hoenderweg 3B",
+   "postcode": "3851 RZ",
+   "city": "Ermelo",
+   "country": "NL"
+  },
+  {
+   "email": "info@concept74.nl",
+   "address": "12 Bergweg",
+   "postcode": "BT",
+   "city": "Hengelo",
+   "country": "NL"
+  },
+  {
+   "email": "i.geskens@all-art-design.nl",
+   "address": "Wortelsteeke 9C",
+   "postcode": "4751 XM",
+   "city": "Oud Gastel",
+   "country": "NL"
+  },
+  {
+   "email": "leon.doering@stefaniehering.com",
+   "address": "Lindenthaler Allee, 5",
+   "postcode": "14163",
+   "city": "Berlin",
+   "country": "DE"
+  },
+  {
+   "email": "erol@nord-interactives.com",
+   "address": "Laevastiku 3G",
+   "postcode": "10313",
+   "city": "Tallinn",
+   "country": ""
+  }
+ ]
+}
