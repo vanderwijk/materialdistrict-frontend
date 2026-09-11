@@ -1,0 +1,796 @@
+{
+ "roles": [
+  {
+   "email": "roy@natuurlijkdaglicht.nl",
+   "brand_id": 140513,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij natuurlijkdaglicht.nl",
+   "company_bron": "Natuurlijk daglicht"
+  },
+  {
+   "email": "maksym.bartkowiak@forner.co.uk",
+   "brand_id": 125584,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van forner.co.uk ~ forner.nl",
+   "company_bron": "Forner"
+  },
+  {
+   "email": "m.benschop@kronospan.de",
+   "brand_id": 135804,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van kronospan.de ~ kronospan.com",
+   "company_bron": "Kronospan"
+  },
+  {
+   "email": "dominique@circuform.com",
+   "brand_id": 140454,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij circuform.com",
+   "company_bron": "Circuform"
+  },
+  {
+   "email": "jonathan.cinjee@arcelormittal.com",
+   "brand_id": 3716,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij arcelormittal.com",
+   "company_bron": "ArcelorMittal Building Solutions – Specials"
+  },
+  {
+   "email": "petra@orangeriebijleveld.nl",
+   "brand_id": 140445,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij orangeriebijleveld.nl",
+   "company_bron": "Orangerie Bijleveld"
+  },
+  {
+   "email": "janwillem@circuform.com",
+   "brand_id": 140454,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij circuform.com",
+   "company_bron": "Circuform"
+  },
+  {
+   "email": "julesvreeswijk@toothezoo.nl",
+   "brand_id": 140461,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij toothezoo.nl",
+   "company_bron": "TOOtheZOO"
+  },
+  {
+   "email": "ralph.pillekers@arcelormittal.com",
+   "brand_id": 3716,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij arcelormittal.com",
+   "company_bron": "ArcelorMittal Building Solutions – Specials"
+  },
+  {
+   "email": "info@viverdie.com",
+   "brand_id": 140466,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij viverdie.com",
+   "company_bron": "VivErdie"
+  },
+  {
+   "email": "marketing@hestus.nl",
+   "brand_id": 140460,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij hestus.nl",
+   "company_bron": "Hestus"
+  },
+  {
+   "email": "aarnoud@acoustiq.nl",
+   "brand_id": 140503,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij acoustiq.nl",
+   "company_bron": "AcoustIQ"
+  },
+  {
+   "email": "paul.koppers@newmor.com",
+   "brand_id": 140452,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij newmor.com",
+   "company_bron": "Newmor Wallcoverings"
+  },
+  {
+   "email": "jordy@acasaagency.nl",
+   "brand_id": 140518,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij acasaagency.nl",
+   "company_bron": "wineo by LEOXX"
+  },
+  {
+   "email": "dennis@natuurlijkdaglicht.nl",
+   "brand_id": 140513,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij natuurlijkdaglicht.nl",
+   "company_bron": "Natuurlijk daglicht"
+  },
+  {
+   "email": "jaap@palet.company",
+   "brand_id": 134551,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van palet.company ~ palet.shop",
+   "company_bron": "Palet."
+  },
+  {
+   "email": "siedo@acoustiq.nl",
+   "brand_id": 140503,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij acoustiq.nl",
+   "company_bron": "AcoustIQ"
+  },
+  {
+   "email": "teresa.martinez@garnica.one",
+   "brand_id": 140505,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij garnica.one",
+   "company_bron": "Garnica"
+  },
+  {
+   "email": "kdzwart@robametals.com",
+   "brand_id": 129955,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van robametals.com ~ robametals.nl",
+   "company_bron": "Roba Metals Amsterdam"
+  },
+  {
+   "email": "bjorn@acasaagency.nl",
+   "brand_id": 140518,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij acasaagency.nl",
+   "company_bron": "wineo by LEOXX"
+  },
+  {
+   "email": "rob@natuurlijkdaglicht.nl",
+   "brand_id": 140513,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij natuurlijkdaglicht.nl",
+   "company_bron": "Natuurlijk daglicht"
+  },
+  {
+   "email": "dries@vlastic.be",
+   "brand_id": 140473,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij vlastic.be",
+   "company_bron": "Vlastic"
+  },
+  {
+   "email": "frank@orangeriebijleveld.nl",
+   "brand_id": 140445,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij orangeriebijleveld.nl",
+   "company_bron": "Orangerie Bijleveld"
+  },
+  {
+   "email": "j.post@kronospan.nl",
+   "brand_id": 135804,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van kronospan.nl ~ kronospan.com",
+   "company_bron": "Kronospan"
+  },
+  {
+   "email": "b.zonneveld@kronospan.nl",
+   "brand_id": 135804,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van kronospan.nl ~ kronospan.com",
+   "company_bron": "Kronospan"
+  },
+  {
+   "email": "rene@uberdutch.nl",
+   "brand_id": 140514,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van uberdutch.nl ~ uberdutch.com",
+   "company_bron": "Studio Überdutch"
+  },
+  {
+   "email": "p.kaper@martijndewitvloeren.nl",
+   "brand_id": 140506,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij martijndewitvloeren.nl",
+   "company_bron": "Martijn de Wit Vloeren"
+  },
+  {
+   "email": "chantal.uittenbosch@garnica.one",
+   "brand_id": 140505,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij garnica.one",
+   "company_bron": "Garnica"
+  },
+  {
+   "email": "philippe@whoooz.be",
+   "brand_id": 140502,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij whoooz.be",
+   "company_bron": "Slalom by Whoooz"
+  },
+  {
+   "email": "liza@uberdutch.nl",
+   "brand_id": 140514,
+   "grond": "domeinstam",
+   "bewijs": "domeinkern van uberdutch.nl ~ uberdutch.com",
+   "company_bron": "Studio Überdutch"
+  },
+  {
+   "email": "iris@studioifocus.nl",
+   "brand_id": 140448,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij studioifocus.nl",
+   "company_bron": "Studio i Focus"
+  },
+  {
+   "email": "rob@acoustiq.nl",
+   "brand_id": 140503,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij acoustiq.nl",
+   "company_bron": "AcoustIQ"
+  },
+  {
+   "email": "info@neildavid.com",
+   "brand_id": 140497,
+   "grond": "domein",
+   "bewijs": "e-maildomein hoort bij neildavid.com",
+   "company_bron": "Neil David"
+  }
+ ],
+ "skip": [
+  {
+   "email": "info@beekmans-design.nl",
+   "company": "Stichting Insert",
+   "domain": "beekmans-design.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "w.simon@beal.be",
+   "company": "BEAL International",
+   "domain": "beal.be",
+   "reden": "geen match"
+  },
+  {
+   "email": "carmenecomendador123@gmail.com",
+   "company": "Carmen Enríquez",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "info@eliseluttik.nl",
+   "company": "Newmor Wallcoverings",
+   "domain": "eliseluttik.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "j.bayona.c@biomason.com",
+   "company": "FRONT® Materials",
+   "domain": "biomason.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "bianca@i-did.nl",
+   "company": "i-did",
+   "domain": "i-did.nl",
+   "reden": "multi 2",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "etienne.pilet@unilin.com",
+   "company": "Unilin Flooring Nederland",
+   "domain": "unilin.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "tamara.van.hest@tegelgroep.nl",
+   "company": "FRONT® Materials",
+   "domain": "tegelgroep.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "evanhouten@moso.eu",
+   "company": "MOSO® Bamboo",
+   "domain": "moso.eu",
+   "reden": "geen match"
+  },
+  {
+   "email": "conor@lowcarbonindustrial.com",
+   "company": "Stelapop",
+   "domain": "lowcarbonindustrial.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "michiel@i-did.nl",
+   "company": "i-did",
+   "domain": "i-did.nl",
+   "reden": "multi 2",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "bbroersma@moso.eu",
+   "company": "MOSO® Bamboo",
+   "domain": "moso.eu",
+   "reden": "geen match"
+  },
+  {
+   "email": "johanvandinther@maiburg.nl",
+   "company": "DenimX by Maiburg",
+   "domain": "maiburg.nl",
+   "reden": "multi 2",
+   "ids": [
+    17521,
+    128943
+   ]
+  },
+  {
+   "email": "ilonamodderkolk@gmail.com",
+   "company": "HempWood Nederland",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "wouter.sprangers@unilin.com",
+   "company": "Unilin Flooring Nederland",
+   "domain": "unilin.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "peter.kreukniet@insert.nl",
+   "company": "Stichting Insert",
+   "domain": "insert.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "mirnes.musabegovic@tegelgroep.nl",
+   "company": "FRONT® Materials",
+   "domain": "tegelgroep.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "ah.willems@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "domain": "buroboot.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "elinevandijkman31@gmail.com",
+   "company": "SeaWood Materials",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "asligokcem@gmail.com",
+   "company": "Yusufova",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "jake@lowcarbonindustrial.com",
+   "company": "Stelapop",
+   "domain": "lowcarbonindustrial.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "matt_mycotex@neffa.nl",
+   "company": "MYCOTEX",
+   "domain": "neffa.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "jr.vanrees@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "domain": "buroboot.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "as.vanelfrinkhof@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "domain": "buroboot.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "tamaralon10@gmail.com",
+   "company": "Tamar Alon",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "m.flier@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "domain": "buroboot.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "lijzerloo@garfield.nl",
+   "company": "Garline",
+   "domain": "garfield.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "robin@planq.nl",
+   "company": "Rezign",
+   "domain": "planq.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "philippe.gaud@icloud.com",
+   "company": "BAGUETTE STUDIO",
+   "domain": "icloud.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "ron.muiderman@unilin.com",
+   "company": "Unilin Flooring Nederland",
+   "domain": "unilin.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "ellenantonia@hotmail.com",
+   "company": "Sustaign",
+   "domain": "hotmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "benediktasmikuckis@gmail.com",
+   "company": "Indrė Mikuckė",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "evaline.kruyssen@bni.nl",
+   "company": "Stichting Insert",
+   "domain": "bni.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "camilo.restrepo@biomason.com",
+   "company": "FRONT® Materials",
+   "domain": "biomason.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "mirko@i-did.nl",
+   "company": "i-did",
+   "domain": "i-did.nl",
+   "reden": "multi 2",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "bregte@z-studio.nl",
+   "company": "DC Bricks",
+   "domain": "z-studio.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "christal_mycotex@neffa.nl",
+   "company": "MYCOTEX",
+   "domain": "neffa.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "leonvandun@maiburg.nl",
+   "company": "DenimX by Maiburg",
+   "domain": "maiburg.nl",
+   "reden": "multi 2",
+   "ids": [
+    17521,
+    128943
+   ]
+  },
+  {
+   "email": "resham@i-did.nl",
+   "company": "i-did",
+   "domain": "i-did.nl",
+   "reden": "multi 2",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "pierre.buyze@novaya-solutions.be",
+   "company": "CircleFoam© Sustainable Products",
+   "domain": "novaya-solutions.be",
+   "reden": "geen match"
+  },
+  {
+   "email": "contact@maelysvenkiah.com",
+   "company": "Maëlys Venkiah",
+   "domain": "maelysvenkiah.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "siemieniuk.ania@gmail.com",
+   "company": "SOL-R&D",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "ben@bilven.com.mt",
+   "company": "Ambitious Lab",
+   "domain": "bilven.com.mt",
+   "reden": "geen match"
+  },
+  {
+   "email": "joost.heijboer@oboros.nl",
+   "company": "Oboros",
+   "domain": "oboros.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "marc.malherbe@prinmac.com",
+   "company": "CEWOOD",
+   "domain": "prinmac.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "kusyovad@gmail.com",
+   "company": "Diana Kusyová",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "tomov.toma03@gmail.com",
+   "company": "Boyana Voynova",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "lorenzo@i-did.nl",
+   "company": "i-did",
+   "domain": "i-did.nl",
+   "reden": "multi 2",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "angelinedijkstra@hotmail.com",
+   "company": "HempWood Nederland",
+   "domain": "hotmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "mnuijs@garfield.nl",
+   "company": "Garline",
+   "domain": "garfield.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "bramvanhoesel@maiburg.nl",
+   "company": "DenimX by Maiburg",
+   "domain": "maiburg.nl",
+   "reden": "multi 2",
+   "ids": [
+    17521,
+    128943
+   ]
+  },
+  {
+   "email": "falko.koster@tegelgroep.nl",
+   "company": "FRONT® Materials",
+   "domain": "tegelgroep.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "d.schipper@beal.be",
+   "company": "BEAL International",
+   "domain": "beal.be",
+   "reden": "geen match"
+  },
+  {
+   "email": "pierredewit@maiburg.nl",
+   "company": "DenimX by Maiburg",
+   "domain": "maiburg.nl",
+   "reden": "multi 2",
+   "ids": [
+    17521,
+    128943
+   ]
+  },
+  {
+   "email": "sabinevanbakel@maiburg.nl",
+   "company": "DenimX by Maiburg",
+   "domain": "maiburg.nl",
+   "reden": "multi 2",
+   "ids": [
+    17521,
+    128943
+   ]
+  },
+  {
+   "email": "susanne.bakkenist@oboros.nl",
+   "company": "Oboros",
+   "domain": "oboros.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "adam@mdwv.nl",
+   "company": "Martijn de Wit Vloeren",
+   "domain": "mdwv.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "arnolim@hotmail.nl",
+   "company": "Compostboard",
+   "domain": "hotmail.nl",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "info@jensvandeursen.com",
+   "company": "From Waste to Wonder Workshops",
+   "domain": "jensvandeursen.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "ritschel@comprisetec.de",
+   "company": "LignoLight – weißensee kunsthochschule berlin",
+   "domain": "comprisetec.de",
+   "reden": "geen match"
+  },
+  {
+   "email": "mark@planq.nl",
+   "company": "Rezign",
+   "domain": "planq.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "lana_al_ali@hotmail.com",
+   "company": "Sustaign",
+   "domain": "hotmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "rogier@i-did.nl",
+   "company": "i-did",
+   "domain": "i-did.nl",
+   "reden": "multi 2",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "martin@wooddeck.nl",
+   "company": "Tholin Bouwproducten",
+   "domain": "wooddeck.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "michellebrabers@maiburg.nl",
+   "company": "DenimX by Maiburg",
+   "domain": "maiburg.nl",
+   "reden": "multi 2",
+   "ids": [
+    17521,
+    128943
+   ]
+  },
+  {
+   "email": "littlefyaya@gmail.com",
+   "company": "Observology",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "roos.vanborrendam@insert.nl",
+   "company": "Stichting Insert",
+   "domain": "insert.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "anne.roelofse@oboros.nl",
+   "company": "Oboros",
+   "domain": "oboros.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "shanique@svdhdesign.nl",
+   "company": "Het Lichtlab",
+   "domain": "svdhdesign.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "peter.feys@novaya-solutions.be",
+   "company": "CircleFoam© Sustainable Products",
+   "domain": "novaya-solutions.be",
+   "reden": "geen match"
+  },
+  {
+   "email": "stoegerer@kh-berlin.de",
+   "company": "LignoLight – weißensee kunsthochschule berlin",
+   "domain": "kh-berlin.de",
+   "reden": "geen match"
+  },
+  {
+   "email": "p.forster@yizumi-germany.de",
+   "company": "TRIBOO",
+   "domain": "yizumi-germany.de",
+   "reden": "geen match"
+  },
+  {
+   "email": "kempkens@kh-berlin.de",
+   "company": "LignoLight – weißensee kunsthochschule berlin",
+   "domain": "kh-berlin.de",
+   "reden": "geen match"
+  },
+  {
+   "email": "daniel@chambroad.com",
+   "company": "Chambroad Timber Popura",
+   "domain": "chambroad.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "abellapaule@gmail.com",
+   "company": "Mycelium Material",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "kort1962@gmail.com",
+   "company": "Waardewenders",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "patty@beyondwood.nl",
+   "company": "Reduco",
+   "domain": "beyondwood.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "mail@alexgrootjebbink.nl",
+   "company": "Het Lichtlab",
+   "domain": "alexgrootjebbink.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "predaa@terzadimensione.com",
+   "company": "wineo by LEOXX",
+   "domain": "terzadimensione.com",
+   "reden": "geen match"
+  },
+  {
+   "email": "mp.scheers@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "domain": "buroboot.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "servaes.mahieu@gmail.com",
+   "company": "Slalom by Whoooz",
+   "domain": "gmail.com",
+   "reden": "vrij e-mail"
+  },
+  {
+   "email": "andor.de.haan@tegelgroep.nl",
+   "company": "FRONT® Materials",
+   "domain": "tegelgroep.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "marco.scheers@insert.nl",
+   "company": "Stichting Insert",
+   "domain": "insert.nl",
+   "reden": "geen match"
+  },
+  {
+   "email": "maurice.bosch@unilin.com",
+   "company": "Unilin Flooring Nederland",
+   "domain": "unilin.com",
+   "reden": "geen match"
+  }
+ ],
+ "stats": {
+  "geen_match": 54,
+  "vrij": 18,
+  "domein": 25,
+  "multi": 12,
+  "stam": 8
+ }
+}
