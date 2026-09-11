@@ -1,0 +1,99 @@
+{
+ "stats": {
+  "rol_domein": 13,
+  "rol_stam": 1,
+  "geen_rol_vrij": 14,
+  "geen_rol_geen_match": 16,
+  "geen_rol_multi": 1
+ },
+ "twijfel": [
+  {
+   "email": "j.ouburg@hoh-architecten.com",
+   "reden": "geen unieke merkmatch voor hoh-architecten.com",
+   "exposant": "nee"
+  },
+  {
+   "email": "boriszeisser@natrufied.com",
+   "reden": "geen unieke merkmatch voor natrufied.com",
+   "exposant": "nee"
+  },
+  {
+   "email": "alexander@krft.nl",
+   "reden": "geen unieke merkmatch voor krft.nl",
+   "exposant": "nee"
+  },
+  {
+   "email": "eva@i-did.nl",
+   "reden": "domein i-did.nl → 2 merken (geen rol)",
+   "ids": [
+    54787,
+    135221
+   ]
+  },
+  {
+   "email": "ad@ro-ad.org",
+   "reden": "geen unieke merkmatch voor ro-ad.org",
+   "exposant": "nee"
+  },
+  {
+   "email": "wilfried@beyondwood.nl",
+   "reden": "geen unieke merkmatch voor beyondwood.nl",
+   "exposant": "ja"
+  },
+  {
+   "email": "d.teeuw@planqproducts.com",
+   "reden": "geen unieke merkmatch voor planqproducts.com",
+   "exposant": "ja"
+  },
+  {
+   "email": "aummy@saicycle.com",
+   "reden": "geen unieke merkmatch voor saicycle.com",
+   "exposant": "ja"
+  },
+  {
+   "email": "contact@maelysvenkiah.com",
+   "reden": "geen unieke merkmatch voor maelysvenkiah.com",
+   "exposant": "ja"
+  },
+  {
+   "email": "kempkens@kh-berlin.de",
+   "reden": "geen unieke merkmatch voor kh-berlin.de",
+   "exposant": "ja"
+  },
+  {
+   "email": "miriammichon@kow.nl",
+   "reden": "geen unieke merkmatch voor kow.nl",
+   "exposant": "nee"
+  },
+  {
+   "email": "dennishauer@ucarchitects.com",
+   "reden": "geen unieke merkmatch voor ucarchitects.com",
+   "exposant": "nee"
+  },
+  {
+   "email": "rik@rikmakes.com",
+   "reden": "geen unieke merkmatch voor rikmakes.com",
+   "exposant": "ja"
+  },
+  {
+   "email": "dave@waughthistleton.com",
+   "reden": "geen unieke merkmatch voor waughthistleton.com",
+   "exposant": "nee"
+  },
+  {
+   "email": "r.platje@mei-arch.eu",
+   "reden": "geen unieke merkmatch voor mei-arch.eu",
+   "exposant": "nee"
+  },
+  {
+   "email": "mail@narrativa.nl",
+   "reden": "geen unieke merkmatch voor narrativa.nl",
+   "exposant": "nee"
+  },
+  {
+   "email": "aniela@neffa.nl",
+   "reden": "geen unieke merkmatch voor neffa.nl",
+   "exposant": "ja"
+  }
+ ]
+}
