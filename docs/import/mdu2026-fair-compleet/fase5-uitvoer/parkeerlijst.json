@@ -1,0 +1,601 @@
+{
+ "generated": "2026-09-11",
+ "live_activities_mdu2026": {
+  "bezoeker_aanwezig": 3172,
+  "no_show": 698,
+  "bezoeker_geregistreerd": 189,
+  "standbemanning": 299,
+  "exposant": 112,
+  "spreker": 45,
+  "totaal": 4515
+ },
+ "live_roles": {
+  "medewerker": 197,
+  "contactpersoon": 61,
+  "beheerder": 11
+ },
+ "idempotent_ok": true,
+ "park": [
+  {
+   "fase": 4,
+   "categorie": "overgeslagen_email",
+   "n": 2,
+   "items": [
+    {
+     "email": "test@google.com",
+     "naam": "Test Google"
+    },
+    {
+     "email": "test@google.eu",
+     "naam": "Google Test"
+    }
+   ],
+   "reden": "regels.email weigert test@…"
+  },
+  {
+   "fase": 3,
+   "categorie": "standbemanning_zonder_rol",
+   "n": 84,
+   "verdeling": {
+    "geen_match": 54,
+    "vrij_email": 18,
+    "multi_domein": 12
+   },
+   "reden": "standbemanning-activiteit bestaat; geen unieke domeinrol",
+   "sample": [
+    {
+     "email": "info@beekmans-design.nl",
+     "reden": "geen match",
+     "company": "Stichting Insert"
+    },
+    {
+     "email": "w.simon@beal.be",
+     "reden": "geen match",
+     "company": "BEAL International"
+    },
+    {
+     "email": "carmenecomendador123@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Carmen Enríquez"
+    },
+    {
+     "email": "info@eliseluttik.nl",
+     "reden": "geen match",
+     "company": "Newmor Wallcoverings"
+    },
+    {
+     "email": "j.bayona.c@biomason.com",
+     "reden": "geen match",
+     "company": "FRONT® Materials"
+    },
+    {
+     "email": "bianca@i-did.nl",
+     "reden": "multi 2",
+     "company": "i-did"
+    },
+    {
+     "email": "etienne.pilet@unilin.com",
+     "reden": "geen match",
+     "company": "Unilin Flooring Nederland"
+    },
+    {
+     "email": "tamara.van.hest@tegelgroep.nl",
+     "reden": "geen match",
+     "company": "FRONT® Materials"
+    },
+    {
+     "email": "evanhouten@moso.eu",
+     "reden": "geen match",
+     "company": "MOSO® Bamboo"
+    },
+    {
+     "email": "conor@lowcarbonindustrial.com",
+     "reden": "geen match",
+     "company": "Stelapop"
+    },
+    {
+     "email": "michiel@i-did.nl",
+     "reden": "multi 2",
+     "company": "i-did"
+    },
+    {
+     "email": "bbroersma@moso.eu",
+     "reden": "geen match",
+     "company": "MOSO® Bamboo"
+    },
+    {
+     "email": "johanvandinther@maiburg.nl",
+     "reden": "multi 2",
+     "company": "DenimX by Maiburg"
+    },
+    {
+     "email": "ilonamodderkolk@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "HempWood Nederland"
+    },
+    {
+     "email": "wouter.sprangers@unilin.com",
+     "reden": "geen match",
+     "company": "Unilin Flooring Nederland"
+    },
+    {
+     "email": "peter.kreukniet@insert.nl",
+     "reden": "geen match",
+     "company": "Stichting Insert"
+    },
+    {
+     "email": "mirnes.musabegovic@tegelgroep.nl",
+     "reden": "geen match",
+     "company": "FRONT® Materials"
+    },
+    {
+     "email": "ah.willems@buroboot.nl",
+     "reden": "geen match",
+     "company": "BOOT Ingenieurs met een verhaal"
+    },
+    {
+     "email": "elinevandijkman31@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "SeaWood Materials"
+    },
+    {
+     "email": "asligokcem@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Yusufova"
+    },
+    {
+     "email": "jake@lowcarbonindustrial.com",
+     "reden": "geen match",
+     "company": "Stelapop"
+    },
+    {
+     "email": "matt_mycotex@neffa.nl",
+     "reden": "geen match",
+     "company": "MYCOTEX"
+    },
+    {
+     "email": "jr.vanrees@buroboot.nl",
+     "reden": "geen match",
+     "company": "BOOT Ingenieurs met een verhaal"
+    },
+    {
+     "email": "as.vanelfrinkhof@buroboot.nl",
+     "reden": "geen match",
+     "company": "BOOT Ingenieurs met een verhaal"
+    },
+    {
+     "email": "tamaralon10@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Tamar Alon"
+    },
+    {
+     "email": "m.flier@buroboot.nl",
+     "reden": "geen match",
+     "company": "BOOT Ingenieurs met een verhaal"
+    },
+    {
+     "email": "lijzerloo@garfield.nl",
+     "reden": "geen match",
+     "company": "Garline"
+    },
+    {
+     "email": "robin@planq.nl",
+     "reden": "geen match",
+     "company": "Rezign"
+    },
+    {
+     "email": "philippe.gaud@icloud.com",
+     "reden": "vrij e-mail",
+     "company": "BAGUETTE STUDIO"
+    },
+    {
+     "email": "ron.muiderman@unilin.com",
+     "reden": "geen match",
+     "company": "Unilin Flooring Nederland"
+    },
+    {
+     "email": "ellenantonia@hotmail.com",
+     "reden": "vrij e-mail",
+     "company": "Sustaign"
+    },
+    {
+     "email": "benediktasmikuckis@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Indrė Mikuckė"
+    },
+    {
+     "email": "evaline.kruyssen@bni.nl",
+     "reden": "geen match",
+     "company": "Stichting Insert"
+    },
+    {
+     "email": "camilo.restrepo@biomason.com",
+     "reden": "geen match",
+     "company": "FRONT® Materials"
+    },
+    {
+     "email": "mirko@i-did.nl",
+     "reden": "multi 2",
+     "company": "i-did"
+    },
+    {
+     "email": "bregte@z-studio.nl",
+     "reden": "geen match",
+     "company": "DC Bricks"
+    },
+    {
+     "email": "christal_mycotex@neffa.nl",
+     "reden": "geen match",
+     "company": "MYCOTEX"
+    },
+    {
+     "email": "leonvandun@maiburg.nl",
+     "reden": "multi 2",
+     "company": "DenimX by Maiburg"
+    },
+    {
+     "email": "resham@i-did.nl",
+     "reden": "multi 2",
+     "company": "i-did"
+    },
+    {
+     "email": "pierre.buyze@novaya-solutions.be",
+     "reden": "geen match",
+     "company": "CircleFoam© Sustainable Products"
+    },
+    {
+     "email": "contact@maelysvenkiah.com",
+     "reden": "geen match",
+     "company": "Maëlys Venkiah"
+    },
+    {
+     "email": "siemieniuk.ania@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "SOL-R&D"
+    },
+    {
+     "email": "ben@bilven.com.mt",
+     "reden": "geen match",
+     "company": "Ambitious Lab"
+    },
+    {
+     "email": "joost.heijboer@oboros.nl",
+     "reden": "geen match",
+     "company": "Oboros"
+    },
+    {
+     "email": "marc.malherbe@prinmac.com",
+     "reden": "geen match",
+     "company": "CEWOOD"
+    },
+    {
+     "email": "kusyovad@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Diana Kusyová"
+    },
+    {
+     "email": "tomov.toma03@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Boyana Voynova"
+    },
+    {
+     "email": "lorenzo@i-did.nl",
+     "reden": "multi 2",
+     "company": "i-did"
+    },
+    {
+     "email": "angelinedijkstra@hotmail.com",
+     "reden": "vrij e-mail",
+     "company": "HempWood Nederland"
+    },
+    {
+     "email": "mnuijs@garfield.nl",
+     "reden": "geen match",
+     "company": "Garline"
+    },
+    {
+     "email": "bramvanhoesel@maiburg.nl",
+     "reden": "multi 2",
+     "company": "DenimX by Maiburg"
+    },
+    {
+     "email": "falko.koster@tegelgroep.nl",
+     "reden": "geen match",
+     "company": "FRONT® Materials"
+    },
+    {
+     "email": "d.schipper@beal.be",
+     "reden": "geen match",
+     "company": "BEAL International"
+    },
+    {
+     "email": "pierredewit@maiburg.nl",
+     "reden": "multi 2",
+     "company": "DenimX by Maiburg"
+    },
+    {
+     "email": "sabinevanbakel@maiburg.nl",
+     "reden": "multi 2",
+     "company": "DenimX by Maiburg"
+    },
+    {
+     "email": "susanne.bakkenist@oboros.nl",
+     "reden": "geen match",
+     "company": "Oboros"
+    },
+    {
+     "email": "adam@mdwv.nl",
+     "reden": "geen match",
+     "company": "Martijn de Wit Vloeren"
+    },
+    {
+     "email": "arnolim@hotmail.nl",
+     "reden": "vrij e-mail",
+     "company": "Compostboard"
+    },
+    {
+     "email": "info@jensvandeursen.com",
+     "reden": "geen match",
+     "company": "From Waste to Wonder Workshops"
+    },
+    {
+     "email": "ritschel@comprisetec.de",
+     "reden": "geen match",
+     "company": "LignoLight – weißensee kunsthochschule berlin"
+    },
+    {
+     "email": "mark@planq.nl",
+     "reden": "geen match",
+     "company": "Rezign"
+    },
+    {
+     "email": "lana_al_ali@hotmail.com",
+     "reden": "vrij e-mail",
+     "company": "Sustaign"
+    },
+    {
+     "email": "rogier@i-did.nl",
+     "reden": "multi 2",
+     "company": "i-did"
+    },
+    {
+     "email": "martin@wooddeck.nl",
+     "reden": "geen match",
+     "company": "Tholin Bouwproducten"
+    },
+    {
+     "email": "michellebrabers@maiburg.nl",
+     "reden": "multi 2",
+     "company": "DenimX by Maiburg"
+    },
+    {
+     "email": "littlefyaya@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Observology"
+    },
+    {
+     "email": "roos.vanborrendam@insert.nl",
+     "reden": "geen match",
+     "company": "Stichting Insert"
+    },
+    {
+     "email": "anne.roelofse@oboros.nl",
+     "reden": "geen match",
+     "company": "Oboros"
+    },
+    {
+     "email": "shanique@svdhdesign.nl",
+     "reden": "geen match",
+     "company": "Het Lichtlab"
+    },
+    {
+     "email": "peter.feys@novaya-solutions.be",
+     "reden": "geen match",
+     "company": "CircleFoam© Sustainable Products"
+    },
+    {
+     "email": "stoegerer@kh-berlin.de",
+     "reden": "geen match",
+     "company": "LignoLight – weißensee kunsthochschule berlin"
+    },
+    {
+     "email": "p.forster@yizumi-germany.de",
+     "reden": "geen match",
+     "company": "TRIBOO"
+    },
+    {
+     "email": "kempkens@kh-berlin.de",
+     "reden": "geen match",
+     "company": "LignoLight – weißensee kunsthochschule berlin"
+    },
+    {
+     "email": "daniel@chambroad.com",
+     "reden": "geen match",
+     "company": "Chambroad Timber Popura"
+    },
+    {
+     "email": "abellapaule@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Mycelium Material"
+    },
+    {
+     "email": "kort1962@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Waardewenders"
+    },
+    {
+     "email": "patty@beyondwood.nl",
+     "reden": "geen match",
+     "company": "Reduco"
+    },
+    {
+     "email": "mail@alexgrootjebbink.nl",
+     "reden": "geen match",
+     "company": "Het Lichtlab"
+    },
+    {
+     "email": "predaa@terzadimensione.com",
+     "reden": "geen match",
+     "company": "wineo by LEOXX"
+    },
+    {
+     "email": "mp.scheers@buroboot.nl",
+     "reden": "geen match",
+     "company": "BOOT Ingenieurs met een verhaal"
+    },
+    {
+     "email": "servaes.mahieu@gmail.com",
+     "reden": "vrij e-mail",
+     "company": "Slalom by Whoooz"
+    },
+    {
+     "email": "andor.de.haan@tegelgroep.nl",
+     "reden": "geen match",
+     "company": "FRONT® Materials"
+    },
+    {
+     "email": "marco.scheers@insert.nl",
+     "reden": "geen match",
+     "company": "Stichting Insert"
+    },
+    {
+     "email": "maurice.bosch@unilin.com",
+     "reden": "geen match",
+     "company": "Unilin Flooring Nederland"
+    }
+   ]
+  },
+  {
+   "fase": 2,
+   "categorie": "spreker_zonder_rol",
+   "n": 17,
+   "reden": "spreker-activiteit wel; rol alleen bij unieke domeinmatch",
+   "items": [
+    {
+     "email": "j.ouburg@hoh-architecten.com",
+     "reden": "geen unieke merkmatch voor hoh-architecten.com",
+     "exposant": "nee"
+    },
+    {
+     "email": "boriszeisser@natrufied.com",
+     "reden": "geen unieke merkmatch voor natrufied.com",
+     "exposant": "nee"
+    },
+    {
+     "email": "alexander@krft.nl",
+     "reden": "geen unieke merkmatch voor krft.nl",
+     "exposant": "nee"
+    },
+    {
+     "email": "eva@i-did.nl",
+     "reden": "domein i-did.nl → 2 merken (geen rol)",
+     "ids": [
+      54787,
+      135221
+     ]
+    },
+    {
+     "email": "ad@ro-ad.org",
+     "reden": "geen unieke merkmatch voor ro-ad.org",
+     "exposant": "nee"
+    },
+    {
+     "email": "wilfried@beyondwood.nl",
+     "reden": "geen unieke merkmatch voor beyondwood.nl",
+     "exposant": "ja"
+    },
+    {
+     "email": "d.teeuw@planqproducts.com",
+     "reden": "geen unieke merkmatch voor planqproducts.com",
+     "exposant": "ja"
+    },
+    {
+     "email": "aummy@saicycle.com",
+     "reden": "geen unieke merkmatch voor saicycle.com",
+     "exposant": "ja"
+    },
+    {
+     "email": "contact@maelysvenkiah.com",
+     "reden": "geen unieke merkmatch voor maelysvenkiah.com",
+     "exposant": "ja"
+    },
+    {
+     "email": "kempkens@kh-berlin.de",
+     "reden": "geen unieke merkmatch voor kh-berlin.de",
+     "exposant": "ja"
+    },
+    {
+     "email": "miriammichon@kow.nl",
+     "reden": "geen unieke merkmatch voor kow.nl",
+     "exposant": "nee"
+    },
+    {
+     "email": "dennishauer@ucarchitects.com",
+     "reden": "geen unieke merkmatch voor ucarchitects.com",
+     "exposant": "nee"
+    },
+    {
+     "email": "rik@rikmakes.com",
+     "reden": "geen unieke merkmatch voor rikmakes.com",
+     "exposant": "ja"
+    },
+    {
+     "email": "dave@waughthistleton.com",
+     "reden": "geen unieke merkmatch voor waughthistleton.com",
+     "exposant": "nee"
+    },
+    {
+     "email": "r.platje@mei-arch.eu",
+     "reden": "geen unieke merkmatch voor mei-arch.eu",
+     "exposant": "nee"
+    },
+    {
+     "email": "mail@narrativa.nl",
+     "reden": "geen unieke merkmatch voor narrativa.nl",
+     "exposant": "nee"
+    },
+    {
+     "email": "aniela@neffa.nl",
+     "reden": "geen unieke merkmatch voor neffa.nl",
+     "exposant": "ja"
+    }
+   ]
+  },
+  {
+   "fase": 1,
+   "categorie": "LEOXX_adres_NIET",
+   "n": 1,
+   "items": [
+    {
+     "brand_id": 112907,
+     "besluit": "NIET",
+     "velden": "address/postcode/city"
+    }
+   ],
+   "reden": "Jeroen BESLIST — live Ringveste 9 / 3992DD / Houten"
+  },
+  {
+   "fase": 1,
+   "categorie": "exposant_contact_zonder_WEL_merk",
+   "n": 18,
+   "reden": "exhibitors-rij zonder WEL-merk; geen contactpersoon in fase 1b"
+  },
+  {
+   "fase": 0,
+   "categorie": "exhibitor_zonder_merkkandidaat",
+   "n": 16,
+   "reden": "zie diffs/exhibitors-vs-live.md — o.a. Instagram/cargo, lege company, stichting/personen",
+   "bron": "diffs/exhibitors-vs-live.md"
+  },
+  {
+   "fase": 0,
+   "categorie": "oordelen_NIET_merk",
+   "n": 2,
+   "items": [
+    "wineo by LEOXX",
+    "Stichting Insert"
+   ],
+   "reden": "oordelen.json NIET — geen exposant-merkfeit"
+  }
+ ]
+}
