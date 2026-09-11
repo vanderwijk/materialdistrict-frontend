@@ -183,7 +183,7 @@ export interface FetchMaterialsFilteredParams {
   perPage?: number
   /** Sortering. Wanneer afwezig: WP-default (meestal `newest`). */
   sort?: MaterialSortValue
-  /** Vrije zoekterm (gaat door SearchWP-engine `swp_materials`). */
+  /** Vrije zoekterm (native title/content + gekoppelde merknaam). */
   search?: string
   /** Optionele revalidate-tijd in seconden. Default 60. */
   revalidate?: number

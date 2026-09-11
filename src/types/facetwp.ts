@@ -67,7 +67,7 @@ export type MaterialFacetName =
   | 'recycled_content'
   | 'upcycled_content'
 
-/** Vrije zoek-facet (SearchWP engine `swp_materials`). */
+/** Vrije zoek-facet (title/content + gekoppelde merknaam). */
 export type MaterialSearchFacetName = 'search_materials'
 
 /** Sortering. */
