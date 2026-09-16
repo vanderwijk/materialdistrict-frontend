@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { clearCartSession, storeMinorToNumber } from '@/lib/api/cart'
 import { fetchOrder, recallOrderEmail, type StoreOrder } from '@/lib/api/checkout'
 import { formatEur } from '@/lib/utils/format-price'
+import { trackPurchase } from '@/lib/analytics/track-purchase'
 
 type Phase = 'loading' | 'ok' | 'noemail' | 'error'
 
@@ -41,6 +42,7 @@ export function OrderConfirmationView({
         setOrder(o)
         setPhase('ok')
         clearCartSession()
+        trackPurchase(o)
       })
       .catch(() => {
         if (active) setPhase('error')

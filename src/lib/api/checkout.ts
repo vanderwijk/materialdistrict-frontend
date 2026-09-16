@@ -57,8 +57,13 @@ export function submitCheckout(payload: CheckoutPayload): Promise<CheckoutResult
 // --------------------------------------------------------------------
 
 export interface StoreOrderItem {
+  id: number
+  /** WooCommerce SKU — for books the ISBN-13; the Merchant Center feed's `g:id`
+   *  (see `md-product-feed.php`) uses this, falling back to the product id. */
+  sku: string
   name: string
   quantity: number
+  prices: { price: string }
   totals: { line_total: string; currency_minor_unit: number }
 }
 
@@ -70,6 +75,7 @@ export interface StoreOrder {
   totals: {
     total_price: string
     total_tax: string
+    total_shipping?: string
     currency_code: string
     currency_minor_unit: number
     currency_symbol: string
