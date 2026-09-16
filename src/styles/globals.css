@@ -8986,9 +8986,9 @@ mark.search-mark {
 /* ============================================================ */
 /*
    Wat er verandert op mobile (≤ 768px):
-   - Save / Board / Cart / Login / Insider verdwijnen uit de
-     header-rij (.hide-mobile in JSX). Header rij = logo + search
-     + darkmode + hamburger (4 items).
+   - Save / Board / Login / Insider verdwijnen uit de header-rij
+     (.hide-mobile in JSX). Header rij = logo + search + cart +
+     dark mode + hamburger.
    - Search-icon op mobile opent een full-width overlay-strip die
      de hele header-rij overneemt (logo verdwijnt tijdens search).
    - Drawer bevat extra rij Save/Boards/Cart + Login + Create account.
@@ -19901,3 +19901,12 @@ a.mat-detail-tag:hover::after { opacity: 1; }
    zijn eigen `min-width: auto`. Dat sluit die weg af. */
 .ad-holder--grid { min-width: 0; }
 /* ==================== einde §BRANDS-GRID-AD-01-09 ==================== */
+
+/* ==================== §HEADER-MOBILE-CART-16-09 ====================
+   Winkelmandje blijft op mobiel in de header-rij (B95), naast zoeken
+   en dark mode. Dark mode blijft een icon-btn in de topbar.
+   ========================================================================== */
+@media (max-width: 768px) {
+  .header-actions > .cart-btn { display: inline-flex; }
+}
+/* ==================== einde §HEADER-MOBILE-CART-16-09 ==================== */

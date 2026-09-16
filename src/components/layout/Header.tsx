@@ -269,10 +269,8 @@ export function Header({
             <Search size={16} strokeWidth={2} />
           </button>
 
-          {/* Sessie 7 fix Punt 23: Save / Board / Cart-icoons alleen op
-              desktop in de header-rij. Op mobile waren ze daar te druk
-              en liepen ze uit beeld. Mobile-equivalenten staan in de
-              drawer onderaan dit component. */}
+          {/* Bookmarks/Boards blijven desktop-only. Het winkelmandje staat
+              ook op mobiel in de header-rij (naast zoeken), met teller. */}
           <Link
             href="/dashboard/bookmarks"
             className="icon-btn hide-mobile"
@@ -291,12 +289,12 @@ export function Header({
 
           <Link
             href="/cart"
-            className="icon-btn cart-btn hide-mobile"
-            aria-label="Shopping cart"
+            className="icon-btn cart-btn"
+            aria-label={cartCount > 0 ? `Shopping cart, ${cartCount} items` : 'Shopping cart'}
           >
             <ShoppingBag size={16} strokeWidth={2} />
             {cartCount > 0 && (
-              <span className="cart-badge" aria-label={`${cartCount} items in cart`}>
+              <span className="cart-badge" aria-hidden="true">
                 {cartCount}
               </span>
             )}
@@ -334,7 +332,7 @@ export function Header({
             </button>
           )}
 
-          {/* Dark mode toggle */}
+          {/* Dark mode blijft in de topbar (desktop én mobiel). */}
           <button
             type="button"
             className="icon-btn"
@@ -455,7 +453,6 @@ export function Header({
                   )}
                 </Link>
               </div>
-
               {/* Sessie 7 fix Punt 19: auth-acties onderaan, gescheiden
                   door een hr (CSS border-top). Voor anonieme users:
                   Login + Create account. Voor ingelogde: Dashboard. */}
