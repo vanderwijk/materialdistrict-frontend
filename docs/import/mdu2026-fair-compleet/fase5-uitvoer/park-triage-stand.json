@@ -1,0 +1,168 @@
+{
+ "auto_via_activity": 47,
+ "auto_via_company": 10,
+ "close_vrij": [
+  {
+   "email": "carmenecomendador123@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Carmen Enríquez"
+  },
+  {
+   "email": "asligokcem@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Yusufova"
+  },
+  {
+   "email": "tamaralon10@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Tamar Alon"
+  },
+  {
+   "email": "philippe.gaud@icloud.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "BAGUETTE STUDIO"
+  },
+  {
+   "email": "siemieniuk.ania@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "SOL-R&D"
+  },
+  {
+   "email": "kusyovad@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Diana Kusyová"
+  },
+  {
+   "email": "tomov.toma03@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Boyana Voynova"
+  },
+  {
+   "email": "littlefyaya@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Observology"
+  },
+  {
+   "email": "servaes.mahieu@gmail.com",
+   "reden": "vrij e-mail zonder activiteit-object",
+   "company": "Slalom by Whoooz"
+  }
+ ],
+ "oordeel": [
+  {
+   "email": "info@beekmans-design.nl",
+   "company": "Stichting Insert",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "Stichting Insert: oordeel NIET als merk — geen rol"
+  },
+  {
+   "email": "peter.kreukniet@insert.nl",
+   "company": "Stichting Insert",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "Stichting Insert: oordeel NIET als merk — geen rol"
+  },
+  {
+   "email": "ah.willems@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "jr.vanrees@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "as.vanelfrinkhof@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "m.flier@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "evaline.kruyssen@bni.nl",
+   "company": "Stichting Insert",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "Stichting Insert: oordeel NIET als merk — geen rol"
+  },
+  {
+   "email": "contact@maelysvenkiah.com",
+   "company": "Maëlys Venkiah",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "joost.heijboer@oboros.nl",
+   "company": "Oboros",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "susanne.bakkenist@oboros.nl",
+   "company": "Oboros",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "ritschel@comprisetec.de",
+   "company": "LignoLight – weißensee kunsthochschule berlin",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "roos.vanborrendam@insert.nl",
+   "company": "Stichting Insert",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "Stichting Insert: oordeel NIET als merk — geen rol"
+  },
+  {
+   "email": "anne.roelofse@oboros.nl",
+   "company": "Oboros",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "stoegerer@kh-berlin.de",
+   "company": "LignoLight – weißensee kunsthochschule berlin",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "kempkens@kh-berlin.de",
+   "company": "LignoLight – weißensee kunsthochschule berlin",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "predaa@terzadimensione.com",
+   "company": "wineo by LEOXX",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "wineo by LEOXX: oordeel NIET — geen rol"
+  },
+  {
+   "email": "mp.scheers@buroboot.nl",
+   "company": "BOOT Ingenieurs met een verhaal",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "merk ontbreekt of multi — handmatig"
+  },
+  {
+   "email": "marco.scheers@insert.nl",
+   "company": "Stichting Insert",
+   "reden": "geen object_id en geen unieke company-match",
+   "suggestie": "Stichting Insert: oordeel NIET als merk — geen rol"
+  }
+ ],
+ "company_map": {
+  "Newmor Wallcoverings": 140452,
+  "MYCOTEX": 140485,
+  "Martijn de Wit Vloeren": 140506,
+  "Het Lichtlab": 140483,
+  "Unilin Flooring Nederland": 140509
+ }
+}
