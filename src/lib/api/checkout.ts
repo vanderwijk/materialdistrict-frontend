@@ -193,9 +193,11 @@ export function buildStripePaymentData(
 export const STRIPE_CARD_METHOD = 'stripe'
 export const STRIPE_IDEAL_METHOD = 'stripe_ideal'
 
+export type CheckoutPayMethod = 'card' | 'ideal'
+
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   [STRIPE_CARD_METHOD]: 'Credit or debit card',
-  [STRIPE_IDEAL_METHOD]: 'iDEAL',
+  [STRIPE_IDEAL_METHOD]: 'iDEAL | Wero',
   'ppcp-gateway': 'PayPal',
 }
 
@@ -204,7 +206,42 @@ export function paymentMethodLabel(id: string): string {
   return PAYMENT_METHOD_LABELS[id] ?? id
 }
 
+export function checkoutPayMethodLabel(method: CheckoutPayMethod): string {
+  return method === 'ideal'
+    ? PAYMENT_METHOD_LABELS[STRIPE_IDEAL_METHOD]
+    : PAYMENT_METHOD_LABELS[STRIPE_CARD_METHOD]
+}
+
 /** Stripe-kaart/iDEAL/PayPal — alles wat we in checkout ondersteunen. */
 export function isSupportedCheckoutPaymentMethod(id: string): boolean {
   return id === STRIPE_CARD_METHOD || id === STRIPE_IDEAL_METHOD || id === 'ppcp-gateway'
+}
+
+/**
+ * Betaalopties voor de boekcheckout.
+ *
+ * WooCommerce Stripe UPE zet vaak alleen `stripe` in `payment_methods`, niet
+ * de split-id `stripe_ideal`. iDEAL loopt desondanks via de hoofdgateway
+ * (`payment_method: stripe` + `payment_data.payment_method: stripe_ideal`).
+ * Voor NL tonen we iDEAL | Wero daarom zodra Stripe beschikbaar is, bovenaan.
+ */
+export function resolveCheckoutPayMethods(
+  gatewayIds: readonly string[] | undefined,
+  billingCountry: string,
+): CheckoutPayMethod[] {
+  const ids = gatewayIds ?? []
+  const hasStripe = ids.includes(STRIPE_CARD_METHOD)
+  const hasIdealGateway = ids.includes(STRIPE_IDEAL_METHOD)
+  const stripeReady = hasStripe || hasIdealGateway
+  const isNl = billingCountry.trim().toUpperCase() === 'NL'
+  const methods: CheckoutPayMethod[] = []
+
+  if (isNl && stripeReady) {
+    methods.push('ideal')
+  }
+  if (hasStripe) {
+    methods.push('card')
+  }
+
+  return methods
 }

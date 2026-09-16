@@ -10,12 +10,14 @@
  *     zijn (gedebounced `update-customer` → verzendtarieven). Het goedkoopste
  *     tarief wordt vanzelf geselecteerd; de bezoeker kan wisselen bij meerdere.
  *     Totalen komen uit de mand-response.
- *  3. Betaling: Stripe-kaart (CardElement) of iDEAL (Payment Element + redirect).
+ *  3. Betaling: Stripe-kaart (CardElement) of iDEAL | Wero (Payment Element +
+ *     redirect). Voor NL staat iDEAL | Wero bovenaan zodra Stripe beschikbaar
+ *     is — ook als WooCommerce alleen de hoofdgateway `stripe` teruggeeft.
  *  4. `POST /checkout`. Bij `redirect_url` (3DS/iDEAL) → doorsturen; anders bij
  *     success/pending → /order-confirmation/{id}?key=…
  *
- * iDEAL gebruikt dezelfde deferred-intent `payment_data` als kaart, maar met een
- * PaymentMethod uit Stripe's Payment Element (bankkeuze).
+ * iDEAL | Wero gebruikt dezelfde deferred-intent `payment_data` als kaart, maar
+ * met een PaymentMethod uit Stripe's Payment Element (bankkeuze).
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -35,12 +37,13 @@ import { logEvent } from '@/lib/api/events'
 import { checkCheckoutEmail, checkCheckoutVat } from '@/lib/api/checkout-account'
 import {
   buildStripePaymentData,
-  isSupportedCheckoutPaymentMethod,
-  paymentMethodLabel,
+  checkoutPayMethodLabel,
   rememberOrderEmail,
+  resolveCheckoutPayMethods,
   submitCheckout,
   STRIPE_CARD_METHOD,
   STRIPE_IDEAL_METHOD,
+  type CheckoutPayMethod,
   type PaymentDataItem,
 } from '@/lib/api/checkout'
 import type { CheckoutPrefill } from '@/lib/checkout/profile-prefill'
@@ -54,17 +57,7 @@ import { CheckoutSignInPanel } from './CheckoutSignInPanel'
 
 const stripePromise = getStripe()
 
-type PayMethod = 'card' | 'ideal'
-
-function payMethodFromGatewayId(id: string): PayMethod | null {
-  if (id === STRIPE_CARD_METHOD) return 'card'
-  if (id === STRIPE_IDEAL_METHOD) return 'ideal'
-  return null
-}
-
-function gatewayIdFromPayMethod(method: PayMethod): string {
-  return method === 'ideal' ? STRIPE_IDEAL_METHOD : STRIPE_CARD_METHOD
-}
+type PayMethod = CheckoutPayMethod
 
 const EMPTY_ADDRESS: StoreAddress = {
   first_name: '',
@@ -150,7 +143,7 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const [vatStatus, setVatStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle')
   const [vatError, setVatError] = useState<string | null>(null)
   const [ratesLoaded, setRatesLoaded] = useState(false)
-  const [method, setMethod] = useState<PayMethod>('card')
+  const [method, setMethod] = useState<PayMethod>('ideal')
   const [submitting, setSubmitting] = useState(false)
   const [placed, setPlaced] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -246,16 +239,9 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
   const selectedRateId = selectedRate?.rate_id ?? ''
   const lastShipKeyRef = useRef('')
 
-  const availablePaymentMethods = useMemo(
-    () => (cart?.payment_methods ?? []).filter(isSupportedCheckoutPaymentMethod),
-    [cart?.payment_methods],
-  )
   const availablePayMethods = useMemo(
-    () =>
-      availablePaymentMethods
-        .map((id) => payMethodFromGatewayId(id))
-        .filter((m): m is PayMethod => m !== null),
-    [availablePaymentMethods],
+    () => resolveCheckoutPayMethods(cart?.payment_methods, billing.country),
+    [cart?.payment_methods, billing.country],
   )
   const availablePayMethodsKey = availablePayMethods.join(',')
 
@@ -437,14 +423,17 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
       // Zorg dat WC de klant (incl. billing country) kent vóór gateway-beschikbaarheid.
       await setCustomer(normShipping, billingWithContact)
 
-      const paymentGatewayId = gatewayIdFromPayMethod(method)
-      if (!availablePaymentMethods.includes(paymentGatewayId)) {
+      const payMethodsNow = resolveCheckoutPayMethods(
+        cart?.payment_methods,
+        normBilling.country,
+      )
+      if (!payMethodsNow.includes(method)) {
         setError('That payment method is not available for this order. Please choose another option.')
         setSubmitting(false)
         return
       }
 
-      let paymentMethod = paymentGatewayId
+      let paymentMethod = STRIPE_CARD_METHOD
       let paymentData: PaymentDataItem[] = []
 
       if (method === 'card') {
@@ -738,21 +727,17 @@ export function CheckoutForm({ prefill }: CheckoutFormProps) {
             </p>
           ) : (
             <div className="checkout-methods">
-              {availablePaymentMethods.map((id) => {
-                const payMethod = payMethodFromGatewayId(id)
-                if (!payMethod) return null
-                return (
-                  <label key={id} className="checkout-method">
-                    <input
-                      type="radio"
-                      name="pay-method"
-                      checked={method === payMethod}
-                      onChange={() => setMethod(payMethod)}
-                    />
-                    {paymentMethodLabel(id)}
-                  </label>
-                )
-              })}
+              {availablePayMethods.map((payMethod) => (
+                <label key={payMethod} className="checkout-method">
+                  <input
+                    type="radio"
+                    name="pay-method"
+                    checked={method === payMethod}
+                    onChange={() => setMethod(payMethod)}
+                  />
+                  {checkoutPayMethodLabel(payMethod)}
+                </label>
+              ))}
             </div>
           )}
 
