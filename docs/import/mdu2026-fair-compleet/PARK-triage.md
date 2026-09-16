@@ -27,6 +27,6 @@ JSON dry-run klaar:
 
 ## Gate
 
-- **GO A+B** → schrijf 57 `medewerker`-rollen  
+- **GO A+B** → geschreven 2026-09-16 (`PARK-schrijf.md`)  
 - D blijft open tot jij/Claude beslist (Insert/BOOT/Oboros geen merk in DB)  
 - Daarna 2025
