@@ -1,0 +1,1015 @@
+{
+ "ronde": "MDU 2025 — bezoekers chunk 10 phones",
+ "batch": "mdu2025-bezoekers-10-phones",
+ "bron": "Mailchimp visitors show/no-show MDU 2025",
+ "brondatum": "2025-03-14",
+ "meta_key": "billing_phone",
+ "regel": "alleen vullen als leeg",
+ "rijen": [
+  {
+   "email": "sascha@ok3.nl",
+   "phone_e164": "+31643596706",
+   "phone_raw": "'+31643596706"
+  },
+  {
+   "email": "kimharderwijk@live.nl",
+   "phone_e164": "+31626380051",
+   "phone_raw": "'+31626380051"
+  },
+  {
+   "email": "t.tavenier@student.han.nl",
+   "phone_e164": "+31633159883",
+   "phone_raw": "'+31633159883"
+  },
+  {
+   "email": "max.bergsma@live.com",
+   "phone_e164": "+31618927283",
+   "phone_raw": "618927283"
+  },
+  {
+   "email": "info@studiobaak.nl",
+   "phone_e164": "+31640639792",
+   "phone_raw": "640639792"
+  },
+  {
+   "email": "info@bloominspiration.nl",
+   "phone_e164": "+31610371564",
+   "phone_raw": "'+31610371564"
+  },
+  {
+   "email": "christiaan@sumarchitecten.nl",
+   "phone_e164": "+31641482083",
+   "phone_raw": "641482083"
+  },
+  {
+   "email": "gregoryverheide@gmail.com",
+   "phone_e164": "+3131651270335",
+   "phone_raw": "31651270335"
+  },
+  {
+   "email": "saskia@loover.nl",
+   "phone_e164": "+31641156940",
+   "phone_raw": "'+31641156940"
+  },
+  {
+   "email": "marliesvanwuyckhuyse@hotmail.com",
+   "phone_e164": "+31641327130",
+   "phone_raw": "'+31641327130"
+  },
+  {
+   "email": "roger@m2r.nl",
+   "phone_e164": "+31650656391",
+   "phone_raw": "'+31650656391"
+  },
+  {
+   "email": "raymond.doedijns@interface.com",
+   "phone_e164": "+31653892471",
+   "phone_raw": "653892471"
+  },
+  {
+   "email": "livia.verdijk@hotmail.com",
+   "phone_e164": "+31610668551",
+   "phone_raw": "'+310610668551"
+  },
+  {
+   "email": "agnese.brasca@baolab.net",
+   "phone_e164": "+393332919220",
+   "phone_raw": "'+393332919220"
+  },
+  {
+   "email": "hilbrand@energiegarant.nl",
+   "phone_e164": "+31650865049",
+   "phone_raw": "650865049"
+  },
+  {
+   "email": "m.vd.biggelaar@moeskops.nl",
+   "phone_e164": "+31622586785",
+   "phone_raw": "'+31622586785"
+  },
+  {
+   "email": "irissiripostma@gmail.com",
+   "phone_e164": "+31613423712",
+   "phone_raw": "'+31613423712"
+  },
+  {
+   "email": "kees@vreeberg.nl",
+   "phone_e164": "+31332450630",
+   "phone_raw": "'+31332450630"
+  },
+  {
+   "email": "chi@nextarchitects.com",
+   "phone_e164": "+31686155923",
+   "phone_raw": "'+31686155923"
+  },
+  {
+   "email": "naeun.kwon03@gmail.com",
+   "phone_e164": "+31657320262",
+   "phone_raw": "'+31657320262"
+  },
+  {
+   "email": "jorgwijnen@art2gointerieurprojecten.nl",
+   "phone_e164": "+31628976485",
+   "phone_raw": "'+31628976485"
+  },
+  {
+   "email": "rick.bremer@opnieuw.nl",
+   "phone_e164": "+31615197993",
+   "phone_raw": "615197993"
+  },
+  {
+   "email": "p.vandestaak@aboutprojects.nl",
+   "phone_e164": "+31633920952",
+   "phone_raw": "'+31633920952"
+  },
+  {
+   "email": "marielladekoning@yahoo.com",
+   "phone_e164": "+31614220040",
+   "phone_raw": "614220040"
+  },
+  {
+   "email": "annevoossanen@gmail.com",
+   "phone_e164": "+31628306899",
+   "phone_raw": "'+31628306899"
+  },
+  {
+   "email": "johannespilz@mvrdv.com",
+   "phone_e164": "+31628444416",
+   "phone_raw": "'+31628444416"
+  },
+  {
+   "email": "tunayturk4149@gmail.com",
+   "phone_e164": "+31685678335",
+   "phone_raw": "'+31685678335"
+  },
+  {
+   "email": "herman@expoflora.nl",
+   "phone_e164": "+3131653402182",
+   "phone_raw": "31653402182"
+  },
+  {
+   "email": "l.a.rowan@outlook.com",
+   "phone_e164": "+31650589459",
+   "phone_raw": "'+31650589459"
+  },
+  {
+   "email": "shanahstijl@gmail.com",
+   "phone_e164": "+31639245098",
+   "phone_raw": "'+31639245098"
+  },
+  {
+   "email": "bea.wijtvliet@gmail.com",
+   "phone_e164": "+31653513144",
+   "phone_raw": "653513144"
+  },
+  {
+   "email": "leo.kruit@plantics.com",
+   "phone_e164": "+31653464084",
+   "phone_raw": "'+31653464084"
+  },
+  {
+   "email": "ulrich.russier@hexagone-design.fr",
+   "phone_e164": "+33678957585",
+   "phone_raw": "'+33678957585"
+  },
+  {
+   "email": "celine.knubben@prezero.com",
+   "phone_e164": "+31615879631",
+   "phone_raw": "615879631"
+  },
+  {
+   "email": "m.vanzomeren@studioidplus.nl",
+   "phone_e164": "+31652197706",
+   "phone_raw": "652197706"
+  },
+  {
+   "email": "peter@teqprojects.nl",
+   "phone_e164": "+31613141819",
+   "phone_raw": "613141819"
+  },
+  {
+   "email": "zoeprifti@hotmail.co.uk",
+   "phone_e164": "+31612345678",
+   "phone_raw": "'+31612345678"
+  },
+  {
+   "email": "pdunkes@hotmail.com",
+   "phone_e164": "+31621246967",
+   "phone_raw": "'+31621246967"
+  },
+  {
+   "email": "narasimhachinmayi@gmail.com",
+   "phone_e164": "+31645789695",
+   "phone_raw": "'+31645789695"
+  },
+  {
+   "email": "jayden.panetta@outlook.com",
+   "phone_e164": "+31617225435",
+   "phone_raw": "617225435"
+  },
+  {
+   "email": "emma@void.nl",
+   "phone_e164": "+31640959721",
+   "phone_raw": "640959721"
+  },
+  {
+   "email": "else2203@gmail.com",
+   "phone_e164": "+31611147470",
+   "phone_raw": "611147470"
+  },
+  {
+   "email": "info@sadesign.nl",
+   "phone_e164": "+31206757788",
+   "phone_raw": "'+31206757788"
+  },
+  {
+   "email": "spike88ct@gmail.com",
+   "phone_e164": "+33612345678",
+   "phone_raw": "612345678"
+  },
+  {
+   "email": "belinda@studiomacnas.com",
+   "phone_e164": "+31645436515",
+   "phone_raw": "645436515"
+  },
+  {
+   "email": "bpetersen@alldeco.nl",
+   "phone_e164": "+31686884844",
+   "phone_raw": "'+31686884844"
+  },
+  {
+   "email": "karinvanandel@hotmail.com",
+   "phone_e164": "+31681941494",
+   "phone_raw": "681941494"
+  },
+  {
+   "email": "udenemmavan@gmail.com",
+   "phone_e164": "+31613646243",
+   "phone_raw": "'+31613646243"
+  },
+  {
+   "email": "asterkru@gmail.com",
+   "phone_e164": "+31637271520",
+   "phone_raw": "'+31637271520"
+  },
+  {
+   "email": "liekerol@gmail.com",
+   "phone_e164": "+31642865666",
+   "phone_raw": "'+31642865666"
+  },
+  {
+   "email": "theothenu@gmail.com",
+   "phone_e164": "+31623752250",
+   "phone_raw": "'+31623752250"
+  },
+  {
+   "email": "arjan@arcano.nl",
+   "phone_e164": "+31612129859",
+   "phone_raw": "'+31612129859"
+  },
+  {
+   "email": "s1185814@student.windesheim.nl",
+   "phone_e164": "+31618786918",
+   "phone_raw": "618786918"
+  },
+  {
+   "email": "sljer@hr.nl",
+   "phone_e164": "+31618084143",
+   "phone_raw": "618084143"
+  },
+  {
+   "email": "info@bartbrugman.com",
+   "phone_e164": "+31631211211",
+   "phone_raw": "'+31631211211"
+  },
+  {
+   "email": "demi@thebrandscapeagency.com",
+   "phone_e164": "+31624664082",
+   "phone_raw": "'+31624664082"
+  },
+  {
+   "email": "teun.voets@ziggo.nl",
+   "phone_e164": "+31623606628",
+   "phone_raw": "623606628"
+  },
+  {
+   "email": "info@daandehaan.nl",
+   "phone_e164": "+31648183362",
+   "phone_raw": "'+31648183362"
+  },
+  {
+   "email": "davidvanmeel@hotmail.nl",
+   "phone_e164": "+31634668123",
+   "phone_raw": "'+31634668123"
+  },
+  {
+   "email": "vanstaveren.caprista@gmail.com",
+   "phone_e164": "+31653928927",
+   "phone_raw": "'+31653928927"
+  },
+  {
+   "email": "info@dvdh-interieurarchitecten.nl",
+   "phone_e164": "+31614398296",
+   "phone_raw": "'+31614398296"
+  },
+  {
+   "email": "eveline@deknikkerkeukens.nl",
+   "phone_e164": "+31172469595",
+   "phone_raw": "172469595"
+  },
+  {
+   "email": "renatepauwels68@gmail.com",
+   "phone_e164": "+31622819868",
+   "phone_raw": "622819868"
+  },
+  {
+   "email": "paulbroekema@me.com",
+   "phone_e164": "+31654660336",
+   "phone_raw": "654660336"
+  },
+  {
+   "email": "d.f.m.bosch@hva.nl",
+   "phone_e164": "+31621156873",
+   "phone_raw": "621156873"
+  },
+  {
+   "email": "esthersalomons70@gmail.com",
+   "phone_e164": "+31652302288",
+   "phone_raw": "'+31652302288"
+  },
+  {
+   "email": "dvoortman@hekker.nl",
+   "phone_e164": "+31638740140",
+   "phone_raw": "638740140"
+  },
+  {
+   "email": "swanenbergindy@gmail.com",
+   "phone_e164": "+31684616306",
+   "phone_raw": "684616306"
+  },
+  {
+   "email": "mfire83@yahoo.com",
+   "phone_e164": "+13365418890",
+   "phone_raw": "'+13365418890"
+  },
+  {
+   "email": "jessica.jansen@rabobank.nl",
+   "phone_e164": "+31618628821",
+   "phone_raw": "'+31618628821"
+  },
+  {
+   "email": "info@nikohoebe.nl",
+   "phone_e164": "+31655777316",
+   "phone_raw": "'+31655777316"
+  },
+  {
+   "email": "urszula@forner.nl",
+   "phone_e164": "+31638290944",
+   "phone_raw": "'+31638290944"
+  },
+  {
+   "email": "info@tussenhemelenaarde.com",
+   "phone_e164": "+3131629492293",
+   "phone_raw": "31629492293"
+  },
+  {
+   "email": "sofie@studio-dc.be",
+   "phone_e164": "+32486723987",
+   "phone_raw": "'+32486723987"
+  },
+  {
+   "email": "ferdi.vissers@icloud.com",
+   "phone_e164": "+31650212277",
+   "phone_raw": "650212277"
+  },
+  {
+   "email": "corne@boerboom.nl",
+   "phone_e164": "+31497531200",
+   "phone_raw": "497531200"
+  },
+  {
+   "email": "maikeclement@icloud.com",
+   "phone_e164": "+31610438227",
+   "phone_raw": "610438227"
+  },
+  {
+   "email": "info@interifleur.com",
+   "phone_e164": "+31621566245",
+   "phone_raw": "'+31621566245"
+  },
+  {
+   "email": "m.eussen@uytenhaak.nl",
+   "phone_e164": "+31203057777",
+   "phone_raw": "203057777"
+  },
+  {
+   "email": "michaeljay@erjanborren.nl",
+   "phone_e164": "+31622451814",
+   "phone_raw": "'+31622451814"
+  },
+  {
+   "email": "judverlaan@gmail.com",
+   "phone_e164": "+31651918631",
+   "phone_raw": "651918631"
+  },
+  {
+   "email": "skye.engelen@bicon.nl",
+   "phone_e164": "+31630091714",
+   "phone_raw": "630091714"
+  },
+  {
+   "email": "makkonst@arcada.fi",
+   "phone_e164": "+358406473223",
+   "phone_raw": "'+358406473223"
+  },
+  {
+   "email": "gwenakoopmans@gmail.com",
+   "phone_e164": "+31645832797",
+   "phone_raw": "645832797"
+  },
+  {
+   "email": "sylvia@drijvers-oisterwijk.nl",
+   "phone_e164": "+31135282082",
+   "phone_raw": "'+31135282082"
+  },
+  {
+   "email": "b.holla@cyclin.nl",
+   "phone_e164": "+32646212593",
+   "phone_raw": "'+32646212593"
+  },
+  {
+   "email": "yvonne@puik-plan.com",
+   "phone_e164": "+31651033796",
+   "phone_raw": "651033796"
+  },
+  {
+   "email": "adriaan@materialmastery.com",
+   "phone_e164": "+3232476212500",
+   "phone_raw": "32476212500"
+  },
+  {
+   "email": "polfemke@gmail.com",
+   "phone_e164": "+31639464155",
+   "phone_raw": "'+31639464155"
+  },
+  {
+   "email": "jelle.sitsen@gmail.com",
+   "phone_e164": "+31651192542",
+   "phone_raw": "651192542"
+  },
+  {
+   "email": "jipcales@gmail.com",
+   "phone_e164": "+31651745114",
+   "phone_raw": "651745114"
+  },
+  {
+   "email": "meesvandenberg2004@gmail.com",
+   "phone_e164": "+31621973555",
+   "phone_raw": "'+31621973555"
+  },
+  {
+   "email": "rdijk@deltion.nl",
+   "phone_e164": "+31645003909",
+   "phone_raw": "645003909"
+  },
+  {
+   "email": "demankim@hotmail.com",
+   "phone_e164": "+31612263402",
+   "phone_raw": "'+31612263402"
+  },
+  {
+   "email": "aleminapat@gmail.com",
+   "phone_e164": "+306940116989",
+   "phone_raw": "'+306940116989"
+  },
+  {
+   "email": "yvonne@artimo.nl",
+   "phone_e164": "+31654924418",
+   "phone_raw": "654924418"
+  },
+  {
+   "email": "y.vonk@platowood.nl",
+   "phone_e164": "+31622914699",
+   "phone_raw": "622914699"
+  },
+  {
+   "email": "han.harleman@hu.nl",
+   "phone_e164": "+31628849294",
+   "phone_raw": "'+31628849294"
+  },
+  {
+   "email": "martflier4@gmail.com",
+   "phone_e164": "+31636341445",
+   "phone_raw": "'+31636341445"
+  },
+  {
+   "email": "loreto@honextmaterial.com",
+   "phone_e164": "+34658830743",
+   "phone_raw": "'+34658830743"
+  },
+  {
+   "email": "d.dewitt@lightronics.nl",
+   "phone_e164": "+31610423105",
+   "phone_raw": "610423105"
+  },
+  {
+   "email": "info@ingridroos.nl",
+   "phone_e164": "+31614026818",
+   "phone_raw": "614026818"
+  },
+  {
+   "email": "cristilena_2007@hotmail.com",
+   "phone_e164": "+31616116799",
+   "phone_raw": "'+31616116799"
+  },
+  {
+   "email": "kitty@studiovix.nl",
+   "phone_e164": "+31681142077",
+   "phone_raw": "'+31681142077"
+  },
+  {
+   "email": "roosvandenheuvel2@gmail.com",
+   "phone_e164": "+31681429875",
+   "phone_raw": "681429875"
+  },
+  {
+   "email": "florian@stilleverzet.nl",
+   "phone_e164": "+31653854261",
+   "phone_raw": "'+31653854261"
+  },
+  {
+   "email": "j.schutte@duravermeer.nl",
+   "phone_e164": "+31653599027",
+   "phone_raw": "'+31653599027"
+  },
+  {
+   "email": "diana@happycactus.nl",
+   "phone_e164": "+31622088779",
+   "phone_raw": "'+31622088779"
+  },
+  {
+   "email": "riannevrijnsoever@outlook.com",
+   "phone_e164": "+31637613602",
+   "phone_raw": "'+31637613602"
+  },
+  {
+   "email": "twan@dutchbrandscompany.com",
+   "phone_e164": "+31623597838",
+   "phone_raw": "'+31623597838"
+  },
+  {
+   "email": "samienblaauwendraad@gmail.com",
+   "phone_e164": "+31620503363",
+   "phone_raw": "'+31620503363"
+  },
+  {
+   "email": "andrea@andreaschimmer.nl",
+   "phone_e164": "+31651152003",
+   "phone_raw": "'+31651152003"
+  },
+  {
+   "email": "b.vandenbrand@rtr-interiors.nl",
+   "phone_e164": "+31610546147",
+   "phone_raw": "'+31610546147"
+  },
+  {
+   "email": "info@mvinkenoog.nl",
+   "phone_e164": "+31614488813",
+   "phone_raw": "'+31614488813"
+  },
+  {
+   "email": "studio@empowerspaces.nl",
+   "phone_e164": "+31651656636",
+   "phone_raw": "'+31651656636"
+  },
+  {
+   "email": "info@sprucegoose.be",
+   "phone_e164": "+32495606597",
+   "phone_raw": "'+32495606597"
+  },
+  {
+   "email": "lreumer@ginkelgroep.nl",
+   "phone_e164": "+31653137465",
+   "phone_raw": "653137465"
+  },
+  {
+   "email": "geertjaspers@hotmail.com",
+   "phone_e164": "+31610252603",
+   "phone_raw": "'+31610252603"
+  },
+  {
+   "email": "info@studiominten.nl",
+   "phone_e164": "+31633850581",
+   "phone_raw": "'+31633850581"
+  },
+  {
+   "email": "t.h.holierhoek@gmail.com",
+   "phone_e164": "+31610745154",
+   "phone_raw": "'+31610745154"
+  },
+  {
+   "email": "tvandergeer@bakeryassist.nl",
+   "phone_e164": "+31611124763",
+   "phone_raw": "'+31611124763"
+  },
+  {
+   "email": "wiebekolkman@hotmail.com",
+   "phone_e164": "+31625503522",
+   "phone_raw": "'+31625503522"
+  },
+  {
+   "email": "marc@ympsales.be",
+   "phone_e164": "+32475707755",
+   "phone_raw": "'+32475707755"
+  },
+  {
+   "email": "ichelle-algra97@hotmail.com",
+   "phone_e164": "+31642543888",
+   "phone_raw": "642543888"
+  },
+  {
+   "email": "melanie2001bliek@gmail.com",
+   "phone_e164": "+31636084902",
+   "phone_raw": "636084902"
+  },
+  {
+   "email": "annablok@icloud.com",
+   "phone_e164": "+31612407551",
+   "phone_raw": "612407551"
+  },
+  {
+   "email": "paulus@bureausla.nl",
+   "phone_e164": "+31619929210",
+   "phone_raw": "619929210"
+  },
+  {
+   "email": "jeninerex@gmail.com",
+   "phone_e164": "+31611726227",
+   "phone_raw": "'+31611726227"
+  },
+  {
+   "email": "info@underkonstruction.be",
+   "phone_e164": "+32496120769",
+   "phone_raw": "'+32496120769"
+  },
+  {
+   "email": "karel@korq.nl",
+   "phone_e164": "+31651425973",
+   "phone_raw": "651425973"
+  },
+  {
+   "email": "martien.vanvliet@bureaubos.nl",
+   "phone_e164": "+31653406365",
+   "phone_raw": "653406365"
+  },
+  {
+   "email": "karina@munro-tailoring.com",
+   "phone_e164": "+34625563452",
+   "phone_raw": "'+34625563452"
+  },
+  {
+   "email": "ontwerp@verberne.nl",
+   "phone_e164": "+31636141798",
+   "phone_raw": "'+31636141798"
+  },
+  {
+   "email": "jos@edge.tech",
+   "phone_e164": "+31651213182",
+   "phone_raw": "'+31651213182"
+  },
+  {
+   "email": "studio@milouket.com",
+   "phone_e164": "+31642488281",
+   "phone_raw": "'+31642488281"
+  },
+  {
+   "email": "carolien@brok.nl",
+   "phone_e164": "+31634103217",
+   "phone_raw": "'+31634103217"
+  },
+  {
+   "email": "hi@marinachaccur.design",
+   "phone_e164": "+31631964352",
+   "phone_raw": "631964352"
+  },
+  {
+   "email": "herman@onstein-textiel.nl",
+   "phone_e164": "+31651934284",
+   "phone_raw": "651934284"
+  },
+  {
+   "email": "facturatie@zabra.be",
+   "phone_e164": "+32473915468",
+   "phone_raw": "'+32473915468"
+  },
+  {
+   "email": "phw@orineo.com",
+   "phone_e164": "+32475801602",
+   "phone_raw": "'+32475801602"
+  },
+  {
+   "email": "sanne@speez.nl",
+   "phone_e164": "+31620250024",
+   "phone_raw": "'+31620250024"
+  },
+  {
+   "email": "s.v.hooff@duravermeer.nl",
+   "phone_e164": "+31653599298",
+   "phone_raw": "'+31653599298"
+  },
+  {
+   "email": "info@smederijschrauwen.be",
+   "phone_e164": "+32494611336",
+   "phone_raw": "'+32494611336"
+  },
+  {
+   "email": "maud@svdhdesign.com",
+   "phone_e164": "+31624340602",
+   "phone_raw": "624340602"
+  },
+  {
+   "email": "jafconsultancyvof@gmail.com",
+   "phone_e164": "+31651278241",
+   "phone_raw": "'+31651278241"
+  },
+  {
+   "email": "ankie@ankiestoutjesdijk.nl",
+   "phone_e164": "+31627078426",
+   "phone_raw": "'+31627078426"
+  },
+  {
+   "email": "jheems2000@gmail.com",
+   "phone_e164": "+31683609609",
+   "phone_raw": "'+31683609609"
+  },
+  {
+   "email": "37261@ma-web.nl",
+   "phone_e164": "+31683430578",
+   "phone_raw": "'+310683430578"
+  },
+  {
+   "email": "mirko.gerben@random.studio",
+   "phone_e164": "+33782374747",
+   "phone_raw": "'+33782374747"
+  },
+  {
+   "email": "m.remmers14@outlook.com",
+   "phone_e164": "+31619947331",
+   "phone_raw": "'+31619947331"
+  },
+  {
+   "email": "m.riewald75@upcmail.nl",
+   "phone_e164": "+31628387660",
+   "phone_raw": "'+31628387660"
+  },
+  {
+   "email": "r.torres@refin.it",
+   "phone_e164": "+39617520438",
+   "phone_raw": "617520438"
+  },
+  {
+   "email": "maarten@sparckel.nl",
+   "phone_e164": "+31613211932",
+   "phone_raw": "613211932"
+  },
+  {
+   "email": "verbruggenpt@gmail.com",
+   "phone_e164": "+31620414408",
+   "phone_raw": "620414408"
+  },
+  {
+   "email": "m.denhollander@botanicarch.com",
+   "phone_e164": "+31627333762",
+   "phone_raw": "627333762"
+  },
+  {
+   "email": "huilokhim@yahoo.com.hk",
+   "phone_e164": "+31646898903",
+   "phone_raw": "646898903"
+  },
+  {
+   "email": "i.dewitte2002@gmail.com",
+   "phone_e164": "+31613089830",
+   "phone_raw": "'+31613089830"
+  },
+  {
+   "email": "soesoe1991@hotmail.com",
+   "phone_e164": "+31639427270",
+   "phone_raw": "'+31639427270"
+  },
+  {
+   "email": "lisa.mulder@vorm.com",
+   "phone_e164": "+31505562257",
+   "phone_raw": "'+31505562257"
+  },
+  {
+   "email": "destinydekogel@outlook.com",
+   "phone_e164": "+31629822182",
+   "phone_raw": "629822182"
+  },
+  {
+   "email": "matdistrict@bremmer.be",
+   "phone_e164": "+31652732842",
+   "phone_raw": "652732842"
+  },
+  {
+   "email": "i.de.vaan@sintlucasedu.nl",
+   "phone_e164": "+31646011257",
+   "phone_raw": "646011257"
+  },
+  {
+   "email": "elisa.berardi.is@gmail.com",
+   "phone_e164": "+33783215136",
+   "phone_raw": "'+33783215136"
+  },
+  {
+   "email": "sarissad28@gmail.com",
+   "phone_e164": "+31618573636",
+   "phone_raw": "618573636"
+  },
+  {
+   "email": "patricia@ateliers197.nl",
+   "phone_e164": "+31655890888",
+   "phone_raw": "'+31655890888"
+  },
+  {
+   "email": "post@cenh.nl",
+   "phone_e164": "+31622489439",
+   "phone_raw": "622489439"
+  },
+  {
+   "email": "info@satelliet.net",
+   "phone_e164": "+31638152660",
+   "phone_raw": "638152660"
+  },
+  {
+   "email": "jacobayikweimensah@outlook.com",
+   "phone_e164": "+233244808674",
+   "phone_raw": "'+2330244808674"
+  },
+  {
+   "email": "s.senhorst@student.han.nl",
+   "phone_e164": "+31613774034",
+   "phone_raw": "'+31613774034"
+  },
+  {
+   "email": "ayman91an@gmail.com",
+   "phone_e164": "+31684509210",
+   "phone_raw": "'+31684509210"
+  },
+  {
+   "email": "fons.lustenhouwer@platform31.nl",
+   "phone_e164": "+31653389017",
+   "phone_raw": "'+31653389017"
+  },
+  {
+   "email": "lianne@cassonade.nl",
+   "phone_e164": "+31625520911",
+   "phone_raw": "625520911"
+  },
+  {
+   "email": "r.hutjoosten@gmail.com",
+   "phone_e164": "+31612625846",
+   "phone_raw": "612625846"
+  },
+  {
+   "email": "jippe@dsignathome.nl",
+   "phone_e164": "+31622074008",
+   "phone_raw": "622074008"
+  },
+  {
+   "email": "fleurvhoutum@gmail.com",
+   "phone_e164": "+31643404319",
+   "phone_raw": "'+31643404319"
+  },
+  {
+   "email": "e.deleeuw@designdistrict.nl",
+   "phone_e164": "+31628473178",
+   "phone_raw": "628473178"
+  },
+  {
+   "email": "rob@horecadevelopment.com",
+   "phone_e164": "+31653308900",
+   "phone_raw": "'+31653308900"
+  },
+  {
+   "email": "lydia.mcleod@hotmail.com",
+   "phone_e164": "+31684308243",
+   "phone_raw": "'+31684308243"
+  },
+  {
+   "email": "wim.achterweust@awood.nl",
+   "phone_e164": "+31622079496",
+   "phone_raw": "622079496"
+  },
+  {
+   "email": "intern2@search.nl",
+   "phone_e164": "+306975842282",
+   "phone_raw": "'+306975842282"
+  },
+  {
+   "email": "roncrins@hotmail.com",
+   "phone_e164": "+31652678178",
+   "phone_raw": "652678178"
+  },
+  {
+   "email": "hello@blueprintamsterdam.com",
+   "phone_e164": "+31626835937",
+   "phone_raw": "'+31626835937"
+  },
+  {
+   "email": "folkertsma@nextarchitects.com",
+   "phone_e164": "+31617554337",
+   "phone_raw": "'+31617554337"
+  },
+  {
+   "email": "saltlake.lian@gmail.com",
+   "phone_e164": "+31621130383",
+   "phone_raw": "'+31621130383"
+  },
+  {
+   "email": "info@swinkstudio.nl",
+   "phone_e164": "+31630797588",
+   "phone_raw": "'+31630797588"
+  },
+  {
+   "email": "c.carrasco@hmcollege.nl",
+   "phone_e164": "+31649813719",
+   "phone_raw": "'+31649813719"
+  },
+  {
+   "email": "fitoia@l22c.com",
+   "phone_e164": "+32468014032",
+   "phone_raw": "'+32468014032"
+  },
+  {
+   "email": "mirella@duotone-interior.nl",
+   "phone_e164": "+31625007847",
+   "phone_raw": "'+31625007847"
+  },
+  {
+   "email": "v.gielen@sintlucasedu.nl",
+   "phone_e164": "+31643739528",
+   "phone_raw": "643739528"
+  },
+  {
+   "email": "info@vincinteriordesign.nl",
+   "phone_e164": "+31654660661",
+   "phone_raw": "'+31654660661"
+  },
+  {
+   "email": "thijsderooij1@gmail.com",
+   "phone_e164": "+31629562681",
+   "phone_raw": "'+31629562681"
+  },
+  {
+   "email": "jfr@dgmr.nl",
+   "phone_e164": "+31621216280",
+   "phone_raw": "'+31621216280"
+  },
+  {
+   "email": "rocio.telecemian@ied.edu",
+   "phone_e164": "+34605808411",
+   "phone_raw": "'+34605808411"
+  },
+  {
+   "email": "fvlcampagne@gmail.com",
+   "phone_e164": "+31611004924",
+   "phone_raw": "611004924"
+  },
+  {
+   "email": "marcel@aleidis.com",
+   "phone_e164": "+31627425810",
+   "phone_raw": "'+31627425810"
+  },
+  {
+   "email": "info@jokaliving.nl",
+   "phone_e164": "+31613911862",
+   "phone_raw": "'+31613911862"
+  },
+  {
+   "email": "r.rosier@frisobouwgroep.nl",
+   "phone_e164": "+31625014035",
+   "phone_raw": "'+31625014035"
+  },
+  {
+   "email": "smitjaron@gmail.com",
+   "phone_e164": "+31642565690",
+   "phone_raw": "642565690"
+  },
+  {
+   "email": "info@huisvanhaaz.be",
+   "phone_e164": "+32497535334",
+   "phone_raw": "'+32497535334"
+  },
+  {
+   "email": "nogabrochstein@gmail.com",
+   "phone_e164": "+31616025308",
+   "phone_raw": "'+31616025308"
+  },
+  {
+   "email": "romy@eismc2.nl",
+   "phone_e164": "+31648408489",
+   "phone_raw": "648408489"
+  }
+ ]
+}

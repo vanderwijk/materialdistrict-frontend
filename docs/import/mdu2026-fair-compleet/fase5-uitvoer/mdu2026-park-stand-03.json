@@ -1,0 +1,26 @@
+{
+ "ronde": "MDU 2026 — park emmer D, Jeroen 2026-09-16",
+ "batch": "mdu2026-park-stand-03",
+ "bron": "park-emmer-D-beslisblad.xlsx kolom BESLIST",
+ "brondatum": "2026-03-04",
+ "editie": "MDU 2026",
+ "rijen": [
+  {
+   "email": "predaa@terzadimensione.com",
+   "actie": "bestaand",
+   "first_name": "Andrea",
+   "last_name": "Preda",
+   "brand_id": 112907,
+   "rol": "medewerker",
+   "rol_detail": "",
+   "grond": "registratie",
+   "bewijs": "Jeroen 2026-09-16: wineo by LEOXX koppelt aan LEOXX B.V. 112907",
+   "activiteit": "",
+   "subject_type": "user",
+   "object_id": null,
+   "detail": "",
+   "zichtbaarheid": "geteld",
+   "reden": ""
+  }
+ ]
+}

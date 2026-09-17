@@ -1,0 +1,2160 @@
+{
+  "ronde": "MDU 2011",
+  "gemeten_op_cms": "2026-09-16T18:59:59Z",
+  "bron": "Plattegrond MX2011 (deelnemerslijst)",
+  "brondatum": "2011-02-07",
+  "ingevuld_door": "het bedrijf of de persoon zelf",
+  "batches": {
+    "merken": "mdu2011-exposant-01",
+    "activiteiten": "mdu2011-exposant-01"
+  },
+  "merken": [
+    {
+      "bron_excelrij": [
+        "2"
+      ],
+      "brand_id": 3227,
+      "post_title": "AGC Flatglass",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "yourglass.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3227 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "3"
+      ],
+      "brand_id": 3375,
+      "post_title": "Agrob Buchtal",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "agrob-buchtal.de",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3375 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "4"
+      ],
+      "brand_id": 18879,
+      "post_title": "Art of Ceilings",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "artofceilings.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand Art of Ceilings — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "5"
+      ],
+      "brand_id": 142302,
+      "post_title": "B.N. Wallcoverings",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "bnwallcoverings.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142302 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "6"
+      ],
+      "brand_id": 16907,
+      "post_title": "Barrisol",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "barrisol.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Barrisol Normalu = Barrisol — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "7"
+      ],
+      "brand_id": 2812,
+      "post_title": "Bolidt",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "bolidt.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2812 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "8"
+      ],
+      "brand_id": 94230,
+      "post_title": "Cembrit",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "cembrit.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 94230 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "9"
+      ],
+      "brand_id": 3734,
+      "post_title": "Cottonmix",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "cottonmix.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3734 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "10"
+      ],
+      "brand_id": 3972,
+      "post_title": "Creativ Cladding",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "creativcladding.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3972 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "11"
+      ],
+      "brand_id": 3536,
+      "post_title": "Daas",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "daasbaksteen.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Daas = Daas Baksteen — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "12"
+      ],
+      "brand_id": 2817,
+      "post_title": "Decall",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "decall.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2817 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "13"
+      ],
+      "brand_id": 26734,
+      "post_title": "Decolegno",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "decolegno.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 26734 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "14"
+      ],
+      "brand_id": 4043,
+      "post_title": "Dendro Light",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "dendrolight.lv",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 4043 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "15"
+      ],
+      "brand_id": 3827,
+      "post_title": "Desso",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "desso-businesscarpets.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3827 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "16"
+      ],
+      "brand_id": 3993,
+      "post_title": "Enci",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "enci.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3993 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "17"
+      ],
+      "brand_id": 3540,
+      "post_title": "Evolve",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "go2evolve.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3540 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "18"
+      ],
+      "brand_id": 142313,
+      "post_title": "FSB Winkhaus",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "fsb.de",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142313 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "19"
+      ],
+      "brand_id": 142314,
+      "post_title": "Geberit",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "geberit.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142314 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "20"
+      ],
+      "brand_id": 3598,
+      "post_title": "Gerflor",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "gerflor.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3598 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "21"
+      ],
+      "brand_id": 142364,
+      "post_title": "Heradesign",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "heradesign.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142364 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "22"
+      ],
+      "brand_id": 142317,
+      "post_title": "HSV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "hsv.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142317 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "23"
+      ],
+      "brand_id": 3342,
+      "post_title": "InterfaceFLOR",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "interface.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "InterfaceFLOR = Interface Nederland — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "24"
+      ],
+      "brand_id": 3951,
+      "post_title": "Kingspan",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "kingspanbenchmark.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Kingspan Benchmark = Kingspan — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "25"
+      ],
+      "brand_id": 3980,
+      "post_title": "Knauf",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "knauf.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3980 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "26"
+      ],
+      "brand_id": 3787,
+      "post_title": "Knauf Insulation",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "knaufinsulation.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3787 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "27"
+      ],
+      "brand_id": 3648,
+      "post_title": "Kokoshout",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "kokoshout.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3648 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "28"
+      ],
+      "brand_id": 26954,
+      "post_title": "Lander",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "lander.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 26954 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "29"
+      ],
+      "brand_id": 3602,
+      "post_title": "Leolac",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "leolac.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3602 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "30"
+      ],
+      "brand_id": 3481,
+      "post_title": "Luvata",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "luvata.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3481 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "31"
+      ],
+      "brand_id": 3291,
+      "post_title": "MBI",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "mbi.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3291 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "32"
+      ],
+      "brand_id": 3754,
+      "post_title": "Merford",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "merford.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3754 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "33"
+      ],
+      "brand_id": 3766,
+      "post_title": "Microbeton",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "microbeton.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3766 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "34"
+      ],
+      "brand_id": 3621,
+      "post_title": "Nedzink",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "nedzink.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3621 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "35"
+      ],
+      "brand_id": 3127,
+      "post_title": "Nooyen",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "tribar.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3127 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "36"
+      ],
+      "brand_id": 2887,
+      "post_title": "Plastica Plaat",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "plastica.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2887 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "37"
+      ],
+      "brand_id": 2902,
+      "post_title": "Porcelanosa",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "porcelanosa.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Porcelanosa hoofrecord i.p.v. Porcelanosa Netherlands — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "38"
+      ],
+      "brand_id": 2920,
+      "post_title": "Pyrasied",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "pyrasied.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2920 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "39"
+      ],
+      "brand_id": 28115,
+      "post_title": "Renolit",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "renolit.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 28115 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "40"
+      ],
+      "brand_id": 18858,
+      "post_title": "Richard Wernekinck",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "hollandfelt.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18858 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "41"
+      ],
+      "brand_id": 2975,
+      "post_title": "Schöck",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "schock.de",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2975 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "42"
+      ],
+      "brand_id": 2982,
+      "post_title": "Sefar",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "sefararchitecture.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2982 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "43"
+      ],
+      "brand_id": 3033,
+      "post_title": "Sono Gamma",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "sonogamma.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3033 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "44"
+      ],
+      "brand_id": 3044,
+      "post_title": "Steinfort",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "steinfort.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3044 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "45"
+      ],
+      "brand_id": 18954,
+      "post_title": "Steward Design Panel",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "designpanels.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Steward Design Panel = Steward Design Panels — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "46"
+      ],
+      "brand_id": 3097,
+      "post_title": "Teunissen & Becking",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "teunissen-becking.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3097 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "47"
+      ],
+      "brand_id": 3134,
+      "post_title": "Twentinox",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "twentinox.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3134 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "48"
+      ],
+      "brand_id": 122034,
+      "post_title": "Van Besouw",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "besouw.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 122034 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "49"
+      ],
+      "brand_id": 3162,
+      "post_title": "Verotex",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "verotex.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3162 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "50"
+      ],
+      "brand_id": 142344,
+      "post_title": "Viva Vinyl",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "vivavinyl.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142344 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "51"
+      ],
+      "brand_id": 3185,
+      "post_title": "VMZINC",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "vmzinc.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3185 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "52"
+      ],
+      "brand_id": 23748,
+      "post_title": "Zinco",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "zinco.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 23748 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "53"
+      ],
+      "brand_id": 3700,
+      "post_title": "3M",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "3m.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "3M op plattegrond = 3M Nederland — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "54"
+      ],
+      "brand_id": 142311,
+      "post_title": "Euroslot",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "euroslot-architecture.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Euroslot op MX = Euroslot Nederland (architectuur), niet ANDRITZ — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "55"
+      ],
+      "brand_id": 4006,
+      "post_title": "Graphic Concrete",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "graphicconcrete.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Graphic Concrete NL-record — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "56"
+      ],
+      "brand_id": 142336,
+      "post_title": "Relius",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "reliusnederland.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Relius = RELIUS Nederland — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "57"
+      ],
+      "brand_id": 129955,
+      "post_title": "Roba Metals",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "robametals.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Roba Metals hoofrecord, niet Amsterdam-split — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "58"
+      ],
+      "brand_id": 129334,
+      "post_title": "Wienerberger",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "wienerberger.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Wienerberger B.V. NL — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "59"
+      ],
+      "brand_id": 3359,
+      "post_title": "Royal Mosa",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "mosa.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Royal Mosa = Mosa (Koninklijke Mosa) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "60"
+      ],
+      "brand_id": 3581,
+      "post_title": "Semcoglas",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "semcoglas.com",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Semcoglas-groep → bestaand FINIGLAS-record (semcoglas.com) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "61"
+      ],
+      "brand_id": 142528,
+      "post_title": "Reynaers",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "reynaers.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "62"
+      ],
+      "brand_id": 142529,
+      "post_title": "Velux",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "velux.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "63"
+      ],
+      "brand_id": 142530,
+      "post_title": "OWA",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "owa.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "64"
+      ],
+      "brand_id": 142531,
+      "post_title": "Steenhandel Gelsing",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "gelsing-steenhandel.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "65"
+      ],
+      "brand_id": 142532,
+      "post_title": "Eterno Terrazzo / C. Tomaello BV",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "tomaello.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "66"
+      ],
+      "brand_id": 142533,
+      "post_title": "TGM",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "tgm.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "67"
+      ],
+      "brand_id": 142534,
+      "post_title": "Cottoceramix",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "cottoceramix.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "68"
+      ],
+      "brand_id": 141996,
+      "post_title": "Rocx Gevelconstructies BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "rollecate.nl",
+          "bron": "Plattegrond MX2011 (deelnemerslijst)",
+          "brondatum": "2011-02-07",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Rocx Gevelconstructies was samenwerking Rollecate/Polux; Rollecate aangehouden — Claude, 2026-09-16"
+    }
+  ],
+  "contacten": [],
+  "activiteiten": [
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3227,
+      "subject_sleutel": "yourglass.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3375,
+      "subject_sleutel": "agrob-buchtal.de",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 31",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18879,
+      "subject_sleutel": "artofceilings.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 23",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142302,
+      "subject_sleutel": "bnwallcoverings.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 16907,
+      "subject_sleutel": "barrisol.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 36",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2812,
+      "subject_sleutel": "bolidt.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 77",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 94230,
+      "subject_sleutel": "cembrit.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 62",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3734,
+      "subject_sleutel": "cottonmix.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 28",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3972,
+      "subject_sleutel": "creativcladding.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3536,
+      "subject_sleutel": "daasbaksteen.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 1",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2817,
+      "subject_sleutel": "decall.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 63",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 26734,
+      "subject_sleutel": "decolegno.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 4043,
+      "subject_sleutel": "dendrolight.lv",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 41",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3827,
+      "subject_sleutel": "desso-businesscarpets.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 86",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3993,
+      "subject_sleutel": "enci.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3540,
+      "subject_sleutel": "go2evolve.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142313,
+      "subject_sleutel": "fsb.de",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 52",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142314,
+      "subject_sleutel": "geberit.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 56",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3598,
+      "subject_sleutel": "gerflor.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142364,
+      "subject_sleutel": "heradesign.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 68",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142317,
+      "subject_sleutel": "hsv.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 85",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3342,
+      "subject_sleutel": "interface.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3951,
+      "subject_sleutel": "kingspanbenchmark.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 41",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3980,
+      "subject_sleutel": "knauf.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3787,
+      "subject_sleutel": "knaufinsulation.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3648,
+      "subject_sleutel": "kokoshout.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 26954,
+      "subject_sleutel": "lander.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 5",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3602,
+      "subject_sleutel": "leolac.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3481,
+      "subject_sleutel": "luvata.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 22",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3291,
+      "subject_sleutel": "mbi.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 94",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3754,
+      "subject_sleutel": "merford.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 79",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3766,
+      "subject_sleutel": "microbeton.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3621,
+      "subject_sleutel": "nedzink.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3127,
+      "subject_sleutel": "tribar.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 24",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2887,
+      "subject_sleutel": "plastica.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 35",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2902,
+      "subject_sleutel": "porcelanosa.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 19",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2920,
+      "subject_sleutel": "pyrasied.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 69",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 28115,
+      "subject_sleutel": "renolit.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 54",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18858,
+      "subject_sleutel": "hollandfelt.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2975,
+      "subject_sleutel": "schock.de",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 33",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2982,
+      "subject_sleutel": "sefararchitecture.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 21",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3033,
+      "subject_sleutel": "sonogamma.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 72",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3044,
+      "subject_sleutel": "steinfort.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 58",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18954,
+      "subject_sleutel": "designpanels.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3097,
+      "subject_sleutel": "teunissen-becking.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3134,
+      "subject_sleutel": "twentinox.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 26",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 122034,
+      "subject_sleutel": "besouw.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 49",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3162,
+      "subject_sleutel": "verotex.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 67",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142344,
+      "subject_sleutel": "vivavinyl.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 39",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3185,
+      "subject_sleutel": "vmzinc.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 23748,
+      "subject_sleutel": "zinco.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 87",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3700,
+      "subject_sleutel": "3m.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 71",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142311,
+      "subject_sleutel": "euroslot-architecture.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 37",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 4006,
+      "subject_sleutel": "graphicconcrete.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142336,
+      "subject_sleutel": "reliusnederland.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 129955,
+      "subject_sleutel": "robametals.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 14",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 129334,
+      "subject_sleutel": "wienerberger.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 75",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3359,
+      "subject_sleutel": "mosa.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 9",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3581,
+      "subject_sleutel": "semcoglas.com",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 32",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142528,
+      "subject_sleutel": "reynaers.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 59",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142529,
+      "subject_sleutel": "velux.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 34",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142530,
+      "subject_sleutel": "owa.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142531,
+      "subject_sleutel": "gelsing-steenhandel.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142532,
+      "subject_sleutel": "tomaello.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 38",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142533,
+      "subject_sleutel": "tgm.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand ",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142534,
+      "subject_sleutel": "cottoceramix.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 53",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    },
+    {
+      "batch": "mdu2011-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 141996,
+      "subject_sleutel": "rollecate.nl",
+      "soort": "exposant",
+      "editie": "MDU 2011",
+      "datum": "2011-02-07",
+      "detail": "stand 15",
+      "zichtbaarheid": "geteld",
+      "bron": "Plattegrond MX2011 (deelnemerslijst)"
+    }
+  ]
+}

@@ -1,0 +1,5934 @@
+{
+ "ronde": "MDU 2016",
+ "gemeten_op_cms": "2026-09-16T13:39:01Z",
+ "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+ "brondatum": "2016-01-27",
+ "ingevuld_door": "het bedrijf of de persoon zelf",
+ "batches": {
+  "merken": "mdu2016-exposant-01",
+  "activiteiten": "mdu2016-exposant-01"
+ },
+ "merken": [
+  {
+   "bron_excelrij": [
+    "2",
+    "3"
+   ],
+   "brand_id": 4071,
+   "post_title": "3A Composites Architecture",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "display.3acomposites.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+495411219300",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Alusingenplatz 1",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "78224",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Singen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 4071 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "4"
+   ],
+   "brand_id": 2801,
+   "post_title": "Abet BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "abet.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31306868450",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Lagedijk Noord 4",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3401 VA",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Ijsselstein",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2801 (naam + domeincorroboratie)"
+  },
+  {
+   "bron_excelrij": [
+    "5"
+   ],
+   "brand_id": 120348,
+   "post_title": "Acosorb",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "acosorb.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@acosorb.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31207173000",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Spinnerij 33",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1185 ZS",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amstelveen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "een bedrijf dat twee keer is aangemaakt; het gepubliceerde record aangehouden — Jeroen, 2026-09-09"
+  },
+  {
+   "bron_excelrij": [
+    "6"
+   ],
+   "brand_id": 3375,
+   "post_title": "Agrob Buchtal",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "agrob-buchtal.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+492283914403",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Buchtal 1",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "92521",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Schwarzenfeld",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3375 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "7"
+   ],
+   "brand_id": 87682,
+   "post_title": "Aldowa",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "aldowa.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@aldowa.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31102083788",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Overschieseweg 32",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3044 EE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Rotterdam",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 87682 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "8"
+   ],
+   "brand_id": 26956,
+   "post_title": "Alumet BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "alumet.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@alumet.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31765043130",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Nieuwe Donk 7",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4879 AC",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Eten Leur",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26956 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "9"
+   ],
+   "brand_id": 52875,
+   "post_title": "Arcelor Mittal",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "arcelormittaltiel.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info.amcn@arcelormittal.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31344631746",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Biezenwei 2",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4004 MB",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tiel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 52875 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "10"
+   ],
+   "brand_id": 2807,
+   "post_title": "Ardex",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "ardex.eu",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@ardex.eu",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+492302664604",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Friedrich Ebert Strasse 45",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "58453",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Witten",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Ardex Pandomo = Ardex (pandomo.eu in CMS) — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "11"
+   ],
+   "brand_id": 25152,
+   "post_title": "Arturo Flooring",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "arturoflooring.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@arturoflooring.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31535737373",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industriestraat 15",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7482 EW",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Haaksbergen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 25152 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "12"
+   ],
+   "brand_id": 120807,
+   "post_title": "Asona",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "asona.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@asona.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31206435850",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "C.Verolmelaan 75",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1422 ZB",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Uithoorn",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "twee records; gepubliceerde Asona Benelux BV aangehouden — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "13"
+   ],
+   "brand_id": 3743,
+   "post_title": "Baars & Bloemhoff",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "baars-bloemhoff.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31302882134",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Laagraven 44",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3439 LK",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Nieuwegein",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3743 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "14"
+   ],
+   "brand_id": 16907,
+   "post_title": "Barrisol",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "barrisol.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@barrisol.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+33763213907",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Route Du Sipes 68",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "F 68680",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Kembs",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "FR",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 16907 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "15"
+   ],
+   "brand_id": null,
+   "post_title": "Bright Nature Interieur",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "brightnature.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@brightnature.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31853015033",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Ottho Heldringstraat 3",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1066 AZ",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "16"
+   ],
+   "brand_id": null,
+   "post_title": "Bruil",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "bruil.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@bruil.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31888118717",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Keesomstraat 9",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6717 AH",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Ede GLD",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "17"
+   ],
+   "brand_id": 40048,
+   "post_title": "Caracterr BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "caracterr.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@caracterr.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31832010018",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Distributiestraat 61C",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4283 JN",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Giessen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "een bedrijf dat twee keer is aangemaakt; beide concept, oudste id aangehouden — Jeroen, 2026-09-09"
+  },
+  {
+   "bron_excelrij": [
+    "18"
+   ],
+   "brand_id": 2931,
+   "post_title": "Ceramiche Refin",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "refin.it",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@refin.it",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+39522990499",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Via I Maggio 22 Salvaterra",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "I 42013",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Casalgrande",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "IT",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2931 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "19"
+   ],
+   "brand_id": 23697,
+   "post_title": "Coco Mosaic",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "natureathome.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@natureathome.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31165744007",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Argon 25",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4751 XC",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Oud Gastel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 23697 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "20"
+   ],
+   "brand_id": 18868,
+   "post_title": "DAW Coatings",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "caparol.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@caparol.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31332475000",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Koperslager 2-4",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3860 BC",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Nijkerk",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "twee concept-Caparol op zelfde domein; oudste id aangehouden (DAW Coatings) — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "21"
+   ],
+   "brand_id": 29030,
+   "post_title": "DC Design",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "designbeton.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@designbeton.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31858771568",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Einsteinstraat 15",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6902 PB",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zevenaar",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 29030 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "22"
+   ],
+   "brand_id": null,
+   "post_title": "De Nis",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "de-nis.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "denis@de-nis.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31623947001",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Oosterboekelweg 17",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1661 BT",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "De Weere",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "23"
+   ],
+   "brand_id": 26734,
+   "post_title": "DecoLegno BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "decolegno.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@decolegno.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31756165064",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Parklaan 35-37",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1544 AK",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zaandijk",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26734 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "24"
+   ],
+   "brand_id": 3246,
+   "post_title": "Decomo NV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "decomo.be",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@decomo.be",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+32474770831",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Boulevard Industriel 96",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "B 7700",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Mouscron",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3246 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "25"
+   ],
+   "brand_id": 3827,
+   "post_title": "Desso BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "desso.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@desso.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31416684117",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Taxandriaweg 15",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5140 AD",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Waalwijk",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3827 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "26"
+   ],
+   "brand_id": 18878,
+   "post_title": "DLW Flooring",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "dlwflooring.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31735039446",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Het Zuiderkruis 9",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5215 MV",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Hertogenbosch",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 18878 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "27"
+   ],
+   "brand_id": 95725,
+   "post_title": "Donkersloot",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "donkersloot-tapijt.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@donkersloot-tapijt.nl",
+     "bron": "research",
+     "brondatum": "2016-01-27",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31882400801",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Nijverheidswerf 37",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1402 BV",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Bussum",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 95725 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "28"
+   ],
+   "brand_id": 33492,
+   "post_title": "DSE",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "diamondspectrum.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "verkoop@diamondspectrum.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31345509010",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Nijverheidstraat 27",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4143 HN",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Leerdam",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33492 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "29"
+   ],
+   "brand_id": 18869,
+   "post_title": "Duracryl Flooring Systems",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "duracryl.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@duracryl.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31104505231",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Elandstraat 91",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2901 BK",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Capelle Ad Ijssel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "twee gepubliceerde Duracryl op zelfde domein; oudste id (BV) — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "30"
+   ],
+   "brand_id": 93542,
+   "post_title": "Eeuwenhout",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "eeuwenhout.be",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@houtidee.be",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+3237106640",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Veldstraat 365",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "B 9140",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Temse Velle",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 93542 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "31"
+   ],
+   "brand_id": 18876,
+   "post_title": "Ekotex",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "ekotexwandafwerking.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@ekotexwandafwerking.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31332471515",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Dieselweg 9",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3752 LB",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Bunschoten",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 18876 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "32"
+   ],
+   "brand_id": 3993,
+   "post_title": "ENCI",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "enci.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@enci.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31736401213",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Sint Teunislaan 1",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5203 DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Hertogenbosch",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3993 (naam)"
+  },
+  {
+   "bron_excelrij": [
+    "33"
+   ],
+   "brand_id": 16897,
+   "post_title": "Euramax BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "euramax.eu",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@euramax.eu",
+     "bron": "research",
+     "brondatum": "2016-01-27",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31475370301",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industrieweg 6",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6040 AA",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Roermond",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Euramax BV = Euramax Coated Products (ander domein in CMS) — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "34"
+   ],
+   "brand_id": 33321,
+   "post_title": "Eurolacke BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "eurolacke.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@eurolacke.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31344620662",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "De Riemsdijk 4",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4004 LC",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tiel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33321 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "35"
+   ],
+   "brand_id": null,
+   "post_title": "Façade Beek",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "facadebeek.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@facadebeek.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31464372828",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Stationsstraat 106",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6191 BG",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Beek",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "36"
+   ],
+   "brand_id": 3572,
+   "post_title": "FETIM",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "fetimgroup.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@nl.fetimgroup.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31205805285",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Kopraweg 1",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1000 AT",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3572 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "37"
+   ],
+   "brand_id": 3644,
+   "post_title": "FINSA",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "finsa.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "marketingholland@finsa.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31118471222",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Westerhavenweg 12 Buitenhaven",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4382 NM",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Vlissingen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3644 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "38"
+   ],
+   "brand_id": 32263,
+   "post_title": "Flaxcomposites",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "flaxcomposites.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "contact@flaxcomposites.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+33689742380",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Rue Des Metissages 41",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "59336",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tourcoing",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "FR",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 32263 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "39"
+   ],
+   "brand_id": 3340,
+   "post_title": "Foreco",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "foreco.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@foreco.nl",
+     "bron": "research",
+     "brondatum": "2016-01-27",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31529431548",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Dalmsholterweg 5",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7722 KJ",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Dalfsen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3340 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "40"
+   ],
+   "brand_id": null,
+   "post_title": "Geurts Hout",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "geurtshout.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31653651449",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Schootsveld 23",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5821 EH",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Vierlingsbeek",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "41"
+   ],
+   "brand_id": 3707,
+   "post_title": "Intercodam",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "intercodam.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@intercodam.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31206225115",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Amstel 135",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1018 EN",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3707 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "42"
+   ],
+   "brand_id": 3342,
+   "post_title": "Interface",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "interface.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31332775555",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industrielaan 15",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3925 BD",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Scherpenzeel Gld",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3342 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "43"
+   ],
+   "brand_id": 26547,
+   "post_title": "IVC",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "moduleo.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@moduleo.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+3256653231",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Nijverheidslaan 29",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "B 8580",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Avelgem",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26547 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "44"
+   ],
+   "brand_id": null,
+   "post_title": "Jasba",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "jasba.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@jasba.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+4926026820",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Im Petersborn 2",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6244",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Otzingen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "45"
+   ],
+   "brand_id": 33184,
+   "post_title": "Keramia BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "keramia.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@keramia.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31184613383",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 43",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3371 KH",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Hardinxveld Giessendam",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33184 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "46"
+   ],
+   "brand_id": 26954,
+   "post_title": "Lander BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "lander.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@lander.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31416280246",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Modelleur 4",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5171 SL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Kaatsheuvel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26954 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "47"
+   ],
+   "brand_id": 3952,
+   "post_title": "Leeuwerik Plaat BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "leeuwerik.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@leeuwerik.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31402905050",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 9717",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5602 LS",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Eindhoven",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3952 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "48"
+   ],
+   "brand_id": null,
+   "post_title": "Marlin Contract",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "marlincontract.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@marlincontract.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31263121639",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Marketing 3",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6921 RE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Duiven",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "49"
+   ],
+   "brand_id": 3754,
+   "post_title": "Merford Acoustic Control",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "merford.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@merford.com",
+     "bron": "research",
+     "brondatum": "2016-01-27",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31183675000",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Franklinweg 8",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4200 AD",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Gorinchem",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3754 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "50"
+   ],
+   "brand_id": 3332,
+   "post_title": "Metadecor",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "metadecor.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "informatie@metadecor.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31383318181",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Spoorstraat 43",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8271 RG",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "IJsselmuiden",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3332 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "51"
+   ],
+   "brand_id": 3242,
+   "post_title": "Michel Oprey & Beisterveld",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "mo-b.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@mo-b.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31475417000",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Havenweg 18",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6100 AD",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Echt",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3242 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "52"
+   ],
+   "brand_id": 26319,
+   "post_title": "Mindow Maastricht",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "mindow.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@mindow.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31611336335",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Kruisweg 46",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6231 RK",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Meern",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26319 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "53"
+   ],
+   "brand_id": 18583,
+   "post_title": "Modulyss",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "modulyss.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@modulyss.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+3252454858",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Zevensterrestraat 21",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "B B9240",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zele",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 18583 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "54"
+   ],
+   "brand_id": null,
+   "post_title": "Moeller GmbH & Co KG",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "terrafina.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@moeller-profillsysteme.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+49291299356",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Am Kindergarten 1",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "59872",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Meschede",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "55"
+   ],
+   "brand_id": 3294,
+   "post_title": "Moso International",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "moso-bamboo.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@moso.eu",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31229265732",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "De Marowijne 43",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1689 AR",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zwaag",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "MOSO catalogusnaam; zelfde bedrijf als Moso International (moso-bamboo.com) — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "56"
+   ],
+   "brand_id": 32467,
+   "post_title": "Nevra Benelux BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "nevra.com.tr",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@nevra.com.tr",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+902164573600",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Amsterdamsestraatweg 29 G",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1411 AW",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Naarden",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 32467 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "57"
+   ],
+   "brand_id": 2821,
+   "post_title": "Nora Flooring",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "nora.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info-nl@nora.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31416286140",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Belgiumstraat 14",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5171 PN",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Kaatsheuvel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2821 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "58"
+   ],
+   "brand_id": 2899,
+   "post_title": "Polyrey",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "polyrey.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31207083131",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Route De Bergerac 700",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "F 24150",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Baneul",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "FR",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Polyrey SAS (publish) i.p.v. Polyrey Benelux (draft) — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "59"
+   ],
+   "brand_id": 2902,
+   "post_title": "Porcelanosa",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "porcelanosa.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@porcelanosa.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31207372845",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Magalhaesweg 8",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5928 LN",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Venlo",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "hoofdmerk Porcelanosa i.p.v. Porcelanosa Belgium; NL-stand Venlo — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "60"
+   ],
+   "brand_id": 127817,
+   "post_title": "RET Interieur",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "retbouwproducten.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@retbouwproducten.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31302455555",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Cartesiusweg 127A",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3534 BC",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Utrecht",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 127817 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "61"
+   ],
+   "brand_id": 18858,
+   "post_title": "Richard Wernekinck Wol Groothandel",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "hollandfelt.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "sales@hollandfelt.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31152146341",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Buitenwatersloot 71",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2613 TB",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Delft",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 18858 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "62"
+   ],
+   "brand_id": 129955,
+   "post_title": "Roba Metals",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "robametals.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@robametals.com",
+     "bron": "research",
+     "brondatum": "2016-01-27",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31306860296",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Zomerdijk 27-33",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3402 MJ",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Ijsselstein",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 129955 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "63"
+   ],
+   "brand_id": 33178,
+   "post_title": "Rockwool",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "rockfon.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@rockfon.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31475353379",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industrieweg 15",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6045 JG",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Roermond",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33178 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "64"
+   ],
+   "brand_id": null,
+   "post_title": "Rollecate",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "rollecate.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "mail@rollecate.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31522467000",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "H.G. Zwerusstraat 3",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7950 AA",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Staphorst",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "65"
+   ],
+   "brand_id": 33349,
+   "post_title": "Rometa Metaal",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "rometa.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@rometa.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31413262040",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Oostwijk 23",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5406 XT",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Uden",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33349 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "66"
+   ],
+   "brand_id": 26001,
+   "post_title": "Sedacor",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "jpscorkgroup.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "sedacor@jpscorkgroup.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+351227470590",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Rua Nova Do Lameiro 184",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4535-489",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "S.Paio De Oleiros",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "PT",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26001 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "67"
+   ],
+   "brand_id": 33138,
+   "post_title": "Sonae Industria",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "sonaeindustria.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31348434400",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Edisonweg 8A",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3442 AC",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Woerden",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33138 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "68"
+   ],
+   "brand_id": 33496,
+   "post_title": "Sphinx Tegels",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "sphinxtegels.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@sphinxtegels.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31433683434",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Australielaan 21-25",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6190 BA",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Maastricht",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33496 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "69"
+   ],
+   "brand_id": 3048,
+   "post_title": "St. Joris Keramische Industrie",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "stjoris.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "verkoop@stjoris.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31774740100",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "St.Jorisstraat 54",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5954 AP",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Beesel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3048 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "70"
+   ],
+   "brand_id": 24454,
+   "post_title": "Steuler Fliesen",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "steuler-fliesen.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@steuler-fliesen.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+497041801110",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industriestrasse 78",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "75417",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Muhlacker",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 24454 (naam)"
+  },
+  {
+   "bron_excelrij": [
+    "71"
+   ],
+   "brand_id": 3050,
+   "post_title": "Sto Isoned",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "sto.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info.nl@sto.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31344620666",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Lingwei 107",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4000 HK",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tiel",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3050 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "72"
+   ],
+   "brand_id": null,
+   "post_title": "Stofix",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "stofix.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+32479534809",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Rahtitie 3",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "01530",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Vantaa",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "FI",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "73"
+   ],
+   "brand_id": null,
+   "post_title": "Tata Steel",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "tatasteelbouw.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@tatasteelbouw.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31251494500",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Wenckebachstraat 1",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1951 JZ",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Velsen Noord",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "74"
+   ],
+   "brand_id": 28669,
+   "post_title": "The Wool Studio",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "thewoolstudio.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@thewoolstudio.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31854014986",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Laan Van Waalhaven 35",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2497 GN",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Den Haag",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 28669 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "75"
+   ],
+   "brand_id": null,
+   "post_title": "Touch of Nature",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "touchofnature.eu",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@touchofnature.eu",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+32475801602",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Acaciastraat 14",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3071",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Erps-Kwerps",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "76"
+   ],
+   "brand_id": 3134,
+   "post_title": "Twentinox",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "twentinox.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@twentinox.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31742916996",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Petroleumhavenstraat 1-3",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7550 AA",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Hengelo",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3134 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "77"
+   ],
+   "brand_id": 101231,
+   "post_title": "Unilin Panels",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "unilinpanels.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info.panels@unilin.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+3156667021",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Ingelmunstersteenweg 229",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "B 8780",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Oostrozebeke",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 101231 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "78"
+   ],
+   "brand_id": 122034,
+   "post_title": "Van Besouw Tapijt BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "besouw.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@besouw.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31383858818",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Puttenstraat 3",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8281 BP",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Genemuiden",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 122034 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "79"
+   ],
+   "brand_id": 33671,
+   "post_title": "Van Straaten BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "vanstraaten.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@vanstraaten.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31235551861",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Schipholweg 939",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2143 CE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Boesingheliede",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33671 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "80"
+   ],
+   "brand_id": 26548,
+   "post_title": "Vorwerk",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "vorwerk-carpets.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "marketing@vorwerk-teppich.de",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+495151103377",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Kuhlmannstrasse 11",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "31785",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Hameln",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Vorwerk carpets = Vorwerk Flooring in CMS — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "81"
+   ],
+   "brand_id": 33136,
+   "post_title": "Warmteplan",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "warmteplan.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@warmteplan.nl",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31575564805",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Mercuriusweg 5",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6970 AA",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Brummen",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33136 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "82"
+   ],
+   "brand_id": 33135,
+   "post_title": "Wijzonol",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "wijzonol.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@wijzonol.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31384291143",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Russenweg 14",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8000 AE",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zwolle",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 33135 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "83"
+   ],
+   "brand_id": 26789,
+   "post_title": "Winter Creations",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "winter-creation.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@winter-creation.com",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+41612844333",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Aliothstrasse 60",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4142",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Munchenstein",
+     "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)",
+     "brondatum": "2016-01-27",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26789 (exact domein)"
+  }
+ ],
+ "contacten": [],
+ "activiteiten": [
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 4071,
+   "subject_sleutel": "display.3acomposites.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A07, B30",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2801,
+   "subject_sleutel": "abet.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A31",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 120348,
+   "subject_sleutel": "acosorb.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B27",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3375,
+   "subject_sleutel": "agrob-buchtal.de",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A20 + C21",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 87682,
+   "subject_sleutel": "aldowa.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A14",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26956,
+   "subject_sleutel": "alumet.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A15",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 52875,
+   "subject_sleutel": "arcelormittaltiel.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A13",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2807,
+   "subject_sleutel": "ardex.eu",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C14",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 25152,
+   "subject_sleutel": "arturoflooring.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C27",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 120807,
+   "subject_sleutel": "asona.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B05",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3743,
+   "subject_sleutel": "baars-bloemhoff.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B02",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 16907,
+   "subject_sleutel": "barrisol.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B16",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "brightnature.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B35",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "bruil.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand D01",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 40048,
+   "subject_sleutel": "caracterr.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C23",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2931,
+   "subject_sleutel": "refin.it",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C18",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 23697,
+   "subject_sleutel": "natureathome.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B20",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18868,
+   "subject_sleutel": "caparol.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B38",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 29030,
+   "subject_sleutel": "designbeton.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C19",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "de-nis.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A25",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26734,
+   "subject_sleutel": "decolegno.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B14",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3246,
+   "subject_sleutel": "decomo.be",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A41",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3827,
+   "subject_sleutel": "desso.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C01",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18878,
+   "subject_sleutel": "dlwflooring.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C28",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 95725,
+   "subject_sleutel": "donkersloot-tapijt.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C36",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33492,
+   "subject_sleutel": "diamondspectrum.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C12",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18869,
+   "subject_sleutel": "duracryl.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C06",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 93542,
+   "subject_sleutel": "eeuwenhout.be",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B25",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18876,
+   "subject_sleutel": "ekotexwandafwerking.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B07",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3993,
+   "subject_sleutel": "enci.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A22",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 16897,
+   "subject_sleutel": "euramax.eu",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A19",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33321,
+   "subject_sleutel": "eurolacke.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A17",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "facadebeek.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A39",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3572,
+   "subject_sleutel": "fetimgroup.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A10",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3644,
+   "subject_sleutel": "finsa.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B18",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 32263,
+   "subject_sleutel": "flaxcomposites.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B32",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3340,
+   "subject_sleutel": "foreco.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A08",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "geurtshout.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B31",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3707,
+   "subject_sleutel": "intercodam.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C04",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3342,
+   "subject_sleutel": "interface.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C02",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26547,
+   "subject_sleutel": "moduleo.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C03",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "jasba.de",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C24",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33184,
+   "subject_sleutel": "keramia.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand D05",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26954,
+   "subject_sleutel": "lander.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A06",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3952,
+   "subject_sleutel": "leeuwerik.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B26",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "marlincontract.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C16",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3754,
+   "subject_sleutel": "merford.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B28",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3332,
+   "subject_sleutel": "metadecor.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A40",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3242,
+   "subject_sleutel": "mo-b.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A41",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26319,
+   "subject_sleutel": "mindow.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A01",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18583,
+   "subject_sleutel": "modulyss.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C37",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "terrafina.de",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C33",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3294,
+   "subject_sleutel": "moso-bamboo.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C07",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 32467,
+   "subject_sleutel": "nevra.com.tr",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A18",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2821,
+   "subject_sleutel": "nora.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C22",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2899,
+   "subject_sleutel": "polyrey.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B37",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2902,
+   "subject_sleutel": "porcelanosa.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A5",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 127817,
+   "subject_sleutel": "retbouwproducten.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B03",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18858,
+   "subject_sleutel": "hollandfelt.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B08",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 129955,
+   "subject_sleutel": "robametals.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A12",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33178,
+   "subject_sleutel": "rockfon.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B13",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "rollecate.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A32",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33349,
+   "subject_sleutel": "rometa.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A09",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26001,
+   "subject_sleutel": "jpscorkgroup.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B36",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33138,
+   "subject_sleutel": "sonaeindustria.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B04",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33496,
+   "subject_sleutel": "sphinxtegels.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C09",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3048,
+   "subject_sleutel": "stjoris.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A27",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 24454,
+   "subject_sleutel": "steuler-fliesen.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B22",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3050,
+   "subject_sleutel": "sto.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B09",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "stofix.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A34",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "tatasteelbouw.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A03",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 28669,
+   "subject_sleutel": "thewoolstudio.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C29",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "touchofnature.eu",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C26",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3134,
+   "subject_sleutel": "twentinox.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand A23",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 101231,
+   "subject_sleutel": "unilinpanels.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B17",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 122034,
+   "subject_sleutel": "besouw.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C17",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33671,
+   "subject_sleutel": "vanstraaten.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand D7",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26548,
+   "subject_sleutel": "vorwerk-carpets.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand C35",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33136,
+   "subject_sleutel": "warmteplan.nl",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B15",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 33135,
+   "subject_sleutel": "wijzonol.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B6",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  },
+  {
+   "batch": "mdu2016-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26789,
+   "subject_sleutel": "winter-creation.com",
+   "soort": "exposant",
+   "editie": "MDU 2016",
+   "datum": "2016-01-27",
+   "detail": "stand B29",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2016 (MX2016_ExhibitionCatalogue_LR.pdf)"
+  }
+ ]
+}

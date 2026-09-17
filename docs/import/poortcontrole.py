@@ -140,7 +140,8 @@ def main():
         if not e:
             continue
         dom = e.split("@")[1] if "@" in e else ""
-        if any(v in dom for v in VRIJ):
+        # Hostniveau, geen deelstring (claylime.com ≠ me.com) — MDU 2024, 16-09-2026.
+        if any(dom == v or dom.endswith("." + v) for v in VRIJ):
             persoonlijk.append(f"{waarde(m, 'merk') or waarde(m, 'Excel-rij bron')}: {e} (vrije provider)")
         elif is_persoonlijk(e, dom, waarde(m, "merk")):
             persoonlijk.append(f"{waarde(m, 'merk') or waarde(m, 'Excel-rij bron')}: {e}")

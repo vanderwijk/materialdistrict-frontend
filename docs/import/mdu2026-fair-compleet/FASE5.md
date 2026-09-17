@@ -35,13 +35,13 @@ Geen geweigerd; geen mail tijdens schrijfrondes.
 
 ## Parkeerlijst (menselijke review)
 
-Zie `fase5-uitvoer/parkeerlijst.json` + `.tsv`.
+Zie `fase5-uitvoer/parkeerlijst.json` + `.tsv`. Emmer D gesloten 2026-09-16: `PARK-schrijf.md`.
 
-| Categorie | n | Actie voor Claude/Jeroen |
+| Categorie | n | Actie |
 |-----------|---|--------------------------|
-| standbemanning zonder rol | **84** | vrij/multi/geen domein — handmatig of laten |
-| spreker zonder rol | **17** | idem; activiteit staat al |
-| exhibitor zonder merkkandidaat | **16** | Instagram/cargo/lege company |
+| standbemanning zonder rol | **84** → A+B 57 + C 9 + D 18 | D: Jeroen; wineo→LEOXX 112907; rest sluiten (personen blijven) |
+| spreker zonder rol | **17** | Later; activiteit staat al |
+| exhibitor zonder merkkandidaat | **16** | Overlap D; geen auto-create |
 | exposant-contact zonder WEL-merk | **18** | geen contactpersoon-rij |
 | oordelen NIET (wineo / Stichting Insert) | **2** | bewust geen exposant-feit |
 | LEOXX adres NIET | **1** | beslist, geen rewrite |

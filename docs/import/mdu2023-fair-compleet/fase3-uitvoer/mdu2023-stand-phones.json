@@ -1,0 +1,135 @@
+{
+ "ronde": "MDU 2023 — stand phones",
+ "batch": "mdu2023-stand-phones-01",
+ "bron": "tickets",
+ "brondatum": "2023-03-08",
+ "meta_key": "billing_phone",
+ "regel": "alleen vullen als leeg",
+ "rijen": [
+  {
+   "email": "julesvreeswijk@toothezoo.nl",
+   "phone_e164": "+31622222258",
+   "phone_raw": "'+31622222258"
+  },
+  {
+   "email": "info@toothezoo.nl",
+   "phone_e164": "+31622222258",
+   "phone_raw": "'+310622222258"
+  },
+  {
+   "email": "roberto@campo.online",
+   "phone_e164": "+31615431777",
+   "phone_raw": "'+31615431777"
+  },
+  {
+   "email": "evanhouten@moso.eu",
+   "phone_e164": "+31622397865",
+   "phone_raw": "'+31622397865"
+  },
+  {
+   "email": "rbakker@moso.eu",
+   "phone_e164": "+3131622397865",
+   "phone_raw": "31622397865"
+  },
+  {
+   "email": "werner@connectionwalls.com",
+   "phone_e164": "+32495289040",
+   "phone_raw": "'+32495289040"
+  },
+  {
+   "email": "patrick@decolegno.nl",
+   "phone_e164": "+31654608657",
+   "phone_raw": "'+31654608657"
+  },
+  {
+   "email": "schirley.knockaert@joriside.be",
+   "phone_e164": "+32473830585",
+   "phone_raw": "'+32473830585"
+  },
+  {
+   "email": "mark.lepelaar@npsp.nl",
+   "phone_e164": "+31627172994",
+   "phone_raw": "'+31627172994"
+  },
+  {
+   "email": "jcaarls@decovisie.com",
+   "phone_e164": "+31643823494",
+   "phone_raw": "643823494"
+  },
+  {
+   "email": "info@natureathome.nl",
+   "phone_e164": "+31622212985",
+   "phone_raw": "'+31622212985"
+  },
+  {
+   "email": "roy@coffeebased.nl",
+   "phone_e164": "+31614888346",
+   "phone_raw": "614888346"
+  },
+  {
+   "email": "alexisoskam@gmail.com",
+   "phone_e164": "+31627092393",
+   "phone_raw": "'+31627092393"
+  },
+  {
+   "email": "s.kleyhorst@hhnk.nl",
+   "phone_e164": "+31610913946",
+   "phone_raw": "'+31610913946"
+  },
+  {
+   "email": "bart@tholin.nl",
+   "phone_e164": "+31618201406",
+   "phone_raw": "618201406"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "m.oud@verometal.nl",
+   "phone_e164": "+31624348581",
+   "phone_raw": "624348581"
+  },
+  {
+   "email": "willem-paul.van.der.burg@interface.com",
+   "phone_e164": "+31653934639",
+   "phone_raw": "'+31653934639"
+  },
+  {
+   "email": "liselotte.flu@interface.com",
+   "phone_e164": "+31622558413",
+   "phone_raw": "'+31622558413"
+  },
+  {
+   "email": "kaj@invitado.nl",
+   "phone_e164": "+31612345678",
+   "phone_raw": "'+31612345678"
+  },
+  {
+   "email": "kamiel@burokade.nl",
+   "phone_e164": "+31623891994",
+   "phone_raw": "'+31623891994"
+  },
+  {
+   "email": "kirsti@burokade.nl",
+   "phone_e164": "+31610756324",
+   "phone_raw": "'+31610756324"
+  },
+  {
+   "email": "derooij@aquaminerals.com",
+   "phone_e164": "+31306069727",
+   "phone_raw": "306069727"
+  }
+ ]
+}

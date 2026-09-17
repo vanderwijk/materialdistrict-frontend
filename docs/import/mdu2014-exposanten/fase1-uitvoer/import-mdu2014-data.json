@@ -1,0 +1,3572 @@
+{
+  "ronde": "MDU 2014",
+  "gemeten_op_cms": "2026-09-16T18:09:10Z",
+  "bron": "Catalogusindex MX2014 (Exhibitors index)",
+  "brondatum": "2014-01-22",
+  "ingevuld_door": "het bedrijf of de persoon zelf",
+  "batches": {
+    "merken": "mdu2014-exposant-01",
+    "activiteiten": "mdu2014-exposant-01"
+  },
+  "merken": [
+    {
+      "bron_excelrij": [
+        "2"
+      ],
+      "brand_id": 2802,
+      "post_title": "3A Composites GmbH",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "alucobond.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31646912944",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Alusingenplatz 1",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "78224",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Singen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "DE",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2802 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "3"
+      ],
+      "brand_id": 120348,
+      "post_title": "Acosorb BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "acosorb.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@acosorb.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31207173000",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Spinnerij 33",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1185 ZS",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Amstelveen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "een bedrijf dat twee keer is aangemaakt; het gepubliceerde record aangehouden — Jeroen, 2026-09-09"
+    },
+    {
+      "bron_excelrij": [
+        "4"
+      ],
+      "brand_id": 142388,
+      "post_title": "Armstrong Floor Products BV",
+      "alias": "",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "armstrong.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31735039440",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Het Zuiderkruis 9",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5215 MV",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "’s-Hertogenbosch",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "nieuw merk, identiteit aantoonbaar"
+    },
+    {
+      "bron_excelrij": [
+        "5"
+      ],
+      "brand_id": 18879,
+      "post_title": "Art of Ceilings",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "artofceilings.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@artofceilings.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31735039440",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Prof P Scholtenlaan 44",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1181 ME",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Amstelveen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand Art of Ceilings — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "6"
+      ],
+      "brand_id": 18865,
+      "post_title": "Asona Benelux BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "asona.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31206435850",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "C. Verolmelaan 75",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1422 ZB",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Uithoorn",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18865 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "7"
+      ],
+      "brand_id": 3743,
+      "post_title": "Baars & Bloemhoff",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "baars-bloemhoff.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@baars-bloemhoff.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31302882134",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Laagraven 44",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3439 LK",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Nieuwegein",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3743 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "8"
+      ],
+      "brand_id": 16907,
+      "post_title": "Barrisol®",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "barrisol.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "mail@barrisol.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+33389832020",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Route du SIPES",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "F- 68680",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Kembs",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "FR",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Barrisol Normalu = Barrisol — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "9"
+      ],
+      "brand_id": 4073,
+      "post_title": "Bohemian Works",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "bohemianworks.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "mail@bohemianworks.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31852733089",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Lageweg 35",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3703 CA",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Zeist",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 4073 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "10"
+      ],
+      "brand_id": 18868,
+      "post_title": "Caparol (DAW Coatings Nederland)",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "caparol.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@caparol.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31332475000",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Koperslager 2-4",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3861 SJ",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Nijkerk",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "twee concept-Caparol op zelfde domein; oudste id aangehouden (DAW Coatings) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "11"
+      ],
+      "brand_id": 2931,
+      "post_title": "Ceramiche Refin Spa",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "refin.it",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@refin.it",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+39522990499",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Via 1° Maggio n.22, Salvaterra",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "42013",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Casalgrande (RE)",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "IT",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2931 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "12"
+      ],
+      "brand_id": 18836,
+      "post_title": "Coprox Europe BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "bodeco.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31402075997",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Leemkuilen 42a",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5583 CL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Westerhoven",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18836 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "13"
+      ],
+      "brand_id": 3246,
+      "post_title": "DECOMO nv",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "decomo.be",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@decomo.be",
+          "bron": "research",
+          "brondatum": "2014-01-22",
+          "herkomst": "opgezocht"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+3256850711",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Boulevard Industriel 96",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "7700",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Mouscron",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "BE",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3246 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "14"
+      ],
+      "brand_id": 3827,
+      "post_title": "Desso BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "desso.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "infodessoprojecten@desso.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31416684100",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Taxandriaweg 15",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5142 PA",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Waalwijk",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3827 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "15"
+      ],
+      "brand_id": 18869,
+      "post_title": "Duracryl Flooring Systems",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "duracryl.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@duracryl.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31104505231",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Elandstraat 91",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "2900 AD",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Capelle aan den IJssel",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "twee gepubliceerde Duracryl op zelfde domein; oudste id (BV) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "16"
+      ],
+      "brand_id": 142028,
+      "post_title": "Easy Noise Control B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "easy-noisecontrol.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@easy-noisecontrol.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31348769063",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Nijverheidsweg 18-d",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3481 MB",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Harmelen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 142028 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "17"
+      ],
+      "brand_id": 93542,
+      "post_title": "Eeuwenhout",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "eeuwenhout.be",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@houtidee.be",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+32327106640",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Veldstraat 365",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "9140",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Temse-Velle",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "BE",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 93542 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "18"
+      ],
+      "brand_id": 18876,
+      "post_title": "EKOTEX Wandafwerking",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "ekotexwandafwerking.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@ekotexwandafwerking.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31332471515",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Dieselweg 9",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3752 LB",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Bunschoten",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18876 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "19"
+      ],
+      "brand_id": 3993,
+      "post_title": "ENCI",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "enci.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31736401170",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "St Teunislaan 1",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5231 BS",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "‘s-Hertogenbosch",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3993 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "20"
+      ],
+      "brand_id": 16897,
+      "post_title": "Euramax Coated Products BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "euramax.eu",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@euramax.eu",
+          "bron": "research",
+          "brondatum": "2014-01-22",
+          "herkomst": "opgezocht"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31475370341",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Industrieweg 6",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "6045 JG",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Roermond",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Euramax BV = Euramax Coated Products (ander domein in CMS) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "21"
+      ],
+      "brand_id": 18854,
+      "post_title": "Fetim Professional",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "fetimprofessional.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31205805285",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Kopraweg 1",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1047 BP",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Amsterdam",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18854 (domeinkern, andere extensie)"
+    },
+    {
+      "bron_excelrij": [
+        "22"
+      ],
+      "brand_id": 3644,
+      "post_title": "Finsa",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "finsa.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@finsa.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31118471222",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Westerhavenweg 12",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "4382 NM",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Vlissingen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3644 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "23"
+      ],
+      "brand_id": 3272,
+      "post_title": "Forbo Flooring Systems B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "forbo-flooring.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "contact@forbo.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31756477880",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Industrieweg 12",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1566 JP",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Assendelft",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3272 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "24"
+      ],
+      "brand_id": 3340,
+      "post_title": "Foreco Dalfsen B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "foreco.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@foreco.nl",
+          "bron": "research",
+          "brondatum": "2014-01-22",
+          "herkomst": "opgezocht"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31529431548",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Dalmsholterweg 5",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "7722 KJ",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Dalfsen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3340 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "25"
+      ],
+      "brand_id": 3598,
+      "post_title": "Gerflor",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "gerflor.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31402661700",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Dr Holtroplaan 30",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5652 XR",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Eindhoven",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3598 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "26"
+      ],
+      "brand_id": 18858,
+      "post_title": "Hollandfelt",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "hollandfelt.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@hollandfelt.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31152146341",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Hugo de Grootstraat 175",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "2513 VS",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Delft",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18858 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "27"
+      ],
+      "brand_id": 3342,
+      "post_title": "Interface Nederland BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "interface.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31332775555",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Industrielaan 15",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3925 ZG",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Scherpenzeel",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3342 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "28"
+      ],
+      "brand_id": 19343,
+      "post_title": "Kaindl",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "kaindl.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "sales@kaindl.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+4366285880",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Kaindlstraße 2",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5071",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Wals",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 19343 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "29"
+      ],
+      "brand_id": 17521,
+      "post_title": "Maiburg Hout BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "maiburg.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "verkoop@maiburg.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31416566566",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Schutweg 6",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5145 NP",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Waalwijk",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Maiburg Hout BV; niet DenimX by Maiburg — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "30"
+      ],
+      "brand_id": 3291,
+      "post_title": "MBI De Steenmeesters",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "mbi.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "infobouw@mbi.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31383994204",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Haatlandhaven 11",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "8263 AS",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Kampen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3291 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "31"
+      ],
+      "brand_id": 3754,
+      "post_title": "Merford Acoustic Materials",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "merford.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@merford.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31183675000",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Franklinweg 8",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "4207 HZ",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Gorinchem",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3754 (domeinkern, andere extensie)"
+    },
+    {
+      "bron_excelrij": [
+        "32"
+      ],
+      "brand_id": 18583,
+      "post_title": "modulyss®",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "modulyss.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@modulyss.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+3252457211",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Zevensterrestraat 21",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "9240",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Zele",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "BE",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18583 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "33"
+      ],
+      "brand_id": 3359,
+      "post_title": "Mosa",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "mosa.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@mosa.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31433689444",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Meerssenerweg 358",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "6201 BA",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Maastricht",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3359 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "34"
+      ],
+      "brand_id": 3294,
+      "post_title": "Moso International",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "moso-bamboo.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@moso.eu",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31229265732",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "De Marowijne 43",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1689 AR",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Zwaag",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "MOSO catalogusnaam; zelfde bedrijf als Moso International (moso-bamboo.com) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "35"
+      ],
+      "brand_id": 3621,
+      "post_title": "NedZink BV",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "nedzink.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@nedzink.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31495455700",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Hoofdstraat 1",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "6024 AA",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Budel-Dorplein",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3621 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "36"
+      ],
+      "brand_id": 3127,
+      "post_title": "Nooyen Manufacturing B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "tribar.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "sales@tribar.nl",
+          "bron": "research",
+          "brondatum": "2014-01-22",
+          "herkomst": "opgezocht"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31493316860",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Vuurijzer 15",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5753 SV",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Deurne",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3127 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "37"
+      ],
+      "brand_id": 2821,
+      "post_title": "nora flooring systems B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "nora.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info-nl@nora.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31416286140",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Belgiestraat 14",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5171 PN",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Kaatsheuvel",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2821 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "38"
+      ],
+      "brand_id": 18817,
+      "post_title": "ODS b.v.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "ods-geveltechniek.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@ods-geveltechniek.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31180640887",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Donk 6",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "2991 LE",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Barendrecht",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand ODS b.v. — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "39"
+      ],
+      "brand_id": 18880,
+      "post_title": "Optigroen",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "optigroen.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@optigroen.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31334635681",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Nijverheidsweg Noord 60.85",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3812 PM",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Amersfoort",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18880 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "40"
+      ],
+      "brand_id": 19118,
+      "post_title": "Plafondverbeelding",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "plafondverbeelding.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@plafondverbeelding.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31626396846",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Ottho Heldringstraat 3",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1066 AZ",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Amsterdam",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 19118 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "41"
+      ],
+      "brand_id": 2899,
+      "post_title": "Polyrey SAS",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "polyrey.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31207083131",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "700, Route de Bergerac",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "24150",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Baneuil",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "FR",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Polyrey SAS (publish) i.p.v. Polyrey Benelux (draft) — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "42"
+      ],
+      "brand_id": 2902,
+      "post_title": "Porcelanosa",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "porcelanosa.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@porcelanosa.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31123456789",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Magalhaesweg 8",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5928 LN",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Venlo",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "hoofdmerk Porcelanosa i.p.v. Belgium — Claude, 2026-09-16"
+    },
+    {
+      "bron_excelrij": [
+        "43"
+      ],
+      "brand_id": 2920,
+      "post_title": "PyraSied Xtreme Acrylic",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "pyrasied.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "sales@pyrasied.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31582150651",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Apolloweg 26",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "8938 AT",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Leeuwarden",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 2920 (domeinkern, andere extensie)"
+    },
+    {
+      "bron_excelrij": [
+        "44"
+      ],
+      "brand_id": 21937,
+      "post_title": "Remmers Bouwchemie B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "remmersbouwchemie.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@remmersbouwchemie.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31528229333",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Stephensonstraat 9",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "7903 AS",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Hoogeveen",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 21937 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "45"
+      ],
+      "brand_id": 18881,
+      "post_title": "RET Interieur",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "ret-interieur.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "verkoop@retinterieur.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31302455555",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Cartesiusweg 127a",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3534 BC",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Utrecht",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 18881 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "46"
+      ],
+      "brand_id": 129955,
+      "post_title": "Roba Metals B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "robametals.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@robametals.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31123456789",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Zomerdijk 27-33",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3402 MJ",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Ijsselstein",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 129955 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "47"
+      ],
+      "brand_id": 3124,
+      "post_title": "Trespa International B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "trespa.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@trespa.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31495458358",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Wetering 20",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "6002 SM",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Weert",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3124 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "48"
+      ],
+      "brand_id": 101231,
+      "post_title": "UNILIN",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "unilinpanels.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info.panels@unilin.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+3251304932",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Ambachtenstraat 68",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "8870",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Izegem",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "BE",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 101231 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "49"
+      ],
+      "brand_id": 16881,
+      "post_title": "Vescom Nederland B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "vescom.com",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "sales@vescom.com",
+          "bron": "research",
+          "brondatum": "2014-01-22",
+          "herkomst": "opgezocht"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31493350767",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Sint Jozefstraat 20",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "5753 AV",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Deurne",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 16881 (exact domein)"
+    },
+    {
+      "bron_excelrij": [
+        "50"
+      ],
+      "brand_id": 3203,
+      "post_title": "Westag Nederland B.V.",
+      "alias": "",
+      "record_status": "active",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "westag.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "westag@westag.nl",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31348558181",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Ambachtsweg 6a",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3411 MJ",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Lopik",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Catalogusindex MX2014 (Exhibitors index)",
+          "brondatum": "2014-01-22",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "bestaand merk 3203 (exact domein)"
+    }
+  ],
+  "contacten": [],
+  "activiteiten": [
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2802,
+      "subject_sleutel": "alucobond.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 63",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 120348,
+      "subject_sleutel": "acosorb.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 56",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142388,
+      "subject_sleutel": "armstrong.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 53",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18879,
+      "subject_sleutel": "artofceilings.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 39",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18865,
+      "subject_sleutel": "asona.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 77",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3743,
+      "subject_sleutel": "baars-bloemhoff.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 83 + 84",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 16907,
+      "subject_sleutel": "barrisol.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 1",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 4073,
+      "subject_sleutel": "bohemianworks.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 28",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18868,
+      "subject_sleutel": "caparol.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 69",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2931,
+      "subject_sleutel": "refin.it",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 32",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18836,
+      "subject_sleutel": "bodeco.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 74",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3246,
+      "subject_sleutel": "decomo.be",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 26",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3827,
+      "subject_sleutel": "desso.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 5",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18869,
+      "subject_sleutel": "duracryl.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 86",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 142028,
+      "subject_sleutel": "easy-noisecontrol.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 48",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 93542,
+      "subject_sleutel": "eeuwenhout.be",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 79",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18876,
+      "subject_sleutel": "ekotexwandafwerking.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 89",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3993,
+      "subject_sleutel": "enci.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 65 + 71",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 16897,
+      "subject_sleutel": "euramax.eu",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 85",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18854,
+      "subject_sleutel": "fetimprofessional.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 47",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3644,
+      "subject_sleutel": "finsa.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 66",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3272,
+      "subject_sleutel": "forbo-flooring.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 2",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3340,
+      "subject_sleutel": "foreco.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 46",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3598,
+      "subject_sleutel": "gerflor.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 49",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18858,
+      "subject_sleutel": "hollandfelt.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 21",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3342,
+      "subject_sleutel": "interface.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 11",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 19343,
+      "subject_sleutel": "kaindl.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 91",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 17521,
+      "subject_sleutel": "maiburg.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 92",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3291,
+      "subject_sleutel": "mbi.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 3",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3754,
+      "subject_sleutel": "merford.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 55",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18583,
+      "subject_sleutel": "modulyss.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 59",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3359,
+      "subject_sleutel": "mosa.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 78 + 90",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3294,
+      "subject_sleutel": "moso-bamboo.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 45",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3621,
+      "subject_sleutel": "nedzink.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 43",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3127,
+      "subject_sleutel": "tribar.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 31",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2821,
+      "subject_sleutel": "nora.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 51",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18817,
+      "subject_sleutel": "ods-geveltechniek.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 57",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18880,
+      "subject_sleutel": "optigroen.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 68",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 19118,
+      "subject_sleutel": "plafondverbeelding.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 62",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2899,
+      "subject_sleutel": "polyrey.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 27",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2902,
+      "subject_sleutel": "porcelanosa.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 64",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 2920,
+      "subject_sleutel": "pyrasied.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 42",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 21937,
+      "subject_sleutel": "remmersbouwchemie.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 38",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 18881,
+      "subject_sleutel": "ret-interieur.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 41",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 129955,
+      "subject_sleutel": "robametals.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 81",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3124,
+      "subject_sleutel": "trespa.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 60",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 101231,
+      "subject_sleutel": "unilinpanels.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 16",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 16881,
+      "subject_sleutel": "vescom.com",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 8",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    },
+    {
+      "batch": "mdu2014-exposant-01",
+      "subject_type": "merk",
+      "subject_id": 3203,
+      "subject_sleutel": "westag.nl",
+      "soort": "exposant",
+      "editie": "MDU 2014",
+      "datum": "2014-01-22",
+      "detail": "stand 66",
+      "zichtbaarheid": "geteld",
+      "bron": "Catalogusindex MX2014 (Exhibitors index)"
+    }
+  ]
+}

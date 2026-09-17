@@ -168,9 +168,18 @@ def splits(bron, brondatum):
     merken, personen, meldingen = [], [], Counter()
 
     for rij, d in bron:
-        land = regels.land(kolom(d, "Company Country", "Country"))
-        tel, tel_reden = regels.telefoon(kolom(d, "Company Phone", "Phone"), land)
-        web = regels.domein(kolom(d, "Company Website", "Website"))
+        # Mailchimp-export (2025/2026), site-export (2024: company_*),
+        # én catalogus-overzicht (2016–2020: Bedrijfsnaam / E-mail / Adres / …).
+        land = regels.land(kolom(
+            d, "Company Country", "Country", "company_address_country",
+            "Land", "Landcode",
+        ))
+        tel, tel_reden = regels.telefoon(kolom(
+            d, "Company Phone", "Phone", "company_phone", "Telefoon",
+        ), land)
+        web = regels.domein(kolom(
+            d, "Company Website", "Website", "company_website",
+        ))
         web_reden = ""
         if web and regels.is_platform(web):
             web_reden = f"{web}: platform- of socialdomein, geen identiteit"
@@ -179,21 +188,27 @@ def splits(bron, brondatum):
 
         m = {
             "bron_rij": rij,
-            "brand_name": regels.schoonnaam(kolom(d, "Company Name", "Bedrijfsnaam")),
+            "brand_name": regels.schoonnaam(kolom(d, "Company Name", "Bedrijfsnaam", "company_name", "title")),
             "alias": kolom(d, "Shortname"),
             "website": web,
             "website_reden": web_reden,
-            "email": regels.email(kolom(d, "Company Email")),
+            "email": regels.email(kolom(d, "Company Email", "company_email", "E-mail", "Email")),
             "phone": tel,
             "phone_reden": tel_reden,
-            "address_line_1": regels.s(kolom(d, "Company Street")),
-            "address_line_2": regels.s(kolom(d, "Company Street 2")),
-            "postcode": regels.postcode(kolom(d, "Company Postcode"), land),
-            "city": regels.kapitaliseer(kolom(d, "Company City")),
+            "address_line_1": regels.s(kolom(
+                d, "Company Street", "company_address_street", "Adres",
+            )),
+            "address_line_2": regels.s(kolom(d, "Company Street 2", "company_address_street_2")),
+            "postcode": regels.postcode(kolom(
+                d, "Company Postcode", "company_address_postcode", "Postcode",
+            ), land),
+            "city": regels.kapitaliseer(kolom(
+                d, "Company City", "company_address_city", "Plaats",
+            )),
             "country": land,
-            "vat_number": "",
-            "chamber_number": "",
-            "stand": kolom(d, "Stand Number"),
+            "vat_number": regels.s(kolom(d, "company_vat")),
+            "chamber_number": regels.s(kolom(d, "company_coc")),
+            "stand": kolom(d, "Stand Number", "Standnummer"),
             "brondatum": (kolom(d, "LAST_CHANGED") or brondatum)[:10],
         }
         if tel_reden:
@@ -208,12 +223,14 @@ def splits(bron, brondatum):
         m["kern"] = regels.domeinkern(m["website"])
         merken.append(m)
 
-        pe = regels.email(kolom(d, "Email Address"))
+        pe = regels.email(kolom(
+            d, "Email Address", "company_email", "E-mail", "Email",
+        ))
         personen.append({
             "bron_rij": rij,
             "email": pe,
-            "first_name": regels.kapitaliseer(kolom(d, "First Name")),
-            "last_name": regels.kapitaliseer(kolom(d, "Last Name")),
+            "first_name": regels.kapitaliseer(kolom(d, "First Name", "primary_contact_first_name")),
+            "last_name": regels.kapitaliseer(kolom(d, "Last Name", "primary_contact_last_name")),
             "emaildomein": pe.split("@")[1] if pe else "",
             "brondatum": m["brondatum"],
         })
@@ -505,7 +522,7 @@ def pas_oordelen_toe(uniek, register):
 
 AANVULBAAR = ("email", "phone", "website", "address_line_1", "postcode", "city", "country")
 
-STAND = re.compile(r"^[A-Z]{1,4}\s?\d{1,3}[A-Za-z]?$")
+STAND = re.compile(r"^(?:Stand\s+)?[A-Z]{1,4}\s?\d{1,3}[A-Za-z]?$", re.I)
 
 
 def lees_catalogus(pad):
@@ -555,7 +572,7 @@ def lees_catalogus(pad):
             uit.append({
                 "naam": regels.schoonnaam(naam),
                 "naamsleutel": regels.naamsleutel(naam),
-                "stand": stand.replace(" ", ""),
+                "stand": re.sub(r"(?i)^Stand\s*", "", stand).replace(" ", ""),
                 "address_line_1": straat,
                 "postcode": regels.postcode(pc, land),
                 "city": regels.kapitaliseer(stad),

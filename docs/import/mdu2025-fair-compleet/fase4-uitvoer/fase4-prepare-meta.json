@@ -1,0 +1,127 @@
+{
+ "total": 4734,
+ "stats": {
+  "act_bezoeker_aanwezig": 3598,
+  "type_ticket": 4547,
+  "act_no_show": 951,
+  "act_bezoeker_geregistreerd": 185,
+  "type_booker": 187
+ },
+ "chunks": [
+  {
+   "batch": "mdu2025-bezoekers-01",
+   "n": 500,
+   "phones": 441,
+   "addresses": 488,
+   "acts": {
+    "bezoeker_aanwezig": 385,
+    "no_show": 99,
+    "bezoeker_geregistreerd": 16
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-02",
+   "n": 500,
+   "phones": 428,
+   "addresses": 481,
+   "acts": {
+    "no_show": 117,
+    "bezoeker_aanwezig": 361,
+    "bezoeker_geregistreerd": 22
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-03",
+   "n": 500,
+   "phones": 435,
+   "addresses": 480,
+   "acts": {
+    "no_show": 99,
+    "bezoeker_aanwezig": 379,
+    "bezoeker_geregistreerd": 22
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-04",
+   "n": 500,
+   "phones": 434,
+   "addresses": 481,
+   "acts": {
+    "bezoeker_aanwezig": 377,
+    "no_show": 102,
+    "bezoeker_geregistreerd": 21
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-05",
+   "n": 500,
+   "phones": 444,
+   "addresses": 481,
+   "acts": {
+    "bezoeker_aanwezig": 380,
+    "bezoeker_geregistreerd": 20,
+    "no_show": 100
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-06",
+   "n": 500,
+   "phones": 435,
+   "addresses": 484,
+   "acts": {
+    "bezoeker_aanwezig": 375,
+    "no_show": 104,
+    "bezoeker_geregistreerd": 21
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-07",
+   "n": 500,
+   "phones": 448,
+   "addresses": 481,
+   "acts": {
+    "bezoeker_aanwezig": 404,
+    "no_show": 81,
+    "bezoeker_geregistreerd": 15
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-08",
+   "n": 500,
+   "phones": 440,
+   "addresses": 485,
+   "acts": {
+    "bezoeker_aanwezig": 385,
+    "no_show": 93,
+    "bezoeker_geregistreerd": 22
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-09",
+   "n": 500,
+   "phones": 441,
+   "addresses": 487,
+   "acts": {
+    "bezoeker_aanwezig": 375,
+    "no_show": 112,
+    "bezoeker_geregistreerd": 13
+   }
+  },
+  {
+   "batch": "mdu2025-bezoekers-10",
+   "n": 234,
+   "phones": 201,
+   "addresses": 223,
+   "acts": {
+    "bezoeker_aanwezig": 177,
+    "no_show": 44,
+    "bezoeker_geregistreerd": 13
+   }
+  }
+ ],
+ "mapping": {
+  "show": "bezoeker_aanwezig",
+  "no_show": "no_show",
+  "leeg": "bezoeker_geregistreerd"
+ }
+}

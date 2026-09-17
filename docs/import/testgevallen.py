@@ -216,6 +216,11 @@ def t_poort3():
     assert norm.is_persoonsgebonden("studio.emma@gmail.com", "Studio Emma")
     assert not norm.is_persoonsgebonden("info@moza.nl", "Moza")
     assert not norm.is_persoonsgebonden("sales@abet.nl", "ABET")
+    # Deelstringfout: claylime.com bevat 'me.com' — gevonden MDU 2024, 16-09-2026.
+    assert not norm.is_vrij_domein("claylime.com")
+    assert norm.is_vrij_domein("me.com")
+    assert norm.is_vrij_domein("mail.me.com")
+    assert not norm.is_persoonsgebonden("contact@claylime.com", "Claylime SPRL")
 
 
 @geval(

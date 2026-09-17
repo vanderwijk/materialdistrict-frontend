@@ -1,0 +1,270 @@
+{
+ "ronde": "MDU 2022 — stand phones",
+ "batch": "mdu2022-stand-phones-01",
+ "bron": "standbemanning",
+ "brondatum": "2022-04-05",
+ "meta_key": "billing_phone",
+ "regel": "alleen vullen als leeg",
+ "rijen": [
+  {
+   "email": "margot@i-did.nl",
+   "phone_e164": "+31630904182",
+   "phone_raw": "+31 6 30904182"
+  },
+  {
+   "email": "m.schenk@huislijnkantoormeubelen.nl",
+   "phone_e164": "+31610542390",
+   "phone_raw": "0031-6-10542390"
+  },
+  {
+   "email": "frank.vanharen@knauf.com",
+   "phone_e164": "+31646085888",
+   "phone_raw": "+31 6 46 085 888"
+  },
+  {
+   "email": "max@easy-noisecontrol.nl",
+   "phone_e164": "+31639574134",
+   "phone_raw": "639574134"
+  },
+  {
+   "email": "f.smolenaers@verometal.com",
+   "phone_e164": "+31610292126",
+   "phone_raw": "+31 6 10292126"
+  },
+  {
+   "email": "mireille@i-did.nl",
+   "phone_e164": "+31615505612",
+   "phone_raw": "+31 6 155 056 12"
+  },
+  {
+   "email": "jurian@leeuwenburgh.com",
+   "phone_e164": "+31630893027",
+   "phone_raw": "0031 6 30 89 30 27"
+  },
+  {
+   "email": "jannberbee@gmail.com",
+   "phone_e164": "+31636046001",
+   "phone_raw": "+31 636 046 001"
+  },
+  {
+   "email": "info@margaretvanbekkum.com",
+   "phone_e164": "+31641362948",
+   "phone_raw": "+31 6 41362948"
+  },
+  {
+   "email": "arthur@grown.bio",
+   "phone_e164": "+31654686414",
+   "phone_raw": "+31 654 686 414"
+  },
+  {
+   "email": "kim.hendrikx@stoneable.rocks",
+   "phone_e164": "+32477207007",
+   "phone_raw": "0032 477 20 70 07"
+  },
+  {
+   "email": "k.slor@dynaplak.nl",
+   "phone_e164": "+3131622482105",
+   "phone_raw": "31622482105"
+  },
+  {
+   "email": "alesszena@gmail.com",
+   "phone_e164": "+393406426332",
+   "phone_raw": "+39 340 642 6332"
+  },
+  {
+   "email": "lilian.raeijmaeckers@pefc.nl",
+   "phone_e164": "+31643469723",
+   "phone_raw": "+31 6 43 46 97 23"
+  },
+  {
+   "email": "marc@bdsystems.be",
+   "phone_e164": "+3232475722756",
+   "phone_raw": "32475722756"
+  },
+  {
+   "email": "michel.rensen@vandemoortel.be",
+   "phone_e164": "+31614312715",
+   "phone_raw": "+31 (0)6 143 12 715"
+  },
+  {
+   "email": "haydar.citgez@3acomposites.com",
+   "phone_e164": "+491736203837",
+   "phone_raw": "+49 173 6203837"
+  },
+  {
+   "email": "roeldekleijne@weltevree.nl",
+   "phone_e164": "+3131655372852",
+   "phone_raw": "31655372852"
+  },
+  {
+   "email": "hanneke@fabriquepublique.nl",
+   "phone_e164": "+31621882765",
+   "phone_raw": "0031 6 218 82 765"
+  },
+  {
+   "email": "p.johannes@verometal.nl",
+   "phone_e164": "+31618128351",
+   "phone_raw": "+31 6 18128351"
+  },
+  {
+   "email": "pgoverde@deconova.nl",
+   "phone_e164": "+31612140740",
+   "phone_raw": "612140740"
+  },
+  {
+   "email": "eddy.werker@ivcgroup.com",
+   "phone_e164": "+31615201065",
+   "phone_raw": "+31 6 152 01 065"
+  },
+  {
+   "email": "mees@enzovoortbv.nl",
+   "phone_e164": "+31613196215",
+   "phone_raw": "+31 6 13 19 62 15"
+  },
+  {
+   "email": "frank.beulen@nora.com",
+   "phone_e164": "+31622806650",
+   "phone_raw": "+31 622806650"
+  },
+  {
+   "email": "rbakker@moso.eu",
+   "phone_e164": "+31653154196",
+   "phone_raw": "+31 (0)6 53154196"
+  },
+  {
+   "email": "marcobusgemi90@gmail.com",
+   "phone_e164": "+31619897573",
+   "phone_raw": "+31 6 19 89 75 73"
+  },
+  {
+   "email": "t.dolivo@lamitex.it",
+   "phone_e164": "+393295766907",
+   "phone_raw": "+39 329 5766907"
+  },
+  {
+   "email": "f.zamparutti@lamitex.it",
+   "phone_e164": "+393357427898",
+   "phone_raw": "+39 335 7427898"
+  },
+  {
+   "email": "jordy.aengeveld@diresco.be",
+   "phone_e164": "+32489548964",
+   "phone_raw": "+32 489 54 89 64"
+  },
+  {
+   "email": "mike.janssen@diresco.be",
+   "phone_e164": "+32488760194",
+   "phone_raw": "+32 488 76 01 94"
+  },
+  {
+   "email": "peter.vermeir@mo-b.nl",
+   "phone_e164": "+32471060175",
+   "phone_raw": "0032-471060175"
+  },
+  {
+   "email": "pvriend@moso.eu",
+   "phone_e164": "+31655217778",
+   "phone_raw": "+31 (0)6 55217778"
+  },
+  {
+   "email": "psanders@moso.eu",
+   "phone_e164": "+31629326676",
+   "phone_raw": "+31 (0)629326676"
+  },
+  {
+   "email": "jo.driessen@stoneable.rocks",
+   "phone_e164": "+32494047969",
+   "phone_raw": "0032 494 04 79 69"
+  },
+  {
+   "email": "werner.reulens@stoneable.rocks",
+   "phone_e164": "+32496785912",
+   "phone_raw": "0032 496 78 59 12"
+  },
+  {
+   "email": "jan@grown.bio",
+   "phone_e164": "+31651575113",
+   "phone_raw": "+31 651 575 113"
+  },
+  {
+   "email": "t.klaassen@bzwholland.nl",
+   "phone_e164": "+31641079757",
+   "phone_raw": "+31 (0) 6 410 79 757"
+  },
+  {
+   "email": "mischa.straver@knauf.com",
+   "phone_e164": "+31654211390",
+   "phone_raw": "+31 6 542 113 90"
+  },
+  {
+   "email": "m.weijmans@fransgommans.com",
+   "phone_e164": "+31646494790",
+   "phone_raw": "+31 6 46494790"
+  },
+  {
+   "email": "g.weijmans@fransgommans.com",
+   "phone_e164": "+31620135617",
+   "phone_raw": "+31 6 20135617"
+  },
+  {
+   "email": "jaap.suurmeijer@vandemoortel.be",
+   "phone_e164": "+31652304819",
+   "phone_raw": "+31 (0)6 523 04 819"
+  },
+  {
+   "email": "marielle.ouwendijk@interface.com",
+   "phone_e164": "+31619023902",
+   "phone_raw": "+31 619023902"
+  },
+  {
+   "email": "reno@tholin.nl",
+   "phone_e164": "+31620795945",
+   "phone_raw": "620795945"
+  },
+  {
+   "email": "a.pieters@plooijer.nl",
+   "phone_e164": "+31757506113",
+   "phone_raw": "+31 75 750 6113"
+  },
+  {
+   "email": "bruno.debrandt@diresco.be",
+   "phone_e164": "+32497886671",
+   "phone_raw": "+32497 88 66 71"
+  },
+  {
+   "email": "r.beckers@verometal.com",
+   "phone_e164": "+31654337375",
+   "phone_raw": "+31 6 54337375"
+  },
+  {
+   "email": "charlotte@hofvancartesius.nl",
+   "phone_e164": "+31624232375",
+   "phone_raw": "+31 6 24232375"
+  },
+  {
+   "email": "simone.tenda@gmail.com",
+   "phone_e164": "+31626763846",
+   "phone_raw": "+31 6 26763846"
+  },
+  {
+   "email": "bianca@buurmanutrecht.com",
+   "phone_e164": "+31617648396",
+   "phone_raw": "+31 6 17648396"
+  },
+  {
+   "email": "joost@penningsgroep.com",
+   "phone_e164": "+31619407785",
+   "phone_raw": "+31 6 19 40 77 85"
+  },
+  {
+   "email": "h.mensink@plooijer.nl",
+   "phone_e164": "+31610664186",
+   "phone_raw": "+31 6 106 64 186"
+  },
+  {
+   "email": "f.kalf@plooijer.nl",
+   "phone_e164": "+31756350800",
+   "phone_raw": "+31 75 635 0800"
+  }
+ ]
+}

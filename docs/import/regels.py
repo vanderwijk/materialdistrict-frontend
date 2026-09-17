@@ -212,12 +212,31 @@ def is_algemeen_adres(e):
     return lokaal in ALGEMEEN or any(lokaal.startswith(a) for a in ALGEMEEN)
 
 
+def is_vrij_domein(d):
+    """Vrij e-maildomein? Hostniveau, geen deelstring (claylime.com ≠ me.com).
+
+    VRIJ-entries met trailing dot (gmail.) matchen het eerste label;
+    volledige hosts (me.com, web.de) matchen exact of als parent.
+    """
+    if not d:
+        return False
+    d = d.lower().strip('.')
+    for raw in VRIJ:
+        raw = raw.lower()
+        if raw.endswith('.'):
+            if d.split('.')[0] == raw.rstrip('.'):
+                return True
+        elif d == raw or d.endswith('.' + raw):
+            return True
+    return False
+
+
 def is_persoonsgebonden(e, merknaam=''):
     """Hoort dit adres bij een mens? Dan mag het niet op een merk (poort 3)."""
     if not e or '@' not in e:
         return False
     lokaal, dom = e.lower().split('@', 1)
-    if any(v in dom for v in VRIJ):
+    if is_vrij_domein(dom):
         return True
     if is_algemeen_adres(e):
         return False

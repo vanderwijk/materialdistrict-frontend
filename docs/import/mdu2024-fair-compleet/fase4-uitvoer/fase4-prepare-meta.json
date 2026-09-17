@@ -1,0 +1,88 @@
+{
+ "total": 6183,
+ "stats": {
+  "act_bezoeker_aanwezig": 4398,
+  "act_no_show": 1785,
+  "skip_geen_email": 3
+ },
+ "chunks": [
+  {
+   "batch": "mdu2024-bezoekers-01",
+   "n": 500,
+   "phones": 391,
+   "addresses": 354
+  },
+  {
+   "batch": "mdu2024-bezoekers-02",
+   "n": 500,
+   "phones": 399,
+   "addresses": 395
+  },
+  {
+   "batch": "mdu2024-bezoekers-03",
+   "n": 500,
+   "phones": 411,
+   "addresses": 396
+  },
+  {
+   "batch": "mdu2024-bezoekers-04",
+   "n": 500,
+   "phones": 419,
+   "addresses": 400
+  },
+  {
+   "batch": "mdu2024-bezoekers-05",
+   "n": 500,
+   "phones": 391,
+   "addresses": 399
+  },
+  {
+   "batch": "mdu2024-bezoekers-06",
+   "n": 500,
+   "phones": 391,
+   "addresses": 374
+  },
+  {
+   "batch": "mdu2024-bezoekers-07",
+   "n": 500,
+   "phones": 411,
+   "addresses": 399
+  },
+  {
+   "batch": "mdu2024-bezoekers-08",
+   "n": 500,
+   "phones": 412,
+   "addresses": 399
+  },
+  {
+   "batch": "mdu2024-bezoekers-09",
+   "n": 500,
+   "phones": 413,
+   "addresses": 396
+  },
+  {
+   "batch": "mdu2024-bezoekers-10",
+   "n": 500,
+   "phones": 412,
+   "addresses": 417
+  },
+  {
+   "batch": "mdu2024-bezoekers-11",
+   "n": 500,
+   "phones": 448,
+   "addresses": 397
+  },
+  {
+   "batch": "mdu2024-bezoekers-12",
+   "n": 500,
+   "phones": 416,
+   "addresses": 391
+  },
+  {
+   "batch": "mdu2024-bezoekers-13",
+   "n": 183,
+   "phones": 131,
+   "addresses": 147
+  }
+ ]
+}

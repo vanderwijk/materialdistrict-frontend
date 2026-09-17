@@ -1,0 +1,132 @@
+{
+  "ronde": "MDU 2024+2025 — Jeroen oordeel 2026-09-16, twee nieuwe merken",
+  "bron": "Mailchimp exposanten MDU 2025 + Jeroen besluitenblad",
+  "brondatum": "2025-03-12",
+  "ingevuld_door": "het bedrijf of de persoon zelf",
+  "batches": {
+    "merken": "mdu2024-2025-oordeel-01"
+  },
+  "merken": [
+    {
+      "bron_excelrij": ["156"],
+      "brand_id": 141948,
+      "post_title": "Stichting Ongekend Circulair",
+      "alias": "ONGEKENDCIRCULAIR",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "ongekendcirculair.nl",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        },
+        "email": {
+          "meta_key": "_brand_email",
+          "waarde": "info@ongekendcirculair.nl",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31655365440",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Arnoud Voetlaan 11",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "1244 PJ",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Ankeveen",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-03-04",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Jeroen 2026-09-16 B: toch een merk aanmaken"
+    },
+    {
+      "bron_excelrij": ["140"],
+      "brand_id": 141949,
+      "post_title": "c MAKER labs",
+      "alias": "CMAKERLABS",
+      "record_status": "prospect",
+      "post_status_bij_aanmaken": "draft",
+      "velden": {
+        "website": {
+          "meta_key": "_brand_website",
+          "waarde": "knoppertvanspijk.nl",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-02-27",
+          "herkomst": "bestand"
+        },
+        "phone": {
+          "meta_key": "_brand_phone",
+          "waarde": "+31650661729",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-02-27",
+          "herkomst": "bestand"
+        },
+        "address_line_1": {
+          "meta_key": "_brand_address",
+          "waarde": "Jan Evertsenweg 28",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-02-27",
+          "herkomst": "bestand"
+        },
+        "postcode": {
+          "meta_key": "_brand_postcode",
+          "waarde": "3115 JA",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-02-27",
+          "herkomst": "bestand"
+        },
+        "city": {
+          "meta_key": "_brand_city",
+          "waarde": "Schiedam",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-02-27",
+          "herkomst": "bestand"
+        },
+        "country": {
+          "meta_key": "_brand_country",
+          "waarde": "NL",
+          "bron": "Mailchimp exposanten MDU 2025",
+          "brondatum": "2025-02-27",
+          "herkomst": "bestand"
+        }
+      },
+      "reden": "Jeroen 2026-09-16 A: nieuw merk. Website niet LinkedIn maar knoppertvanspijk.nl. Geen algemeen e-mail (leon@ is een persoon)."
+    }
+  ],
+  "contacten": [],
+  "activiteiten": [],
+  "bronsterkte": {
+    "Mailchimp exposanten MDU 2025": 1,
+    "catalogusindex": 1,
+    "research": 3,
+    "opgezocht": 4
+  }
+}

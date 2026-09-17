@@ -1,0 +1,150 @@
+{
+ "ronde": "MDU 2024 — stand phones",
+ "batch": "mdu2024-stand-phones-01",
+ "bron": "tickets-via-exposant",
+ "brondatum": "2024-03-06",
+ "meta_key": "billing_phone",
+ "regel": "alleen vullen als leeg",
+ "rijen": [
+  {
+   "email": "info@siljadesign.nl",
+   "phone_e164": "+31639556014",
+   "phone_raw": "639556014"
+  },
+  {
+   "email": "mieke@asona.nl",
+   "phone_e164": "+31630138428",
+   "phone_raw": "'+31630138428"
+  },
+  {
+   "email": "eveline@fabulousfungi.nl",
+   "phone_e164": "+31657559532",
+   "phone_raw": "'+31657559532"
+  },
+  {
+   "email": "navbiezen@gmail.com",
+   "phone_e164": "+31623267295",
+   "phone_raw": "623267295"
+  },
+  {
+   "email": "rgomersbach@legitforum.nl",
+   "phone_e164": "+31610124530",
+   "phone_raw": "'+31610124530"
+  },
+  {
+   "email": "mathijs@aectual.com",
+   "phone_e164": "+31648580728",
+   "phone_raw": "'+31648580728"
+  },
+  {
+   "email": "robdenijs@alertisolatie.nl",
+   "phone_e164": "+31627040931",
+   "phone_raw": "'+31627040931"
+  },
+  {
+   "email": "p.van.assche@prettyplastic.nl",
+   "phone_e164": "+31641323676",
+   "phone_raw": "'+31641323676"
+  },
+  {
+   "email": "kjenta.willems@joriside.be",
+   "phone_e164": "+32471602785",
+   "phone_raw": "'+32471602785"
+  },
+  {
+   "email": "willem-paul.van.der.burg@interface.com",
+   "phone_e164": "+31653934639",
+   "phone_raw": "'+31653934639"
+  },
+  {
+   "email": "kristel.verwimp@interface.com",
+   "phone_e164": "+31614890487",
+   "phone_raw": "'+31614890487"
+  },
+  {
+   "email": "rene.ter.borg@interface.com",
+   "phone_e164": "+31611126792",
+   "phone_raw": "611126792"
+  },
+  {
+   "email": "marien.ippel@interface.com",
+   "phone_e164": "+31653332641",
+   "phone_raw": "'+31653332641"
+  },
+  {
+   "email": "info@studiowae.nl",
+   "phone_e164": "+31640573383",
+   "phone_raw": "640573383"
+  },
+  {
+   "email": "info@studiowae.nl",
+   "phone_e164": "+31640573383",
+   "phone_raw": "640573383"
+  },
+  {
+   "email": "vormgeving@studiowae.nl",
+   "phone_e164": "+31626900338",
+   "phone_raw": "'+31626900338"
+  },
+  {
+   "email": "raymond@artimo.nl",
+   "phone_e164": "+31613050937",
+   "phone_raw": "613050937"
+  },
+  {
+   "email": "bartjan@insus.nl",
+   "phone_e164": "+31623832818",
+   "phone_raw": "'+31623832818"
+  },
+  {
+   "email": "tais@zeefier.eu",
+   "phone_e164": "+31615489496",
+   "phone_raw": "'+31615489496"
+  },
+  {
+   "email": "anne@zeefier.eu",
+   "phone_e164": "+31628786767",
+   "phone_raw": "628786767"
+  },
+  {
+   "email": "bianca@zeefier.eu",
+   "phone_e164": "+31610944485",
+   "phone_raw": "'+31610944485"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "mary.vanderzant@formica.com",
+   "phone_e164": "+31620531165",
+   "phone_raw": "'+31620531165"
+  },
+  {
+   "email": "collinlutke@gmail.com",
+   "phone_e164": "+31657184391",
+   "phone_raw": "'+31657184391"
+  },
+  {
+   "email": "serge@circlefoam.com",
+   "phone_e164": "+31623422056",
+   "phone_raw": "623422056"
+  }
+ ]
+}

@@ -16,8 +16,8 @@
 > `HERZIEN DOOR`-regel eronder. De redenering waarom het ooit klopte is vaak nog geldig; wat
 > ontbrak hoort erbij te staan. Alleen een besluit dat nooit gegolden heeft, wordt geschrapt.
 >
-> Versie 1.36 · 09-09-2026 · B88: het CMS is live-only voor Stripe; e2e tegen test-Stripe is een
-> bewuste, tijdelijke handeling.
+> Versie 1.37 · 16-09-2026 · B95: winkelmandje blijft op mobiel in de header; B96: iDEAL | Wero
+> bovenaan voor Nederlandse boekkopers.
 > Gereconstrueerd uit `docs/`, `session-log.md`,
 > `roadmap.md` en `livegang-checklist.md` van de moedermap-stand van 24-08-2026. Zie §Status.
 
@@ -1352,6 +1352,28 @@ Sigrid per materiaal.
 **Bron.** 09-09-2026, Jeroen.
 **Raakt.** B32 (uitgebreid van zes naar zeven), B33, het redactiedashboard, de member-outreach.
 
+### B95 · Winkelmandje blijft op mobiel in de header
+**Besluit.** Op viewports tot 768 px staat het winkelmandje altijd in de header-rij, naast zoeken,
+met het aantal items op het icoon. Bookmarks, boards, login en dark mode blijven daar weg; dark
+mode zit in het mobiele menu. Desktop blijft ongewijzigd.
+**Grond.** Een koper op de telefoon moet het mandje kunnen openen zonder het hamburger-menu. Zoeken
+en afrekenen horen in dezelfde rij; thema wisselen niet.
+**Bron.** 16-09-2026, Johan (webshop op iPhone) / Jeroen.
+**Raakt.** `Header.tsx`, `globals.css`.
+
+### B96 · iDEAL | Wero is de eerste betaaloptie voor Nederlandse boekkopers
+**Besluit.** In de boekcheckout heet de bankbetaalmethode **iDEAL | Wero**. Staat het factuurland op
+Nederland en is Stripe beschikbaar, dan staat die optie bovenaan — ook wanneer WooCommerce alleen de
+hoofdgateway `stripe` teruggeeft en niet de split-id `stripe_ideal`. De betaling blijft via die
+hoofdgateway lopen (`payment_data.payment_method: stripe_ideal`). Kaart blijft beschikbaar. Insider-
+en merkmemberships lopen al via Stripe Checkout en vallen buiten deze regel.
+**Grond.** Nederlandse kopers verwachten iDEAL; de Store API toont die gateway niet altijd apart
+onder Unified Payment Element. Het label volgt de hernoeming van Stripe (iDEAL is iDEAL | Wero).
+**Voorwaarde.** iDEAL | Wero moet aanstaan in het Stripe-dashboard (en in WooCommerce Stripe). Dat
+is geen codewijziging.
+**Bron.** 16-09-2026, Johan (afrekenen met NL-adres zonder iDEAL) / Jeroen.
+**Raakt.** `CheckoutForm.tsx`, `src/lib/api/checkout.ts`, Stripe-dashboard.
+
 ---
 
 ## 10. Openstaand uit eerdere sessies — niet eerder vastgelegd
@@ -1904,5 +1926,10 @@ bepaalt de status, en de redactie publiceren voor een niet-betalend merk levert 
 
 Er staat ook bij dat een herstelactie `insider_only` niet meeneemt. Materiaal dat al twee weken
 publiek staat achter Insider laten verdwijnen is een redactionele keuze en geen technisch gevolg.
+
+**v1.37 · 16-09-2026** — B95 en B96 toegevoegd naar aanleiding van Johans iPhone-ronde in de
+boekshop. Het mandje hoort op mobiel in de header, niet alleen in het menu. iDEAL | Wero hoort
+bovenaan voor Nederlandse kopers, ook als WooCommerce Stripe UPE de split-gateway niet los
+teruggeeft. Aanzetten in het Stripe-dashboard blijft een handeling van Johan.
 
 Opgesteld door Claude, namens Jeroen.

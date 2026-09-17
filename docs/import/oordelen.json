@@ -32,9 +32,9 @@
   "wineobyleoxx": {
     "besluit": "NIET",
     "brand_id": null,
-    "reden": "gedeelde stand met A Casa Agency; geen eigen identiteit in die bron",
+    "reden": "gedeelde stand met A Casa Agency; geen eigen exposant-merk. Standbemanning koppelt aan LEOXX B.V. 112907",
     "door": "Jeroen",
-    "datum": "2026-09-01"
+    "datum": "2026-09-16"
   },
   "idid": {
     "besluit": "WEL",
@@ -106,6 +106,34 @@
     "door": "Jeroen",
     "datum": "2026-09-01"
   },
+  "lignolight": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "project/schoolstand weißensee; geen merk. Personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "lignolightweissenseekunsthochschuleberlin": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "project/schoolstand weißensee; geen merk. Personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "maelysvenkiah": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "geen merkrecord; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "maelysvenkiah.com": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "geen merkrecord; personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
   "fabraa.com": {
     "besluit": "WEL",
     "brand_id": 121247,
@@ -151,11 +179,10 @@
   "novacolornederland.nl": {
     "besluit": "WEL",
     "brand_id": 128925,
-    "naam": "Novacolor Nederland",
-    "alias": "A.G.N.N. B.V.",
-    "reden": "handelsnaam aanhouden; A.G.N.N. B.V. is de statutaire naam en wordt alias",
-    "door": "Jeroen",
-    "datum": "2026-09-09"
+    "reden": "Novacolor Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
   },
   "novacolornederland": {
     "besluit": "WEL",
@@ -165,5 +192,1105 @@
     "reden": "handelsnaam aanhouden; A.G.N.N. B.V. is de statutaire naam en wordt alias",
     "door": "Jeroen",
     "datum": "2026-09-09"
+  },
+  "fibershed.nl": {
+    "besluit": "WEL",
+    "brand_id": 141620,
+    "naam": "Stichting Fibershed",
+    "website": "fibershed.nl",
+    "reden": "Jeroen A: merk aanhouden (2025-record 141620). 2024-NIET als stichting komt daarmee te vervallen voor volgende rondes",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "fibershednederland": {
+    "besluit": "WEL",
+    "brand_id": 141620,
+    "naam": "Stichting Fibershed",
+    "website": "fibershed.nl",
+    "reden": "Jeroen A: merk aanhouden 141620",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "stichtingfibershednederland": {
+    "besluit": "WEL",
+    "brand_id": 141620,
+    "naam": "Stichting Fibershed",
+    "website": "fibershed.nl",
+    "reden": "Jeroen A: merk aanhouden 141620",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "stichtingfibershed": {
+    "besluit": "WEL",
+    "brand_id": 141620,
+    "naam": "Stichting Fibershed",
+    "website": "fibershed.nl",
+    "reden": "Jeroen A: merk aanhouden 141620",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "ongekendcirculair.nl": {
+    "besluit": "WEL",
+    "brand_id": 141948,
+    "naam": "Stichting Ongekend Circulair",
+    "website": "ongekendcirculair.nl",
+    "reden": "Jeroen B: toch een merk aanmaken; draft 141948, exposant MDU 2025 O04",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "stichtingongekendcirculair": {
+    "besluit": "WEL",
+    "brand_id": 141948,
+    "naam": "Stichting Ongekend Circulair",
+    "website": "ongekendcirculair.nl",
+    "reden": "Jeroen B: toch een merk aanmaken 141948",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "ongekendcirculair": {
+    "besluit": "WEL",
+    "brand_id": 141948,
+    "naam": "Stichting Ongekend Circulair",
+    "website": "ongekendcirculair.nl",
+    "reden": "Jeroen B: toch een merk aanmaken 141948",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "biophilicdesignacademy": {
+    "besluit": "WEL",
+    "brand_id": 141775,
+    "naam": "Studio Lime",
+    "website": "biophilicdesignacademy.nl",
+    "alias": "Biophilic Design Academy",
+    "reden": "Jeroen B: geen academy-merk; personen koppelen aan Studio Lime 141775. Geen 2025-exposant op de academy",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "biophilicdesignacademy.nl": {
+    "besluit": "WEL",
+    "brand_id": 141775,
+    "naam": "Studio Lime",
+    "website": "biophilicdesignacademy.nl",
+    "alias": "Biophilic Design Academy",
+    "reden": "Jeroen B: Biophilic → Studio Lime 141775",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "biophilic-design.nl": {
+    "besluit": "WEL",
+    "brand_id": 141775,
+    "naam": "Studio Lime",
+    "website": "biophilicdesignacademy.nl",
+    "alias": "Biophilic Design Academy",
+    "reden": "Jeroen B: Biophilic → Studio Lime 141775; 2025-site biophilic-design.nl is hetzelfde cluster",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "chengdujingyangshengbiotechnology": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "Jeroen B: alleen personen, geen extra merk uit standbemanning. Record 141654 bestaat al uit de 2025-exposantenimport; dat blijft, geen tweede record. Personen en standbemanning wel vastleggen",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "chengdujingyangshengbiotechnologyco": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "Jeroen B: alleen personen, geen extra merk uit standbemanning. 141654 uit exposantenimport blijft",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "enyoungbio.com": {
+    "besluit": "NIET",
+    "brand_id": null,
+    "reden": "Jeroen B: alleen personen, geen extra merk uit standbemanning. 141654 uit exposantenimport blijft",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "cmakerlabs": {
+    "besluit": "WEL",
+    "brand_id": 141949,
+    "naam": "c MAKER labs",
+    "website": "knoppertvanspijk.nl",
+    "reden": "Jeroen A: nieuw merk 141949, exposant MDU 2025 C12. Website knoppertvanspijk.nl, niet LinkedIn. leon@ is persoon, geen algemeen merk-e-mail",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "knoppertvanspijk.nl": {
+    "besluit": "WEL",
+    "brand_id": 141949,
+    "naam": "c MAKER labs",
+    "website": "knoppertvanspijk.nl",
+    "reden": "Jeroen A: c MAKER labs 141949",
+    "door": "Jeroen",
+    "datum": "2026-09-16"
+  },
+  "asona.nl": {
+    "besluit": "WEL",
+    "brand_id": 120807,
+    "reden": "twee records; gepubliceerde Asona Benelux BV aangehouden",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "asona": {
+    "besluit": "WEL",
+    "brand_id": 120807,
+    "reden": "twee records; gepubliceerde Asona Benelux BV aangehouden",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "caparol.nl": {
+    "besluit": "WEL",
+    "brand_id": 18868,
+    "reden": "twee concept-Caparol op zelfde domein; oudste id aangehouden (DAW Coatings)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "dawcoatings": {
+    "besluit": "WEL",
+    "brand_id": 18868,
+    "reden": "DAW Coatings = Caparol; oudste Caparol-id",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "duracryl.nl": {
+    "besluit": "WEL",
+    "brand_id": 18869,
+    "reden": "twee gepubliceerde Duracryl op zelfde domein; oudste id (BV)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "duracrylflooringsystems": {
+    "besluit": "WEL",
+    "brand_id": 18869,
+    "reden": "twee gepubliceerde Duracryl; oudste id",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "polyrey.com": {
+    "besluit": "WEL",
+    "brand_id": 2899,
+    "reden": "Polyrey SAS (publish) i.p.v. Polyrey Benelux (draft)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "polyrey": {
+    "besluit": "WEL",
+    "brand_id": 2899,
+    "reden": "Polyrey SAS (publish)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "porcelanosa.nl": {
+    "besluit": "WEL",
+    "brand_id": 2902,
+    "reden": "hoofdmerk Porcelanosa i.p.v. Porcelanosa Belgium; NL-stand Venlo",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "porcelanosa": {
+    "besluit": "WEL",
+    "brand_id": 2902,
+    "reden": "Porcelanosa hoofrecord",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "moso.eu": {
+    "besluit": "WEL",
+    "brand_id": 3294,
+    "naam": "Moso International",
+    "website": "moso-bamboo.com",
+    "reden": "MOSO catalogusnaam; zelfde bedrijf als Moso International (moso-bamboo.com)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "moso": {
+    "besluit": "WEL",
+    "brand_id": 3294,
+    "naam": "Moso International",
+    "website": "moso-bamboo.com",
+    "reden": "MOSO = Moso International",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "ardex.eu": {
+    "besluit": "WEL",
+    "brand_id": 2807,
+    "naam": "Ardex",
+    "reden": "Ardex Pandomo = Ardex (pandomo.eu in CMS)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "ardexpandomo": {
+    "besluit": "WEL",
+    "brand_id": 2807,
+    "naam": "Ardex",
+    "reden": "Ardex Pandomo = Ardex",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "euramax.eu": {
+    "besluit": "WEL",
+    "brand_id": 16897,
+    "reden": "Euramax BV = Euramax Coated Products (ander domein in CMS)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "euramaxbv": {
+    "besluit": "WEL",
+    "brand_id": 16897,
+    "reden": "Euramax BV = Euramax Coated Products",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "vorwerk-carpets.com": {
+    "besluit": "WEL",
+    "brand_id": 26548,
+    "reden": "Vorwerk carpets = Vorwerk Flooring in CMS",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "vorwerk": {
+    "besluit": "WEL",
+    "brand_id": 26548,
+    "reden": "Vorwerk = Vorwerk Flooring",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2016"
+  },
+  "wicanders.nl": {
+    "besluit": "WEL",
+    "brand_id": 37896,
+    "reden": "Amorim Wicanders → Amorim Benelux B.V. / Wicanders (niet Amorim S.A.)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "amorimwicanders": {
+    "besluit": "WEL",
+    "brand_id": 37896,
+    "reden": "Amorim Wicanders → Amorim Benelux / Wicanders",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "blokplaatmateriaal.nl": {
+    "besluit": "WEL",
+    "brand_id": 40663,
+    "reden": "exacte naam Blok Plaatmateriaal; niet het Supplier-record",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "blokplaatmateriaal": {
+    "besluit": "WEL",
+    "brand_id": 40663,
+    "reden": "exacte naam Blok Plaatmateriaal",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "maiburg.nl": {
+    "besluit": "WEL",
+    "brand_id": 17521,
+    "reden": "Maiburg Hout BV; niet DenimX by Maiburg",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "maiburghoutbv": {
+    "besluit": "WEL",
+    "brand_id": 17521,
+    "reden": "Maiburg Hout BV",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "pfleiderer.com": {
+    "besluit": "WEL",
+    "brand_id": 18947,
+    "reden": "Pfleiderer Deutschland → Pfleiderer Benelux B.V. (niet Thermopal/Wodego)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "pfleidererdeutschlandgmbh": {
+    "besluit": "WEL",
+    "brand_id": 18947,
+    "reden": "Pfleiderer → Pfleiderer Benelux",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "tierrafino.nl": {
+    "besluit": "WEL",
+    "brand_id": 3111,
+    "reden": "exacte naam Tierrafino; niet Tierrafino Clay",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "tierrafino": {
+    "besluit": "WEL",
+    "brand_id": 3111,
+    "reden": "exacte naam Tierrafino",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "vitrulan.com": {
+    "besluit": "WEL",
+    "brand_id": 3181,
+    "reden": "exacte naam Vitrulan Textile Glass GmbH",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "vitrulantextileglassgmbh": {
+    "besluit": "WEL",
+    "brand_id": 3181,
+    "reden": "exacte naam Vitrulan Textile Glass GmbH",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2017"
+  },
+  "diresco.be": {
+    "besluit": "WEL",
+    "brand_id": 98560,
+    "reden": "Diresco → gepubliceerde DIRESCO NV",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "diresco": {
+    "besluit": "WEL",
+    "brand_id": 98560,
+    "reden": "Diresco → DIRESCO NV",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "dsm.com": {
+    "besluit": "WEL",
+    "brand_id": 51501,
+    "reden": "DSM exact; niet DSM Powder Coating",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "dsm": {
+    "besluit": "WEL",
+    "brand_id": 51501,
+    "reden": "DSM exact",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "enkev.com": {
+    "besluit": "WEL",
+    "brand_id": 3269,
+    "reden": "Enkev exact; niet Cocoform",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "enkev": {
+    "besluit": "WEL",
+    "brand_id": 3269,
+    "reden": "Enkev exact",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "kme.com": {
+    "besluit": "WEL",
+    "brand_id": 110982,
+    "reden": "KME Germany GmbH (publish)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "kmegermanygmbhco kg": {
+    "besluit": "WEL",
+    "brand_id": 110982,
+    "reden": "KME Germany GmbH",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "kmegermanygmbhcokg": {
+    "besluit": "WEL",
+    "brand_id": 110982,
+    "reden": "KME Germany GmbH",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "aalborgportland.be": {
+    "besluit": "WEL",
+    "brand_id": 54087,
+    "reden": "Aalborg Portland Belgium = Aalborg Portland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "aalborgportlandbelgium": {
+    "besluit": "WEL",
+    "brand_id": 54087,
+    "reden": "Aalborg Portland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "accoya.com": {
+    "besluit": "WEL",
+    "brand_id": 4037,
+    "reden": "Accsys Group / Accoya = Accsys Group",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "accsysgroupaccoya": {
+    "besluit": "WEL",
+    "brand_id": 4037,
+    "reden": "Accsys / Accoya",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "kurz.nl": {
+    "besluit": "WEL",
+    "brand_id": 3421,
+    "reden": "Leonhard Kurz Benelux = Leonhard Kurz GmbH",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "leonhardkurzbenelux": {
+    "besluit": "WEL",
+    "brand_id": 3421,
+    "reden": "Leonhard Kurz",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "colorcoat-online.com": {
+    "besluit": "WEL",
+    "brand_id": 142003,
+    "reden": "Tata Steel Colorcoat = Tata Steel (2016)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "tatasteelcolorcoat": {
+    "besluit": "WEL",
+    "brand_id": 142003,
+    "reden": "Tata Colorcoat = Tata Steel",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "vorwerk.teppich.de": {
+    "besluit": "WEL",
+    "brand_id": 26548,
+    "reden": "Vorwerk & Co. = Vorwerk",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "vorwerkco": {
+    "besluit": "WEL",
+    "brand_id": 26548,
+    "reden": "Vorwerk & Co. = Vorwerk",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "kmegermanyco": {
+    "besluit": "WEL",
+    "brand_id": 110982,
+    "reden": "KME Germany GmbH",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2018"
+  },
+  "2tec2.com": {
+    "besluit": "WEL",
+    "brand_id": 31479,
+    "reden": "2tec2 → gepubliceerde 2TEC2; niet Le Tissage d'Arcade",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2019"
+  },
+  "2tec2": {
+    "besluit": "WEL",
+    "brand_id": 31479,
+    "reden": "2tec2 → 2TEC2",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2019"
+  },
+  "isovlas.nl": {
+    "besluit": "WEL",
+    "brand_id": 3281,
+    "reden": "Isovlas Oisterwijk B.V. exacte naam",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "isovlasoisterwijk": {
+    "besluit": "WEL",
+    "brand_id": 3281,
+    "reden": "Isovlas Oisterwijk B.V. exact",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "master-builders-solutions.basf.nl": {
+    "besluit": "WEL",
+    "brand_id": 96489,
+    "naam": "Master Builders Solutions",
+    "reden": "Master Builders Solutions by BASF → Master Builders Solutions (niet BASF-moeder)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "masterbuilderssolutionsbybasf": {
+    "besluit": "WEL",
+    "brand_id": 96489,
+    "naam": "Master Builders Solutions",
+    "reden": "Master Builders Solutions by BASF",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "pefcnederland.nl": {
+    "besluit": "WEL",
+    "brand_id": 111896,
+    "reden": "PEFC Nederland gepubliceerd record",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "pefcnederland": {
+    "besluit": "WEL",
+    "brand_id": 111896,
+    "reden": "PEFC Nederland publish",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "redfort.nl": {
+    "besluit": "WEL",
+    "brand_id": 3617,
+    "reden": "Redfort → gepubliceerde Redfort architectural fabrics",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "redfort": {
+    "besluit": "WEL",
+    "brand_id": 3617,
+    "reden": "Redfort architectural fabrics",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "tfd-floortile.com": {
+    "besluit": "WEL",
+    "brand_id": 96540,
+    "reden": "TFD Floortile B.V. exact; niet Mozenzi",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "tfdfloortile": {
+    "besluit": "WEL",
+    "brand_id": 96540,
+    "reden": "TFD Floortile B.V.",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "duolino": {
+    "besluit": "WEL",
+    "brand_id": 86181,
+    "website": "lunavis.de",
+    "reden": "bestaand DuoLino; catalogus zonder bruikbaar domein",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "enisakiev": {
+    "besluit": "WEL",
+    "brand_id": 62356,
+    "website": "enisakiev.com",
+    "reden": "bestaand Enis Akiev; cargocollective geen identiteit",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "novacolor": {
+    "besluit": "WEL",
+    "brand_id": 128925,
+    "reden": "Novacolor → Novacolor Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "eurocol.nl": {
+    "besluit": "WEL",
+    "brand_id": 142093,
+    "reden": "Forbo Eurocol uit MDU 2018",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "forboeurocol": {
+    "besluit": "WEL",
+    "brand_id": 142093,
+    "reden": "Forbo Eurocol",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2020"
+  },
+  "akoestiekfabriek": {
+    "besluit": "WEL",
+    "brand_id": 3986,
+    "website": "akoestiekfabriek.nl",
+    "reden": "bestaand Akoestiekfabriek; catalogus zonder bruikbaar domein",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "artofceilings": {
+    "besluit": "WEL",
+    "brand_id": 18879,
+    "website": "artofceilings.nl",
+    "reden": "bestaand Art of Ceilings",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "kunststofcoatingsnederland": {
+    "besluit": "WEL",
+    "brand_id": 53436,
+    "website": "kunststofcoatings.nl",
+    "reden": "bestaand Kunststof Coatings Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "ods": {
+    "besluit": "WEL",
+    "brand_id": 18817,
+    "website": "ods-geveltechniek.nl",
+    "reden": "bestaand ODS b.v.",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "accoya-accsystechnologies": {
+    "besluit": "WEL",
+    "brand_id": 4037,
+    "website": "accoya.com",
+    "naam": "Accsys Group / Accoya",
+    "reden": "Accoya-accsys op plattegrond = Accsys Group / Accoya",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "genesispd": {
+    "besluit": "WEL",
+    "brand_id": 3513,
+    "website": "genesispd.nl",
+    "reden": "Genesis PD = Genesis Product Development",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "meditetricoya": {
+    "besluit": "WEL",
+    "brand_id": 35547,
+    "website": "mdfosb.com",
+    "reden": "Medite Tricoya → Medite Smartply",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "3m.nl": {
+    "besluit": "WEL",
+    "brand_id": 3700,
+    "reden": "3M op plattegrond = 3M Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "3mnederlandbv": {
+    "besluit": "WEL",
+    "brand_id": 3700,
+    "reden": "3M Nederland = 3M NL",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "interfacflor.nl": {
+    "besluit": "WEL",
+    "brand_id": 3342,
+    "reden": "InterfaceFLOR = Interface Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "interfaceflor": {
+    "besluit": "WEL",
+    "brand_id": 3342,
+    "reden": "InterfaceFLOR = Interface Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "barrisol.com": {
+    "besluit": "WEL",
+    "brand_id": 16907,
+    "reden": "Barrisol Normalu = Barrisol",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "barrisolnormalusas": {
+    "besluit": "WEL",
+    "brand_id": 16907,
+    "reden": "Barrisol Normalu = Barrisol",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "kingspanbenchmark.nl": {
+    "besluit": "WEL",
+    "brand_id": 3951,
+    "reden": "Kingspan Benchmark = Kingspan",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "kingspanbenchmark": {
+    "besluit": "WEL",
+    "brand_id": 3951,
+    "reden": "Kingspan Benchmark = Kingspan",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "glassolutions.nl": {
+    "besluit": "WEL",
+    "brand_id": 2969,
+    "reden": "Glassolutions Saint-Gobain → Saint-Gobain Glass",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "glassolutionssaintgobain": {
+    "besluit": "WEL",
+    "brand_id": 2969,
+    "reden": "Glassolutions → Saint-Gobain Glass",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "accoyaaccsystechnologies": {
+    "besluit": "WEL",
+    "brand_id": 4037,
+    "website": "accoya.com",
+    "naam": "Accsys Group / Accoya",
+    "reden": "Accoya-accsys op plattegrond = Accsys Group / Accoya",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "barrisolnormalu": {
+    "besluit": "WEL",
+    "brand_id": 16907,
+    "reden": "Barrisol Normalu = Barrisol",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "3mnederland": {
+    "besluit": "WEL",
+    "brand_id": 3700,
+    "reden": "3M Nederland = 3M NL",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2012"
+  },
+  "designpanels.com": {
+    "besluit": "WEL",
+    "brand_id": 18954,
+    "reden": "Steward Design Panel = Steward Design Panels",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "stewarddesignpanels": {
+    "besluit": "WEL",
+    "brand_id": 18954,
+    "reden": "Steward Design Panels B.V.",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2013"
+  },
+  "vandersandengroup.nl": {
+    "besluit": "WEL",
+    "brand_id": 3151,
+    "reden": "Vandersanden publish met website (laagste id)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2013"
+  },
+  "vandersanden": {
+    "besluit": "WEL",
+    "brand_id": 3151,
+    "reden": "Vandersanden publish",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2013"
+  },
+  "tatasteelbouw.nl": {
+    "besluit": "WEL",
+    "brand_id": 142003,
+    "reden": "Tata Steel = Tata Steel uit eerdere edities",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2013"
+  },
+  "tatasteel": {
+    "besluit": "WEL",
+    "brand_id": 142003,
+    "reden": "Tata Steel",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2013"
+  },
+  "3m": {
+    "besluit": "WEL",
+    "brand_id": 3700,
+    "reden": "3M = 3M Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "euroslot-architecture.com": {
+    "besluit": "WEL",
+    "brand_id": 142311,
+    "reden": "Euroslot op MX = Euroslot Nederland (architectuur), niet ANDRITZ",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "euroslot": {
+    "besluit": "WEL",
+    "brand_id": 142311,
+    "reden": "Euroslot = Euroslot Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "graphicconcrete.nl": {
+    "besluit": "WEL",
+    "brand_id": 4006,
+    "reden": "Graphic Concrete NL-record",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "graphicconcrete": {
+    "besluit": "WEL",
+    "brand_id": 4006,
+    "reden": "Graphic Concrete NL",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "reliusnederland.nl": {
+    "besluit": "WEL",
+    "brand_id": 142336,
+    "reden": "Relius = RELIUS Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "relius": {
+    "besluit": "WEL",
+    "brand_id": 142336,
+    "reden": "Relius = RELIUS Nederland",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "robametals.com": {
+    "besluit": "WEL",
+    "brand_id": 129955,
+    "reden": "Roba Metals hoofrecord, niet Amsterdam-split",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "robametals": {
+    "besluit": "WEL",
+    "brand_id": 129955,
+    "reden": "Roba Metals hoofrecord",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "wienerberger.nl": {
+    "besluit": "WEL",
+    "brand_id": 129334,
+    "reden": "Wienerberger B.V. NL",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "wienerberger": {
+    "besluit": "WEL",
+    "brand_id": 129334,
+    "reden": "Wienerberger B.V. NL",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "mosa.nl": {
+    "besluit": "WEL",
+    "brand_id": 3359,
+    "reden": "Royal Mosa = Mosa (Koninklijke Mosa)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "royalmosa": {
+    "besluit": "WEL",
+    "brand_id": 3359,
+    "reden": "Royal Mosa = Mosa",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "semcoglas.com": {
+    "besluit": "WEL",
+    "brand_id": 3581,
+    "reden": "Semcoglas-groep → bestaand FINIGLAS-record (semcoglas.com)",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "semcoglas": {
+    "besluit": "WEL",
+    "brand_id": 3581,
+    "reden": "Semcoglas → FINIGLAS",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "rollecate.nl": {
+    "besluit": "WEL",
+    "brand_id": 141996,
+    "reden": "Rocx Gevelconstructies was samenwerking Rollecate/Polux; Rollecate aangehouden",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "rocxgevelconstructiesbv": {
+    "besluit": "WEL",
+    "brand_id": 141996,
+    "website": "rollecate.nl",
+    "reden": "Rocx → Rollecate",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "daasbaksteen.nl": {
+    "besluit": "WEL",
+    "brand_id": 3536,
+    "reden": "Daas = Daas Baksteen",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "daas": {
+    "besluit": "WEL",
+    "brand_id": 3536,
+    "reden": "Daas = Daas Baksteen",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "bekahout": {
+    "besluit": "NIET",
+    "reden": "plattegrond-only; bedrijf inactief, geen werkende website",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "bureavoorakoestischezaken": {
+    "besluit": "NIET",
+    "reden": "plattegrond-only; akoestischezaken.nl offline, geen betrouwbare CMS-match",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "fourcelabs": {
+    "besluit": "NIET",
+    "reden": "plattegrond-only; geen betrouwbare materialen-identiteit",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "faser": {
+    "besluit": "NIET",
+    "reden": "plattegrond-only; faser.nl te koop, geen betrouwbare match",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "printgallery": {
+    "besluit": "NIET",
+    "reden": "plattegrond-only; printgallery.nl te koop",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "porcelanosa.com": {
+    "besluit": "WEL",
+    "brand_id": 2902,
+    "reden": "Porcelanosa hoofrecord i.p.v. Porcelanosa Netherlands",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
+  },
+  "stewarddesignpanel": {
+    "besluit": "WEL",
+    "brand_id": 18954,
+    "reden": "Steward Design Panel = Steward Design Panels",
+    "door": "Claude",
+    "datum": "2026-09-16",
+    "editie": "MDU 2011"
   }
 }

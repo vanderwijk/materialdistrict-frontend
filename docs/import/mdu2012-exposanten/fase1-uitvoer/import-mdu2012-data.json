@@ -1,0 +1,4219 @@
+{
+ "ronde": "MDU 2012",
+ "gemeten_op_cms": "2026-09-16T15:16:57Z",
+ "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+ "brondatum": "2012-01-25",
+ "ingevuld_door": "het bedrijf of de persoon zelf",
+ "batches": {
+  "merken": "mdu2012-exposant-01",
+  "activiteiten": "mdu2012-exposant-01"
+ },
+ "merken": [
+  {
+   "bron_excelrij": [
+    "2"
+   ],
+   "brand_id": 3700,
+   "post_title": "3M Nederland B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "3m.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31715450411",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 193",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2300 AD",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Leiden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "3M Nederland = 3M NL — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "3"
+   ],
+   "brand_id": 4037,
+   "post_title": "Accsys Group / Accoya",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "accoya.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Accoya-accsys op plattegrond = Accsys Group / Accoya — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "4"
+   ],
+   "brand_id": 3227,
+   "post_title": "AGC Flat Glass Nederland",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "yourglass.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "sales.nederland@eu.agc.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31344679922",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 6025",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4000 HA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tiel",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3227 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "5"
+   ],
+   "brand_id": 3375,
+   "post_title": "AGROB BUCHTAL GmbH",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "agrob-buchtal.de",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "agrob-buchtal@deutsche-steinzeug.de",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+4994353910",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Buchtal 1",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "92521",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Schwarzenfeld",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3375 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "6"
+   ],
+   "brand_id": 3986,
+   "post_title": "Akoestiekfabriek",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "akoestiekfabriek.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand Akoestiekfabriek; catalogus zonder bruikbaar domein — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "7"
+   ],
+   "brand_id": 3440,
+   "post_title": "Apavisa",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "apavisa.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@apavisa.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+34964701120",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Ctra. Castellón – San Juan de Moró hm 7,5",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "12530",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "San Juan De Moró",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "ES",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3440 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "8"
+   ],
+   "brand_id": 18879,
+   "post_title": "Art of Ceilings",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "artofceilings.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand Art of Ceilings — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "9"
+   ],
+   "brand_id": null,
+   "post_title": "Artitec bv",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "artitec.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@artitec.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31308507070",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Fornheselaan 120",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3734 GE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Den Dolder",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "10"
+   ],
+   "brand_id": 141965,
+   "post_title": "Aurubis",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "koperinarchitectuur.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "denis@de-nis.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31623947001",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Oosterboekelweg 17",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1661 BT",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "De Weere NH",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 141965 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "11"
+   ],
+   "brand_id": 16907,
+   "post_title": "Barrisol Normalu sas",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "barrisol.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "mail@barrisol.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+33389832020",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Route du Sipes",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "68680",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Kembs",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "FR",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Barrisol Normalu = Barrisol — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "12"
+   ],
+   "brand_id": null,
+   "post_title": "BN Wallcoverings",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "bnwallcoverings.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31355248400",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Rokerijweg 5",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1271 AH",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Huizen",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "13"
+   ],
+   "brand_id": null,
+   "post_title": "Bolefloor",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "bolefloor.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@bolefloor.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31620554575",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Prinsengracht 13",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1015 DK",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "14"
+   ],
+   "brand_id": 4041,
+   "post_title": "Cityroofs",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "cityroofs.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@cityroofs.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31134582800",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Centaurusweg 19-25",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5015 TA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tilburg",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 4041 (naam)"
+  },
+  {
+   "bron_excelrij": [
+    "15"
+   ],
+   "brand_id": 3972,
+   "post_title": "Creative Cladding bv",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "creativcladding.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31408420063",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "De Kuiper 11",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5591 MZ",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Heeze",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3972 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "16"
+   ],
+   "brand_id": null,
+   "post_title": "CRH Clay Solutions",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "crhclaysolutions.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31880885511",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Engelmanstraat 56",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6086 BD",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Neer",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "18"
+   ],
+   "brand_id": 2817,
+   "post_title": "Decall Consulting",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "decall.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@decall.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31299671445",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "De Volger 25",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1483 GA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "De Rijp",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2817 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "19"
+   ],
+   "brand_id": 26734,
+   "post_title": "DecoLegno B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "decolegno.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@decolegno.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31756165064",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Rijshoutweg 25",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1505 HL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zaandam",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26734 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "20"
+   ],
+   "brand_id": 3827,
+   "post_title": "Desso BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "desso.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "service-nl@desso.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31416684100",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Taxandriaweg 15",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5142 PA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Waalwijk",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3827 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "21"
+   ],
+   "brand_id": 95725,
+   "post_title": "Donkersloot",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "donkersloot-tapijt.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@donkersloot-tapijt.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31882400800",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 105",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1400 AC",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Bussum",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 95725 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "22"
+   ],
+   "brand_id": null,
+   "post_title": "Dynamobel Benelux",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "dynamobel.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info.benelux@dynamobel.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31203373270",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Pedro de Medinalaan 5e",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1086 XK",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "23"
+   ],
+   "brand_id": null,
+   "post_title": "Eurokam Kiezelmozaïek",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "eurokam.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@eurokam.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31307851446",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Noordweg Noord 142",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3704 JG",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zeist",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "24"
+   ],
+   "brand_id": null,
+   "post_title": "Euroslot Nederland",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "euroslot-architecture.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "sales@euroslot.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31546577026",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Nijverheidsstraat 14",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7641 AB",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Wierden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "25"
+   ],
+   "brand_id": 3272,
+   "post_title": "Forbo Flooring BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "forbo-flooring.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "contact@forbo.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31756477477",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industrieweg 12",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1566 JP",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Assendelft",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3272 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "26"
+   ],
+   "brand_id": null,
+   "post_title": "FSB",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "fsb.de",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "verkoop.nederland@fsb.de",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31365225688",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Landauer 29",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3897 AB",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zeewolde",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "27"
+   ],
+   "brand_id": null,
+   "post_title": "Geberit",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "geberit.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info.nl@geberit.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31306057700",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Fultonbaan 15",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3439 NE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Nieuwegein",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "28"
+   ],
+   "brand_id": 3513,
+   "post_title": "Genesis PD",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "genesispd.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Genesis PD = Genesis Product Development — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "29"
+   ],
+   "brand_id": 2969,
+   "post_title": "Glassolutions Saint-Gobain",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "glassolutions.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31334502800",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Lindeboomseweg 51-53",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3825 AL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amersfoort",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Glassolutions Saint-Gobain → Saint-Gobain Glass — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "31"
+   ],
+   "brand_id": null,
+   "post_title": "HSV Packaging & Insulation Netherlands BV",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "hsv.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@hsv.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31318648999",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Frankeneng 19",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6716 AA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Ede",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "32"
+   ],
+   "brand_id": 3995,
+   "post_title": "Inducar Protection Coatings BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "inducar.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@inducar.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31153698898",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Weteringweg 3",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2641 KM",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Pijnacker",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3995 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "34"
+   ],
+   "brand_id": 3342,
+   "post_title": "InterfaceFLOR",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "interfacflor.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31332775800",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Industrielaan 15",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3925 BD",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Scherpenzeel",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "InterfaceFLOR = Interface Nederland — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "35"
+   ],
+   "brand_id": null,
+   "post_title": "Kalzip Benelux",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "kalzip.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "enquiries.me@kalzip.com",
+     "bron": "research",
+     "brondatum": "2012-01-25",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31251493968",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 10.000",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1970 CA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "IJmuiden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "36"
+   ],
+   "brand_id": 3951,
+   "post_title": "Kingspan Benchmark",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "kingspanbenchmark.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@kingspanbenchmark.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31344675250",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Lingewei 8",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4004 LL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Tiel",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Kingspan Benchmark = Kingspan — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "37"
+   ],
+   "brand_id": 3980,
+   "post_title": "Knauf B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "knauf.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@knauf.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31302473311",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Mesonweg 8-12",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3542 AL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Utrecht",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3980 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "38"
+   ],
+   "brand_id": 3787,
+   "post_title": "Knauf Insulation",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "knaufinsulation.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@knaufinsulation.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31162421245",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 375",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4900 AJ",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Oosterhout",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3787 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "39"
+   ],
+   "brand_id": 3359,
+   "post_title": "Koninklijke Mosa bv",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "mosa.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "servicedesk@mosa.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31433689444",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Meerssenerweg 358",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6224 AL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Maastricht",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3359 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "40"
+   ],
+   "brand_id": 53436,
+   "post_title": "Kunststof Coatings Nederland",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "kunststofcoatings.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand Kunststof Coatings Nederland — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "41"
+   ],
+   "brand_id": 3602,
+   "post_title": "Leolac BV",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "leolac.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31478539230",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Stayerhofweg 25b",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5861 EJ",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Wanssum",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3602 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "42"
+   ],
+   "brand_id": 3288,
+   "post_title": "MagPaint Europe bv",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "magpaint.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31315386473",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Elsterweg 3a",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7076 AZ",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Veldhunten",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3288 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "43"
+   ],
+   "brand_id": null,
+   "post_title": "Marlise Paint International B.V.",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "marliseverf.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@marliseverf.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+318002505000",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 205",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8000 AE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zwolle",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "44"
+   ],
+   "brand_id": 3291,
+   "post_title": "MBI",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "mbi.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "infobouw@mbi.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31383994204",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Haatlandhaven 11",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8260 AJ",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Kampen",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3291 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "45"
+   ],
+   "brand_id": 35547,
+   "post_title": "Medite Tricoya",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "mdfosb.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "Medite Tricoya → Medite Smartply — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "46"
+   ],
+   "brand_id": 18583,
+   "post_title": "modulyss",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "modulyss.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@modulyss.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+3252457211",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Zevensterrestraat 21",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "9240",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zele",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 18583 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "47"
+   ],
+   "brand_id": 3621,
+   "post_title": "NedZink B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "nedzink.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@nedzink.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31495455700",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Hoofdstraat 1",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "6024 AA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Budel-Dorplein",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3621 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "48"
+   ],
+   "brand_id": 2821,
+   "post_title": "nora flooring systems B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "nora.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info-nl@nora.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31416286140",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Belgiëstraat 14",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5171 PN",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Kaatsheuvel",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2821 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "49"
+   ],
+   "brand_id": 18817,
+   "post_title": "ODS",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "ods-geveltechniek.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand ODS b.v. — Claude, 2026-09-16"
+  },
+  {
+   "bron_excelrij": [
+    "50"
+   ],
+   "brand_id": null,
+   "post_title": "P & P Toplines B.V.",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "pnptoplines.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31205305400",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Frederiksplein 41",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1017 XL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "51"
+   ],
+   "brand_id": 142052,
+   "post_title": "Partners in Design",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "partnersindesign.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@partnersindesign.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31355312340",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Nikkelstraat 29",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1411 AG",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Naarden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 142052 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "52"
+   ],
+   "brand_id": 19398,
+   "post_title": "Porcelanosa Netherlands",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "porcelanosa.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@porcelanosa.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31641662983",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Isolatorweg 4 (showroom)",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1014 AS",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 19398 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "53"
+   ],
+   "brand_id": null,
+   "post_title": "Relius Benelux",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "relius.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@relius.nl",
+     "bron": "research",
+     "brondatum": "2012-01-25",
+     "herkomst": "opgezocht"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31332471515",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Dieselweg 9",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "3752 LB",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Bunschoten",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "54"
+   ],
+   "brand_id": null,
+   "post_title": "RELIUS Nederland BV",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "reliusnederland.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@reliusnederland.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31493352452",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Geijzerstraat 3-9",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5753 RP",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Deurne",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "55"
+   ],
+   "brand_id": 18858,
+   "post_title": "Richard Wernekinck",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "hollandfelt.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@wernekinck.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31152146341",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Hugo de Grootstraat 175",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2613 TB",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Delft",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 18858 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "56"
+   ],
+   "brand_id": 2977,
+   "post_title": "SCHOTT AG",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "schott.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@schott.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+496131664339",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Hattenbergstr. 10",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "55122",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Mainz",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "DE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2977 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "57"
+   ],
+   "brand_id": 2982,
+   "post_title": "Sefar AG",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "sefararchitecture.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+41718985617",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Hinterbissaustrasse 12",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "9410",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Heiden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 2982 (naam + domeincorroboratie)"
+  },
+  {
+   "bron_excelrij": [
+    "58"
+   ],
+   "brand_id": 3044,
+   "post_title": "Steinfort Glas B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "steinfort.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@steinfort.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31517380905",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Marconistraat 6",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8801 PM",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Franeker",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3044 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "59"
+   ],
+   "brand_id": null,
+   "post_title": "Strikolith B.V.",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "strikolith.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@strikolith.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+318007874565",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Lissenveld 9-13",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "4941 VK",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Raamsdonksveer",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "60"
+   ],
+   "brand_id": 3134,
+   "post_title": "Twentinox",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "twentinox.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@twentinox.com",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31742916996",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 6",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "7550 AA",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Hengelo",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 3134 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "61"
+   ],
+   "brand_id": 122034,
+   "post_title": "Van Besouw Tapijt b.v.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "besouw.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@besouw.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31383858818",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Puttenstraat 3",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8281 BP",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Genemuiden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 122034 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "63"
+   ],
+   "brand_id": 16881,
+   "post_title": "Vescom Nederland B.V.",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "vescom.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31493350767",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Sint Jozefstraat 20",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "5753 AV",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Deurne",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 16881 (domeinkern, andere extensie)"
+  },
+  {
+   "bron_excelrij": [
+    "64"
+   ],
+   "brand_id": null,
+   "post_title": "Viva Vinyl B.V.",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "vivavinyl.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@vivavinyl.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31206599523",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Frankfurtstraat 29-31",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1175 RH",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Lijnden",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "65"
+   ],
+   "brand_id": 26955,
+   "post_title": "Wicona, Hydro Building Systems",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "wicona.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@wicona.be",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+3214249999",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Welvaartstraat 14/1 bus 6",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "2200",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Herentals",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "BE",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 26955 (exact domein)"
+  },
+  {
+   "bron_excelrij": [
+    "66"
+   ],
+   "brand_id": null,
+   "post_title": "Zehnder Nederland BV",
+   "alias": "",
+   "record_status": "prospect",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "zehnder.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "email": {
+     "meta_key": "_brand_email",
+     "waarde": "info@zehnder.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31384296250",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Lingenstraat 2",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "8028 PM",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Zwolle",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "nieuw merk, identiteit aantoonbaar"
+  },
+  {
+   "bron_excelrij": [
+    "67"
+   ],
+   "brand_id": 23748,
+   "post_title": "ZinCo Benelux",
+   "alias": "",
+   "record_status": "active",
+   "post_status_bij_aanmaken": "draft",
+   "velden": {
+    "website": {
+     "meta_key": "_brand_website",
+     "waarde": "zinco.nl",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "phone": {
+     "meta_key": "_brand_phone",
+     "waarde": "+31206674858",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "address_line_1": {
+     "meta_key": "_brand_address",
+     "waarde": "Postbus 9092",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "postcode": {
+     "meta_key": "_brand_postcode",
+     "waarde": "1006 AB",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "city": {
+     "meta_key": "_brand_city",
+     "waarde": "Amsterdam",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    },
+    "country": {
+     "meta_key": "_brand_country",
+     "waarde": "NL",
+     "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)",
+     "brondatum": "2012-01-25",
+     "herkomst": "bestand"
+    }
+   },
+   "reden": "bestaand merk 23748 (exact domein)"
+  }
+ ],
+ "contacten": [],
+ "activiteiten": [
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3700,
+   "subject_sleutel": "3m.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 17, MOCK UP I",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 4037,
+   "subject_sleutel": "accoya.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 42",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3227,
+   "subject_sleutel": "yourglass.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 24, 25",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3375,
+   "subject_sleutel": "agrob-buchtal.de",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 3, 20",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3986,
+   "subject_sleutel": "akoestiekfabriek.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 73",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3440,
+   "subject_sleutel": "apavisa.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 74",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18879,
+   "subject_sleutel": "artofceilings.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 13",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "artitec.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 22",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 141965,
+   "subject_sleutel": "koperinarchitectuur.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 31",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 16907,
+   "subject_sleutel": "barrisol.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 8, 48, 91",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "bnwallcoverings.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 60, MOCK UP A, B",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "bolefloor.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 19",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 4041,
+   "subject_sleutel": "cityroofs.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 70",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3972,
+   "subject_sleutel": "creativcladding.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 2, 30",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "crhclaysolutions.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 1, 44",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2817,
+   "subject_sleutel": "decall.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 66",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26734,
+   "subject_sleutel": "decolegno.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 51, MOCK UP E",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3827,
+   "subject_sleutel": "desso.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 32",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 95725,
+   "subject_sleutel": "donkersloot-tapijt.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 39",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "dynamobel.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand ",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "eurokam.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 27",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "euroslot-architecture.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 79",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3272,
+   "subject_sleutel": "forbo-flooring.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 7",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "fsb.de",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 86",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "geberit.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 4",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3513,
+   "subject_sleutel": "genesispd.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 18",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2969,
+   "subject_sleutel": "glassolutions.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 33",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "hsv.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 28",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3995,
+   "subject_sleutel": "inducar.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 88",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3342,
+   "subject_sleutel": "interfacflor.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 5, 29",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "kalzip.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 57",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3951,
+   "subject_sleutel": "kingspanbenchmark.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 36",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3980,
+   "subject_sleutel": "knauf.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 41",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3787,
+   "subject_sleutel": "knaufinsulation.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 67",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3359,
+   "subject_sleutel": "mosa.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 11, 46",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 53436,
+   "subject_sleutel": "kunststofcoatings.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 54, MOCK UP C",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3602,
+   "subject_sleutel": "leolac.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 34",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3288,
+   "subject_sleutel": "magpaint.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 43, MOCK UP F, G, H",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "marliseverf.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 64",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3291,
+   "subject_sleutel": "mbi.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 10, 50",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 35547,
+   "subject_sleutel": "mdfosb.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 45",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18583,
+   "subject_sleutel": "modulyss.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 85",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3621,
+   "subject_sleutel": "nedzink.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 47",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2821,
+   "subject_sleutel": "nora.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 71",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18817,
+   "subject_sleutel": "ods-geveltechniek.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 14",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "pnptoplines.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 23",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 142052,
+   "subject_sleutel": "partnersindesign.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 77",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 19398,
+   "subject_sleutel": "porcelanosa.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 26",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "relius.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 52, 87, MOCK UP P",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "reliusnederland.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 52, 87, MOCK UP P",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 18858,
+   "subject_sleutel": "hollandfelt.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 53, MOCK UP D",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2977,
+   "subject_sleutel": "schott.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 21",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 2982,
+   "subject_sleutel": "sefararchitecture.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 76",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3044,
+   "subject_sleutel": "steinfort.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 82",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "strikolith.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 9, 72, 75",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 3134,
+   "subject_sleutel": "twentinox.com",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 38",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 122034,
+   "subject_sleutel": "besouw.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 80",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 16881,
+   "subject_sleutel": "vescom.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 6, 56, 69",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "vivavinyl.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 78",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 26955,
+   "subject_sleutel": "wicona.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 35",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": null,
+   "subject_sleutel": "zehnder.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 65",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  },
+  {
+   "batch": "mdu2012-exposant-01",
+   "subject_type": "merk",
+   "subject_id": 23748,
+   "subject_sleutel": "zinco.nl",
+   "soort": "exposant",
+   "editie": "MDU 2012",
+   "datum": "2012-01-25",
+   "detail": "stand BLOK 37",
+   "zichtbaarheid": "geteld",
+   "bron": "Catalogusindex Material Xperience 2012 (cataloguspagina 157–161)"
+  }
+ ]
+}

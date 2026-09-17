@@ -11,22 +11,22 @@ Doel: open MDU 2026-gaten dichterzetten **vóór** editie 2025, zonder Claudes r
 | **C — SLUITEN** | **9** | vrij e-mail, geen object → geen rol (activiteit blijft) |
 | **D — OORDEEL** | **18** | Insert (5), BOOT (5), Oboros (3), LignoLight (3), Maëlys (1), wineo (1) |
 
-JSON dry-run klaar:
+JSON:
 - `fase5-uitvoer/mdu2026-park-stand-01.json` (A)
 - `fase5-uitvoer/mdu2026-park-stand-02.json` (B)
+- `fase5-uitvoer/mdu2026-park-stand-03.json` (D: wineo→LEOXX)
 
 ## Overige categorieën
 
-| Categorie | n | Voorstel |
-|-----------|---|----------|
+| Categorie | n | Actie |
+|-----------|---|-------|
 | test@google.com / .eu | 2 | **Sluiten** — terecht geweigerd |
 | LEOXX adres NIET | 1 | **Sluiten** — Jeroen BESLIST |
-| oordelen NIET (wineo / Insert als exposant-merk) | 2 | **Sluiten** — geen exposant-feit; personen apart in D |
-| spreker zonder rol | 17 | **Later** — activiteit staat; meeste zijn bureaus zonder merk in DB; eva@i-did e.d. hebben deels al een rol |
-| exhibitor zonder merkkandidaat / contact zonder WEL | 16+18 | **Overlapt D + cargo/instagram** — geen auto-create zonder Claude/Jeroen |
+| oordelen NIET (wineo / Insert als exposant-merk) | 2 | **Sluiten** — geen exposant-feit; personen wel |
+| spreker zonder rol | 17 | **Later** — activiteit staat; meeste zijn bureaus zonder merk in DB |
+| exhibitor zonder merkkandidaat / contact zonder WEL | 16+18 | Overlapt D; geen auto-create |
 
 ## Gate
 
-- **GO A+B** → geschreven 2026-09-16 (`PARK-schrijf.md`)  
-- D blijft open tot jij/Claude beslist (Insert/BOOT/Oboros geen merk in DB)  
-- Daarna 2025
+- **GO A+B** → geschreven 2026-09-16 (`PARK-schrijf.md`)
+- **D** → Jeroen 2026-09-16 (`park-emmer-D-beslisblad.xlsx`)

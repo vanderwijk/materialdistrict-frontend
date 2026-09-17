@@ -1,0 +1,115 @@
+{
+ "ronde": "MDU 2025 — standbemanning telefoons",
+ "batch": "mdu2025-stand-phones-01",
+ "bron": "MDU2025 tickets-via-exposant",
+ "brondatum": "2025-03-12",
+ "meta_key": "billing_phone",
+ "regel": "alleen vullen als leeg",
+ "rijen": [
+  {
+   "email": "julesvreeswijk@toothezoo.nl",
+   "phone_e164": "+31622222258",
+   "phone_raw": "'+31622222258"
+  },
+  {
+   "email": "yassine@houtidee.be",
+   "phone_e164": "+3232475546650",
+   "phone_raw": "32475546650"
+  },
+  {
+   "email": "mark.janssen2@saint-gobain.com",
+   "phone_e164": "+31622385048",
+   "phone_raw": "622385048"
+  },
+  {
+   "email": "eva.dejongh@saint-gobain.com",
+   "phone_e164": "+31648937183",
+   "phone_raw": "648937183"
+  },
+  {
+   "email": "paul@pyrasied.com",
+   "phone_e164": "+31686809908",
+   "phone_raw": "'+31686809908"
+  },
+  {
+   "email": "rvoostrum@robametals.com",
+   "phone_e164": "+31653482323",
+   "phone_raw": "'+31653482323"
+  },
+  {
+   "email": "silvester@qbiq.nl",
+   "phone_e164": "+31651255117",
+   "phone_raw": "'+31651255117"
+  },
+  {
+   "email": "ronald.debilde@unilin.com",
+   "phone_e164": "+31621694499",
+   "phone_raw": "'+31621694499"
+  },
+  {
+   "email": "dinalebbar@gmail.com",
+   "phone_e164": "+31628969273",
+   "phone_raw": "'+31628969273"
+  },
+  {
+   "email": "selma@zeefier.eu",
+   "phone_e164": "+31626862620",
+   "phone_raw": "626862620"
+  },
+  {
+   "email": "fred.vanschoonhoven@biopanel.nl",
+   "phone_e164": "+31651418937",
+   "phone_raw": "'+31651418937"
+  },
+  {
+   "email": "yvonne@artimo.nl",
+   "phone_e164": "+31654924418",
+   "phone_raw": "654924418"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "sales@rts-visuals.com",
+   "phone_e164": "+31640484895",
+   "phone_raw": "640484895"
+  },
+  {
+   "email": "nynke@houseofdesign.nl",
+   "phone_e164": "+31683513213",
+   "phone_raw": "683513213"
+  },
+  {
+   "email": "info@irisnijenhuis.com",
+   "phone_e164": "+31620570723",
+   "phone_raw": "'+31620570723"
+  },
+  {
+   "email": "robert.korsloot@gmail.com",
+   "phone_e164": "+31623648489",
+   "phone_raw": "623648489"
+  },
+  {
+   "email": "cjongerie@drimensa.nl",
+   "phone_e164": "+31659870469",
+   "phone_raw": "659870469"
+  }
+ ]
+}
