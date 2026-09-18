@@ -13,7 +13,13 @@
  *
  * Bedragen komen uit de Store API in minor-units (string). Nooit zelf prijzen
  * herberekenen — render de totalen/tax/shipping uit de response.
+ *
+ * Productnamen komen HTML-encoded binnen (WP texturize: `&#8211;` voor een
+ * en-dash). We decoderen ze hier, anders blijft `Booming Bamboo &#8211; …`
+ * letterlijk zichtbaar in cart/checkout/bevestiging (React rendert geen HTML).
  */
+
+import { decodeHtmlEntities } from '@/lib/utils/decode-html-entities'
 
 const TOKEN_KEY = 'md_cart_token'
 
@@ -97,14 +103,71 @@ async function cartFetch<T>(path: string, init?: RequestInit): Promise<T> {
     let message = `Cart request failed (${res.status})`
     try {
       const body = await res.json()
-      if (body?.message) message = String(body.message)
+      if (body?.message) message = decodeHtmlEntities(String(body.message))
     } catch {
       /* geen JSON-body */
     }
     throw new CartError(message, res.status)
   }
 
-  return (await res.json()) as T
+  return decodeStoreApiText((await res.json()) as T)
+}
+
+/**
+ * Decode WP/Woo HTML entities in Store API text fields that we render as
+ * plain text. Safe on already-decoded strings (idempotent).
+ */
+function decodeStoreApiText<T>(data: T): T {
+  if (!data || typeof data !== 'object') return data
+  const record = data as Record<string, unknown>
+
+  if (Array.isArray(record.items)) {
+    record.items = record.items.map(decodeStoreItem)
+  }
+
+  if (Array.isArray(record.shipping_rates)) {
+    record.shipping_rates = record.shipping_rates.map((pkg) => {
+      if (!pkg || typeof pkg !== 'object') return pkg
+      const pack = pkg as { shipping_rates?: unknown[] }
+      if (!Array.isArray(pack.shipping_rates)) return pkg
+      return {
+        ...pack,
+        shipping_rates: pack.shipping_rates.map((rate) => {
+          if (!rate || typeof rate !== 'object') return rate
+          const r = rate as { name?: string }
+          return typeof r.name === 'string'
+            ? { ...r, name: decodeHtmlEntities(r.name) }
+            : rate
+        }),
+      }
+    })
+  }
+
+  return data
+}
+
+function decodeStoreItem(item: unknown): unknown {
+  if (!item || typeof item !== 'object') return item
+  const i = item as {
+    name?: string
+    short_description?: string
+    images?: Array<{ alt?: string }>
+  }
+  return {
+    ...i,
+    name: typeof i.name === 'string' ? decodeHtmlEntities(i.name) : i.name,
+    short_description:
+      typeof i.short_description === 'string'
+        ? decodeHtmlEntities(i.short_description)
+        : i.short_description,
+    images: Array.isArray(i.images)
+      ? i.images.map((img) =>
+          img && typeof img.alt === 'string'
+            ? { ...img, alt: decodeHtmlEntities(img.alt) }
+            : img,
+        )
+      : i.images,
+  }
 }
 
 /**
