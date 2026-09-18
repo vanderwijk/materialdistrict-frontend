@@ -64,7 +64,17 @@ export interface StoreOrderItem {
   name: string
   quantity: number
   prices: { price: string }
-  totals: { line_total: string; currency_minor_unit: number }
+  totals: {
+    line_total: string
+    /** Pre-discount line total (excl. tax). With `line_subtotal_tax` vs.
+     *  `line_total`/`line_total_tax`, gives the actual per-item discount
+     *  (coupons apply per line, so `prices.price` alone is the catalog price,
+     *  not what the customer paid). */
+    line_subtotal?: string
+    line_subtotal_tax?: string
+    line_total_tax?: string
+    currency_minor_unit: number
+  }
 }
 
 export interface StoreOrder {
@@ -81,6 +91,8 @@ export interface StoreOrder {
     currency_symbol: string
   }
   items: StoreOrderItem[]
+  /** Applied coupon(s), e.g. `bookshops40%off`. */
+  coupons?: Array<{ code: string }>
   billing_address?: StoreAddress
   shipping_address?: StoreAddress
 }

@@ -42,7 +42,13 @@ export function OrderConfirmationView({
         setOrder(o)
         setPhase('ok')
         clearCartSession()
-        trackPurchase(o)
+        // Own try/catch: a tracking bug must never surface as the .catch()
+        // below's error screen — the order itself loaded fine.
+        try {
+          trackPurchase(o)
+        } catch {
+          /* noop */
+        }
       })
       .catch(() => {
         if (active) setPhase('error')
